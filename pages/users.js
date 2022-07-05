@@ -4,8 +4,8 @@ import path from 'path';
 
 export async function getStaticProps() {
   // fetches data from the .json file and makes it props
-  const filePath = path.join(process.cwd(), 'pelaajat.json'); // tiedoston nimi pitää muokata!!!!
-  const jsonData = await fsPromises.readFile(filePath, "utf-8");
+  const filePath = path.join(process.cwd(), 'pelaajat.json');
+  const jsonData = await fsPromises.readFile(filePath);
   const objects = JSON.parse(jsonData);
 
   return {
