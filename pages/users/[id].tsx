@@ -1,6 +1,7 @@
 import pelaajat from '../../pelaajat.json'
+import { GetStaticProps, GetStaticPaths } from 'next';
 
-export async function getStaticProps({ params }) {
+export const getStaticProps: GetStaticProps = async ({ params }) => {
   const userData = pelaajat.find(p => p.id === params.id)
   return {
     props: {
@@ -9,7 +10,31 @@ export async function getStaticProps({ params }) {
   };
 }
 
-export default function User({userData}) {
+export default function User({
+  userData
+}: {
+  userData: {
+    id: string
+    firstName: string
+    lastName: string
+    alias: string
+    phone: string
+    email: string
+    address: string
+    learningInstitution: string
+    description: {
+      eyeColor: string
+      hair: string
+      height: number
+      glasses: string
+      other: string
+    }
+    calendar: object
+  }
+}
+  ): JSX.Element {
+
+  
   const cal = []
   for (const x in userData.calendar) {
     cal.push([x, userData.calendar[x]])
@@ -41,7 +66,7 @@ export default function User({userData}) {
 }
 
 
-export async function getStaticPaths() {
+export const getStaticPaths: GetStaticPaths = async () => {
 
   const paths = pelaajat.map(user => ({
     params : { id: user.id },

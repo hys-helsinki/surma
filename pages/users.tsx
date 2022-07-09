@@ -1,11 +1,12 @@
 import Link from 'next/link';
 import fsPromises from 'fs/promises';
 import path from 'path';
+import { GetStaticProps } from 'next';
 
-export async function getStaticProps() {
+export const getStaticProps: GetStaticProps = async () => {
   // fetches data from the .json file and makes it props
   const filePath = path.join(process.cwd(), 'pelaajat.json');
-  const jsonData = await fsPromises.readFile(filePath);
+  const jsonData = await fsPromises.readFile(filePath, "utf8");
   const objects = JSON.parse(jsonData);
 
   return {
@@ -16,6 +17,7 @@ export async function getStaticProps() {
 }
 
 export default function UserList({objects}) {
+  // objects typet
 
   return (
     <>
