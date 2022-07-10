@@ -17,16 +17,17 @@ export const getStaticProps: GetStaticProps = async () => {
 }
 
 export default function UserList({objects}) {
-  // objects typet
 
   return (
     <>
       <h1>List of users</h1>
       <ul>
-        {objects.map(o =>
-          <li key={o.id}>
-            <Link href={`/users/${o.id}`}><a>{o.firstName} {o.lastName} ({o.alias})</a></Link>
-          </li>
+        {objects.map((o: { id: string | number; firstName: string; lastName: string; alias: string }) =>
+          {
+            return <li key={o.id}>
+              <Link href={`/users/${o.id}`}><a>{o.firstName} {o.lastName} ({o.alias})</a></Link>
+            </li>;
+          }
         )}
       </ul>
     </>
