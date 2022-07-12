@@ -1,7 +1,11 @@
 import { Prisma, Player } from '@prisma/client'
 import { GetStaticProps } from 'next'
+<<<<<<< HEAD
 import { PlayerDetails } from '../../../components/PlayerDetails'
 import prisma from '../../../lib/prisma'
+=======
+import { PlayerData } from '../../../components/PlayerData'
+>>>>>>> d8d83b4 (more refactoring)
 
 export const getStaticProps: GetStaticProps = async ({ params }) => {
   const playerAsTarget: Prisma.PlayerSelect = {
@@ -34,7 +38,11 @@ export default function User(
   return (
     <div>
       <h1>{userData.firstName} {userData.lastName}</h1>
+<<<<<<< HEAD
       <PlayerDetails data={userData}/>
+=======
+      <PlayerData data={userData}/>
+>>>>>>> d8d83b4 (more refactoring)
     </div>
   )
 }
