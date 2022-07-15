@@ -1,4 +1,4 @@
-export const PlayerData = ({data}): JSX.Element => {
+export const PlayerDetails = ({data}): JSX.Element => {
 
     const cal = []
     for (const x in data.calendar) {

@@ -1,4 +1,4 @@
-export const PlayerContact = ({data}): JSX.Element => {
+export const PlayerContactInfo = ({data}): JSX.Element => {
     return (
         <div>
             <h2>alias: {data.alias}</h2>
