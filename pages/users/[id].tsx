@@ -2,12 +2,19 @@ import pelaajat from '../../pelaajat.json'
 import { GetStaticProps, GetStaticPaths } from 'next';
 import { PlayerDetails } from '../../components/PlayerDetails';
 import { PlayerContactInfo } from '../../components/PlayerContactInfo';
+import prisma from '../../lib/prisma'
 
-export const getStaticProps: GetStaticProps = async ({ params }) => {
-  const userData = pelaajat.find(p => p.id === params.id)
+export const getStaticProps: GetStaticProps = async ({params}) => {
+  const userData = await prisma.player.findUnique({
+    where: {
+      id: params.id,
+    },
+  });
   return {
     props: {
-      userData
+      ...userData,
+      description: {},
+      calendar: [],
     },
   };
 }
