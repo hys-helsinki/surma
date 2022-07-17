@@ -11,18 +11,18 @@ datasource db {
 }
 
 model Player {
-  id                  String @id @default(uuid())
+  id                  String  @id @default(uuid())
   alias               String
   firstName           String
   lastName            String
   phone               String
   email               String
   address             String
-  learningInstitution String
-  eyeColor            String
-  hair                String
-  height              Int
-  glasses             String
-  other               String
-  calendar            Json
+  learningInstitution String?
+  eyeColor            String?
+  hair                String?
+  height              Int?
+  glasses             String?
+  other               String?
+  calendar            Json?
 }
