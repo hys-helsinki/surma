@@ -1,5 +1,5 @@
 import { GetStaticProps, GetStaticPaths } from 'next';
-import { Prisma, Player } from '@prisma/client'
+import { Player } from '@prisma/client'
 import { PlayerDetails } from '../../components/PlayerDetails';
 import { PlayerContactInfo } from '../../components/PlayerContactInfo';
 import prisma from '../../lib/prisma'
