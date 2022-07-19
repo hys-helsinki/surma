@@ -1,41 +1,23 @@
-import pelaajat from '../../pelaajat.json'
 import { GetStaticProps, GetStaticPaths } from 'next';
+import { Player } from '@prisma/client'
 import { PlayerDetails } from '../../components/PlayerDetails';
 import { PlayerContactInfo } from '../../components/PlayerContactInfo';
+import prisma from '../../lib/prisma'
 
-export const getStaticProps: GetStaticProps = async ({ params }) => {
-  const userData = pelaajat.find(p => p.id === params.id)
-  return {
-    props: {
-      userData
+export const getStaticProps: GetStaticProps = async ({params}) => {
+  const userData = await prisma.player.findUnique({
+    where: {
+      id: params.id,
     },
+  });
+  return {
+    props: userData,
   };
 }
 
-export default function User({
-  userData
-}: {
-  userData: {
-    id: string
-    firstName: string
-    lastName: string
-    alias: string
-    phone: string
-    email: string
-    address: string
-    learningInstitution: string
-    description: {
-      eyeColor: string
-      hair: string
-      height: number
-      glasses: string
-      other: string
-    }
-    calendar: object
-  }
-}
+export default function User(
+  userData : Player
   ): JSX.Element {
-
   return (
     <div>
       <h1>{userData.firstName} {userData.lastName}</h1>
@@ -47,12 +29,11 @@ export default function User({
 
 
 export const getStaticPaths: GetStaticPaths = async () => {
-
-  const paths = pelaajat.map(user => ({
-    params : { id: user.id },
-  }))
+  const playerIds = await prisma.player.findMany({ select: { id: true } });
   return {
-    paths,
-    fallback: false
-  }
+    paths: playerIds.map((player) => ({
+      params: player,
+    })),
+    fallback: false,
+  };
 }

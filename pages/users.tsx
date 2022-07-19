@@ -1,13 +1,9 @@
 import Link from 'next/link';
-import fsPromises from 'fs/promises';
-import path from 'path';
 import { GetStaticProps } from 'next';
+import prisma from '../lib/prisma';
 
 export const getStaticProps: GetStaticProps = async () => {
-  // fetches data from the .json file and makes it props
-  const filePath = path.join(process.cwd(), 'pelaajat.json');
-  const jsonData = await fsPromises.readFile(filePath, "utf8");
-  const objects = JSON.parse(jsonData);
+  const objects = await prisma.player.findMany();
 
   return {
     props: {
@@ -22,7 +18,7 @@ export default function UserList({objects}) {
     <>
       <h1>List of users</h1>
       <ul>
-        {objects.map((o: { id: string | number; firstName: string; lastName: string; alias: string }) =>
+        {objects.map((o: { id: string; firstName: string; lastName: string; alias: string }) =>
           {
             return <li key={o.id}>
               <Link href={`/users/${o.id}`}><a>{o.firstName} {o.lastName} ({o.alias})</a></Link>
