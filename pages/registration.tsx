@@ -1,26 +1,38 @@
+import prisma from "../lib/prisma"
+import { useRouter } from 'next/router'
+
 export default function Registration() { 
     // Ilmolomake on dynaaminen eli siihen tulee jokaiselle turnauksen päivälle oma aikatauluteksti
+    const router = useRouter()
     const dates = ["1.10.", "2.10", "3.10", "4.10"]
-    const handleSubmit = (event) => {
+    const handleSubmit = async (event) => {
         event.preventDefault()
         const cal = {} 
         dates.forEach((x, i) => cal[x] = event.target.dates[i].value)
         const data = {
             firstName: event.target.firstName.value,
             lastName: event.target.lastName.value,
+            alias: event.target.alias.value,
             email: event.target.email.value,
             phone: event.target.phone.value,
             address: event.target.address.value,
             learningInstitution: event.target.learningInstitution.value,
             eyeColor: event.target.eyeColor.value,
             hair: event.target.hair.value,
-            height: event.target.height.value,
+            height: parseInt(event.target.height.value),
             glasses: event.target.glasses.value,
             other: event.target.other.value,
 
             calendar: cal
         }
-        console.log(data)
+        fetch('/api/user/create', {            
+            method: 'POST',
+            body: JSON.stringify(data)
+        })
+        .then((response) => response.json())
+        .then((d) => {
+            router.push(`/users/${d.id}`)
+        })
 
     }
 
@@ -35,6 +47,11 @@ export default function Registration() {
                 <div>
                     <label htmlFor="lastName">Last name:</label>
                     <input type="text" id="lastName" name="lastName"/>
+                    
+                </div>
+                <div>
+                    <label htmlFor="alias">Alias:</label>
+                    <input type="text" id="alias" name="alias"/>
                     
                 </div>
                 <div>
