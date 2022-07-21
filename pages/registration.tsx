@@ -39,13 +39,14 @@ export default function Registration() {
     return (
         <div>
             <form onSubmit={handleSubmit}>
+                <h2>Ilmoittautumislomake</h2>
                 <div>
-                    <label htmlFor="firstName">First name:</label>
+                    <label htmlFor="firstName">Etunimi:</label>
                     <input type="text" id="firstName" name="firstName"/>
                     
                 </div>
                 <div>
-                    <label htmlFor="lastName">Last name:</label>
+                    <label htmlFor="lastName">Sukunimi:</label>
                     <input type="text" id="lastName" name="lastName"/>
                     
                 </div>
@@ -55,50 +56,51 @@ export default function Registration() {
                     
                 </div>
                 <div>
-                    <label htmlFor="email">Email:</label>
+                    <label htmlFor="email">Sähköpostiosoite:</label>
                     <input type="text" id="email" name="email"/>
                 </div>
                 <div>
-                    <label htmlFor="phone">Phone: 
+                    <label htmlFor="phone">Puhelinnumero: 
                         <input type="text" id="phone" name="phone"/>
                     </label>
                 </div>
                 <div>
-                    <label htmlFor="address">Address: 
+                    <label htmlFor="address">Kotiosoite: 
                         <input type="text" id="address" name="address"/>
                     </label>
                 </div>
                 <div>
-                    <label htmlFor="learningInstitution">Learning Institution: 
+                    <label htmlFor="learningInstitution">Oppilaitos: 
                         <input type="text" id="learningInstitution" name="learningInstitution"/>
                     </label>
                 </div>
                 <div>
-                    <label htmlFor="eyeColor">Eye Color: 
+                    <label htmlFor="eyeColor">Silmät: 
                         <input type="text" id="eyeColor" name="eyeColor"/>
                     </label>
                 </div>
                 <div>
-                    <label htmlFor="hair">Hair: 
+                    <label htmlFor="hair">Hiukset: 
                         <input type="text" id="hair" name="hair"/>
                     </label>
                 </div>
                 <div>
-                    <label htmlFor="height">Height: 
+                    <label htmlFor="height">Pituus: 
                         <input type="text" id="height" name="height"/>
                     </label>
                 </div>
                 <div>
-                    <label htmlFor="glasses">Glasses: 
+                    <label htmlFor="glasses">Silmälasit: 
                         <input type="text" id="glasses" name="glasses"/>
                     </label>
                 </div>
                 <div>
-                    <label htmlFor="other">Other: 
+                    <label htmlFor="other">Muu: 
                         <input type="text" id="other" name="other"/>
                     </label>
                 </div>
                 <div> 
+                    <p>Kalenteritiedot</p>
                     {dates.map((d: string, i) =>
                     <div key={i}>
                         <label htmlFor={d}>{d}: 
