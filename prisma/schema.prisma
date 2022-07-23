@@ -11,7 +11,13 @@ datasource db {
 }
 
 model Player {
-  id                  String  @id @default(uuid())
+  id                  String       @id @default(uuid())
+  createdAt           DateTime     @default(now())
+  modifiedAt          DateTime     @default(now())
+  tournament          Tournament   @relation(fields: [tournamentId], references: [id])
+  tournamentId        String
+  umpire              Umpire?      @relation(fields: [umpireId], references: [id])
+  umpireId            String
   alias               String
   firstName           String
   lastName            String
@@ -25,4 +31,55 @@ model Player {
   glasses             String?
   other               String?
   calendar            Json?
+  targets             Assignment[] @relation(name: "PlayerHasTarget")
+  hunters             Assignment[] @relation(name: "PlayerIsHunted")
+}
+
+model Umpire {
+  id           String     @id @default(uuid())
+  createdAt    DateTime   @default(now())
+  modifiedAt   DateTime   @default(now())
+  tournament   Tournament @relation(fields: [tournamentId], references: [id])
+  tournamentId String
+  firstName    String
+  lastName     String
+  phone        String
+  email        String
+  players      Player[]
+}
+
+model Tournament {
+  id          String           @id @default(uuid())
+  createdAt   DateTime         @default(now())
+  modifiedAt  DateTime         @default(now())
+  name        String
+  start       DateTime
+  end         DateTime
+  players     Player[]
+  umpires     Umpire[]
+  assignments Assignment[]
+  rings       AssignmentRing[]
+}
+
+model Assignment {
+  id           String         @id @default(uuid())
+  createdAt    DateTime       @default(now())
+  modifiedAt   DateTime       @default(now())
+  tournament   Tournament     @relation(fields: [tournamentId], references: [id])
+  tournamentId String
+  ring         AssignmentRing @relation(fields: [ringId], references: [id])
+  ringId       String
+  hunter       Player         @relation(name: "PlayerHasTarget", fields: [hunterId], references: [id])
+  hunterId     String
+  target       Player         @relation(name: "PlayerIsHunted", fields: [targetId], references: [id])
+  targetId     String
+}
+
+model AssignmentRing {
+  id           String       @id @default(uuid())
+  createdAt    DateTime     @default(now())
+  modifiedAt   DateTime     @default(now())
+  tournament   Tournament   @relation(fields: [tournamentId], references: [id])
+  tournamentId String
+  assignments  Assignment[]
 }
