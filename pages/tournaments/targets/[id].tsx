@@ -1,7 +1,7 @@
-import { Prisma, Player } from '@prisma/client'
-import { GetStaticProps } from 'next'
-import { PlayerDetails } from '../../../components/PlayerDetails'
-import prisma from '../../../lib/prisma'
+import { Prisma, Player } from "@prisma/client";
+import { GetStaticProps } from "next";
+import { PlayerDetails } from "../../../components/PlayerDetails";
+import prisma from "../../../lib/prisma";
 
 export const getStaticProps: GetStaticProps = async ({ params }) => {
   const playerAsTarget: Prisma.PlayerSelect = {
@@ -18,34 +18,32 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
   };
   const userData = await prisma.player.findUnique({
     where: {
-      id: params.id,
+      id: params.id
     },
     select: playerAsTarget
   });
   return {
-    props: userData,
+    props: userData
   };
-}
+};
 
-export default function User(
-  userData : Player
-): JSX.Element {
-
+export default function User(userData: Player): JSX.Element {
   return (
     <div>
-      <h1>{userData.firstName} {userData.lastName}</h1>
-      <PlayerDetails data={userData}/>
+      <h1>
+        {userData.firstName} {userData.lastName}
+      </h1>
+      <PlayerDetails data={userData} />
     </div>
-  )
+  );
 }
-
 
 export async function getStaticPaths() {
   const playerIds = await prisma.player.findMany({ select: { id: true } });
   return {
     paths: playerIds.map((player) => ({
-      params: player,
+      params: player
     })),
-    fallback: false,
+    fallback: false
   };
 }
