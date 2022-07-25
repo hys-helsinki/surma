@@ -1,8 +1,8 @@
 import { GetStaticProps, GetStaticPaths } from 'next';
 import { Player } from '@prisma/client'
-import { PlayerDetails } from '../../components/PlayerDetails';
-import { PlayerContactInfo } from '../../components/PlayerContactInfo';
-import prisma from '../../lib/prisma'
+import { PlayerDetails } from '../../../components/PlayerDetails';
+import { PlayerContactInfo } from '../../../components/PlayerContactInfo';
+import prisma from '../../../lib/prisma'
 
 export const getStaticProps: GetStaticProps = async ({params}) => {
   const userData = await prisma.player.findUnique({
