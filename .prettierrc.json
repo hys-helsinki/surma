@@ -1,5 +1,5 @@
 {
-    "singleQuotes": false,
-    "trailingComma": "none",
-    "endOfLine": "lf"
-  }
+  "singleQuote": false,
+  "trailingComma": "none",
+  "endOfLine": "lf"
+}
