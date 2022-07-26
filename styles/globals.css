@@ -17,6 +17,10 @@ a {
   box-sizing: border-box;
 }
 
-label, input {
+input, label {
+  display: block;
+}
+
+textarea, label {
   display: block;
 }
