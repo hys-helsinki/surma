@@ -1,11 +1,8 @@
-export const UpdateForm = ({ data }): JSX.Element => {
+export const UpdateForm = ({ data, handleSubmit, calendar }): JSX.Element => {
   const cal = [];
-  for (const x in data.calendar) {
-    cal.push([x, data.calendar[x]]);
+  for (const x in calendar) {
+    cal.push([x, calendar[x]]);
   }
-  const handleSubmit = async (event) => {
-    event.preventDefault();
-  };
 
   return (
     <div>
