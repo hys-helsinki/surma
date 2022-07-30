@@ -3,7 +3,7 @@ import { Player } from "@prisma/client";
 import { PlayerDetails } from "../../components/PlayerDetails";
 import { PlayerContactInfo } from "../../components/PlayerContactInfo";
 import prisma from "../../lib/prisma";
-import { MouseEventHandler, useEffect } from "react";
+import React, { MouseEventHandler, useEffect } from "react";
 import { useState } from "react";
 import { UpdateForm } from "../../components/UpdateForm";
 import { useRouter } from "next/router";
@@ -25,22 +25,33 @@ export default function User(userData: Player): JSX.Element {
       setUpdateStatus(true);
     }
   };
-  const handleSubmit = async (event) => {
+
+  type formData = {
+    address: string;
+    learningInstitution: string;
+    eyeColor: string;
+    hair: string;
+    height: number;
+    glasses: string;
+    other: string;
+    calendar: object;
+  };
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     const dates = ["1.10.", "2.10", "3.10", "4.10"];
     const cal = {};
-    dates.forEach((x, i) => (cal[x] = event.target.dates[i].value));
+    dates.forEach((x, i) => (cal[x] = event.currentTarget.dates[i].value));
     event.preventDefault();
-    const data = {
-      address: event.target.address.value,
-      learningInstitution: event.target.learningInstitution.value,
-      eyeColor: event.target.eyeColor.value,
-      hair: event.target.hair.value,
-      height: parseInt(event.target.height.value),
-      glasses: event.target.glasses.value,
-      other: event.target.other.value,
+    const data: formData = {
+      address: event.currentTarget.address.value,
+      learningInstitution: event.currentTarget.learningInstitution.value,
+      eyeColor: event.currentTarget.eyeColor.value,
+      hair: event.currentTarget.hair.value,
+      height: parseInt(event.currentTarget.height.value),
+      glasses: event.currentTarget.glasses.value,
+      other: event.currentTarget.other.value,
       calendar: cal
     };
-    console.log(data);
+
     fetch(`/api/user/update/${id}`, {
       method: "PUT",
       body: JSON.stringify(data)
