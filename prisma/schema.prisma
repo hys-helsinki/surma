@@ -10,20 +10,32 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+model User {
+  id           String     @id @default(uuid())
+  createdAt    DateTime   @default(now())
+  modifiedAt   DateTime   @default(now())
+  tournament   Tournament @relation(fields: [tournamentId], references: [id])
+  tournamentId String
+  firstName    String
+  lastName     String
+  phone        String
+  email        String
+  Player       Player?
+  Umpire       Umpire?
+}
+
 model Player {
   id                  String       @id @default(uuid())
   createdAt           DateTime     @default(now())
   modifiedAt          DateTime     @default(now())
   lastVisit           DateTime?
+  userId              String       @unique
+  user                User         @relation(fields: [userId], references: [id])
   tournament          Tournament   @relation(fields: [tournamentId], references: [id])
   tournamentId        String
   umpire              Umpire?      @relation(fields: [umpireId], references: [id])
   umpireId            String
   alias               String
-  firstName           String
-  lastName            String
-  phone               String
-  email               String
   address             String
   learningInstitution String?
   eyeColor            String?
@@ -40,12 +52,10 @@ model Umpire {
   id           String     @id @default(uuid())
   createdAt    DateTime   @default(now())
   modifiedAt   DateTime   @default(now())
+  userId       String     @unique
+  user         User       @relation(fields: [userId], references: [id])
   tournament   Tournament @relation(fields: [tournamentId], references: [id])
   tournamentId String
-  firstName    String
-  lastName     String
-  phone        String
-  email        String
   players      Player[]
 }
 
@@ -62,6 +72,7 @@ model Tournament {
   umpires           Umpire[]
   assignments       Assignment[]
   rings             AssignmentRing[]
+  users             User[]
 }
 
 model Assignment {
