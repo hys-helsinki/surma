@@ -14,6 +14,7 @@ model Player {
   id                  String       @id @default(uuid())
   createdAt           DateTime     @default(now())
   modifiedAt          DateTime     @default(now())
+  lastVisit           DateTime?
   tournament          Tournament   @relation(fields: [tournamentId], references: [id])
   tournamentId        String
   umpire              Umpire?      @relation(fields: [umpireId], references: [id])
@@ -49,16 +50,18 @@ model Umpire {
 }
 
 model Tournament {
-  id          String           @id @default(uuid())
-  createdAt   DateTime         @default(now())
-  modifiedAt  DateTime         @default(now())
-  name        String
-  start       DateTime
-  end         DateTime
-  players     Player[]
-  umpires     Umpire[]
-  assignments Assignment[]
-  rings       AssignmentRing[]
+  id                String           @id @default(uuid())
+  createdAt         DateTime         @default(now())
+  modifiedAt        DateTime         @default(now())
+  name              String
+  start             DateTime
+  end               DateTime
+  registrationStart DateTime
+  registrationEnd   DateTime
+  players           Player[]
+  umpires           Umpire[]
+  assignments       Assignment[]
+  rings             AssignmentRing[]
 }
 
 model Assignment {
@@ -79,6 +82,7 @@ model AssignmentRing {
   id           String       @id @default(uuid())
   createdAt    DateTime     @default(now())
   modifiedAt   DateTime     @default(now())
+  name         String?
   tournament   Tournament   @relation(fields: [tournamentId], references: [id])
   tournamentId String
   assignments  Assignment[]
