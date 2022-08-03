@@ -115,6 +115,14 @@ export default function Registration() {
           <button type="submit">Ilmoittaudu</button>
         </Form>
       </Formik>
+      <p>
+        {/* Ajattelin, että tähän loppuun olisi hyvä sijoittaa tällainen pieni disclaimer.
+        Turnaus- ja asesäännöt löytyvät nettisivuilta eli sinne linkki,
+        ja tietosuojaselosteen voisi sijoittaa modal boxiin,
+        jonka voi sulkea ja avata nappia painamalla */}
+        Ilmoittautuessasi turnaukseeen hyväksyt tietosuojaselosteen sekä
+        Helsingin yliopiston salamurhaajien turnaus- ja asesäännöt
+      </p>
     </div>
   );
 }
