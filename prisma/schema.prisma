@@ -70,23 +70,20 @@ model Tournament {
   registrationEnd   DateTime
   players           Player[]
   umpires           Umpire[]
-  assignments       Assignment[]
   rings             AssignmentRing[]
   users             User[]
 }
 
 model Assignment {
-  id           String         @id @default(uuid())
-  createdAt    DateTime       @default(now())
-  modifiedAt   DateTime       @default(now())
-  tournament   Tournament     @relation(fields: [tournamentId], references: [id])
-  tournamentId String
-  ring         AssignmentRing @relation(fields: [ringId], references: [id])
-  ringId       String
-  hunter       Player         @relation(name: "PlayerHasTarget", fields: [hunterId], references: [id])
-  hunterId     String
-  target       Player         @relation(name: "PlayerIsHunted", fields: [targetId], references: [id])
-  targetId     String
+  id         String         @id @default(uuid())
+  createdAt  DateTime       @default(now())
+  modifiedAt DateTime       @default(now())
+  ring       AssignmentRing @relation(fields: [ringId], references: [id])
+  ringId     String
+  hunter     Player         @relation(name: "PlayerHasTarget", fields: [hunterId], references: [id])
+  hunterId   String
+  target     Player         @relation(name: "PlayerIsHunted", fields: [targetId], references: [id])
+  targetId   String
 }
 
 model AssignmentRing {
