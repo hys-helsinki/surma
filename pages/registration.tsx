@@ -26,7 +26,6 @@ export default function Registration() {
           other: ""
         }}
         onSubmit={async (values) => {
-          // same shape as initial values
           const cal = {};
           dates.forEach((x, i) => (cal[x] = values.calendar[i]));
           var data = { ...values, calendar: undefined };
@@ -38,7 +37,8 @@ export default function Registration() {
             .then((response) => response.json())
             .then((d) => {
               router.push({
-                pathname: `/users/${d.id}`
+                pathname: `/users/${d.id}`,
+                query: { registration: "ok" }
               });
             });
         }}
