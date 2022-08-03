@@ -34,7 +34,7 @@ model Player {
   tournament          Tournament   @relation(fields: [tournamentId], references: [id])
   tournamentId        String
   umpire              Umpire?      @relation(fields: [umpireId], references: [id])
-  umpireId            String
+  umpireId            String?
   alias               String
   address             String
   learningInstitution String?
