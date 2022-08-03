@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import { GetStaticProps } from 'next';
-import prisma from '../lib/prisma';
+import prisma from '../../lib/prisma';
 
 export const getStaticProps: GetStaticProps = async () => {
   const objects = await prisma.player.findMany();
@@ -21,7 +21,7 @@ export default function UserList({objects}) {
         {objects.map((o: { id: string; firstName: string; lastName: string; alias: string }) =>
           {
             return <li key={o.id}>
-              <Link href={`/users/${o.id}`}><a>{o.firstName} {o.lastName} ({o.alias})</a></Link>
+              <Link href={`/tournaments/users/${o.id}`}><a>{o.firstName} {o.lastName} ({o.alias})</a></Link>
             </li>;
           }
         )}
