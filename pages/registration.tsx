@@ -1,6 +1,7 @@
 import { useRouter } from "next/router";
-import { Formik, Form, Field } from "formik";
+import { Formik, Form, Field, ErrorMessage } from "formik";
 import React from "react";
+import * as Yup from "yup";
 
 export default function Registration() {
   const router = useRouter();
@@ -25,6 +26,19 @@ export default function Registration() {
           glasses: "",
           other: ""
         }}
+        // näitä voi lisätä tarvittaessa helposti, tein näin alkuun vain näille tärkeimmille validaatioskeemat
+        validationSchema={Yup.object({
+          firstName: Yup.string().required("Pakollinen"),
+          lastName: Yup.string().required("Pakollinen"),
+          alias: Yup.string().required("Pakollinen"),
+          email: Yup.string()
+            .email("Epäkelpo sähköpostiosoite")
+            .required("Pakollinen"),
+          phone: Yup.number()
+            .required("Pakollinen")
+            .positive("Puhelinnumero ei voi sisältää negatiivisia lukuja")
+            .integer("Syötä vain numeroita")
+        })}
         onSubmit={async (values) => {
           const cal = {};
           dates.forEach((x, i) => (cal[x] = values.calendar[i]));
@@ -46,39 +60,51 @@ export default function Registration() {
         <Form>
           <label>Etunimi</label>
           <Field name="firstName" />
+          <ErrorMessage name="firstName" />
 
           <label>Sukunimi</label>
           <Field name="lastName" />
+          <ErrorMessage name="lastName" />
 
           <label>Alias</label>
           <Field name="alias" />
+          <ErrorMessage name="alias" />
 
           <label>Email</label>
           <Field name="email" />
+          <ErrorMessage name="email" />
 
           <label>Puhelinnumero</label>
           <Field name="phone" />
+          <ErrorMessage name="phone" />
 
           <label>Osoite</label>
           <Field name="address" />
+          <ErrorMessage name="address" />
 
           <label>Oppilaitos</label>
           <Field name="learningInstitution" />
+          <ErrorMessage name="learningInstitution" />
 
           <label>Silmät</label>
           <Field name="eyeColor" />
+          <ErrorMessage name="eyeColor" />
 
           <label>Hiukset</label>
           <Field name="hair" />
+          <ErrorMessage name="hair" />
 
           <label>Pituus</label>
           <Field name="height" type="number" />
+          <ErrorMessage name="height" />
 
           <label>Silmälasit</label>
           <Field name="glasses" />
+          <ErrorMessage name="glasses" />
 
           <label>Muu</label>
           <Field name="other" />
+          <ErrorMessage name="other" />
           <h3>Kalenteritiedot</h3>
           {dates.map((d: string, i) => (
             <div key={i}>
