@@ -1,14 +1,27 @@
 import { useRouter } from "next/router";
-import { Formik, Form, Field, ErrorMessage } from "formik";
+import { Formik, Form, Field, ErrorMessage, useField } from "formik";
 import React from "react";
 import * as Yup from "yup";
+
+const TextInput = ({ label, ...props }) => {
+  const [field, meta] = useField(props);
+  return (
+    <>
+      <label htmlFor={props.name}>{label}</label>
+      {meta.touched && meta.error ? (
+        <div className="registration-error">{meta.error}</div>
+      ) : null}
+      <input {...field} {...props} />
+    </>
+  );
+};
 
 export default function Registration() {
   const router = useRouter();
   const dates = ["1.10.", "2.10.", "3.10.", "4.10."];
   return (
-    <div>
-      <h1>Ilmoittautuminen</h1>
+    <div className="registration-form">
+      <h1 className="registration-form-title">Ilmoittautuminen</h1>
       <Formik
         enableReinitialize={true}
         initialValues={{
@@ -58,49 +71,31 @@ export default function Registration() {
         }}
       >
         <Form>
-          <label>Etunimi</label>
-          <Field name="firstName" />
-          <ErrorMessage name="firstName" />
+          <TextInput label="Etunimi" name="firstName" type="text" />
 
-          <label>Sukunimi</label>
-          <Field name="lastName" />
-          <ErrorMessage name="lastName" />
+          <TextInput label="Sukunimi" name="lastName" type="text" />
 
-          <label>Alias</label>
-          <Field name="alias" />
-          <ErrorMessage name="alias" />
+          <TextInput label="Alias" name="alias" type="text" />
 
-          <label>Email</label>
-          <Field name="email" />
-          <ErrorMessage name="email" />
+          <TextInput label="Email" name="email" type="email" />
 
-          <label>Puhelinnumero</label>
-          <Field name="phone" />
-          <ErrorMessage name="phone" />
+          <TextInput label="Puhelinnumero" name="phone" type="text" />
 
-          <label>Osoite</label>
-          <Field name="address" />
-          <ErrorMessage name="address" />
+          <TextInput label="Osoite" name="address" type="text" />
 
-          <label>Oppilaitos</label>
-          <Field name="learningInstitution" />
-          <ErrorMessage name="learningInstitution" />
+          <TextInput
+            label="Oppilaitos"
+            name="learningInstitution"
+            type="text"
+          />
 
-          <label>Silmät</label>
-          <Field name="eyeColor" />
-          <ErrorMessage name="eyeColor" />
+          <TextInput label="Silmät" name="eyeColor" type="text" />
 
-          <label>Hiukset</label>
-          <Field name="hair" />
-          <ErrorMessage name="hair" />
+          <TextInput label="Hiukset" name="hair" type="text" />
 
-          <label>Pituus</label>
-          <Field name="height" type="number" />
-          <ErrorMessage name="height" />
+          <TextInput label="Pituus" name="height" type="number" />
 
-          <label>Silmälasit</label>
-          <Field name="glasses" />
-          <ErrorMessage name="glasses" />
+          <TextInput label="Muu" name="other" type="text" />
 
           <label>Muu</label>
           <Field name="other" />
