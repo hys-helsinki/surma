@@ -20,8 +20,8 @@ model User {
   lastName     String
   phone        String
   email        String
-  Player       Player?
-  Umpire       Umpire?
+  player       Player?
+  umpire       Umpire?
 }
 
 model Player {
