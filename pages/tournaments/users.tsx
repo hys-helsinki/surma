@@ -39,7 +39,7 @@ export default function UserList({ objects }) {
           }) => {
             return (
               <li key={o.id}>
-                <Link href={`/users/${o.id}`}>
+                <Link href={`/tournaments/users/${o.id}`}>
                   <a>
                     {o.firstName} {o.lastName} ({o.player.alias})
                   </a>
