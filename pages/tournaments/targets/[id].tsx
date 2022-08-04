@@ -5,8 +5,6 @@ import prisma from "../../../lib/prisma";
 
 export const getStaticProps: GetStaticProps = async ({ params }) => {
   const playerAsTarget: Prisma.PlayerSelect = {
-    firstName: true,
-    lastName: true,
     address: true,
     learningInstitution: true,
     eyeColor: true,
@@ -14,35 +12,41 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
     height: true,
     glasses: true,
     other: true,
-    calendar: true
+    calendar: true,
+    user: {
+      select: {
+        firstName: true,
+        lastName: true
+      }
+    }
   };
-  const userData = await prisma.player.findUnique({
+  const player = await prisma.player.findUnique({
     where: {
-      id: params.id
+      userId: params.id
     },
     select: playerAsTarget
   });
   return {
-    props: userData
+    props: player
   };
 };
 
-export default function User(userData: Player): JSX.Element {
+export default function Target(player): JSX.Element {
   return (
     <div>
       <h1>
-        {userData.firstName} {userData.lastName}
+        {player.user.firstName} {player.user.lastName}
       </h1>
-      <PlayerDetails data={userData} />
+      <PlayerDetails player={player} />
     </div>
   );
 }
 
 export async function getStaticPaths() {
-  const playerIds = await prisma.player.findMany({ select: { id: true } });
+  const targetIds = await prisma.user.findMany({ select: { id: true } });
   return {
-    paths: playerIds.map((player) => ({
-      params: player
+    paths: targetIds.map((target) => ({
+      params: target
     })),
     fallback: false
   };
