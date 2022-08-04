@@ -1,9 +1,9 @@
-export const PlayerContactInfo = ({data}): JSX.Element => {
-    return (
-        <div>
-            <h2>alias: {data.alias}</h2>
-            <p>puhelinnumero: {data.phone}</p>
-            <p>email: {data.email}</p>
-        </div>
-    )
-}
+export const PlayerContactInfo = ({ user }): JSX.Element => {
+  return (
+    <div>
+      <h2>alias: {user.player.alias}</h2>
+      <p>puhelinnumero: {user.phone}</p>
+      <p>email: {user.email}</p>
+    </div>
+  );
+};
