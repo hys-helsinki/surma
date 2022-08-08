@@ -64,7 +64,7 @@ export default function Registration() {
             .then((response) => response.json())
             .then((d) => {
               router.push({
-                pathname: `/users/${d.id}`,
+                pathname: `/tournaments/users/${d.id}`,
                 query: { registration: "ok" }
               });
             });
@@ -97,9 +97,6 @@ export default function Registration() {
 
           <TextInput label="Muu" name="other" type="text" />
 
-          <label>Muu</label>
-          <Field name="other" />
-          <ErrorMessage name="other" />
           <h3>Kalenteritiedot</h3>
           {dates.map((d: string, i) => (
             <div key={i}>

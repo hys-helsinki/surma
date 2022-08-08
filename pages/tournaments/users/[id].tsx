@@ -49,9 +49,11 @@ export default function UserInfo(user: UserWithPlayer): JSX.Element {
 
   useEffect(() => {
     if (router.query.registration) {
-      setNotification("Ilmoittautuminen onnistui!");
+      setNotification("Ilmoittautuminen onnistui! :)");
       setTimeout(() => {
-        router.replace(`tournaments/users/${id}`, undefined, { shallow: true });
+        router.replace(`/tournaments/users/${id}`, undefined, {
+          shallow: true
+        });
         setNotification("");
       }, 4000);
     }
