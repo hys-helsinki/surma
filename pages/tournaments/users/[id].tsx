@@ -1,14 +1,50 @@
 import { GetStaticProps, GetStaticPaths } from "next";
-import { Player } from "@prisma/client";
-import { PlayerDetails } from "../../components/PlayerDetails";
-import { PlayerContactInfo } from "../../components/PlayerContactInfo";
-import prisma from "../../lib/prisma";
+import { Prisma } from "@prisma/client";
+import { PlayerDetails } from "../../../components/PlayerDetails";
+import { PlayerContactInfo } from "../../../components/PlayerContactInfo";
+import prisma from "../../../lib/prisma";
 import React, { MouseEventHandler, useEffect } from "react";
 import { useState } from "react";
-import { UpdateForm } from "../../components/UpdateForm";
+import { UpdateForm } from "../../../components/UpdateForm";
 import { useRouter } from "next/router";
 
-export default function User(userData: Player): JSX.Element {
+export const getStaticProps: GetStaticProps = async ({ params }) => {
+  const userData = await prisma.user.findUnique({
+    where: {
+      id: params.id
+    },
+    select: {
+      firstName: true,
+      lastName: true,
+      phone: true,
+      email: true,
+      player: {
+        select: {
+          alias: true,
+          address: true,
+          learningInstitution: true,
+          eyeColor: true,
+          hair: true,
+          height: true,
+          glasses: true,
+          other: true,
+          calendar: true
+        }
+      }
+    }
+  });
+  return {
+    props: userData
+  };
+};
+
+type UserWithPlayer = Prisma.UserGetPayload<{
+  include: {
+    player: true;
+  };
+}>;
+
+export default function UserInfo(user: UserWithPlayer): JSX.Element {
   const router = useRouter();
 
   useEffect(() => {
@@ -25,7 +61,6 @@ export default function User(userData: Player): JSX.Element {
       setUpdateStatus(true);
     }
   };
-
   type formData = {
     address: string;
     learningInstitution: string;
@@ -63,21 +98,21 @@ export default function User(userData: Player): JSX.Element {
       {updateStatus ? (
         <div>
           <h1>
-            {userData.firstName} {userData.lastName}
+            {user.firstName} {user.lastName}
           </h1>
-          <PlayerContactInfo data={userData} />
-          <PlayerDetails data={userData} />
+          <PlayerContactInfo data={user} />
+          <PlayerDetails data={user} />
         </div>
       ) : (
         <div>
           <h1>
-            {userData.firstName} {userData.lastName}
+            {user.firstName} {user.lastName}
           </h1>
-          <PlayerContactInfo data={userData} />
+          <PlayerContactInfo data={user} />
           <UpdateForm
-            data={userData}
+            data={user}
             handleSubmit={handleSubmit}
-            calendar={userData.calendar}
+            calendar={user.player.calendar}
           />
         </div>
       )}
@@ -91,22 +126,11 @@ export default function User(userData: Player): JSX.Element {
 }
 
 export const getStaticPaths: GetStaticPaths = async () => {
-  const playerIds = await prisma.player.findMany({ select: { id: true } });
+  const userIds = await prisma.user.findMany({ select: { id: true } });
   return {
-    paths: playerIds.map((player) => ({
+    paths: userIds.map((player) => ({
       params: player
     })),
     fallback: false
-  };
-};
-
-export const getStaticProps: GetStaticProps = async ({ params }) => {
-  const userData = await prisma.player.findUnique({
-    where: {
-      id: params.id
-    }
-  });
-  return {
-    props: userData
   };
 };
