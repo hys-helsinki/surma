@@ -100,17 +100,17 @@ export default function UserInfo(user: UserWithPlayer): JSX.Element {
           <h1>
             {user.firstName} {user.lastName}
           </h1>
-          <PlayerContactInfo data={user} />
-          <PlayerDetails data={user} />
+          <PlayerContactInfo user={user} />
+          <PlayerDetails player={user.player} />
         </div>
       ) : (
         <div>
           <h1>
             {user.firstName} {user.lastName}
           </h1>
-          <PlayerContactInfo data={user} />
+          <PlayerContactInfo user={user} />
           <UpdateForm
-            data={user}
+            data={user.player}
             handleSubmit={handleSubmit}
             calendar={user.player.calendar}
           />

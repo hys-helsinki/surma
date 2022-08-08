@@ -10,7 +10,7 @@ export default async function update(
     console.log(playerId);
     const playerData = JSON.parse(req.body);
     const result = await prisma.player.update({
-      where: { id: playerId },
+      where: { userId: playerId },
       data: playerData
     });
     res.status(204).end();
