@@ -19,7 +19,9 @@
     "@types/react": "^18.0.15",
     "eslint": "8.18.0",
     "eslint-config-next": "12.2.0",
+    "formik": "^2.2.9",
     "prettier": "2.7.1",
-    "prisma": "^4.0.0"
+    "prisma": "^4.0.0",
+    "yup": "^0.32.11"
   }
 }

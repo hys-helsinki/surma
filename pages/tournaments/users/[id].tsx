@@ -3,6 +3,8 @@ import { Prisma } from "@prisma/client";
 import { PlayerDetails } from "../../../components/PlayerDetails";
 import { PlayerContactInfo } from "../../../components/PlayerContactInfo";
 import prisma from "../../../lib/prisma";
+import { useRouter } from "next/router";
+import { useEffect, useState } from "react";
 
 export const getStaticProps: GetStaticProps = async ({ params }) => {
   const userData = await prisma.user.findUnique({
@@ -41,8 +43,26 @@ type UserWithPlayer = Prisma.UserGetPayload<{
 }>;
 
 export default function UserInfo(user: UserWithPlayer): JSX.Element {
+  const [notification, setNotification] = useState("");
+  const router = useRouter();
+  const id = router.query.id;
+
+  useEffect(() => {
+    if (router.query.registration) {
+      setNotification("Ilmoittautuminen onnistui! :)");
+      setTimeout(() => {
+        router.replace(`/tournaments/users/${id}`, undefined, {
+          shallow: true
+        });
+        setNotification("");
+      }, 4000);
+    }
+  }, []);
   return (
     <div>
+      {notification ? (
+        <p className="notification">Ilmoittautuminen onnistui!</p>
+      ) : null}
       <h1>
         {user.firstName} {user.lastName}
       </h1>
