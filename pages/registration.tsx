@@ -1,125 +1,142 @@
-import prisma from "../lib/prisma";
 import { useRouter } from "next/router";
+import { Formik, Form, Field, useField } from "formik";
+import React from "react";
+import * as Yup from "yup";
+import { GetStaticProps } from "next";
+import prisma from "../lib/prisma";
 
-export default function Registration() {
-  // Ilmolomake on dynaaminen eli siihen tulee jokaiselle turnauksen päivälle oma aikatauluteksti
-  const router = useRouter();
-  const dates = ["1.10.", "2.10", "3.10", "4.10"];
-  const handleSubmit = async (event) => {
-    event.preventDefault();
-    const cal = {};
-    dates.forEach((x, i) => (cal[x] = event.target.dates[i].value));
-    const data = {
-      firstName: event.target.firstName.value,
-      lastName: event.target.lastName.value,
-      alias: event.target.alias.value,
-      email: event.target.email.value,
-      phone: event.target.phone.value,
-      address: event.target.address.value,
-      learningInstitution: event.target.learningInstitution.value,
-      eyeColor: event.target.eyeColor.value,
-      hair: event.target.hair.value,
-      height: parseInt(event.target.height.value),
-      glasses: event.target.glasses.value,
-      other: event.target.other.value,
-      calendar: cal,
-    };
-    fetch("/api/user/create", {
-      method: "POST",
-      body: JSON.stringify(data),
-    })
-      .then((response) => response.json())
-      .then((d) => {
-        router.push(`/users/${d.id}`);
-      });
+export const getStaticProps: GetStaticProps = async ({ params }) => {
+  let tournament = await prisma.tournament.findFirst({
+    select: {
+      name: true,
+      start: true,
+      end: true,
+      registrationStart: true,
+      registrationEnd: true
+    }
+  });
+  tournament = JSON.parse(JSON.stringify(tournament));
+  return {
+    props: { tournament }
   };
-
+};
+const TextInput = ({ label, ...props }) => {
+  const [field, meta] = useField(props);
   return (
-    <div>
-      <form onSubmit={handleSubmit}>
-        <h2>Ilmoittautumislomake</h2>
-        <div>
-          <label htmlFor="firstName">Etunimi:</label>
-          <input type="text" id="firstName" name="firstName" />
-        </div>
-        <div>
-          <label htmlFor="lastName">Sukunimi:</label>
-          <input type="text" id="lastName" name="lastName" />
-        </div>
-        <div>
-          <label htmlFor="alias">Alias:</label>
-          <input type="text" id="alias" name="alias" />
-        </div>
-        <div>
-          <label htmlFor="email">Sähköpostiosoite:</label>
-          <input type="text" id="email" name="email" />
-        </div>
-        <div>
-          <label htmlFor="phone">
-            Puhelinnumero:
-            <input type="text" id="phone" name="phone" />
-          </label>
-        </div>
-        <div>
-          <label htmlFor="address">
-            Kotiosoite:
-            <input type="text" id="address" name="address" />
-          </label>
-        </div>
-        <div>
-          <label htmlFor="learningInstitution">
-            Oppilaitos:
-            <input
-              type="text"
-              id="learningInstitution"
-              name="learningInstitution"
-            />
-          </label>
-        </div>
-        <div>
-          <label htmlFor="eyeColor">
-            Silmät:
-            <input type="text" id="eyeColor" name="eyeColor" />
-          </label>
-        </div>
-        <div>
-          <label htmlFor="hair">
-            Hiukset:
-            <input type="text" id="hair" name="hair" />
-          </label>
-        </div>
-        <div>
-          <label htmlFor="height">
-            Pituus:
-            <input type="text" id="height" name="height" />
-          </label>
-        </div>
-        <div>
-          <label htmlFor="glasses">
-            Silmälasit:
-            <input type="text" id="glasses" name="glasses" />
-          </label>
-        </div>
-        <div>
-          <label htmlFor="other">
-            Muu:
-            <input type="text" id="other" name="other" />
-          </label>
-        </div>
-        <div>
-          <p>Kalenteritiedot</p>
+    <>
+      <label htmlFor={props.name}>{label}</label>
+      {meta.touched && meta.error ? (
+        <div className="registration-error">{meta.error}</div>
+      ) : null}
+      <input {...field} {...props} />
+    </>
+  );
+};
+
+export default function Registration({ tournament }) {
+  const start = new Date(tournament.start);
+  const end = new Date(tournament.end);
+  let dates: Array<any> = [];
+  dates.push(`${start.getDate()}.${end.getMonth() + 1}.`);
+  let loopDay = start;
+  while (loopDay < end) {
+    loopDay.setDate(loopDay.getDate() + 1);
+    dates.push(`${loopDay.getDate()}.${loopDay.getMonth() + 1}.`);
+  }
+
+  const router = useRouter();
+  return (
+    <div className="registration-form">
+      <h1 className="registration-form-title">Ilmoittautuminen</h1>
+      <Formik
+        enableReinitialize={true}
+        initialValues={{
+          calendar: [...new Array(dates.length).fill("")],
+          firstName: "",
+          lastName: "",
+          alias: "",
+          email: "",
+          phone: "",
+          address: "",
+          learningInstitution: "",
+          eyeColor: "",
+          hair: "",
+          height: "",
+          glasses: "",
+          other: ""
+        }}
+        validationSchema={Yup.object({
+          firstName: Yup.string().required("Pakollinen"),
+          lastName: Yup.string().required("Pakollinen"),
+          alias: Yup.string().required("Pakollinen"),
+          email: Yup.string()
+            .email("Epäkelpo sähköpostiosoite")
+            .required("Pakollinen"),
+          phone: Yup.number()
+            .required("Pakollinen")
+            .positive("Puhelinnumero ei voi sisältää negatiivisia lukuja")
+            .integer("Syötä vain numeroita")
+        })}
+        onSubmit={async (values) => {
+          const cal = {};
+          dates.forEach((x, i) => (cal[x] = values.calendar[i]));
+          var data = { ...values, calendar: undefined };
+          data["calendar"] = cal;
+          fetch("/api/user/create", {
+            method: "POST",
+            body: JSON.stringify(data)
+          })
+            .then((response) => response.json())
+            .then((d) => {
+              router.push({
+                pathname: `/tournaments/users/${d.id}`,
+                query: { registration: "ok" }
+              });
+            });
+        }}
+      >
+        <Form>
+          <TextInput label="Etunimi" name="firstName" type="text" />
+
+          <TextInput label="Sukunimi" name="lastName" type="text" />
+
+          <TextInput label="Alias" name="alias" type="text" />
+
+          <TextInput label="Email" name="email" type="email" />
+
+          <TextInput label="Puhelinnumero" name="phone" type="text" />
+
+          <TextInput label="Osoite" name="address" type="text" />
+
+          <TextInput
+            label="Oppilaitos"
+            name="learningInstitution"
+            type="text"
+          />
+
+          <TextInput label="Silmät" name="eyeColor" type="text" />
+
+          <TextInput label="Hiukset" name="hair" type="text" />
+
+          <TextInput label="Pituus" name="height" type="number" />
+
+          <TextInput label="Muu" name="other" type="text" />
+
+          <h3>Kalenteritiedot</h3>
           {dates.map((d: string, i) => (
             <div key={i}>
-              <label htmlFor={d}>
-                {d}:
-                <textarea id={d} name="dates" />
-              </label>
+              <label>{d}</label>
+              <Field name={`calendar[${i}]`} as="textarea" />
             </div>
           ))}
-        </div>
-
-        <button type="submit">Ilmoittaudu</button>
-      </form>
+          <button type="submit">Ilmoittaudu</button>
+        </Form>
+      </Formik>
+      <p>
+        {/* TODO linkki sääntöihin ja tietosuojaseloste näkyviin (sitten kun se on joskus valmis)*/}
+        Ilmoittautuessasi turnaukseeen hyväksyt tietosuojaselosteen sekä
+        Helsingin yliopiston salamurhaajien turnaus- ja asesäännöt
+      </p>
     </div>
   );
 }

@@ -45,20 +45,29 @@ type UserWithPlayer = Prisma.UserGetPayload<{
 }>;
 
 export default function UserInfo(user: UserWithPlayer): JSX.Element {
+  const [notification, setNotification] = useState("");
+  const [isUpdated, setIsUpdated] = useState(true);
   const router = useRouter();
+  const { id } = router.query;
 
   useEffect(() => {
-    setUpdateStatus(true);
+    setIsUpdated(true);
+    if (router.query.registration) {
+      setNotification("Ilmoittautuminen onnistui! :)");
+      setTimeout(() => {
+        router.replace(`/tournaments/users/${id}`, undefined, {
+          shallow: true
+        });
+        setNotification("");
+      }, 4000);
+    }
   }, []);
 
-  const { id } = router.query;
-  const [updateStatus, setUpdateStatus] = useState(true);
-
   const handleUpdateStatusClick: MouseEventHandler<HTMLButtonElement> = () => {
-    if (updateStatus === true) {
-      setUpdateStatus(false);
+    if (isUpdated === true) {
+      setIsUpdated(false);
     } else {
-      setUpdateStatus(true);
+      setIsUpdated(true);
     }
   };
   type formData = {
@@ -95,7 +104,10 @@ export default function UserInfo(user: UserWithPlayer): JSX.Element {
 
   return (
     <div>
-      {updateStatus ? (
+      {notification ? (
+        <p className="notification">Ilmoittautuminen onnistui!</p>
+      ) : null}
+      {isUpdated ? (
         <div>
           <h1>
             {user.firstName} {user.lastName}
@@ -118,7 +130,7 @@ export default function UserInfo(user: UserWithPlayer): JSX.Element {
       )}
       <div>
         <button onClick={handleUpdateStatusClick}>
-          {updateStatus ? "muokkaa tietoja" : "peruuta"}
+          {isUpdated ? "muokkaa tietoja" : "peruuta"}
         </button>
       </div>
     </div>
