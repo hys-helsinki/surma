@@ -10,7 +10,6 @@ export default function CreateTournament() {
       registrationTimeStart: event.target.registration_time_start.value,
       registrationTimeEnd: event.target.registration_time_end.value
     };
-    console.log(data);
   };
   return (
     <div>

@@ -1,8 +1,25 @@
 import { useRouter } from "next/router";
-import { Formik, Form, Field, ErrorMessage, useField } from "formik";
+import { Formik, Form, Field, useField } from "formik";
 import React from "react";
 import * as Yup from "yup";
+import { GetStaticProps } from "next";
+import prisma from "../lib/prisma";
 
+export const getStaticProps: GetStaticProps = async ({ params }) => {
+  let tournament = await prisma.tournament.findFirst({
+    select: {
+      name: true,
+      start: true,
+      end: true,
+      registrationStart: true,
+      registrationEnd: true
+    }
+  });
+  tournament = JSON.parse(JSON.stringify(tournament));
+  return {
+    props: { tournament }
+  };
+};
 const TextInput = ({ label, ...props }) => {
   const [field, meta] = useField(props);
   return (
@@ -16,9 +33,18 @@ const TextInput = ({ label, ...props }) => {
   );
 };
 
-export default function Registration() {
+export default function Registration({ tournament }) {
+  const start = new Date(tournament.start);
+  const end = new Date(tournament.end);
+  let dates: Array<any> = [];
+  dates.push(`${start.getDate()}.${end.getMonth() + 1}.`);
+  let loopDay = start;
+  while (loopDay < end) {
+    loopDay.setDate(loopDay.getDate() + 1);
+    dates.push(`${loopDay.getDate()}.${loopDay.getMonth() + 1}.`);
+  }
+
   const router = useRouter();
-  const dates = ["1.10.", "2.10.", "3.10.", "4.10."];
   return (
     <div className="registration-form">
       <h1 className="registration-form-title">Ilmoittautuminen</h1>
@@ -39,7 +65,6 @@ export default function Registration() {
           glasses: "",
           other: ""
         }}
-        // näitä voi lisätä tarvittaessa helposti, tein näin alkuun vain näille tärkeimmille validaatioskeemat
         validationSchema={Yup.object({
           firstName: Yup.string().required("Pakollinen"),
           lastName: Yup.string().required("Pakollinen"),
@@ -108,10 +133,7 @@ export default function Registration() {
         </Form>
       </Formik>
       <p>
-        {/* Ajattelin, että tähän loppuun olisi hyvä sijoittaa tällainen pieni disclaimer.
-        Turnaus- ja asesäännöt löytyvät nettisivuilta eli sinne linkki,
-        ja tietosuojaselosteen voisi sijoittaa modal boxiin,
-        jonka voi sulkea ja avata nappia painamalla */}
+        {/* TODO linkki sääntöihin ja tietosuojaseloste näkyviin (sitten kun se on joskus valmis)*/}
         Ilmoittautuessasi turnaukseeen hyväksyt tietosuojaselosteen sekä
         Helsingin yliopiston salamurhaajien turnaus- ja asesäännöt
       </p>
