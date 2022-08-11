@@ -24,3 +24,7 @@ input, label {
 textarea, label {
   display: block;
 }
+
+select {
+  margin: 7px
+}
