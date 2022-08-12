@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@aws-sdk/client-ses": "^3.145.0",
     "@cloudinary/react": "^1.4.2",
     "@cloudinary/url-gen": "^1.8.6",
     "@prisma/client": "^4.0.0",
