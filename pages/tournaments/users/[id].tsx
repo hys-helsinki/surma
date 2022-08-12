@@ -9,7 +9,17 @@ import { UpdateForm } from "../../../components/UpdateForm";
 import { useRouter } from "next/router";
 
 export const getStaticProps: GetStaticProps = async ({ params }) => {
-  const userData = await prisma.user.findUnique({
+  let tournament = await prisma.tournament.findFirst({
+    select: {
+      name: true,
+      start: true,
+      end: true,
+      registrationStart: true,
+      registrationEnd: true
+    }
+  });
+  tournament = JSON.parse(JSON.stringify(tournament));
+  const user = await prisma.user.findUnique({
     where: {
       id: params.id
     },
@@ -34,7 +44,7 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
     }
   });
   return {
-    props: userData
+    props: { user, tournament }
   };
 };
 
@@ -44,7 +54,7 @@ type UserWithPlayer = Prisma.UserGetPayload<{
   };
 }>;
 
-export default function UserInfo(user: UserWithPlayer): JSX.Element {
+export default function UserInfo({ user, tournament }): JSX.Element {
   const [notification, setNotification] = useState("");
   const [isUpdated, setIsUpdated] = useState(true);
   const router = useRouter();
@@ -62,6 +72,16 @@ export default function UserInfo(user: UserWithPlayer): JSX.Element {
       }, 4000);
     }
   }, []);
+
+  const start = new Date(tournament.start);
+  const end = new Date(tournament.end);
+  let dates: Array<any> = [];
+  dates.push(`${start.getDate()}.${end.getMonth() + 1}.`);
+  let loopDay = start;
+  while (loopDay < end) {
+    loopDay.setDate(loopDay.getDate() + 1);
+    dates.push(`${loopDay.getDate()}.${loopDay.getMonth() + 1}.`);
+  }
 
   const handleUpdateStatusClick: MouseEventHandler<HTMLButtonElement> = () => {
     if (isUpdated === true) {
@@ -81,7 +101,6 @@ export default function UserInfo(user: UserWithPlayer): JSX.Element {
     calendar: object;
   };
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
-    const dates = ["1.10.", "2.10", "3.10", "4.10"];
     const cal = {};
     dates.forEach((x, i) => (cal[x] = event.currentTarget.dates[i].value));
     event.preventDefault();

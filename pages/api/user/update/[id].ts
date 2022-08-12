@@ -7,7 +7,6 @@ export default async function update(
 ) {
   if (req.method === "PUT") {
     const playerId = req.query.id;
-    console.log(playerId);
     const playerData = JSON.parse(req.body);
     const result = await prisma.player.update({
       where: { userId: playerId },
