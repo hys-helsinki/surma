@@ -1,5 +1,5 @@
 import { GetStaticProps, GetStaticPaths } from "next";
-import { Prisma } from "@prisma/client";
+import { Prisma, Tournament } from "@prisma/client";
 import { PlayerDetails } from "../../../components/PlayerDetails";
 import { PlayerContactInfo } from "../../../components/PlayerContactInfo";
 import prisma from "../../../lib/prisma";
@@ -18,7 +18,7 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
       registrationEnd: true
     }
   });
-  tournament = JSON.parse(JSON.stringify(tournament));
+  tournament = JSON.parse(JSON.stringify(tournament)); // avoid Next.js serialization error
   const user = await prisma.user.findUnique({
     where: {
       id: params.id
@@ -54,7 +54,13 @@ type UserWithPlayer = Prisma.UserGetPayload<{
   };
 }>;
 
-export default function UserInfo({ user, tournament }): JSX.Element {
+export default function UserInfo({
+  user,
+  tournament
+}: {
+  user: UserWithPlayer;
+  tournament: Tournament;
+}): JSX.Element {
   const [notification, setNotification] = useState("");
   const [isUpdated, setIsUpdated] = useState(true);
   const router = useRouter();

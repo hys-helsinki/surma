@@ -5,7 +5,7 @@ export const UpdateForm = ({ data, handleSubmit, calendar }): JSX.Element => {
   }
 
   return (
-    <div>
+    <div className="updateform">
       <form onSubmit={handleSubmit}>
         <div>
           <label htmlFor="address">
