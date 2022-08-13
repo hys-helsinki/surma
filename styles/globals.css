@@ -83,3 +83,7 @@ button[type=submit]:hover {
   background-color: #e94a4a;
 }
 
+.updateform {
+  width: 50%;
+}
+
