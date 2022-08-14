@@ -1,15 +1,43 @@
 export default function CreateTournament() {
   const handleSubmit = async (event) => {
     event.preventDefault();
+
+    const [s_year, s_month, s_day] =
+      event.target.registration_start.value.split("-");
+    const [s_hours, s_minutes] =
+      event.target.registration_time_start.value.split(":");
+    const [e_year, e_month, e_day] =
+      event.target.registration_end.value.split("-");
+    const [e_hours, e_minutes] =
+      event.target.registration_time_end.value.split(":");
+
+    const startDate = new Date(
+      +s_year,
+      +s_month - 1,
+      +s_day,
+      +s_hours,
+      +s_minutes
+    );
+    const endDate = new Date(
+      +e_year,
+      +e_month - 1,
+      +e_day,
+      +e_hours,
+      +e_minutes
+    );
+
     const data = {
       name: event.target.tournament_label.value,
-      start: event.target.start.value,
-      end: event.target.end.value,
-      registrationStart: event.target.registration_start.value,
-      registrationEnd: event.target.registration_end.value,
-      registrationTimeStart: event.target.registration_time_start.value,
-      registrationTimeEnd: event.target.registration_time_end.value
+      start: new Date(event.target.start.value),
+      end: new Date(event.target.end.value),
+      registrationStart: startDate,
+      registrationEnd: endDate
     };
+
+    fetch("/api/tournament/create", {
+      method: "POST",
+      body: JSON.stringify(data)
+    });
   };
   return (
     <div>
