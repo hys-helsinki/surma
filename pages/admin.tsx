@@ -1,5 +1,6 @@
 import { GetStaticProps } from "next";
 import prisma from "../lib/prisma";
+import { useRouter } from "next/router";
 
 export const getStaticProps: GetStaticProps = async () => {
   let tournaments = await prisma.tournament.findMany({
@@ -21,8 +22,15 @@ export const getStaticProps: GetStaticProps = async () => {
 };
 
 export default function Admin({ tournaments }) {
+  const router = useRouter();
+  const switchPage = () => {
+    router.push("/admin/create");
+  };
   return (
     <div>
+      <div>
+        <button onClick={switchPage}>Lisää turnaus</button>
+      </div>
       {tournaments.map((tournament) => (
         <div key={tournament.id}>
           <p>{tournament.name}</p>
