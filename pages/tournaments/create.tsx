@@ -1,4 +1,7 @@
+import { useRouter } from "next/router";
+
 export default function CreateTournament() {
+  const router = useRouter();
   const handleSubmit = async (event) => {
     event.preventDefault();
 
@@ -37,6 +40,8 @@ export default function CreateTournament() {
     fetch("/api/tournament/create", {
       method: "POST",
       body: JSON.stringify(data)
+    }).then((response) => {
+      router.push({ pathname: "/admin" });
     });
   };
   return (
