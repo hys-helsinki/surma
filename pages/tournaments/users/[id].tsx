@@ -1,5 +1,5 @@
 import { GetStaticProps, GetStaticPaths } from "next";
-import { Prisma, Tournament } from "@prisma/client";
+import { Prisma } from "@prisma/client";
 import { PlayerDetails } from "../../../components/PlayerDetails";
 import { PlayerContactInfo } from "../../../components/PlayerContactInfo";
 import prisma from "../../../lib/prisma";
@@ -9,17 +9,7 @@ import { UpdateForm } from "../../../components/UpdateForm";
 import { useRouter } from "next/router";
 
 export const getStaticProps: GetStaticProps = async ({ params }) => {
-  let tournament = await prisma.tournament.findFirst({
-    select: {
-      name: true,
-      start: true,
-      end: true,
-      registrationStart: true,
-      registrationEnd: true
-    }
-  });
-  tournament = JSON.parse(JSON.stringify(tournament)); // avoid Next.js serialization error
-  const user = await prisma.user.findUnique({
+  let user = await prisma.user.findUnique({
     where: {
       id: params.id
     },
@@ -40,27 +30,35 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
           other: true,
           calendar: true
         }
+      },
+      tournament: {
+        select: {
+          id: true,
+          start: true,
+          end: true
+        }
       }
     }
   });
+  user = JSON.parse(JSON.stringify(user));
   return {
-    props: { user, tournament }
+    props: { user }
   };
 };
 
 type UserWithPlayer = Prisma.UserGetPayload<{
   include: {
     player: true;
+    tournament: true;
   };
 }>;
 
 export default function UserInfo({
-  user,
-  tournament
+  user
 }: {
   user: UserWithPlayer;
-  tournament: Tournament;
 }): JSX.Element {
+  console.log(user);
   const [notification, setNotification] = useState("");
   const [isUpdated, setIsUpdated] = useState(true);
   const router = useRouter();
@@ -79,15 +77,16 @@ export default function UserInfo({
     }
   }, []);
 
-  const start = new Date(tournament.start);
-  const end = new Date(tournament.end);
+  const start = new Date(user.tournament.start);
+  const end = new Date(user.tournament.end);
   let dates: Array<any> = [];
-  dates.push(`${start.getDate()}.${end.getMonth() + 1}.`);
+  dates.push(`${start.getDate()}.${start.getMonth() + 1}.`);
   let loopDay = start;
   while (loopDay < end) {
     loopDay.setDate(loopDay.getDate() + 1);
     dates.push(`${loopDay.getDate()}.${loopDay.getMonth() + 1}.`);
   }
+  console.log(dates);
 
   const handleUpdateStatusClick: MouseEventHandler<HTMLButtonElement> = () => {
     if (isUpdated === true) {

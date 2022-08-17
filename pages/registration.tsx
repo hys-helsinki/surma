@@ -19,7 +19,7 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
   };
 };
 
-export default function Touranments({ tournaments }) {
+export default function Tournaments({ tournaments }) {
   return (
     <div>
       <h2>Ilmoittautuminen avoinna</h2>
