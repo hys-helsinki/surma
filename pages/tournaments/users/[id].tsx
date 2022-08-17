@@ -21,7 +21,7 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
   tournament = JSON.parse(JSON.stringify(tournament)); // avoid Next.js serialization error
   const user = await prisma.user.findUnique({
     where: {
-      id: params.id
+      id: params.id as string
     },
     select: {
       firstName: true,
