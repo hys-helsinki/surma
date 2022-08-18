@@ -69,7 +69,7 @@ export default function Registration({ tournament }) {
             learningInstitution: "",
             eyeColor: "",
             hair: "",
-            height: "",
+            height: 0,
             glasses: "",
             other: ""
           }}
@@ -84,8 +84,7 @@ export default function Registration({ tournament }) {
               .required("Pakollinen")
               .positive("Puhelinnumero ei voi sisältää negatiivisia lukuja")
               .integer("Syötä vain numeroita"),
-            height: Yup.number().required("Pakollinen") // required because the form throws error if the field is empty
-            // probably because the field must include a number and an empty field is intepreted as a string
+            height: Yup.number().positive("Pituus ei voi olla negatiivinen")
           })}
           onSubmit={async (values) => {
             const cal = {};

@@ -1,7 +1,4 @@
-import { useRouter } from "next/router";
-import { Formik, Form, Field, useField } from "formik";
 import React from "react";
-import * as Yup from "yup";
 import { GetStaticProps } from "next";
 import prisma from "../lib/prisma";
 import Link from "next/link";
