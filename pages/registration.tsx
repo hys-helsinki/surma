@@ -21,7 +21,7 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
   };
 };
 const TextInput = ({ label, ...props }) => {
-  const [field, meta] = useField(props);
+  const [field, meta] = useField(props.name);
   return (
     <>
       <label htmlFor={props.name}>{label}</label>
