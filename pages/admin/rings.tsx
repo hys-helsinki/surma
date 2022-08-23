@@ -1,9 +1,10 @@
 import { GetStaticProps } from "next";
+import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
-import prisma from "../../../lib/prisma";
+import prisma from "../../lib/prisma";
 
 export const getStaticProps: GetStaticProps = async () => {
-  const players = await prisma.player.findMany({
+  const allPlayers = await prisma.player.findMany({
     select: {
       user: {
         select: {
@@ -13,7 +14,8 @@ export const getStaticProps: GetStaticProps = async () => {
       },
       id: true,
       targets: true,
-      hunters: true
+      hunters: true,
+      tournamentId: true
     }
   });
   const rings = await prisma.assignmentRing.findMany({
@@ -24,13 +26,17 @@ export const getStaticProps: GetStaticProps = async () => {
     }
   });
   return {
-    props: { players, rings }
+    props: { allPlayers, rings }
   };
 };
 
-export default function Rings({ players, rings }) {
+export default function Rings({ allPlayers, rings }) {
   const [allRings, setRings] = useState(rings);
   const [newRing, setNewRing] = useState([]);
+  const router = useRouter();
+  const players = allPlayers.filter(
+    (player) => player.tournamentId === router.query.tournamentId
+  );
 
   useEffect(() => {
     console.log(newRing);
@@ -38,14 +44,28 @@ export default function Rings({ players, rings }) {
 
   const createRing = async (event) => {
     event.preventDefault();
-    console.log("valmis rinki", newRing);
+    const readyRing = {
+      assignments: newRing,
+      name: event.target.ringName.value,
+      tournament: router.query.tournamentId
+    };
+    console.log("bäkkäriin lähtevä data", readyRing);
+    fetch("/api/tournament/rings", {
+      method: "POST",
+      body: JSON.stringify(readyRing)
+    });
   };
   const handleRingChange = (id, event) => {
     const assignment = newRing.find((ring) => ring.hunter === id);
+    const names = event.target.value.split(" ");
+    const x = players.find(
+      (p) => p.user.firstName === names[0] && p.user.lastName === names[1]
+    );
+    console.log(x);
     if (!assignment) {
-      setNewRing(newRing.concat({ hunter: id, target: event.target.value }));
+      setNewRing(newRing.concat({ hunter: id, target: x.id }));
     } else {
-      const changedAssignment = { ...assignment, target: event.target.value };
+      const changedAssignment = { ...assignment, target: x.id };
       setNewRing(newRing.map((a) => (a.hunter !== id ? a : changedAssignment)));
     }
   };
@@ -54,6 +74,10 @@ export default function Rings({ players, rings }) {
       <h2>Ringit</h2>
       <p>Rinkejä luotu: {allRings.length == 0 ? "0" : allRings.length}</p>
       <form onSubmit={createRing}>
+        <label>
+          Ringin nimi: <input type="text" name="ringName" />
+        </label>
+
         {players.map((player) => (
           <div key={player.id}>
             <Ring
