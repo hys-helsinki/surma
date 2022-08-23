@@ -22,7 +22,7 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
   };
   const player = await prisma.player.findUnique({
     where: {
-      userId: params.id
+      userId: params.id as string
     },
     select: playerAsTarget
   });
