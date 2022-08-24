@@ -12,8 +12,8 @@ datasource db {
 
 model User {
   id           String     @id @default(uuid())
-  createdAt    DateTime   @default(now())
-  modifiedAt   DateTime   @default(now())
+  createdAt    DateTime   @default(now()) @db.Timestamptz(3)
+  modifiedAt   DateTime   @default(now()) @db.Timestamptz(3)
   tournament   Tournament @relation(fields: [tournamentId], references: [id])
   tournamentId String
   firstName    String
@@ -26,9 +26,9 @@ model User {
 
 model Player {
   id                  String       @id @default(uuid())
-  createdAt           DateTime     @default(now())
-  modifiedAt          DateTime     @default(now())
-  lastVisit           DateTime?
+  createdAt           DateTime     @default(now()) @db.Timestamptz(3)
+  modifiedAt          DateTime     @default(now()) @db.Timestamptz(3)
+  lastVisit           DateTime?    @db.Timestamptz(3)
   userId              String       @unique
   user                User         @relation(fields: [userId], references: [id])
   tournament          Tournament   @relation(fields: [tournamentId], references: [id])
@@ -61,13 +61,13 @@ model Umpire {
 
 model Tournament {
   id                String           @id @default(uuid())
-  createdAt         DateTime         @default(now())
-  modifiedAt        DateTime         @default(now())
+  createdAt         DateTime         @default(now()) @db.Timestamptz(3)
+  modifiedAt        DateTime         @default(now()) @db.Timestamptz(3)
   name              String
-  start             DateTime
-  end               DateTime
-  registrationStart DateTime
-  registrationEnd   DateTime
+  start             DateTime         @db.Timestamptz(3)
+  end               DateTime         @db.Timestamptz(3)
+  registrationStart DateTime         @db.Timestamptz(3)
+  registrationEnd   DateTime         @db.Timestamptz(3)
   players           Player[]
   umpires           Umpire[]
   rings             AssignmentRing[]
@@ -76,8 +76,8 @@ model Tournament {
 
 model Assignment {
   id         String         @id @default(uuid())
-  createdAt  DateTime       @default(now())
-  modifiedAt DateTime       @default(now())
+  createdAt  DateTime       @default(now()) @db.Timestamptz(3)
+  modifiedAt DateTime       @default(now()) @db.Timestamptz(3)
   ring       AssignmentRing @relation(fields: [ringId], references: [id])
   ringId     String
   hunter     Player         @relation(name: "PlayerHasTarget", fields: [hunterId], references: [id])
@@ -88,8 +88,8 @@ model Assignment {
 
 model AssignmentRing {
   id           String       @id @default(uuid())
-  createdAt    DateTime     @default(now())
-  modifiedAt   DateTime     @default(now())
+  createdAt    DateTime     @default(now()) @db.Timestamptz(3)
+  modifiedAt   DateTime     @default(now()) @db.Timestamptz(3)
   name         String?
   tournament   Tournament   @relation(fields: [tournamentId], references: [id])
   tournamentId String
