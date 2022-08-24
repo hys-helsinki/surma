@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@prisma/client": "^4.0.0",
+    "formik": "^2.2.9",
     "next": "12.2.0",
     "next-ssl-redirect-middleware": "^0.1.4",
     "react": "18.2.0",
@@ -20,7 +21,6 @@
     "@types/react": "^18.0.15",
     "eslint": "8.18.0",
     "eslint-config-next": "12.2.0",
-    "formik": "^2.2.9",
     "prettier": "2.7.1",
     "prisma": "^4.0.0",
     "yup": "^0.32.11"
