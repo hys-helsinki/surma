@@ -14,7 +14,8 @@
     "next": "12.2.0",
     "next-ssl-redirect-middleware": "^0.1.4",
     "react": "18.2.0",
-    "react-dom": "18.2.0"
+    "react-dom": "18.2.0",
+    "yup": "^0.32.11"
   },
   "devDependencies": {
     "@types/node": "^18.0.5",
@@ -22,7 +23,6 @@
     "eslint": "8.18.0",
     "eslint-config-next": "12.2.0",
     "prettier": "2.7.1",
-    "prisma": "^4.0.0",
-    "yup": "^0.32.11"
+    "prisma": "^4.0.0"
   }
 }
