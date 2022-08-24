@@ -7,6 +7,8 @@ import React, { MouseEventHandler, useEffect } from "react";
 import { useState } from "react";
 import { UpdateForm } from "../../../components/UpdateForm";
 import { useRouter } from "next/router";
+import profilepic from "../../../public/images/corgi-g33b9721e9_1280.jpg";
+import Image from "next/image";
 
 export const getStaticProps: GetStaticProps = async ({ params }) => {
   let tournament = await prisma.tournament.findFirst({
@@ -63,6 +65,7 @@ export default function UserInfo({
 }): JSX.Element {
   const [notification, setNotification] = useState("");
   const [isUpdated, setIsUpdated] = useState(true);
+  const [showPicture, setShowPicture] = useState(false);
   const router = useRouter();
   const { id } = router.query;
 
@@ -127,6 +130,14 @@ export default function UserInfo({
     }).then((response) => router.reload());
   };
 
+  const togglePicture: MouseEventHandler = () => {
+    if (showPicture === true) {
+      setShowPicture(false);
+    } else {
+      setShowPicture(true);
+    }
+  };
+
   return (
     <div>
       {notification ? (
@@ -137,6 +148,19 @@ export default function UserInfo({
           <h1>
             {user.firstName} {user.lastName}
           </h1>
+          {showPicture ? (
+            <div>
+              <Image
+                src={profilepic}
+                alt="profilepic"
+                height={200}
+                width={200}
+              ></Image>
+            </div>
+          ) : null}
+          <button onClick={togglePicture}>
+            {showPicture ? "piilota" : "näytä kuva"}
+          </button>
           <PlayerContactInfo user={user} />
           <PlayerDetails player={user.player} />
         </div>
