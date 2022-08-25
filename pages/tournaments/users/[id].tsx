@@ -11,6 +11,12 @@ import profilepic from "../../../public/images/corgi-g33b9721e9_1280.jpg";
 import Image from "next/image";
 
 export const getStaticProps: GetStaticProps = async ({ params }) => {
+  require("dotenv").config();
+  const results = await fetch(
+    `https://${process.env.CLOUDINARY_API_KEY}:${process.env.CLOUDINARY_API_SECRET}@api.cloudinary.com/v1_1/${process.env.CLOUDINARY_NAME}/resources/image`
+  ).then((r) => r.json());
+  const { resources } = results;
+  resources.map((resource) => console.log(resource));
   let tournament = await prisma.tournament.findFirst({
     select: {
       name: true,

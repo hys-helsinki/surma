@@ -12,6 +12,8 @@
     "@cloudinary/react": "^1.4.2",
     "@cloudinary/url-gen": "^1.8.6",
     "@prisma/client": "^4.0.0",
+    "cloudinary": "^1.30.1",
+    "dotenv": "^16.0.1",
     "next": "12.2.0",
     "react": "18.2.0",
     "react-dom": "18.2.0"

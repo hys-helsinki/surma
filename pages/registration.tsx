@@ -45,98 +45,114 @@ export default function Registration({ tournament }) {
   }
 
   const router = useRouter();
+
+  const uploadImage = async () => {
+    try {
+      await fetch("api/upload", {
+        method: "POST",
+        body: "public/images/corgi-g33b9721e9_1280.jpg"
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  };
   return (
-    <div className="registration-form">
-      <h1 className="registration-form-title">Ilmoittautuminen</h1>
-      <Formik
-        enableReinitialize={true}
-        initialValues={{
-          calendar: [...new Array(dates.length).fill("")],
-          firstName: "",
-          lastName: "",
-          alias: "",
-          email: "",
-          phone: "",
-          address: "",
-          learningInstitution: "",
-          eyeColor: "",
-          hair: "",
-          height: "",
-          glasses: "",
-          other: ""
-        }}
-        validationSchema={Yup.object({
-          firstName: Yup.string().required("Pakollinen"),
-          lastName: Yup.string().required("Pakollinen"),
-          alias: Yup.string().required("Pakollinen"),
-          email: Yup.string()
-            .email("Epäkelpo sähköpostiosoite")
-            .required("Pakollinen"),
-          phone: Yup.number()
-            .required("Pakollinen")
-            .positive("Puhelinnumero ei voi sisältää negatiivisia lukuja")
-            .integer("Syötä vain numeroita")
-        })}
-        onSubmit={async (values) => {
-          const cal = {};
-          dates.forEach((x, i) => (cal[x] = values.calendar[i]));
-          var data = { ...values, calendar: undefined };
-          data["calendar"] = cal;
-          fetch("/api/user/create", {
-            method: "POST",
-            body: JSON.stringify(data)
-          })
-            .then((response) => response.json())
-            .then((d) => {
-              router.push({
-                pathname: `/tournaments/users/${d.id}`,
-                query: { registration: "ok" }
+    <div>
+      <div>
+        <button onClick={uploadImage}>Lähetä kuva</button>
+      </div>
+      <div className="registration-form">
+        <h1 className="registration-form-title">Ilmoittautuminen</h1>
+        <Formik
+          enableReinitialize={true}
+          initialValues={{
+            calendar: [...new Array(dates.length).fill("")],
+            firstName: "",
+            lastName: "",
+            alias: "",
+            email: "",
+            phone: "",
+            address: "",
+            learningInstitution: "",
+            eyeColor: "",
+            hair: "",
+            height: "",
+            glasses: "",
+            other: ""
+          }}
+          validationSchema={Yup.object({
+            firstName: Yup.string().required("Pakollinen"),
+            lastName: Yup.string().required("Pakollinen"),
+            alias: Yup.string().required("Pakollinen"),
+            email: Yup.string()
+              .email("Epäkelpo sähköpostiosoite")
+              .required("Pakollinen"),
+            phone: Yup.number()
+              .required("Pakollinen")
+              .positive("Puhelinnumero ei voi sisältää negatiivisia lukuja")
+              .integer("Syötä vain numeroita")
+          })}
+          onSubmit={async (values) => {
+            const cal = {};
+            dates.forEach((x, i) => (cal[x] = values.calendar[i]));
+            var data = { ...values, calendar: undefined };
+            data["calendar"] = cal;
+            fetch("/api/user/create", {
+              method: "POST",
+              body: JSON.stringify(data)
+            })
+              .then((response) => response.json())
+              .then((d) => {
+                router.push({
+                  pathname: `/tournaments/users/${d.id}`,
+                  query: { registration: "ok" }
+                });
               });
-            });
-        }}
-      >
-        <Form>
-          <TextInput label="Etunimi" name="firstName" type="text" />
+          }}
+        >
+          <Form>
+            <TextInput label="Etunimi" name="firstName" type="text" />
 
-          <TextInput label="Sukunimi" name="lastName" type="text" />
+            <TextInput label="Sukunimi" name="lastName" type="text" />
 
-          <TextInput label="Alias" name="alias" type="text" />
+            <TextInput label="Alias" name="alias" type="text" />
 
-          <TextInput label="Email" name="email" type="email" />
+            <TextInput label="Email" name="email" type="email" />
 
-          <TextInput label="Puhelinnumero" name="phone" type="text" />
+            <TextInput label="Puhelinnumero" name="phone" type="text" />
 
-          <TextInput label="Osoite" name="address" type="text" />
+            <TextInput label="Osoite" name="address" type="text" />
 
-          <TextInput
-            label="Oppilaitos"
-            name="learningInstitution"
-            type="text"
-          />
+            <TextInput
+              label="Oppilaitos"
+              name="learningInstitution"
+              type="text"
+            />
 
-          <TextInput label="Silmät" name="eyeColor" type="text" />
+            <TextInput label="Silmät" name="eyeColor" type="text" />
 
-          <TextInput label="Hiukset" name="hair" type="text" />
+            <TextInput label="Hiukset" name="hair" type="text" />
 
-          <TextInput label="Pituus" name="height" type="number" />
+            <TextInput label="Pituus" name="height" type="number" />
 
-          <TextInput label="Muu" name="other" type="text" />
+            <TextInput label="Muu" name="other" type="text" />
 
-          <h3>Kalenteritiedot</h3>
-          {dates.map((d: string, i) => (
-            <div key={i}>
-              <label>{d}</label>
-              <Field name={`calendar[${i}]`} as="textarea" />
-            </div>
-          ))}
-          <button type="submit">Ilmoittaudu</button>
-        </Form>
-      </Formik>
-      <p>
-        {/* TODO linkki sääntöihin ja tietosuojaseloste näkyviin (sitten kun se on joskus valmis)*/}
-        Ilmoittautuessasi turnaukseeen hyväksyt tietosuojaselosteen sekä
-        Helsingin yliopiston salamurhaajien turnaus- ja asesäännöt
-      </p>
+            <h3>Kalenteritiedot</h3>
+            {dates.map((d: string, i) => (
+              <div key={i}>
+                <label>{d}</label>
+                <Field name={`calendar[${i}]`} as="textarea" />
+              </div>
+            ))}
+            <button type="submit">Ilmoittaudu</button>
+          </Form>
+        </Formik>
+        <p>
+          {/* TODO linkki sääntöihin ja tietosuojaseloste näkyviin (sitten kun se on joskus valmis)*/}
+          Ilmoittautuessasi turnaukseeen hyväksyt tietosuojaselosteen sekä
+          Helsingin yliopiston salamurhaajien turnaus- ja asesäännöt
+        </p>
+      </div>
     </div>
   );
 }
