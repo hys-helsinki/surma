@@ -7,16 +7,22 @@ import React, { MouseEventHandler, useEffect } from "react";
 import { useState } from "react";
 import { UpdateForm } from "../../../components/UpdateForm";
 import { useRouter } from "next/router";
-import profilepic from "../../../public/images/corgi-g33b9721e9_1280.jpg";
 import Image from "next/image";
 
 export const getStaticProps: GetStaticProps = async ({ params }) => {
   require("dotenv").config();
-  const results = await fetch(
-    `https://${process.env.CLOUDINARY_API_KEY}:${process.env.CLOUDINARY_API_SECRET}@api.cloudinary.com/v1_1/${process.env.CLOUDINARY_NAME}/resources/image`
-  ).then((r) => r.json());
-  const { resources } = results;
-  resources.map((resource) => console.log(resource));
+  const cloudinary = require("cloudinary").v2;
+  cloudinary.config({
+    cloud_name: process.env.CLOUDINARY_NAME,
+    api_key: process.env.CLOUDINARY_API_KEY,
+    api_secret: process.env.CLOUDINARY_API_SECRET
+  });
+
+  const result = await cloudinary.api.resource("cld-sample-3");
+  console.log(result.url);
+
+  const imageUrl = result.url;
+
   let tournament = await prisma.tournament.findFirst({
     select: {
       name: true,
@@ -52,7 +58,7 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
     }
   });
   return {
-    props: { user, tournament }
+    props: { user, tournament, imageUrl }
   };
 };
 
@@ -64,10 +70,12 @@ type UserWithPlayer = Prisma.UserGetPayload<{
 
 export default function UserInfo({
   user,
-  tournament
+  tournament,
+  imageUrl
 }: {
   user: UserWithPlayer;
   tournament: Tournament;
+  imageUrl: string;
 }): JSX.Element {
   const [notification, setNotification] = useState("");
   const [isUpdated, setIsUpdated] = useState(true);
@@ -156,12 +164,7 @@ export default function UserInfo({
           </h1>
           {showPicture ? (
             <div>
-              <Image
-                src={profilepic}
-                alt="profilepic"
-                height={200}
-                width={200}
-              ></Image>
+              <Image src={imageUrl} width={200} height={100}></Image>
             </div>
           ) : null}
           <button onClick={togglePicture}>
