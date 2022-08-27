@@ -46,11 +46,14 @@ export default function Registration({ tournament }) {
 
   const router = useRouter();
 
-  const uploadImage = async () => {
+  const uploadImage = async (id: string) => {
     try {
       await fetch("api/upload", {
         method: "POST",
-        body: "public/images/corgi-g33b9721e9_1280.jpg"
+        body: JSON.stringify({
+          url: "public/images/doggo.jpg",
+          publicId: id
+        })
       });
     } catch (error) {
       console.log(error);
@@ -58,9 +61,6 @@ export default function Registration({ tournament }) {
   };
   return (
     <div>
-      <div>
-        <button onClick={uploadImage}>Lähetä kuva</button>
-      </div>
       <div className="registration-form">
         <h1 className="registration-form-title">Ilmoittautuminen</h1>
         <Formik
@@ -103,6 +103,7 @@ export default function Registration({ tournament }) {
             })
               .then((response) => response.json())
               .then((d) => {
+                uploadImage(d.id);
                 router.push({
                   pathname: `/tournaments/users/${d.id}`,
                   query: { registration: "ok" }

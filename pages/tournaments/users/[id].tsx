@@ -18,7 +18,7 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
     api_secret: process.env.CLOUDINARY_API_SECRET
   });
 
-  const result = await cloudinary.api.resource("cld-sample-3");
+  const result = await cloudinary.api.resource(params.id);
   console.log(result.url);
 
   const imageUrl = result.url;
