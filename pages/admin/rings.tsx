@@ -45,7 +45,7 @@ export default function Rings({ allPlayers, rings }) {
   const createRing = async (event) => {
     event.preventDefault();
     const readyRing = {
-      assignments: newRing,
+      assignments: Object.values(newRing),
       name: event.target.ringName.value,
       tournament: router.query.tournamentId
     };
@@ -56,17 +56,19 @@ export default function Rings({ allPlayers, rings }) {
     });
   };
   const handleRingChange = (id, event) => {
-    const assignment = newRing.find((ring) => ring.hunter === id);
+    const assignment = newRing.find((ring) => ring.hunterId === id);
     const names = event.target.value.split(" ");
     const x = players.find(
       (p) => p.user.firstName === names[0] && p.user.lastName === names[1]
     );
     console.log(x);
     if (!assignment) {
-      setNewRing(newRing.concat({ hunter: id, target: x.id }));
+      setNewRing(newRing.concat({ hunterId: id, targetId: x.id }));
     } else {
-      const changedAssignment = { ...assignment, target: x.id };
-      setNewRing(newRing.map((a) => (a.hunter !== id ? a : changedAssignment)));
+      const changedAssignment = { ...assignment, targetId: x.id };
+      setNewRing(
+        newRing.map((a) => (a.hunterId !== id ? a : changedAssignment))
+      );
     }
   };
   return (
