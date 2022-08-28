@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import prisma from "../../lib/prisma";
 
 export const getStaticProps: GetStaticProps = async () => {
-  const allPlayers = await prisma.player.findMany({
+  let allPlayers = await prisma.player.findMany({
     select: {
       user: {
         select: {
@@ -18,13 +18,16 @@ export const getStaticProps: GetStaticProps = async () => {
       tournamentId: true
     }
   });
-  const rings = await prisma.assignmentRing.findMany({
+
+  let rings = await prisma.assignmentRing.findMany({
     select: {
       id: true,
       name: true,
       assignments: true
     }
   });
+  allPlayers = JSON.parse(JSON.stringify(allPlayers));
+  rings = JSON.parse(JSON.stringify(rings)); // avoid Next.js serialization error
   return {
     props: { allPlayers, rings }
   };
@@ -38,10 +41,6 @@ export default function Rings({ allPlayers, rings }) {
     (player) => player.tournamentId === router.query.tournamentId
   );
 
-  useEffect(() => {
-    console.log(newRing);
-  }, [newRing]);
-
   const createRing = async (event) => {
     event.preventDefault();
     const readyRing = {
@@ -49,7 +48,6 @@ export default function Rings({ allPlayers, rings }) {
       name: event.target.ringName.value,
       tournament: router.query.tournamentId
     };
-    console.log("bäkkäriin lähtevä data", readyRing);
     fetch("/api/tournament/rings", {
       method: "POST",
       body: JSON.stringify(readyRing)
@@ -57,11 +55,13 @@ export default function Rings({ allPlayers, rings }) {
   };
   const handleRingChange = (id, event) => {
     const assignment = newRing.find((ring) => ring.hunterId === id);
+    if (event.target.value === "--") {
+      return; // to prevent throwing error when the user selects the placeholder value again
+    }
     const names = event.target.value.split(" ");
     const x = players.find(
       (p) => p.user.firstName === names[0] && p.user.lastName === names[1]
     );
-    console.log(x);
     if (!assignment) {
       setNewRing(newRing.concat({ hunterId: id, targetId: x.id }));
     } else {
@@ -104,6 +104,7 @@ export function Ring({ players, player, handleRingChange }) {
       <label>
         Kohde
         <select name="assignments" onChange={handleRingChange}>
+          <option>--</option>
           {players.map((player) => (
             <option key={player.id}>
               {player.user.firstName} {player.user.lastName}
