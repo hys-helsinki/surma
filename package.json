@@ -18,6 +18,7 @@
     "dotenv": "^16.0.1",
     "next": "12.2.0",
     "next-ssl-redirect-middleware": "^0.1.4",
+    "nodemailer": "^6.7.8",
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "yup": "^0.32.11"
