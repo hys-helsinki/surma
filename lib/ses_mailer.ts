@@ -1,10 +1,6 @@
-import aws from "@aws-sdk/client-ses";
+import { SES, SendRawEmailCommand } from "@aws-sdk/client-ses";
 import nodemailer from "nodemailer";
 import { defaultProvider } from "@aws-sdk/credential-provider-node";
-// const SES_CONFIG = {
-//   accessKeyId: process.env.AWS_ACCESS_KEY_ID,
-//   secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY
-// };
 
 export default function sendEmail(
   from: String,
@@ -12,18 +8,17 @@ export default function sendEmail(
   subject: String,
   payload: String
 ) {
-  const ses = new aws.SES({
+  const ses = new SES({
     apiVersion: "2010-12-01",
     region: "eu-north-1",
     credentialDefaultProvider: defaultProvider
   });
 
-  // create Nodemailer SES transporter
+  // TODO: would this be better as singleton?
   let transporter = nodemailer.createTransport({
-    SES: { ses, aws }
+    SES: { ses, aws: { SendRawEmailCommand } }
   });
 
-  // send some mail
   transporter.sendMail(
     {
       from,
@@ -41,13 +36,11 @@ export default function sendEmail(
       }
     },
     (err, info) => {
-      console.log(info.envelope);
-      console.log(info.messageId);
+      console.log(err);
+      if (info) {
+        console.log(info.envelope);
+        console.log(info.messageId);
+      }
     }
   );
 }
-// export default function sendMail(recipient: String, payload: String) {
-//   const client = new SESClient(SES_CONFIG);
-//   const sendCommand = new SendEmailCommand();
-//   client.send;
-// }
