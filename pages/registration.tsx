@@ -1,6 +1,6 @@
 import { useRouter } from "next/router";
 import { Formik, Form, Field, useField } from "formik";
-import React from "react";
+import React, { useState } from "react";
 import * as Yup from "yup";
 import { GetStaticProps } from "next";
 import prisma from "../lib/prisma";
@@ -34,6 +34,10 @@ const TextInput = ({ label, ...props }) => {
 };
 
 export default function Registration({ tournament }) {
+  const [fileInputState, setFileInputState] = useState("");
+  const [selectedFile, setSelectedFile] = useState();
+  const [selectedFileName, setSelectedFileName] = useState("");
+
   const start = new Date(tournament.start);
   const end = new Date(tournament.end);
   let dates: Array<any> = [];
@@ -47,22 +51,47 @@ export default function Registration({ tournament }) {
   const router = useRouter();
 
   const uploadImage = async (id: string) => {
+    if (!selectedFile) return;
     try {
-      await fetch("api/upload", {
-        method: "POST",
-        body: JSON.stringify({
-          url: "public/images/doggo.jpg",
-          publicId: id
-        })
-      });
+      const reader = new FileReader();
+      reader.readAsDataURL(selectedFile);
+      reader.onloadend = async () => {
+        await fetch("api/upload", {
+          method: "POST",
+          body: JSON.stringify({
+            url: reader.result,
+            publicId: id
+          })
+        });
+      };
+      setFileInputState("");
+      setSelectedFileName("");
+      setSelectedFile(null);
     } catch (error) {
       console.log(error);
     }
   };
+
+  const handleFileInputChange = (event) => {
+    const file = event.target.files[0];
+    setSelectedFile(file);
+    setSelectedFileName(file.name);
+    setFileInputState(event.target.value);
+  };
+
   return (
     <div>
       <div className="registration-form">
         <h1 className="registration-form-title">Ilmoittautuminen</h1>
+        <form>
+          <input
+            type="file"
+            name="image"
+            onChange={handleFileInputChange}
+            value={fileInputState}
+          />
+        </form>
+        {selectedFileName ? <p>Valittu tiedosto: {selectedFileName}</p> : null}
         <Formik
           enableReinitialize={true}
           initialValues={{
