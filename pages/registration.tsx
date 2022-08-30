@@ -84,9 +84,11 @@ export default function Registration({ tournament }) {
       <div className="registration-form">
         <h1 className="registration-form-title">Ilmoittautuminen</h1>
         <form>
+          <label>Valitse kuva</label>
           <input
             type="file"
             name="image"
+            accept="image/*"
             onChange={handleFileInputChange}
             value={fileInputState}
           />
