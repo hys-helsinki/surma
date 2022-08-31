@@ -118,7 +118,7 @@ const NavigationBar = () => {
                 <Collapse in={open} timeout="auto" unmountOnExit>
                   <List component="div" disablePadding>
                     <ListItemButton sx={{ pl: 4 }}>
-                      <ListItemText primary="Starred" />
+                      <ListItemText primary="Jesse Lankila" />
                     </ListItemButton>
                   </List>
                 </Collapse>

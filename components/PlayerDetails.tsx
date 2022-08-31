@@ -16,7 +16,7 @@ export const PlayerDetails = ({ player }): JSX.Element => {
       <p>muu: {player.other}</p>
       <h3>Kalenteri</h3>
       <ul>
-        {cal.sort().map((c, index) => (
+        {cal.map((c, index) => (
           <li key={index}>
             {c[0]}: {c[1]}
           </li>
