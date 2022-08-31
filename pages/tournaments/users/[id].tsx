@@ -11,7 +11,7 @@ import { useRouter } from "next/router";
 export const getStaticProps: GetStaticProps = async ({ params }) => {
   let user = await prisma.user.findUnique({
     where: {
-      id: params.id
+      id: params.id as string
     },
     select: {
       firstName: true,

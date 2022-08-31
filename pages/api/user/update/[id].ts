@@ -6,7 +6,7 @@ export default async function update(
   res: NextApiResponse
 ) {
   if (req.method === "PUT") {
-    const playerId = req.query.id;
+    const playerId = req.query.id as string;
     const playerData = JSON.parse(req.body);
     const result = await prisma.player.update({
       where: { userId: playerId },
