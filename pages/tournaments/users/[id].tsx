@@ -7,6 +7,7 @@ import React, { MouseEventHandler, useEffect } from "react";
 import { useState } from "react";
 import { UpdateForm } from "../../../components/UpdateForm";
 import { useRouter } from "next/router";
+import NavigationBar from "../../../components/NavigationBar";
 
 export const getStaticProps: GetStaticProps = async ({ params }) => {
   let tournament = await prisma.tournament.findFirst({
@@ -129,34 +130,37 @@ export default function UserInfo({
 
   return (
     <div>
-      {notification ? (
-        <p className="notification">Ilmoittautuminen onnistui!</p>
-      ) : null}
-      {isUpdated ? (
-        <div>
-          <h1>
-            {user.firstName} {user.lastName}
-          </h1>
-          <PlayerContactInfo user={user} />
-          <PlayerDetails player={user.player} />
-        </div>
-      ) : (
-        <div>
-          <h1>
-            {user.firstName} {user.lastName}
-          </h1>
-          <PlayerContactInfo user={user} />
-          <UpdateForm
-            data={user.player}
-            handleSubmit={handleSubmit}
-            calendar={user.player.calendar}
-          />
-        </div>
-      )}
+      <NavigationBar />
       <div>
-        <button onClick={handleUpdateStatusClick}>
-          {isUpdated ? "muokkaa tietoja" : "peruuta"}
-        </button>
+        {notification ? (
+          <p className="notification">Ilmoittautuminen onnistui!</p>
+        ) : null}
+        {isUpdated ? (
+          <div>
+            <h1>
+              {user.firstName} {user.lastName}
+            </h1>
+            <PlayerContactInfo user={user} />
+            <PlayerDetails player={user.player} />
+          </div>
+        ) : (
+          <div>
+            <h1>
+              {user.firstName} {user.lastName}
+            </h1>
+            <PlayerContactInfo user={user} />
+            <UpdateForm
+              data={user.player}
+              handleSubmit={handleSubmit}
+              calendar={user.player.calendar}
+            />
+          </div>
+        )}
+        <div>
+          <button onClick={handleUpdateStatusClick}>
+            {isUpdated ? "muokkaa tietoja" : "peruuta"}
+          </button>
+        </div>
       </div>
     </div>
   );
