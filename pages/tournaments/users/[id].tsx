@@ -17,11 +17,13 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
     api_key: process.env.CLOUDINARY_API_KEY,
     api_secret: process.env.CLOUDINARY_API_SECRET
   });
-
-  const result = await cloudinary.api.resource(params.id);
-  console.log(result.url);
-
-  const imageUrl = result.url;
+  let imageUrl = "";
+  try {
+    const result = await cloudinary.api.resource(params.id);
+    imageUrl = result.url;
+  } catch (error) {
+    console.log(error);
+  }
 
   let tournament = await prisma.tournament.findFirst({
     select: {
@@ -162,14 +164,21 @@ export default function UserInfo({
           <h1>
             {user.firstName} {user.lastName}
           </h1>
-          {showPicture ? (
+          {imageUrl !== "" ? (
             <div>
-              <Image src={imageUrl} width={200} height={100}></Image>
+              {showPicture ? (
+                <div>
+                  <Image src={imageUrl} width={200} height={100}></Image>
+                </div>
+              ) : null}
+              <button onClick={togglePicture}>
+                {showPicture ? "piilota" : "näytä kuva"}
+              </button>
             </div>
-          ) : null}
-          <button onClick={togglePicture}>
-            {showPicture ? "piilota" : "näytä kuva"}
-          </button>
+          ) : (
+            <p>Ei kuvaa</p>
+          )}
+
           <PlayerContactInfo user={user} />
           <PlayerDetails player={user.player} />
         </div>
