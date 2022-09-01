@@ -67,6 +67,7 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
 type UserWithPlayer = Prisma.UserGetPayload<{
   include: {
     player: true;
+    tournament: true;
   };
 }>;
 
@@ -101,7 +102,7 @@ export default function UserInfo({
   const start = new Date(tournament.start);
   const end = new Date(tournament.end);
   let dates: Array<any> = [];
-  dates.push(`${start.getDate()}.${end.getMonth() + 1}.`);
+  dates.push(`${start.getDate()}.${start.getMonth() + 1}.`);
   let loopDay = start;
   while (loopDay < end) {
     loopDay.setDate(loopDay.getDate() + 1);
