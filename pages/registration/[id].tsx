@@ -5,7 +5,6 @@ import prisma from "../../lib/prisma";
 import * as Yup from "yup";
 import { useState } from "react";
 
-
 export const getStaticProps: GetStaticProps = async ({ params }) => {
   let tournament = await prisma.tournament.findUnique({
     where: {
@@ -202,3 +201,15 @@ export default function Registration({ tournament }) {
     </div>
   );
 }
+
+export const getStaticPaths: GetStaticPaths = async () => {
+  const tournamentIds = await prisma.tournament.findMany({
+    select: { id: true }
+  });
+  return {
+    paths: tournamentIds.map((tournament) => ({
+      params: tournament
+    })),
+    fallback: false
+  };
+};
