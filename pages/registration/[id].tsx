@@ -80,7 +80,6 @@ export default function Registration({ tournament }) {
 
   const handleFileInputChange = (event) => {
     const file = event.target.files[0];
-    console.log(file);
     if (file == undefined) {
       setFileInputState("");
       setSelectedFile(null);
