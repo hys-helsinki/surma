@@ -62,7 +62,7 @@ export default function Registration({ tournament }) {
       const reader = new FileReader();
       reader.readAsDataURL(selectedFile);
       reader.onloadend = async () => {
-        await fetch("api/upload", {
+        await fetch("/api/upload", {
           method: "POST",
           body: JSON.stringify({
             url: reader.result,
