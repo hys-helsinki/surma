@@ -14,14 +14,11 @@ export default async function upload(
   if (req.method === "POST") {
     try {
       const imageData = JSON.parse(req.body);
-      console.log(imageData.url, imageData.publicId);
       const uploadedResponse = await cloudinary.uploader.upload(imageData.url, {
         public_id: imageData.publicId
       });
-      console.log(uploadedResponse);
       res.json({ msg: "jee toimii!" });
     } catch (error) {
-      console.log(error);
       res.status(500).json({ error: "something went wrong" });
     }
   }
