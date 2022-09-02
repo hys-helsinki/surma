@@ -1,5 +1,5 @@
 import { GetStaticProps, GetStaticPaths } from "next";
-import { Prisma } from "@prisma/client";
+import { Prisma, Tournament } from "@prisma/client";
 import { PlayerDetails } from "../../../components/PlayerDetails";
 import { PlayerContactInfo } from "../../../components/PlayerContactInfo";
 import prisma from "../../../lib/prisma";
@@ -7,9 +7,35 @@ import React, { MouseEventHandler, useEffect } from "react";
 import { useState } from "react";
 import { UpdateForm } from "../../../components/UpdateForm";
 import { useRouter } from "next/router";
+import Image from "next/image";
 
 export const getStaticProps: GetStaticProps = async ({ params }) => {
-  let user = await prisma.user.findUnique({
+  require("dotenv").config();
+  const cloudinary = require("cloudinary").v2;
+  cloudinary.config({
+    cloud_name: process.env.CLOUDINARY_NAME,
+    api_key: process.env.CLOUDINARY_API_KEY,
+    api_secret: process.env.CLOUDINARY_API_SECRET
+  });
+  let imageUrl = "";
+  try {
+    const result = await cloudinary.api.resource(params.id);
+    imageUrl = result.url;
+  } catch (error) {
+    console.log(error);
+  }
+
+  let tournament = await prisma.tournament.findFirst({
+    select: {
+      name: true,
+      start: true,
+      end: true,
+      registrationStart: true,
+      registrationEnd: true
+    }
+  });
+  tournament = JSON.parse(JSON.stringify(tournament)); // avoid Next.js serialization error
+  const user = await prisma.user.findUnique({
     where: {
       id: params.id as string
     },
@@ -30,19 +56,11 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
           other: true,
           calendar: true
         }
-      },
-      tournament: {
-        select: {
-          id: true,
-          start: true,
-          end: true
-        }
       }
     }
   });
-  user = JSON.parse(JSON.stringify(user));
   return {
-    props: { user }
+    props: { user, tournament, imageUrl }
   };
 };
 
@@ -54,13 +72,17 @@ type UserWithPlayer = Prisma.UserGetPayload<{
 }>;
 
 export default function UserInfo({
-  user
+  user,
+  tournament,
+  imageUrl
 }: {
   user: UserWithPlayer;
+  tournament: Tournament;
+  imageUrl: string;
 }): JSX.Element {
-  console.log(user);
   const [notification, setNotification] = useState("");
   const [isUpdated, setIsUpdated] = useState(true);
+  const [showPicture, setShowPicture] = useState(false);
   const router = useRouter();
   const { id } = router.query;
 
@@ -77,8 +99,8 @@ export default function UserInfo({
     }
   }, []);
 
-  const start = new Date(user.tournament.start);
-  const end = new Date(user.tournament.end);
+  const start = new Date(tournament.start);
+  const end = new Date(tournament.end);
   let dates: Array<any> = [];
   dates.push(`${start.getDate()}.${start.getMonth() + 1}.`);
   let loopDay = start;
@@ -86,7 +108,6 @@ export default function UserInfo({
     loopDay.setDate(loopDay.getDate() + 1);
     dates.push(`${loopDay.getDate()}.${loopDay.getMonth() + 1}.`);
   }
-  console.log(dates);
 
   const handleUpdateStatusClick: MouseEventHandler<HTMLButtonElement> = () => {
     if (isUpdated === true) {
@@ -126,6 +147,14 @@ export default function UserInfo({
     }).then((response) => router.reload());
   };
 
+  const togglePicture: MouseEventHandler = () => {
+    if (showPicture === true) {
+      setShowPicture(false);
+    } else {
+      setShowPicture(true);
+    }
+  };
+
   return (
     <div>
       {notification ? (
@@ -136,6 +165,21 @@ export default function UserInfo({
           <h1>
             {user.firstName} {user.lastName}
           </h1>
+          {imageUrl !== "" ? (
+            <div>
+              {showPicture ? (
+                <div>
+                  <Image src={imageUrl} width={200} height={100}></Image>
+                </div>
+              ) : null}
+              <button onClick={togglePicture}>
+                {showPicture ? "piilota" : "näytä kuva"}
+              </button>
+            </div>
+          ) : (
+            <p>Ei kuvaa</p>
+          )}
+
           <PlayerContactInfo user={user} />
           <PlayerDetails player={user.player} />
         </div>

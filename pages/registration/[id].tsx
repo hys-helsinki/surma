@@ -3,11 +3,12 @@ import { GetStaticPaths, GetStaticProps } from "next";
 import { useRouter } from "next/router";
 import prisma from "../../lib/prisma";
 import * as Yup from "yup";
+import { useState } from "react";
 
 export const getStaticProps: GetStaticProps = async ({ params }) => {
   let tournament = await prisma.tournament.findUnique({
     where: {
-      id: params.id
+      id: params.id as string
     },
     select: {
       id: true,
@@ -26,7 +27,7 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
 };
 
 const TextInput = ({ label, ...props }) => {
-  const [field, meta] = useField(props);
+  const [field, meta] = useField(props.name);
   return (
     <>
       <label htmlFor={props.name}>{label}</label>
@@ -39,6 +40,10 @@ const TextInput = ({ label, ...props }) => {
 };
 
 export default function Registration({ tournament }) {
+  const [fileInputState, setFileInputState] = useState("");
+  const [selectedFile, setSelectedFile] = useState();
+  const [selectedFileName, setSelectedFileName] = useState("");
+
   const start = new Date(tournament.start);
   const end = new Date(tournament.end);
   let dates: Array<any> = [];
@@ -48,14 +53,59 @@ export default function Registration({ tournament }) {
     loopDay.setDate(loopDay.getDate() + 1);
     dates.push(`${loopDay.getDate()}.${loopDay.getMonth() + 1}.`);
   }
-  console.log(dates);
 
   const router = useRouter();
+
+  const uploadImage = async (id: string) => {
+    if (!selectedFile) return;
+    try {
+      const reader = new FileReader();
+      reader.readAsDataURL(selectedFile);
+      reader.onloadend = async () => {
+        await fetch("/api/upload", {
+          method: "POST",
+          body: JSON.stringify({
+            url: reader.result,
+            publicId: id
+          })
+        });
+      };
+      setFileInputState("");
+      setSelectedFileName("");
+      setSelectedFile(null);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const handleFileInputChange = (event) => {
+    const file = event.target.files[0];
+    if (file == undefined) {
+      setFileInputState("");
+      setSelectedFile(null);
+      setSelectedFileName("");
+    } else {
+      setSelectedFile(file);
+      setSelectedFileName(file.name);
+      setFileInputState(event.target.value);
+    }
+  };
+
   return (
     <div>
-      <div>Ilmoittautuminen turnaukseen {tournament.name}</div>
       <div className="registration-form">
         <h1 className="registration-form-title">Ilmoittautuminen</h1>
+        <form>
+          <label>Valitse kuva</label>
+          <input
+            type="file"
+            name="image"
+            accept="image/*"
+            onChange={handleFileInputChange}
+            value={fileInputState}
+          />
+        </form>
+        {selectedFileName ? <p>Valittu tiedosto: {selectedFileName}</p> : null}
         <Formik
           enableReinitialize={true}
           initialValues={{
@@ -89,7 +139,7 @@ export default function Registration({ tournament }) {
           onSubmit={async (values) => {
             const cal = {};
             dates.forEach((x, i) => (cal[x] = values.calendar[i]));
-            var data = { ...values, calendar: undefined };
+            var data = { ...values, calendar: undefined, tournament };
             data["calendar"] = cal;
             data["tournamentId"] = tournament.id;
             fetch("/api/user/create", {
@@ -98,6 +148,7 @@ export default function Registration({ tournament }) {
             })
               .then((response) => response.json())
               .then((d) => {
+                uploadImage(d.id);
                 router.push({
                   pathname: `/tournaments/users/${d.id}`,
                   query: { registration: "ok" }
