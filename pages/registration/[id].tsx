@@ -47,7 +47,7 @@ export default function Registration({ tournament }) {
   const start = new Date(tournament.start);
   const end = new Date(tournament.end);
   let dates: Array<any> = [];
-  dates.push(`${start.getDate()}.${end.getMonth() + 1}.`);
+  dates.push(`${start.getDate()}.${start.getMonth() + 1}.`);
   let loopDay = start;
   while (loopDay < end) {
     loopDay.setDate(loopDay.getDate() + 1);
@@ -119,7 +119,7 @@ export default function Registration({ tournament }) {
             learningInstitution: "",
             eyeColor: "",
             hair: "",
-            height: "",
+            height: 0,
             glasses: "",
             other: ""
           }}
@@ -133,13 +133,15 @@ export default function Registration({ tournament }) {
             phone: Yup.number()
               .required("Pakollinen")
               .positive("Puhelinnumero ei voi sisältää negatiivisia lukuja")
-              .integer("Syötä vain numeroita")
+              .integer("Syötä vain numeroita"),
+            height: Yup.number().positive("Pituus ei voi olla negatiivinen")
           })}
           onSubmit={async (values) => {
             const cal = {};
             dates.forEach((x, i) => (cal[x] = values.calendar[i]));
-            var data = { ...values, calendar: undefined };
+            var data = { ...values, calendar: undefined, tournament };
             data["calendar"] = cal;
+            data["tournamentId"] = tournament.id;
             fetch("/api/user/create", {
               method: "POST",
               body: JSON.stringify(data)
