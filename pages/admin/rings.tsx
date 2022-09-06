@@ -54,7 +54,7 @@ export default function Rings({ allPlayers, rings }) {
     });
   };
   const handleRingChange = (id, event) => {
-    const assignment = newRing.find((ring) => ring.hunterId === id);
+    const assignment = newRing.find((assignment) => assignment.hunterId === id);
     if (event.target.value === "--") {
       return; // to prevent throwing error when the user selects the placeholder value again
     }
@@ -82,7 +82,7 @@ export default function Rings({ allPlayers, rings }) {
 
         {players.map((player) => (
           <div key={player.id}>
-            <Ring
+            <Assignment
               players={players}
               player={player}
               handleRingChange={(e) => handleRingChange(player.id, e)}
@@ -95,7 +95,7 @@ export default function Rings({ allPlayers, rings }) {
   );
 }
 
-export function Ring({ players, player, handleRingChange }) {
+export function Assignment({ players, player, handleRingChange }) {
   return (
     <>
       <p>
