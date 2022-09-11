@@ -20,6 +20,8 @@ export const TournamentRings = ({
       method: "POST",
       body: JSON.stringify(readyRing)
     });
+    setShowForm(false);
+    setRings(rings.concat(readyRing));
   };
   const handleRingChange = (id, event) => {
     const assignment = newRing.find((assignment) => assignment.hunterId === id);
