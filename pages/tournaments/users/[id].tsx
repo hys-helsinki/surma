@@ -39,7 +39,8 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
           height: true,
           glasses: true,
           other: true,
-          calendar: true
+          calendar: true,
+          targets: true
         }
       }
     }
@@ -127,10 +128,14 @@ export default function UserInfo({
       body: JSON.stringify(data)
     }).then((response) => router.reload());
   };
+  console.log(user);
+  const testList = [
+    { firstName: "testi", lastName: "testaaja" } // static target list until I figure out why targets are not recognized
+  ];
 
   return (
     <div>
-      <NavigationBar />
+      <NavigationBar targets={testList} />
       <div>
         {notification ? (
           <p className="notification">Ilmoittautuminen onnistui!</p>

@@ -18,13 +18,12 @@ import Collapse from "@mui/material/Collapse";
 import ExpandLess from "@mui/icons-material/ExpandLess";
 import ExpandMore from "@mui/icons-material/ExpandMore";
 
-const NavigationBar = () => {
+const NavigationBar = ({ targets }) => {
   const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(
     null
   );
-  const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(
-    null
-  );
+  const [anchorElTarget, setAnchorElTarget] =
+    React.useState<null | HTMLElement>(null);
 
   const [open, setOpen] = React.useState(true);
 
@@ -35,16 +34,16 @@ const NavigationBar = () => {
   const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorElNav(event.currentTarget);
   };
-  const handleOpenUserMenu = (event: React.MouseEvent<HTMLElement>) => {
-    setAnchorElUser(event.currentTarget);
+  const handleOpenTargetMenu = (event: React.MouseEvent<HTMLElement>) => {
+    setAnchorElTarget(event.currentTarget);
   };
 
   const handleCloseNavMenu = () => {
     setAnchorElNav(null);
   };
 
-  const handleCloseUserMenu = () => {
-    setAnchorElUser(null);
+  const handleCloseTargetMenu = () => {
+    setAnchorElTarget(null);
   };
 
   return (
@@ -109,7 +108,7 @@ const NavigationBar = () => {
                 aria-labelledby="nested-list-subheader"
               >
                 <ListItemButton sx={{ width: 200 }}>
-                  <ListItemText primary="Turnauksenhallinta" />
+                  <ListItemText primary="Admin" />
                 </ListItemButton>
                 <ListItemButton onClick={handleClick}>
                   <ListItemText primary="Kohteet" />
@@ -117,9 +116,17 @@ const NavigationBar = () => {
                 </ListItemButton>
                 <Collapse in={open} timeout="auto" unmountOnExit>
                   <List component="div" disablePadding>
-                    <ListItemButton sx={{ pl: 4 }}>
-                      <ListItemText primary="Jesse Lankila" />
-                    </ListItemButton>
+                    {!targets ? (
+                      <ListItemText>Ei näytettäviä kohteita</ListItemText>
+                    ) : (
+                      targets.map((target, i) => (
+                        <ListItemButton key={i} sx={{ pl: 4 }}>
+                          <ListItemText
+                            primary={`${target.firstName} ${target.lastName}`}
+                          />
+                        </ListItemButton>
+                      ))
+                    )}
                   </List>
                 </Collapse>
                 <ListItemButton>
@@ -148,16 +155,46 @@ const NavigationBar = () => {
           </Typography>
           <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }}>
             <Button
-              onClick={handleCloseNavMenu}
-              sx={{ my: 2, color: "white", display: "block" }}
+              sx={{ minWidth: 100, my: 2, color: "white", display: "block" }}
             >
               Admin
             </Button>
             <Button
-              onClick={handleCloseNavMenu}
-              sx={{ my: 2, color: "white", display: "block" }}
+              onClick={handleOpenTargetMenu}
+              sx={{ minWidth: 100, my: 2, color: "white", display: "block" }}
             >
               Kohteet
+            </Button>
+            <Menu
+              id="menu-appbar-one"
+              anchorEl={anchorElTarget}
+              anchorOrigin={{
+                vertical: "bottom",
+                horizontal: "center"
+              }}
+              transformOrigin={{
+                vertical: "top",
+                horizontal: "center"
+              }}
+              keepMounted
+              getContentAnchorEl={null}
+              open={anchorElTarget}
+              onClose={handleCloseTargetMenu}
+            >
+              {!targets ? (
+                <MenuItem>Ei näytettäviä kohteita</MenuItem>
+              ) : (
+                targets.map((target, i) => (
+                  <MenuItem key={i}>
+                    {target.firstName} {target.lastName}
+                  </MenuItem>
+                ))
+              )}
+            </Menu>
+            <Button
+              sx={{ minWidth: 100, my: 2, color: "white", display: "block" }}
+            >
+              Oma sivu
             </Button>
           </Box>
         </Toolbar>
