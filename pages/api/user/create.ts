@@ -1,5 +1,6 @@
 import prisma from "../../../lib/prisma";
 import type { NextApiRequest, NextApiResponse } from "next";
+import sendEmail from "../../../lib/ses_mailer";
 
 export default async function create(
   req: NextApiRequest,
@@ -30,6 +31,12 @@ export default async function create(
         }
       }
     });
+    sendEmail(
+      "tuomaristo@salamurhaajat.net",
+      playerData.email,
+      "Kiitos ilmoittautumisesta!",
+      "Kiitos ilmoittautumisestasi! Tuomaristo tarkastaa sen lähiaikoina."
+    );
     res.status(201).json(result);
   }
 }
