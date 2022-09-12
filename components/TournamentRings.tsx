@@ -49,10 +49,28 @@ export const TournamentRings = ({
       setShowForm(true);
     }
   };
+
+  const getTargetName = (targetId) => {
+    const searchedPlayer = players.find((player) => targetId == player.id);
+
+    return `${searchedPlayer.user.firstName} ${searchedPlayer.user.lastName}`;
+  };
+
   return (
     <div>
       <h2>Ringit</h2>
       <p>Rinkejä luotu: {!allRings ? "0" : allRings.length}</p>
+      {players.map((player) => (
+        <div key={player.id}>
+          <h3>
+            {player.user.firstName} {player.user.lastName}
+          </h3>
+          <p>Kohteet</p>
+          {player.targets.map((target) => (
+            <p key={target.id}>{getTargetName(target.targetId)}</p>
+          ))}
+        </div>
+      ))}
       <button onClick={toggleForm}>
         {!showForm ? "luo uusi rinki" : "peruuta"}
       </button>
