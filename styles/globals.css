@@ -4,8 +4,8 @@ body {
   background-color: rgb(34, 23, 23);
   padding: 0;
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen,
-    Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
+  font-family: monospace;
+  font-size: large;
 }
 
 a {
@@ -67,6 +67,15 @@ textarea {
   padding: 10px;
   color: red;
 }
+button {
+  background-color: red;
+  color: white;
+  padding: 14px 20px;
+  margin: 8px 0;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
 
 button[type=submit] {
   width: 100%;
@@ -79,11 +88,27 @@ button[type=submit] {
   cursor: pointer;
 }
 
-button[type=submit]:hover {
+button:hover {
   background-color: #e94a4a;
 }
 
 .updateform {
   width: 50%;
+}
+
+.calendar {
+  display: inline-block;
+  vertical-align: top;
+  border-style: dashed;
+  border-width: 5px;
+  width: 60%;
+}
+
+.userdetails {
+  display: inline-block;
+  width: 40%;
+  padding-left: 10px;
+
+
 }
 

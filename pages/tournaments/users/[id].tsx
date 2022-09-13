@@ -8,6 +8,7 @@ import { useState } from "react";
 import { UpdateForm } from "../../../components/UpdateForm";
 import { useRouter } from "next/router";
 import NavigationBar from "../../../components/NavigationBar";
+import { Calendar } from "../../../components/Calendar";
 
 export const getStaticProps: GetStaticProps = async ({ params }) => {
   let tournament = await prisma.tournament.findFirst({
@@ -20,7 +21,7 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
     }
   });
   tournament = JSON.parse(JSON.stringify(tournament)); // avoid Next.js serialization error
-  const user = await prisma.user.findUnique({
+  let user = await prisma.user.findUnique({
     where: {
       id: params.id as string
     },
@@ -45,6 +46,7 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
       }
     }
   });
+  user = JSON.parse(JSON.stringify(user));
   return {
     props: { user, tournament }
   };
@@ -140,19 +142,24 @@ export default function UserInfo({
         {notification ? (
           <p className="notification">Ilmoittautuminen onnistui!</p>
         ) : null}
+        <h1 style={{ paddingLeft: "10px" }}>
+          {user.firstName} {user.lastName}
+        </h1>
+        <div>
+          <button onClick={handleUpdateStatusClick}>
+            {isUpdated ? "muokkaa tietoja" : "peruuta"}
+          </button>
+        </div>
         {isUpdated ? (
           <div>
-            <h1>
-              {user.firstName} {user.lastName}
-            </h1>
-            <PlayerContactInfo user={user} />
-            <PlayerDetails player={user.player} />
+            <div className="userdetails">
+              <PlayerContactInfo user={user} />
+              <PlayerDetails player={user.player} />
+            </div>
+            <Calendar player={user.player} />
           </div>
         ) : (
           <div>
-            <h1>
-              {user.firstName} {user.lastName}
-            </h1>
             <PlayerContactInfo user={user} />
             <UpdateForm
               data={user.player}
@@ -161,11 +168,6 @@ export default function UserInfo({
             />
           </div>
         )}
-        <div>
-          <button onClick={handleUpdateStatusClick}>
-            {isUpdated ? "muokkaa tietoja" : "peruuta"}
-          </button>
-        </div>
       </div>
     </div>
   );
