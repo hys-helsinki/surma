@@ -4,6 +4,8 @@ import { useRouter } from "next/router";
 import prisma from "../../lib/prisma";
 import * as Yup from "yup";
 import { useState } from "react";
+import Link from "next/link";
+import GDPRmodal from "../../components/GDPRmodal";
 
 export const getStaticProps: GetStaticProps = async ({ params }) => {
   let tournament = await prisma.tournament.findUnique({
@@ -194,9 +196,23 @@ export default function Registration({ tournament }) {
           </Form>
         </Formik>
         <p>
-          {/* TODO linkki sääntöihin ja tietosuojaseloste näkyviin (sitten kun se on joskus valmis)*/}
-          Ilmoittautuessasi turnaukseeen hyväksyt tietosuojaselosteen sekä
-          Helsingin yliopiston salamurhaajien turnaus- ja asesäännöt
+          Ilmoittautuessasi turnaukseeen hyväksyt Helsingin yliopiston
+          salamurhaajien&nbsp;
+          <Link
+            href={"https://salamurhaajat.net/mika-salamurhapeli/turnaussaannot"}
+            passHref
+          >
+            <a style={{ color: "red" }}>turnaus</a>
+          </Link>
+          - ja{" "}
+          <Link
+            href={"https://salamurhaajat.net/mika-salamurhapeli/asesaannot"}
+            passHref
+          >
+            <a style={{ color: "red" }}>asesäännöt</a>
+          </Link>
+          &nbsp;sekä
+          <GDPRmodal />
         </p>
       </div>
     </div>
