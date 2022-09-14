@@ -1,6 +1,7 @@
 import { GetStaticProps } from "next";
 import prisma from "../lib/prisma";
 import { useRouter } from "next/router";
+import Link from "next/link";
 
 export const getStaticProps: GetStaticProps = async () => {
   let tournaments = await prisma.tournament.findMany({
@@ -52,7 +53,10 @@ export default function Admin({ newTournaments }) {
       </div>
       {newTournaments.map((tournament) => (
         <div key={tournament.id}>
-          <p>{tournament.name}</p>
+          <Link href={`/admin/${tournament.id}/`}>
+            <a>{tournament.name}</a>
+          </Link>
+
           <p>Alkaa: {modifyDate(tournament.start)}</p>
           <p>Päättyy: {modifyDate(tournament.end)}</p>
           <p>
