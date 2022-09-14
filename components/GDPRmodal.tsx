@@ -24,7 +24,7 @@ export default function GDPRmodal() {
   const handleClose = () => setOpen(false);
 
   return (
-    <div>
+    <span>
       <a onClick={handleOpen}>
         <u>tietosuojaselosteen</u>
       </a>
@@ -38,11 +38,10 @@ export default function GDPRmodal() {
           <Typography id="modal-modal-title" variant="h6" component="h2">
             Tietosuojaseloste
           </Typography>
-          <Typography id="modal-modal-description" sx={{ mt: 2 }}>
-            <GDPRtext />
-          </Typography>
+
+          <GDPRtext />
         </Box>
       </Modal>
-    </div>
+    </span>
   );
 }

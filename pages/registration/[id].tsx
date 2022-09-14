@@ -195,7 +195,7 @@ export default function Registration({ tournament }) {
             <button type="submit">Ilmoittaudu</button>
           </Form>
         </Formik>
-        <p>
+        <div>
           Ilmoittautuessasi turnaukseeen hyväksyt Helsingin yliopiston
           salamurhaajien&nbsp;
           <Link
@@ -211,9 +211,9 @@ export default function Registration({ tournament }) {
           >
             <a style={{ color: "red" }}>asesäännöt</a>
           </Link>
-          &nbsp;sekä
+          &nbsp;sekä&nbsp;
           <GDPRmodal />
-        </p>
+        </div>
       </div>
     </div>
   );
