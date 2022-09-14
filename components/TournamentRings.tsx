@@ -28,14 +28,12 @@ export const TournamentRings = ({
     if (event.target.value === "--") {
       return; // to prevent throwing error when the user selects the placeholder value again
     }
-    const names = event.target.value.split(" ");
-    const wantedPlayer = players.find(
-      (p) => p.user.firstName === names[0] && p.user.lastName === names[1]
-    );
+    const playerId = event.target.value;
+
     if (!assignment) {
-      setNewRing(newRing.concat({ hunterId: id, targetId: wantedPlayer.id }));
+      setNewRing(newRing.concat({ hunterId: id, targetId: playerId }));
     } else {
-      const changedAssignment = { ...assignment, targetId: wantedPlayer.id };
+      const changedAssignment = { ...assignment, targetId: playerId };
       setNewRing(
         newRing.map((a) => (a.hunterId !== id ? a : changedAssignment))
       );
@@ -108,7 +106,7 @@ export function Assignment({ players, player, handleRingChange }) {
         <select name="assignments" onChange={handleRingChange}>
           <option>--</option>
           {players.map((player) => (
-            <option key={player.id}>
+            <option key={player.id} value={player.id}>
               {player.user.firstName} {player.user.lastName}
             </option>
           ))}
