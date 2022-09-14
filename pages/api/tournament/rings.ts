@@ -10,11 +10,11 @@ export default async function rings(req: NextApiRequest, res: NextApiResponse) {
         tournamentId: newRing.tournament
       }
     });
-    const r = newRing.assignments.map((a) => {
+    const newAssignments = newRing.assignments.map((a) => {
       return { ...a, ringId: savedRing.id };
     });
     const assignmentResult = await prisma.assignment.createMany({
-      data: r
+      data: newAssignments
     });
     res.status(201).end();
   }
