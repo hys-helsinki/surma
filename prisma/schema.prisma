@@ -67,18 +67,18 @@ model Umpire {
 }
 
 model Tournament {
-  id                String           @id @default(uuid())
-  createdAt         DateTime         @default(now()) @db.Timestamptz(3)
-  modifiedAt        DateTime         @default(now()) @db.Timestamptz(3)
-  name              String
-  start             DateTime         @db.Timestamptz(3)
-  end               DateTime         @db.Timestamptz(3)
-  registrationStart DateTime         @db.Timestamptz(3)
-  registrationEnd   DateTime         @db.Timestamptz(3)
-  players           Player[]
-  umpires           Umpire[]
-  rings             AssignmentRing[]
-  users             User[]
+  id                    String           @id @default(uuid())
+  createdAt             DateTime         @default(now()) @db.Timestamptz(3)
+  modifiedAt            DateTime         @default(now()) @db.Timestamptz(3)
+  name                  String
+  startTime             DateTime         @db.Timestamptz(3)
+  endTime               DateTime         @db.Timestamptz(3)
+  registrationStartTime DateTime         @db.Timestamptz(3)
+  registrationEndTime   DateTime         @db.Timestamptz(3)
+  players               Player[]
+  umpires               Umpire[]
+  rings                 AssignmentRing[]
+  users                 User[]
 }
 
 model Assignment {

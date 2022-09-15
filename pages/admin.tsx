@@ -9,10 +9,10 @@ export const getStaticProps: GetStaticProps = async () => {
     select: {
       id: true,
       name: true,
-      start: true,
-      end: true,
-      registrationStart: true,
-      registrationEnd: true,
+      startTime: true,
+      endTime: true,
+      registrationStartTime: true,
+      registrationEndTime: true,
       players: true,
       umpires: true
     }
@@ -21,10 +21,10 @@ export const getStaticProps: GetStaticProps = async () => {
   tournaments.map((tournament) =>
     newTournaments.push({
       ...tournament,
-      start: tournament.start.toString(),
-      end: tournament.end.toString(),
-      registrationStart: tournament.registrationStart.toString(),
-      registrationEnd: tournament.registrationEnd.toString()
+      startTime: tournament.startTime.toString(),
+      endTime: tournament.endTime.toString(),
+      registrationStartTime: tournament.registrationStartTime.toString(),
+      registrationEndTime: tournament.registrationEndTime.toString()
     })
   );
   newTournaments = JSON.parse(JSON.stringify(newTournaments));
@@ -58,11 +58,11 @@ export default function Admin({ newTournaments }) {
               <a>{tournament.name}</a>
             </Link>
 
-            <p>Alkaa: {modifyDate(tournament.start)}</p>
-            <p>Päättyy: {modifyDate(tournament.end)}</p>
+            <p>Alkaa: {modifyDate(tournament.startTime)}</p>
+            <p>Päättyy: {modifyDate(tournament.endTime)}</p>
             <p>
-              Ilmoittautuminen: {modifyDate(tournament.registrationStart)} -
-              {modifyDate(tournament.registrationEnd)}
+              Ilmoittautuminen: {modifyDate(tournament.registrationStartTime)} -
+              {modifyDate(tournament.registrationEndTime)}
             </p>
           </div>
         ))}
