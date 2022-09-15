@@ -19,13 +19,11 @@ import ExpandLess from "@mui/icons-material/ExpandLess";
 import ExpandMore from "@mui/icons-material/ExpandMore";
 
 const NavigationBar = ({ targets }) => {
-  const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(
-    null
-  );
-  const [anchorElTarget, setAnchorElTarget] =
-    React.useState<null | HTMLElement>(null);
+  const [anchorElNav, setAnchorElNav] = React.useState(null);
 
-  const [open, setOpen] = React.useState(true);
+  const [anchorElTarget, setAnchorElTarget] = React.useState(null);
+
+  const [open, setOpen] = React.useState(false);
 
   const handleClick = () => {
     setOpen(!open);
@@ -177,7 +175,6 @@ const NavigationBar = ({ targets }) => {
                 horizontal: "center"
               }}
               keepMounted
-              getContentAnchorEl={null}
               open={anchorElTarget}
               onClose={handleCloseTargetMenu}
             >

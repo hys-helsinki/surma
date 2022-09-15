@@ -10,6 +10,7 @@ import { useRouter } from "next/router";
 import NavigationBar from "../../../components/NavigationBar";
 import { Calendar } from "../../../components/Calendar";
 import Image from "next/image";
+import { Grid } from "@mui/material";
 
 export const getStaticProps: GetStaticProps = async ({ params }) => {
   require("dotenv").config();
@@ -184,49 +185,62 @@ export default function UserInfo({
   return (
     <div>
       <NavigationBar targets={testList} />
-      <div
-        style={{ paddingLeft: "10px", display: "inline-block", width: "40%" }}
-      >
-        {notification ? (
-          <p className="notification">Ilmoittautuminen onnistui!</p>
-        ) : null}
-        {imageUrl !== "" ? (
-          <div>
-            {showPicture ? (
-              <div>
-                <Image src={imageUrl} width={200} height={100}></Image>
-              </div>
+      <Grid container>
+        <Grid item xs={12} md={5}>
+          <div
+            style={{
+              paddingLeft: "10px",
+              display: "inline-block"
+            }}
+          >
+            {notification ? (
+              <p className="notification">Ilmoittautuminen onnistui!</p>
             ) : null}
-            <button onClick={togglePicture}>
-              {showPicture ? "piilota" : "näytä kuva"}
-            </button>
-          </div>
-        ) : (
-          <p>Ei kuvaa</p>
-        )}
-        <h1>
-          {user.firstName} {user.lastName}
-        </h1>
-        <div>
-          <button onClick={handleUpdateStatusClick}>
-            {isUpdated ? "muokkaa tietoja" : "peruuta"}
-          </button>
-        </div>
-        {isUpdated ? (
-          <div>
-            <div className="userdetails">
-              <PlayerContactInfo user={user} />
-              <PlayerDetails player={user.player} />
+            <h1>
+              {user.firstName} {user.lastName}, alias: {user.player.alias}
+            </h1>
+            {imageUrl !== "" ? (
+              <div>
+                {showPicture ? (
+                  <div>
+                    <Image src={imageUrl} width={350} height={500}></Image>
+                  </div>
+                ) : null}
+                <button onClick={togglePicture}>
+                  {showPicture ? "piilota" : "näytä kuva"}
+                </button>
+              </div>
+            ) : (
+              <p>Ei kuvaa</p>
+            )}
+
+            <div>
+              <button onClick={handleUpdateStatusClick}>
+                {isUpdated ? "muokkaa tietoja" : "peruuta"}
+              </button>
             </div>
+            {isUpdated ? (
+              <div>
+                <div className="userdetails">
+                  <PlayerContactInfo user={user} />
+                  <PlayerDetails player={user.player} />
+                </div>
+              </div>
+            ) : (
+              <div>
+                <PlayerContactInfo user={user} />
+                <UpdateForm
+                  data={user.player}
+                  handleSubmit={handleDetailsSubmit}
+                />
+              </div>
+            )}
           </div>
-        ) : (
-          <div>
-            <PlayerContactInfo user={user} />
-            <UpdateForm data={user.player} handleSubmit={handleDetailsSubmit} />
-          </div>
-        )}
-      </div>
-      <Calendar player={user.player} handleSubmit={handleCalendarSubmit} />
+        </Grid>
+        <Grid item xs={12} md={7}>
+          <Calendar player={user.player} handleSubmit={handleCalendarSubmit} />
+        </Grid>
+      </Grid>
     </div>
   );
 }
