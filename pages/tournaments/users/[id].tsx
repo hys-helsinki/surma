@@ -9,8 +9,24 @@ import { UpdateForm } from "../../../components/UpdateForm";
 import { useRouter } from "next/router";
 import NavigationBar from "../../../components/NavigationBar";
 import { Calendar } from "../../../components/Calendar";
+import Image from "next/image";
 
 export const getStaticProps: GetStaticProps = async ({ params }) => {
+  require("dotenv").config();
+  const cloudinary = require("cloudinary").v2;
+  cloudinary.config({
+    cloud_name: process.env.CLOUDINARY_NAME,
+    api_key: process.env.CLOUDINARY_API_KEY,
+    api_secret: process.env.CLOUDINARY_API_SECRET
+  });
+  let imageUrl = "";
+  try {
+    const result = await cloudinary.api.resource(params.id);
+    imageUrl = result.url;
+  } catch (error) {
+    console.log(error);
+  }
+
   let tournament = await prisma.tournament.findFirst({
     select: {
       name: true,
@@ -48,25 +64,29 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
   });
   user = JSON.parse(JSON.stringify(user));
   return {
-    props: { user, tournament }
+    props: { user, tournament, imageUrl }
   };
 };
 
 type UserWithPlayer = Prisma.UserGetPayload<{
   include: {
     player: true;
+    tournament: true;
   };
 }>;
 
 export default function UserInfo({
   user,
-  tournament
+  tournament,
+  imageUrl
 }: {
   user: UserWithPlayer;
   tournament: Tournament;
+  imageUrl: string;
 }): JSX.Element {
   const [notification, setNotification] = useState("");
   const [isUpdated, setIsUpdated] = useState(true);
+  const [showPicture, setShowPicture] = useState(false);
   const router = useRouter();
   const { id } = router.query;
 
@@ -86,7 +106,7 @@ export default function UserInfo({
   const start = new Date(tournament.start);
   const end = new Date(tournament.end);
   let dates: Array<any> = [];
-  dates.push(`${start.getDate()}.${end.getMonth() + 1}.`);
+  dates.push(`${start.getDate()}.${start.getMonth() + 1}.`);
   let loopDay = start;
   while (loopDay < end) {
     loopDay.setDate(loopDay.getDate() + 1);
@@ -135,6 +155,14 @@ export default function UserInfo({
     { firstName: "testi", lastName: "testaaja" } // static target list until I figure out why targets are not recognized
   ];
 
+  const togglePicture: MouseEventHandler = () => {
+    if (showPicture === true) {
+      setShowPicture(false);
+    } else {
+      setShowPicture(true);
+    }
+  };
+
   return (
     <div>
       <NavigationBar targets={testList} />
@@ -142,6 +170,20 @@ export default function UserInfo({
         {notification ? (
           <p className="notification">Ilmoittautuminen onnistui!</p>
         ) : null}
+        {imageUrl !== "" ? (
+            <div>
+              {showPicture ? (
+                <div>
+                  <Image src={imageUrl} width={200} height={100}></Image>
+                </div>
+              ) : null}
+              <button onClick={togglePicture}>
+                {showPicture ? "piilota" : "näytä kuva"}
+              </button>
+            </div>
+          ) : (
+            <p>Ei kuvaa</p>
+        )}
         <h1 style={{ paddingLeft: "10px" }}>
           {user.firstName} {user.lastName}
         </h1>

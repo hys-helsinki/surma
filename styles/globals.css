@@ -25,6 +25,9 @@ textarea, label {
   display: block;
 }
 
+select {
+  margin: 7px
+}
 label {
   display: inline;
 }
