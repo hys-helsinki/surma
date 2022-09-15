@@ -17,6 +17,8 @@ import ListItemText from "@mui/material/ListItemText";
 import Collapse from "@mui/material/Collapse";
 import ExpandLess from "@mui/icons-material/ExpandLess";
 import ExpandMore from "@mui/icons-material/ExpandMore";
+import Image from "next/image";
+import logo from "/public/images/surma_logo.svg";
 
 const NavigationBar = ({ targets }) => {
   const [anchorElNav, setAnchorElNav] = React.useState(null);
@@ -48,11 +50,10 @@ const NavigationBar = ({ targets }) => {
     <AppBar position="static">
       <Container maxWidth="xl" sx={{ backgroundColor: "#424242" }}>
         <Toolbar disableGutters>
+          <Image src={logo} alt="testi" width={45} height={45} />
           <Typography
             variant="h6"
             noWrap
-            component="a"
-            href="/"
             sx={{
               mr: 2,
               display: { xs: "none", md: "flex" },
@@ -136,8 +137,6 @@ const NavigationBar = ({ targets }) => {
           <Typography
             variant="h5"
             noWrap
-            component="a"
-            href=""
             sx={{
               mr: 2,
               display: { xs: "flex", md: "none" },
