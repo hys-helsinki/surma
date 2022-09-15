@@ -19,7 +19,7 @@ model User {
   firstName    String
   lastName     String
   phone        String
-  email        String
+  email        String     @unique
   player       Player?
   umpire       Umpire?
 
