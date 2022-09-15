@@ -102,16 +102,10 @@ button:hover {
 .calendar {
   display: inline-block;
   vertical-align: top;
-  border-style: dashed;
-  border-width: 5px;
+  border-style: solid;
+  border-width: 2px;
   width: 60%;
+  padding: 10px;
 }
 
-.userdetails {
-  display: inline-block;
-  width: 40%;
-  padding-left: 10px;
-
-
-}
 

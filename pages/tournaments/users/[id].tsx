@@ -130,7 +130,9 @@ export default function UserInfo({
     other: string;
     calendar: object;
   };
-  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+  const handleDetailsSubmit = async (
+    event: React.FormEvent<HTMLFormElement>
+  ) => {
     const cal = {};
     dates.forEach((x, i) => (cal[x] = event.currentTarget.dates[i].value));
     event.preventDefault();
@@ -150,7 +152,23 @@ export default function UserInfo({
       body: JSON.stringify(data)
     }).then((response) => router.reload());
   };
-  console.log(user);
+
+  const handleCalendarSubmit = async (
+    event: React.FormEvent<HTMLFormElement>
+  ) => {
+    console.log("tapahtuuko mitään?");
+    const cal = {};
+    dates.forEach((x, i) => (cal[x] = event.currentTarget.dates[i].value));
+    event.preventDefault();
+    const data = {
+      calendar: cal
+    };
+
+    fetch(`/api/user/update/${id}`, {
+      method: "PUT",
+      body: JSON.stringify(data)
+    }).then((response) => router.reload());
+  };
   const testList = [
     { firstName: "testi", lastName: "testaaja" } // static target list until I figure out why targets are not recognized
   ];
@@ -166,25 +184,27 @@ export default function UserInfo({
   return (
     <div>
       <NavigationBar targets={testList} />
-      <div>
+      <div
+        style={{ paddingLeft: "10px", display: "inline-block", width: "40%" }}
+      >
         {notification ? (
           <p className="notification">Ilmoittautuminen onnistui!</p>
         ) : null}
         {imageUrl !== "" ? (
-            <div>
-              {showPicture ? (
-                <div>
-                  <Image src={imageUrl} width={200} height={100}></Image>
-                </div>
-              ) : null}
-              <button onClick={togglePicture}>
-                {showPicture ? "piilota" : "näytä kuva"}
-              </button>
-            </div>
-          ) : (
-            <p>Ei kuvaa</p>
+          <div>
+            {showPicture ? (
+              <div>
+                <Image src={imageUrl} width={200} height={100}></Image>
+              </div>
+            ) : null}
+            <button onClick={togglePicture}>
+              {showPicture ? "piilota" : "näytä kuva"}
+            </button>
+          </div>
+        ) : (
+          <p>Ei kuvaa</p>
         )}
-        <h1 style={{ paddingLeft: "10px" }}>
+        <h1>
           {user.firstName} {user.lastName}
         </h1>
         <div>
@@ -198,19 +218,15 @@ export default function UserInfo({
               <PlayerContactInfo user={user} />
               <PlayerDetails player={user.player} />
             </div>
-            <Calendar player={user.player} />
           </div>
         ) : (
           <div>
             <PlayerContactInfo user={user} />
-            <UpdateForm
-              data={user.player}
-              handleSubmit={handleSubmit}
-              calendar={user.player.calendar}
-            />
+            <UpdateForm data={user.player} handleSubmit={handleDetailsSubmit} />
           </div>
         )}
       </div>
+      <Calendar player={user.player} handleSubmit={handleCalendarSubmit} />
     </div>
   );
 }
