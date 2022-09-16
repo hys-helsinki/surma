@@ -152,10 +152,10 @@ export default function Registration({ tournament }) {
               .then((d) => {
                 uploadImage(d.id);
                 router.push({
-                  pathname: `/tournaments/users/${d.id}`,
-                  query: { registration: "ok" }
+                  pathname: `/registration/confirm`
                 });
-              });
+              })
+              .catch((e) => console.log(e));
           }}
         >
           <Form>
