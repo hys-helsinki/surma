@@ -1,5 +1,5 @@
 import { GetStaticProps, GetStaticPaths } from "next";
-import { Prisma, Tournament } from "@prisma/client";
+import { Prisma, Tournament, Player } from "@prisma/client";
 import { PlayerDetails } from "../../../components/PlayerDetails";
 import { PlayerContactInfo } from "../../../components/PlayerContactInfo";
 import prisma from "../../../lib/prisma";
@@ -75,8 +75,23 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
 
 type UserWithPlayer = Prisma.UserGetPayload<{
   include: {
-    player: true;
-    tournament: true;
+    player: {
+      include: {
+        targets: true;
+      };
+    };
+    tournament: {
+      include: {
+        players: true;
+      };
+    };
+  };
+}>;
+
+type TournamentWithPlayers = Prisma.TournamentGetPayload<{
+  include: {
+    players: true;
+    users: true;
   };
 }>;
 
@@ -86,7 +101,7 @@ export default function UserInfo({
   imageUrl
 }: {
   user: UserWithPlayer;
-  tournament: Tournament;
+  tournament: TournamentWithPlayers;
   imageUrl: string;
 }): JSX.Element {
   const [notification, setNotification] = useState("");
