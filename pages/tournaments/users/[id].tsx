@@ -34,7 +34,9 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
       start: true,
       end: true,
       registrationStart: true,
-      registrationEnd: true
+      registrationEnd: true,
+      players: true,
+      users: true
     }
   });
   tournament = JSON.parse(JSON.stringify(tournament)); // avoid Next.js serialization error
@@ -43,12 +45,14 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
       id: params.id as string
     },
     select: {
+      id: true,
       firstName: true,
       lastName: true,
       phone: true,
       email: true,
       player: {
         select: {
+          id: true,
           alias: true,
           address: true,
           learningInstitution: true,
@@ -170,9 +174,6 @@ export default function UserInfo({
       body: JSON.stringify(data)
     }).then((response) => router.reload());
   };
-  const testList = [
-    { firstName: "testi", lastName: "testaaja" } // static target list until I figure out why targets are not recognized
-  ];
 
   const togglePicture: MouseEventHandler = () => {
     if (showPicture === true) {
@@ -182,9 +183,20 @@ export default function UserInfo({
     }
   };
 
+  const targetPlayerIds = [
+    // everything works fine but vscode says that targets, players and users don't exist.
+    user.player.targets.map(
+      (t) => tournament.players.find((p) => p.id == t.targetId).userId
+    )
+  ];
+
+  const targetUsers = tournament.users.filter((user) =>
+    targetPlayerIds[0].includes(user.id)
+  );
+
   return (
     <div>
-      <NavigationBar targets={testList} />
+      <NavigationBar targets={targetUsers} userId={user.id} />
       <Grid container>
         <Grid item xs={12} md={5}>
           <div

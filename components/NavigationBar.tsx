@@ -9,18 +9,17 @@ import Container from "@mui/material/Container";
 import Button from "@mui/material/Button";
 import MenuItem from "@mui/material/MenuItem";
 import MenuIcon from "@mui/icons-material/Menu";
-import ListSubheader from "@mui/material/ListSubheader";
 import List from "@mui/material/List";
 import ListItemButton from "@mui/material/ListItemButton";
-import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
 import Collapse from "@mui/material/Collapse";
 import ExpandLess from "@mui/icons-material/ExpandLess";
 import ExpandMore from "@mui/icons-material/ExpandMore";
 import Image from "next/image";
 import logo from "/public/images/surma_logo.svg";
+import Link from "next/link";
 
-const NavigationBar = ({ targets }) => {
+const NavigationBar = ({ targets, userId }) => {
   const [anchorElNav, setAnchorElNav] = React.useState(null);
 
   const [anchorElTarget, setAnchorElTarget] = React.useState(null);
@@ -106,9 +105,6 @@ const NavigationBar = ({ targets }) => {
                 component="nav"
                 aria-labelledby="nested-list-subheader"
               >
-                <ListItemButton sx={{ width: 200 }}>
-                  <ListItemText primary="Admin" />
-                </ListItemButton>
                 <ListItemButton onClick={handleClick}>
                   <ListItemText primary="Kohteet" />
                   {open ? <ExpandLess /> : <ExpandMore />}
@@ -120,16 +116,18 @@ const NavigationBar = ({ targets }) => {
                     ) : (
                       targets.map((target, i) => (
                         <ListItemButton key={i} sx={{ pl: 4 }}>
-                          <ListItemText
-                            primary={`${target.firstName} ${target.lastName}`}
-                          />
+                          <Link href={`/tournaments/targets/${target.id}`}>
+                            <a>
+                              {target.firstName} {target.lastName}
+                            </a>
+                          </Link>
                         </ListItemButton>
                       ))
                     )}
                   </List>
                 </Collapse>
                 <ListItemButton>
-                  <ListItemText primary="Oma sivu" />
+                  <Link href={`/tournaments/users/${userId}`}>Oma sivu</Link>
                 </ListItemButton>
               </List>
             </Menu>
@@ -152,11 +150,6 @@ const NavigationBar = ({ targets }) => {
           </Typography>
           <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }}>
             <Button
-              sx={{ minWidth: 100, my: 2, color: "white", display: "block" }}
-            >
-              Admin
-            </Button>
-            <Button
               onClick={handleOpenTargetMenu}
               sx={{ minWidth: 100, my: 2, color: "white", display: "block" }}
             >
@@ -174,15 +167,19 @@ const NavigationBar = ({ targets }) => {
                 horizontal: "center"
               }}
               keepMounted
-              open={anchorElTarget}
+              open={Boolean(anchorElTarget)}
               onClose={handleCloseTargetMenu}
             >
               {!targets ? (
                 <MenuItem>Ei näytettäviä kohteita</MenuItem>
               ) : (
-                targets.map((target, i) => (
-                  <MenuItem key={i}>
-                    {target.firstName} {target.lastName}
+                targets.map((target) => (
+                  <MenuItem key={target.id}>
+                    <Link href={`/tournaments/targets/${target.id}`}>
+                      <a>
+                        {target.firstName} {target.lastName}
+                      </a>
+                    </Link>
                   </MenuItem>
                 ))
               )}
@@ -190,7 +187,7 @@ const NavigationBar = ({ targets }) => {
             <Button
               sx={{ minWidth: 100, my: 2, color: "white", display: "block" }}
             >
-              Oma sivu
+              <Link href={`/tournaments/users/${userId}`}>Oma sivu</Link>
             </Button>
           </Box>
         </Toolbar>
