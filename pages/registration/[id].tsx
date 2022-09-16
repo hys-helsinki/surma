@@ -6,6 +6,8 @@ import * as Yup from "yup";
 import { useState } from "react";
 import Link from "next/link";
 import GDPRmodal from "../../components/GDPRmodal";
+import logo from "/public/images/surma_logo.svg";
+import Image from "next/image";
 
 export const getStaticProps: GetStaticProps = async ({ params }) => {
   let tournament = await prisma.tournament.findUnique({
@@ -96,7 +98,21 @@ export default function Registration({ tournament }) {
   return (
     <div>
       <div className="registration-form">
+        <div style={{ float: "left", width: "10%" }}>
+          <Image src={logo} width={60} height={60} />
+        </div>
         <h1 className="registration-form-title">Ilmoittautuminen</h1>
+        <p>
+          Tervetuloa ilmoittatumaan turnaukseen "{tournament.name}". Nimi,
+          puhelinnumero, sähköpostiosoite sekä alias ovat pakollisia kenttiä,
+          muut kentät voi (ja pitää) täyttää ilmoittatumisen jälkeenkin.{" "}
+        </p>
+        <p>
+          Kalenterin tiedot tulee pitää ajan tasalla sekä riittävän selkeinä ja
+          yksityiskohtaisina. Jokaista sekuntia siihen ei tarvitse kirjoittaa,
+          mutta pelistä tulee hauskempaa itsellesi sekä jahtaajillesi jos
+          tarjoat heille riittävästi tilaisuuksia.
+        </p>
         <form>
           <label>Valitse kuva</label>
           <input
@@ -136,7 +152,7 @@ export default function Registration({ tournament }) {
               .required("Pakollinen")
               .positive("Puhelinnumero ei voi sisältää negatiivisia lukuja")
               .integer("Syötä vain numeroita"),
-            height: Yup.number().positive("Pituus ei voi olla negatiivinen")
+            height: Yup.number()
           })}
           onSubmit={async (values) => {
             const cal = {};
@@ -195,7 +211,7 @@ export default function Registration({ tournament }) {
             <button type="submit">Ilmoittaudu</button>
           </Form>
         </Formik>
-        <div>
+        <div style={{ marginBottom: "20px" }}>
           Ilmoittautuessasi turnaukseeen hyväksyt Helsingin yliopiston
           salamurhaajien&nbsp;
           <Link

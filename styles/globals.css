@@ -56,11 +56,11 @@ textarea {
 
 .registration-form {
   margin: auto;
-  width: 50%;
+  width: 60%;
 }
 
 .registration-form-title {
-  text-align: center;
+  text-align: left;
 }
 
 .registration-error {
