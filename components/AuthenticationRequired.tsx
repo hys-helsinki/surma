@@ -1,5 +1,6 @@
 import { signIn, useSession } from "next-auth/react";
-export const RestrictedAccess = (props): JSX.Element => {
+
+export const AuthenticationRequired = (props): JSX.Element => {
   const { data: session } = useSession();
   if (session) {
     return <>{props.children}</>;
