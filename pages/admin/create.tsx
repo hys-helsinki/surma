@@ -1,5 +1,5 @@
 import { useRouter } from "next/router";
-import { RestrictedAccess } from "../../components/RestrictedAccess";
+import { AuthenticationRequired } from "../../components/AuthenticationRequired";
 
 export default function CreateTournament() {
   const router = useRouter();
@@ -46,7 +46,7 @@ export default function CreateTournament() {
     });
   };
   return (
-    <RestrictedAccess>
+    <AuthenticationRequired>
       <div>
         <h2>Turnauksen luominen</h2>
         <form onSubmit={handleSubmit}>
@@ -96,6 +96,6 @@ export default function CreateTournament() {
           <button type="submit">Luo turnaus</button>
         </form>
       </div>
-    </RestrictedAccess>
+    </AuthenticationRequired>
   );
 }

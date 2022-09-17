@@ -2,6 +2,7 @@ import { Prisma, Player } from "@prisma/client";
 import { GetStaticProps } from "next";
 import { PlayerDetails } from "../../../components/PlayerDetails";
 import prisma from "../../../lib/prisma";
+import { AuthenticationRequired } from "../../../components/AuthenticationRequired";
 
 export const getStaticProps: GetStaticProps = async ({ params }) => {
   const playerAsTarget: Prisma.PlayerSelect = {
@@ -33,12 +34,14 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
 
 export default function Target(player): JSX.Element {
   return (
-    <div>
-      <h1>
-        {player.user.firstName} {player.user.lastName}
-      </h1>
-      <PlayerDetails player={player} />
-    </div>
+    <AuthenticationRequired>
+      <div>
+        <h1>
+          {player.user.firstName} {player.user.lastName}
+        </h1>
+        <PlayerDetails player={player} />
+      </div>
+    </AuthenticationRequired>
   );
 }
 
