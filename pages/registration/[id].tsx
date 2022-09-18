@@ -104,17 +104,32 @@ export default function Registration({ tournament }) {
         <h1 className="registration-form-title">Ilmoittautuminen</h1>
         <p>
           Tervetuloa ilmoittatumaan turnaukseen "{tournament.name}". Nimi,
-          puhelinnumero, sähköpostiosoite sekä alias ovat pakollisia kenttiä,
-          muut kentät voi (ja pitää) täyttää ilmoittatumisen jälkeenkin.{" "}
+          puhelinnumero, sähköpostiosoite sekä peitenimi ovat pakollisia
+          kenttiä, muut kentät voi täyttää ilmoittautumisen jälkeenkin mutta
+          mieluusti ennen turnauksen alkua.{" "}
         </p>
         <p>
           Kalenterin tiedot tulee pitää ajan tasalla sekä riittävän selkeinä ja
           yksityiskohtaisina. Jokaista sekuntia siihen ei tarvitse kirjoittaa,
           mutta pelistä tulee hauskempaa itsellesi sekä jahtaajillesi jos
-          tarjoat heille riittävästi tilaisuuksia.
+          tarjoat heille riittävästi tilaisuuksia. Kalenterin tietoja pystyy
+          muokkaamaan turnauksen aikana.
+        </p>
+        <p>
+          Puhelinnumero, sähköpostiosoite ja peitenimesi ovat ainoastaan
+          tuomariston tiedossa. Pelaajat, jotka saavat sinut kohteekseensa,
+          näkevät muut tiedot.
+        </p>
+        <h3>Huom!</h3>
+        <p>
+          Turnausjärjestelmä Surma on ensimmäistä kertaa käytössä vuoden 2022
+          syysturnauksessa. Jos ilmoittautumisessa tai myöhemmin sovelluksen
+          käytössä ilmenee minkäänlaisia ongelmia, ilmoitathan viasta
+          tuomaristolle sähköpostitse tuomaristo@salamurhaajat.net. Myös
+          kaikenlainen palaute on erittäin tervetullutta!
         </p>
         <form>
-          <label>Valitse kuva</label>
+          <label>Valitse kuva itsestäsi (näkyy jahtaajillesi)</label>
           <input
             type="file"
             name="image"
@@ -179,7 +194,7 @@ export default function Registration({ tournament }) {
 
             <TextInput label="Sukunimi" name="lastName" type="text" />
 
-            <TextInput label="Alias" name="alias" type="text" />
+            <TextInput label="Peitenimi" name="alias" type="text" />
 
             <TextInput label="Email" name="email" type="email" />
 
