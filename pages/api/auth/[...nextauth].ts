@@ -18,7 +18,29 @@ export const authConfig = {
       },
       from: "Surma authorization <no-reply.surma@salamurhaajat.net>"
     })
-  ]
+  ],
+  callbacks: {
+    async signIn({ user, account, profile, email, credentials }) {
+      const currentUser = await prisma.user.findUnique({
+        where: {
+          id: user.id
+        },
+        select: {
+          umpire: true
+        }
+      });
+      console.log("user umpire", currentUser.umpire);
+      const isAllowedToSignIn = currentUser.umpire != null; // EI-TUOMARIPELAAJAT EIVÄT SAA KIRJAUTUA VIELÄ
+      if (isAllowedToSignIn) {
+        return true;
+      } else {
+        // Return false to display a default error message
+        return false;
+        // Or you can return a URL to redirect to:
+        // return '/unauthorized'
+      }
+    }
+  }
 };
 
 export default NextAuth(authConfig);
