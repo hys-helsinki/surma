@@ -5,7 +5,7 @@ import prisma from "../../lib/prisma";
 import * as Yup from "yup";
 import { useState } from "react";
 import Link from "next/link";
-import GDPRmodal from "../../components/GdprModal";
+import GdprModal from "../../components/GdprModal";
 import logo from "/public/images/surma_logo.svg";
 import Image from "next/image";
 
@@ -103,8 +103,8 @@ export default function Registration({ tournament }) {
         </div>
         <h1 className="registration-form-title">Ilmoittautuminen</h1>
         <p>
-          Tervetuloa ilmoittatumaan turnaukseen "{tournament.name}". Nimi,
-          puhelinnumero, sähköpostiosoite sekä peitenimi ovat pakollisia
+          Tervetuloa ilmoittatumaan turnaukseen &quot;{tournament.name}&quot;.
+          Nimi, puhelinnumero, sähköpostiosoite sekä peitenimi ovat pakollisia
           kenttiä, muut kentät voi täyttää ilmoittautumisen jälkeenkin mutta
           mieluusti ennen turnauksen alkua.
         </p>
@@ -243,7 +243,7 @@ export default function Registration({ tournament }) {
             <a style={{ color: "red" }}>asesäännöt</a>
           </Link>
           &nbsp;sekä&nbsp;
-          <GDPRmodal />
+          <GdprModal />
         </div>
       </div>
     </div>
