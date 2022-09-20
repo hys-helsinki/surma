@@ -2,7 +2,7 @@ import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import Modal from "@mui/material/Modal";
 import { useState } from "react";
-import GDPRtext from "./GdprText";
+import GdprText from "./GDPRtext";
 
 const style = {
   position: "absolute" as "absolute",
@@ -39,7 +39,7 @@ export default function GDPRModal() {
             Tietosuojaseloste
           </Typography>
 
-          <GDPRtext />
+          <GdprText />
         </Box>
       </Modal>
     </span>
