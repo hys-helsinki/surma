@@ -73,22 +73,7 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
   };
 };
 
-type UserWithPlayer = Prisma.UserGetPayload<{
-  include: {
-    player: true;
-    tournament: true;
-  };
-}>;
-
-export default function UserInfo({
-  user,
-  tournament,
-  imageUrl
-}: {
-  user: UserWithPlayer;
-  tournament: Tournament;
-  imageUrl: string;
-}): JSX.Element {
+export default function UserInfo({ user, tournament, imageUrl }): JSX.Element {
   const [notification, setNotification] = useState("");
   const [isUpdated, setIsUpdated] = useState(true);
   const [showPicture, setShowPicture] = useState(false);
