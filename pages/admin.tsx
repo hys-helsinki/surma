@@ -40,7 +40,6 @@ export default function Admin({ newTournaments }) {
   };
 
   const modifyDate = (s) => {
-    console.log(s);
     const date = new Date(s);
     const formattedDate = `${date.getDate()}.${
       date.getMonth() + 1
