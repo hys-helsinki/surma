@@ -8,6 +8,7 @@ import { useState } from "react";
 import { UpdateForm } from "../../../components/UpdateForm";
 import { useRouter } from "next/router";
 import Image from "next/image";
+import { AuthenticationRequired } from "../../../components/AuthenticationRequired";
 
 export const getStaticProps: GetStaticProps = async ({ params }) => {
   require("dotenv").config();
@@ -156,52 +157,54 @@ export default function UserInfo({
   };
 
   return (
-    <div>
-      {notification ? (
-        <p className="notification">Ilmoittautuminen onnistui!</p>
-      ) : null}
-      {isUpdated ? (
-        <div>
-          <h1>
-            {user.firstName} {user.lastName}
-          </h1>
-          {imageUrl !== "" ? (
-            <div>
-              {showPicture ? (
-                <div>
-                  <Image src={imageUrl} width={200} height={100}></Image>
-                </div>
-              ) : null}
-              <button onClick={togglePicture}>
-                {showPicture ? "piilota" : "näytä kuva"}
-              </button>
-            </div>
-          ) : (
-            <p>Ei kuvaa</p>
-          )}
-
-          <PlayerContactInfo user={user} />
-          <PlayerDetails player={user.player} />
-        </div>
-      ) : (
-        <div>
-          <h1>
-            {user.firstName} {user.lastName}
-          </h1>
-          <PlayerContactInfo user={user} />
-          <UpdateForm
-            data={user.player}
-            handleSubmit={handleSubmit}
-            calendar={user.player.calendar}
-          />
-        </div>
-      )}
+    <AuthenticationRequired>
       <div>
-        <button onClick={handleUpdateStatusClick}>
-          {isUpdated ? "muokkaa tietoja" : "peruuta"}
-        </button>
+        {notification ? (
+          <p className="notification">Ilmoittautuminen onnistui!</p>
+        ) : null}
+        {isUpdated ? (
+          <div>
+            <h1>
+              {user.firstName} {user.lastName}
+            </h1>
+            {imageUrl !== "" ? (
+              <div>
+                {showPicture ? (
+                  <div>
+                    <Image src={imageUrl} width={200} height={100}></Image>
+                  </div>
+                ) : null}
+                <button onClick={togglePicture}>
+                  {showPicture ? "piilota" : "näytä kuva"}
+                </button>
+              </div>
+            ) : (
+              <p>Ei kuvaa</p>
+            )}
+
+            <PlayerContactInfo user={user} />
+            <PlayerDetails player={user.player} />
+          </div>
+        ) : (
+          <div>
+            <h1>
+              {user.firstName} {user.lastName}
+            </h1>
+            <PlayerContactInfo user={user} />
+            <UpdateForm
+              data={user.player}
+              handleSubmit={handleSubmit}
+              calendar={user.player.calendar}
+            />
+          </div>
+        )}
+        <div>
+          <button onClick={handleUpdateStatusClick}>
+            {isUpdated ? "muokkaa tietoja" : "peruuta"}
+          </button>
+        </div>
       </div>
-    </div>
+    </AuthenticationRequired>
   );
 }
 

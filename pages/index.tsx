@@ -17,7 +17,9 @@ export default function Home() {
     <>
       Et ole kirjautunut sisään.
       <br />
-      <button onClick={() => signIn()}>Kirjaudu sisään</button>
+      {/* <button onClick={() => signIn("email", { callbackUrl: "/personal" })}>
+        Kirjaudu sisään
+      </button> */}
     </>
   );
 }

@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { GetStaticProps } from "next";
 import prisma from "../../lib/prisma";
+import { AuthenticationRequired } from "../../components/AuthenticationRequired";
 
 export const getStaticProps: GetStaticProps = async () => {
   const objects = await prisma.user.findMany({
@@ -25,7 +26,7 @@ export const getStaticProps: GetStaticProps = async () => {
 
 export default function UserList({ objects }) {
   return (
-    <>
+    <AuthenticationRequired>
       <h1>List of users</h1>
       <ul>
         {objects.map(
@@ -49,6 +50,6 @@ export default function UserList({ objects }) {
           }
         )}
       </ul>
-    </>
+    </AuthenticationRequired>
   );
 }
