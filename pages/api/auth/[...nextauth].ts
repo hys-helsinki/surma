@@ -1,4 +1,4 @@
-import NextAuth from "next-auth";
+import NextAuth, { DefaultSession } from "next-auth";
 import EmailProvider from "next-auth/providers/email";
 import { PrismaAdapter } from "@next-auth/prisma-adapter";
 import prisma from "../../../lib/prisma";
@@ -35,8 +35,7 @@ export const authConfig = {
           umpire: true
         }
       });
-      console.log("user umpire", currentUser.umpire);
-      const isAllowedToSignIn = currentUser.umpire != null; // EI-TUOMARIPELAAJAT EIVÄT SAA KIRJAUTUA VIELÄ
+      const isAllowedToSignIn = true; // currentUser.umpire != null; // EI-TUOMARIPELAAJAT EIVÄT SAA KIRJAUTUA VIELÄ
       if (isAllowedToSignIn) {
         return true;
       } else {
