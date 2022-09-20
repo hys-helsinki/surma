@@ -2,7 +2,7 @@ import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import Modal from "@mui/material/Modal";
 import { useState } from "react";
-import GDPRtext from "./GDPRtext";
+import GDPRtext from "./GdprText";
 
 const style = {
   position: "absolute" as "absolute",
@@ -18,7 +18,7 @@ const style = {
   overflow: "scroll"
 };
 
-export default function GDPRmodal() {
+export default function GDPRModal() {
   const [open, setOpen] = useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);

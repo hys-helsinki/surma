@@ -1,29 +1,30 @@
-export default function () {
+export default function GdprText() {
   return (
     <div>
-      <h3>1. Rekisterin ylläpitäjä</h3>{" "}
+      <h3>1. Rekisterin ylläpitäjä</h3>
       <p>Helsingin yliopiston salamurhapelaajat ry (HYS)</p>
-      <p>Mechelininkatu 3 D, 00100 Helsinki</p> <h3>2. Rekisterin nimi</h3>{" "}
+      <p>Mechelininkatu 3 D, 00100 Helsinki</p> <h3>2. Rekisterin nimi</h3>
       <p>Surma</p>
       <h3>3. Rekisteristä vastaavat yhteyshenkilöt</h3> <p>Erika Ojanperä</p>
-      <p>erika.m.ojanpera@helsinki.fi</p>{" "}
-      <h3>4. Henkilötietojen käsittelyn tarkoitus</h3>{" "}
+      <p>erika.m.ojanpera@helsinki.fi</p>
+      <h3>4. Henkilötietojen käsittelyn tarkoitus</h3>
       <p>
-        Surma on HYSin kehittämä ja ylläpitämä sovellus, jolla voi luoda sekä
-        hallita HYSin järjestämiä salamurhaturnauksia. Salamurhaturnauksissa
-        pelaajat saavat toistensa tiedot ja niiden avulla pelaajat yrittävät
-        ”salamurhata” toisensa HYSin asesääntöjen mahdollistavilla tavoilla.
-        Pelin mielekkyyden takia pelaajasta kerätään erilaisia henkilökohtaisia
+        Surma on Helsingin yliopiston salamurhapelaajat ry:n (jäljempänä HYS)
+        kehittämä ja ylläpitämä sovellus, jolla voi luoda sekä hallita HYSin
+        järjestämiä salamurhaturnauksia. Salamurhaturnauksissa pelaajat saavat
+        toistensa tiedot ja niiden avulla pelaajat yrittävät ”salamurhata”
+        toisensa HYSin asesääntöjen mahdollistavilla tavoilla. Pelin
+        mielekkyyden takia pelaajasta kerätään erilaisia henkilökohtaisia
         tietoja (lueteltu kohdassa 5), jotka mahdollistavat pelaajan
         jahtaamisen. Lisäksi tietojen avulla tuomaristo saa pelaajiin yhteyden.
-      </p>{" "}
+      </p>
       <p>
         Turnaukseen ilmoittautuminen on vapaaehtoista ja ilmoittautuessaan
         pelaaja hyväksyy kuinka hänen tietojaan tullaan käyttämään.
-      </p>{" "}
-      <h3>5. Rekisterin sisältämät tiedot</h3>{" "}
+      </p>
+      <h3>5. Rekisterin sisältämät tiedot</h3>
       <p>Surmaan tallennetaan seuraavat tiedot:</p>
-      Yhteystiedot{" "}
+      Yhteystiedot
       <ul>
         <li> etu- ja sukunimi</li>
         <li> sähköpostiosoite</li>
@@ -49,19 +50,19 @@ export default function () {
         Yhteystiedot sekä peitenimi ovat pakollisia tietoja ja ne tulee antaa
         ilmoittautuessa. Muut tiedot ovat vapaaehtoisia ja ne voi antaa
         myöhemmin sekä muokata turnauksen aikana.
-      </p>{" "}
+      </p>
       <p>
         Sovellus pitää myös kirjaa, milloin käyttäjä on luotu, milloin hänen
         tietojansa on muokattu ja milloin hän on viimeksi vieraillut
         kirjautuneena sivuilla.
-      </p>{" "}
+      </p>
       <p>
         On tapana, että pelaajat kirjoittavat turnauksen tapahtumista
         raportteja. Raportit säilytetään HYSin nettisivuilla, jolloin niihin on
         pääsy kenellä tahansa sivustolla vierailevalla, ja ne ovat anonyymeja
         (pl. pelaajan peitenimi).
-      </p>{" "}
-      <h3>6. Tietojen käsittelijät</h3>{" "}
+      </p>
+      <h3>6. Tietojen käsittelijät</h3>
       <p>
         Käyttäjän tietoihin pääsee käsiksi sovelluksen kautta muut turnaukseen
         osallistuvat henkilöt, tuomaristo sekä sivuston ylläpitäjät. Muut
@@ -71,12 +72,12 @@ export default function () {
         muokattu.
       </p>
       <p>Sivuston ylläpitäjillä on puolestaan pääsy koko tietokantaan.</p>
-      <h3>7. Säännönmukaiset tietolähteet</h3>{" "}
+      <h3>7. Säännönmukaiset tietolähteet</h3>
       <p>
         Tiedot saadaan lomakkeesta, jonka käyttäjä täyttää turnaukseen
         ilmoittautuessaan. Käyttäjällä on mahdollisuus myös myöhemmin muokata
         tietojaan.
-      </p>{" "}
+      </p>
       <p>
         Sovelluksen lähdekoodi generoi automaattisesti tiedot käyttäjän
         kirjautumisesta, tietojen muokkaamisen ajankohdasta ja sivustolla
@@ -104,7 +105,7 @@ export default function () {
         Tiedot yksittäisistä käyttäjistä poistetaan heti kun turnaus on
         päättynyt. Turnauksen raportit säilytetään HYSin nettisivuilla
         arkistointitarkoituksessa.
-      </p>{" "}
+      </p>
       <p>
         Rekisterin tiedot säilytetään pilvipalveluissa, joiden serverit
         sijaitsevat joko EU:ssa tai sen ulkopuolella.

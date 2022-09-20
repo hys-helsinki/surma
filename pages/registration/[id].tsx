@@ -5,7 +5,7 @@ import prisma from "../../lib/prisma";
 import * as Yup from "yup";
 import { useState } from "react";
 import Link from "next/link";
-import GDPRmodal from "../../components/GDPRmodal";
+import GDPRmodal from "../../components/GdprModal";
 import logo from "/public/images/surma_logo.svg";
 import Image from "next/image";
 
@@ -106,7 +106,7 @@ export default function Registration({ tournament }) {
           Tervetuloa ilmoittatumaan turnaukseen "{tournament.name}". Nimi,
           puhelinnumero, sähköpostiosoite sekä peitenimi ovat pakollisia
           kenttiä, muut kentät voi täyttää ilmoittautumisen jälkeenkin mutta
-          mieluusti ennen turnauksen alkua.{" "}
+          mieluusti ennen turnauksen alkua.
         </p>
         <p>
           Kalenterin tiedot tulee pitää ajan tasalla sekä riittävän selkeinä ja
@@ -117,7 +117,7 @@ export default function Registration({ tournament }) {
         </p>
         <p>
           Puhelinnumero, sähköpostiosoite ja peitenimesi ovat ainoastaan
-          tuomariston tiedossa. Pelaajat, jotka saavat sinut kohteekseensa,
+          tuomariston tiedossa. Pelaajat, jotka saavat sinut kohteekseen,
           näkevät muut tiedot.
         </p>
         <h3>Huom!</h3>
@@ -235,7 +235,7 @@ export default function Registration({ tournament }) {
           >
             <a style={{ color: "red" }}>turnaus</a>
           </Link>
-          - ja{" "}
+          - ja
           <Link
             href={"https://salamurhaajat.net/mika-salamurhapeli/asesaannot"}
             passHref
