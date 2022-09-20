@@ -20,6 +20,12 @@ export const authConfig = {
     })
   ],
   callbacks: {
+    async session({ session, token, user }) {
+      return {
+        ...session,
+        user: { id: user.id, ...session.user }
+      };
+    },
     async signIn({ user, account, profile, email, credentials }) {
       const currentUser = await prisma.user.findUnique({
         where: {
