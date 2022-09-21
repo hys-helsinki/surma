@@ -21,7 +21,7 @@ export const getServerSideProps: GetServerSideProps = async () => {
   };
 };
 
-export default function UserList({ objects }) {
+export default function PlayerList({ objects }) {
   return (
     <AuthenticationRequired>
       <h1>List of players</h1>
