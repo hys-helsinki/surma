@@ -1,10 +1,10 @@
-import { GetStaticProps } from "next";
+import { GetServerSideProps } from "next";
 import prisma from "../lib/prisma";
 import { useRouter } from "next/router";
 import Link from "next/link";
 import { AuthenticationRequired } from "../components/AuthenticationRequired";
 
-export const getStaticProps: GetStaticProps = async () => {
+export const getServerSideProps: GetServerSideProps = async () => {
   let tournaments = await prisma.tournament.findMany({
     select: {
       id: true,
