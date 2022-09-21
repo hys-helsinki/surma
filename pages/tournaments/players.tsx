@@ -1,18 +1,15 @@
 import Link from "next/link";
-import { GetStaticProps } from "next";
+import { GetServerSideProps } from "next";
 import prisma from "../../lib/prisma";
 import { AuthenticationRequired } from "../../components/AuthenticationRequired";
 
-export const getStaticProps: GetStaticProps = async () => {
-  const objects = await prisma.user.findMany({
+export const getServerSideProps: GetServerSideProps = async () => {
+  const objects = await prisma.player.findMany({
     select: {
       id: true,
-      firstName: true,
-      lastName: true,
-      player: {
-        select: {
-          alias: true
-        }
+      alias: true,
+      user: {
+        select: { firstName: true, lastName: true }
       }
     }
   });
@@ -27,22 +24,22 @@ export const getStaticProps: GetStaticProps = async () => {
 export default function UserList({ objects }) {
   return (
     <AuthenticationRequired>
-      <h1>List of users</h1>
+      <h1>List of players</h1>
       <ul>
         {objects.map(
           (o: {
             id: string;
-            firstName: string;
-            lastName: string;
-            player: {
-              alias: string;
+            alias: string;
+            user: {
+              firstName: string;
+              lastName: string;
             };
           }) => {
             return (
               <li key={o.id}>
                 <Link href={`/tournaments/users/${o.id}`}>
                   <a>
-                    {o.firstName} {o.lastName} ({o.player.alias})
+                    {o.user.firstName} {o.user.lastName} ({o.alias})
                   </a>
                 </Link>
               </li>
