@@ -181,9 +181,8 @@ export default function UserInfo({
             ) : (
               <p>Ei kuvaa</p>
             )}
-
             <PlayerContactInfo user={user} />
-            <PlayerDetails player={user.player} />
+            {user.player && <PlayerDetails player={user.player} />}
           </div>
         ) : (
           <div>
@@ -191,11 +190,13 @@ export default function UserInfo({
               {user.firstName} {user.lastName}
             </h1>
             <PlayerContactInfo user={user} />
-            <UpdateForm
-              data={user.player}
-              handleSubmit={handleSubmit}
-              calendar={user.player.calendar}
-            />
+            {user.player && (
+              <UpdateForm
+                data={user.player}
+                handleSubmit={handleSubmit}
+                calendar={user.player.calendar}
+              />
+            )}
           </div>
         )}
         <div>
