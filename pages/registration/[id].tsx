@@ -4,6 +4,10 @@ import { useRouter } from "next/router";
 import prisma from "../../lib/prisma";
 import * as Yup from "yup";
 import { useState } from "react";
+import Link from "next/link";
+import GdprModal from "../../components/GdprModal";
+import logo from "/public/images/surma_logo.svg";
+import Image from "next/image";
 
 export const getStaticProps: GetStaticProps = async ({ params }) => {
   let tournament = await prisma.tournament.findUnique({
@@ -94,9 +98,38 @@ export default function Registration({ tournament }) {
   return (
     <div>
       <div className="registration-form">
+        <div style={{ float: "left", width: "10%" }}>
+          <Image src={logo} width={60} height={60} />
+        </div>
         <h1 className="registration-form-title">Ilmoittautuminen</h1>
+        <p>
+          Tervetuloa ilmoittatumaan turnaukseen &quot;{tournament.name}&quot;.
+          Nimi, puhelinnumero, sähköpostiosoite sekä peitenimi ovat pakollisia
+          kenttiä, muut kentät voi täyttää ilmoittautumisen jälkeenkin mutta
+          mieluusti ennen turnauksen alkua.
+        </p>
+        <p>
+          Kalenterin tiedot tulee pitää ajan tasalla sekä riittävän selkeinä ja
+          yksityiskohtaisina. Jokaista sekuntia siihen ei tarvitse kirjoittaa,
+          mutta pelistä tulee hauskempaa itsellesi sekä jahtaajillesi jos
+          tarjoat heille riittävästi tilaisuuksia. Kalenterin tietoja pystyy
+          muokkaamaan turnauksen aikana.
+        </p>
+        <p>
+          Puhelinnumero, sähköpostiosoite ja peitenimesi ovat ainoastaan
+          tuomariston tiedossa. Pelaajat, jotka saavat sinut kohteekseen,
+          näkevät muut tiedot.
+        </p>
+        <h3>Huom!</h3>
+        <p>
+          Turnausjärjestelmä Surma on ensimmäistä kertaa käytössä vuoden 2022
+          syysturnauksessa. Jos ilmoittautumisessa tai myöhemmin sovelluksen
+          käytössä ilmenee minkäänlaisia ongelmia, ilmoitathan viasta
+          tuomaristolle sähköpostitse tuomaristo@salamurhaajat.net. Myös
+          kaikenlainen palaute on erittäin tervetullutta!
+        </p>
         <form>
-          <label>Valitse kuva</label>
+          <label>Valitse kuva itsestäsi (näkyy jahtaajillesi)</label>
           <input
             type="file"
             name="image"
@@ -134,7 +167,7 @@ export default function Registration({ tournament }) {
               .required("Pakollinen")
               .positive("Puhelinnumero ei voi sisältää negatiivisia lukuja")
               .integer("Syötä vain numeroita"),
-            height: Yup.number().positive("Pituus ei voi olla negatiivinen")
+            height: Yup.number()
           })}
           onSubmit={async (values) => {
             const cal = {};
@@ -150,10 +183,10 @@ export default function Registration({ tournament }) {
               .then((d) => {
                 uploadImage(d.id);
                 router.push({
-                  pathname: `/tournaments/users/${d.id}`,
-                  query: { registration: "ok" }
+                  pathname: `/registration/confirm`
                 });
-              });
+              })
+              .catch((e) => console.log(e));
           }}
         >
           <Form>
@@ -161,7 +194,7 @@ export default function Registration({ tournament }) {
 
             <TextInput label="Sukunimi" name="lastName" type="text" />
 
-            <TextInput label="Alias" name="alias" type="text" />
+            <TextInput label="Peitenimi" name="alias" type="text" />
 
             <TextInput label="Email" name="email" type="email" />
 
@@ -193,11 +226,25 @@ export default function Registration({ tournament }) {
             <button type="submit">Ilmoittaudu</button>
           </Form>
         </Formik>
-        <p>
-          {/* TODO linkki sääntöihin ja tietosuojaseloste näkyviin (sitten kun se on joskus valmis)*/}
-          Ilmoittautuessasi turnaukseeen hyväksyt tietosuojaselosteen sekä
-          Helsingin yliopiston salamurhaajien turnaus- ja asesäännöt
-        </p>
+        <div style={{ marginBottom: "20px" }}>
+          Ilmoittautuessasi turnaukseeen hyväksyt Helsingin yliopiston
+          salamurhaajien&nbsp;
+          <Link
+            href={"https://salamurhaajat.net/mika-salamurhapeli/turnaussaannot"}
+            passHref
+          >
+            <a style={{ color: "red" }}>turnaus</a>
+          </Link>
+          - ja
+          <Link
+            href={"https://salamurhaajat.net/mika-salamurhapeli/asesaannot"}
+            passHref
+          >
+            <a style={{ color: "red" }}>asesäännöt</a>
+          </Link>
+          &nbsp;sekä&nbsp;
+          <GdprModal />
+        </div>
       </div>
     </div>
   );

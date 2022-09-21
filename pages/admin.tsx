@@ -2,6 +2,7 @@ import { GetStaticProps } from "next";
 import prisma from "../lib/prisma";
 import { useRouter } from "next/router";
 import Link from "next/link";
+import { AuthenticationRequired } from "../components/AuthenticationRequired";
 
 export const getStaticProps: GetStaticProps = async () => {
   let tournaments = await prisma.tournament.findMany({
@@ -39,7 +40,6 @@ export default function Admin({ newTournaments }) {
   };
 
   const modifyDate = (s) => {
-    console.log(s);
     const date = new Date(s);
     const formattedDate = `${date.getDate()}.${
       date.getMonth() + 1
@@ -47,24 +47,26 @@ export default function Admin({ newTournaments }) {
     return formattedDate;
   };
   return (
-    <div>
+    <AuthenticationRequired>
       <div>
-        <button onClick={switchPage}>Lisää turnaus</button>
-      </div>
-      {newTournaments.map((tournament) => (
-        <div key={tournament.id}>
-          <Link href={`/admin/${tournament.id}/`}>
-            <a>{tournament.name}</a>
-          </Link>
-
-          <p>Alkaa: {modifyDate(tournament.start)}</p>
-          <p>Päättyy: {modifyDate(tournament.end)}</p>
-          <p>
-            Ilmoittautuminen: {modifyDate(tournament.registrationStart)} -
-            {modifyDate(tournament.registrationEnd)}
-          </p>
+        <div>
+          <button onClick={switchPage}>Lisää turnaus</button>
         </div>
-      ))}
-    </div>
+        {newTournaments.map((tournament) => (
+          <div key={tournament.id}>
+            <Link href={`/admin/${tournament.id}/`}>
+              <a>{tournament.name}</a>
+            </Link>
+
+            <p>Alkaa: {modifyDate(tournament.start)}</p>
+            <p>Päättyy: {modifyDate(tournament.end)}</p>
+            <p>
+              Ilmoittautuminen: {modifyDate(tournament.registrationStart)} -
+              {modifyDate(tournament.registrationEnd)}
+            </p>
+          </div>
+        ))}
+      </div>
+    </AuthenticationRequired>
   );
 }

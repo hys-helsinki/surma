@@ -11,6 +11,7 @@ import NavigationBar from "../../../components/NavigationBar";
 import { Calendar } from "../../../components/Calendar";
 import Image from "next/image";
 import { Grid } from "@mui/material";
+import { AuthenticationRequired } from "../../../components/AuthenticationRequired";
 
 export const getStaticProps: GetStaticProps = async ({ params }) => {
   require("dotenv").config();
@@ -87,66 +88,68 @@ export default function Target({ player, imageUrl }): JSX.Element {
   };
 
   return (
-    <div>
-      {/* TODO: Add NavigationBar after the sessions have been implemented */}
-      {/* <NavigationBar targets={targetUsers} userId={user.id} />  */}
-      <Grid container>
-        <Grid item xs={12} md={5}>
-          <div
-            style={{
-              paddingLeft: "10px",
-              display: "inline-block"
-            }}
-          >
-            <h1>
-              {player.user.firstName} {player.user.lastName}, alias:{" "}
-              {player.alias}
-            </h1>
-            {imageUrl !== "" ? (
+    <AuthenticationRequired>
+      <div>
+        {/* TODO: Add NavigationBar after the sessions have been implemented */}
+        {/* <NavigationBar targets={targetUsers} userId={user.id} />  */}
+        <Grid container>
+          <Grid item xs={12} md={5}>
+            <div
+              style={{
+                paddingLeft: "10px",
+                display: "inline-block"
+              }}
+            >
+              <h1>
+                {player.user.firstName} {player.user.lastName}, alias:{" "}
+                {player.alias}
+              </h1>
+              {imageUrl !== "" ? (
+                <div>
+                  {showPicture ? (
+                    <div>
+                      <Image src={imageUrl} width={350} height={500}></Image>
+                    </div>
+                  ) : null}
+                  <button onClick={togglePicture}>
+                    {showPicture ? "piilota" : "näytä kuva"}
+                  </button>
+                </div>
+              ) : (
+                <p>Ei kuvaa</p>
+              )}
+
               <div>
-                {showPicture ? (
-                  <div>
-                    <Image src={imageUrl} width={350} height={500}></Image>
-                  </div>
-                ) : null}
-                <button onClick={togglePicture}>
-                  {showPicture ? "piilota" : "näytä kuva"}
+                <div className="userdetails">
+                  <PlayerContactInfo user={player.user} />
+                  <PlayerDetails player={player} />
+                </div>
+              </div>
+            </div>
+          </Grid>
+          <Grid item xs={12} md={7}>
+            <div className="calendar">
+              <h3 style={{ width: "40%", margin: "auto", padding: "10px" }}>
+                Kalenteri
+              </h3>
+
+              <div>
+                <ul>
+                  {chunks[slideNumber].map((c, index) => (
+                    <li key={index} style={{ paddingBottom: "20px" }}>
+                      {c[0]}: {c[1]}
+                    </li>
+                  ))}
+                </ul>
+                <button onClick={handleSlideShow} style={{ left: "40%" }}>
+                  Seuraava
                 </button>
               </div>
-            ) : (
-              <p>Ei kuvaa</p>
-            )}
-
-            <div>
-              <div className="userdetails">
-                <PlayerContactInfo user={player.user} />
-                <PlayerDetails player={player} />
-              </div>
             </div>
-          </div>
+          </Grid>
         </Grid>
-        <Grid item xs={12} md={7}>
-          <div className="calendar">
-            <h3 style={{ width: "40%", margin: "auto", padding: "10px" }}>
-              Kalenteri
-            </h3>
-
-            <div>
-              <ul>
-                {chunks[slideNumber].map((c, index) => (
-                  <li key={index} style={{ paddingBottom: "20px" }}>
-                    {c[0]}: {c[1]}
-                  </li>
-                ))}
-              </ul>
-              <button onClick={handleSlideShow} style={{ left: "40%" }}>
-                Seuraava
-              </button>
-            </div>
-          </div>
-        </Grid>
-      </Grid>
-    </div>
+      </div>
+    </AuthenticationRequired>
   );
 }
 

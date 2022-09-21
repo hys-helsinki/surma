@@ -1,0 +1,18 @@
+import { signIn, useSession } from "next-auth/react";
+
+export const AuthenticationRequired = (props): JSX.Element => {
+  const { data: session } = useSession();
+  if (session) {
+    return <>{props.children}</>;
+  } else {
+    return (
+      <>
+        Et ole kirjautunut sisään.
+        <br />
+        {/* <button onClick={() => signIn("email", { callbackUrl: "/personal" })}>
+          Kirjaudu sisään
+        </button> */}
+      </>
+    );
+  }
+};

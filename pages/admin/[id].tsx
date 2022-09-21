@@ -1,4 +1,5 @@
 import { GetStaticPaths, GetStaticProps } from "next";
+import { AuthenticationRequired } from "../../components/AuthenticationRequired";
 import { TournamentRings } from "../../components/TournamentRings";
 import prisma from "../../lib/prisma";
 
@@ -44,14 +45,16 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
 
 export default function Tournament({ tournament, players, rings }) {
   return (
-    <div>
-      <h2>{tournament.name}</h2>
-      <TournamentRings
-        tournament={tournament}
-        players={players}
-        rings={rings}
-      />
-    </div>
+    <AuthenticationRequired>
+      <div>
+        <h2>{tournament.name}</h2>
+        <TournamentRings
+          tournament={tournament}
+          players={players}
+          rings={rings}
+        />
+      </div>
+    </AuthenticationRequired>
   );
 }
 
