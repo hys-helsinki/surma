@@ -29,10 +29,10 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
   let tournament = await prisma.tournament.findFirst({
     select: {
       name: true,
-      start: true,
-      end: true,
-      registrationStart: true,
-      registrationEnd: true
+      startTime: true,
+      endTime: true,
+      registrationStartTime: true,
+      registrationEndTime: true
     }
   });
   tournament = JSON.parse(JSON.stringify(tournament)); // avoid Next.js serialization error
@@ -100,8 +100,8 @@ export default function UserInfo({
     }
   }, []);
 
-  const start = new Date(tournament.start);
-  const end = new Date(tournament.end);
+  const start = new Date(tournament.startTime);
+  const end = new Date(tournament.endTime);
   let dates: Array<any> = [];
   dates.push(`${start.getDate()}.${start.getMonth() + 1}.`);
   let loopDay = start;

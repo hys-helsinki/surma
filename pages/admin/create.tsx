@@ -32,10 +32,10 @@ export default function CreateTournament() {
 
     const data = {
       name: event.target.tournament_label.value,
-      start: new Date(event.target.start.value),
-      end: new Date(event.target.end.value),
-      registrationStart: startDate,
-      registrationEnd: endDate
+      startTime: new Date(event.target.start.value),
+      endTime: new Date(event.target.end.value),
+      registrationStartTime: startDate,
+      registrationEndTime: endDate
     };
 
     fetch("/api/tournament/create", {

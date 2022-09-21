@@ -17,10 +17,10 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
     select: {
       id: true,
       name: true,
-      start: true,
-      end: true,
-      registrationStart: true,
-      registrationEnd: true
+      startTime: true,
+      endTime: true,
+      registrationStartTime: true,
+      registrationEndTime: true
     }
   });
   tournament = JSON.parse(JSON.stringify(tournament)); // to avoid Next.js serialization error
