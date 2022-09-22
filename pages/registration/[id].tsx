@@ -48,8 +48,8 @@ export default function Registration({ tournament }) {
   const [selectedFile, setSelectedFile] = useState();
   const [selectedFileName, setSelectedFileName] = useState("");
 
-  const start = new Date(tournament.start);
-  const end = new Date(tournament.end);
+  const start = new Date(tournament.startTime);
+  const end = new Date(tournament.endTime);
   let dates: Array<any> = [];
   dates.push(`${start.getDate()}.${start.getMonth() + 1}.`);
   let loopDay = start;
