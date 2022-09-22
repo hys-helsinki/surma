@@ -106,7 +106,8 @@ export default function Registration({ tournament }) {
           Tervetuloa ilmoittatumaan turnaukseen &quot;{tournament.name}&quot;.
           Nimi, puhelinnumero, sähköpostiosoite sekä peitenimi ovat pakollisia
           kenttiä, muut kentät voi täyttää ilmoittautumisen jälkeenkin mutta
-          mieluusti ennen turnauksen alkua.
+          mieluusti ennen turnauksen alkua. Lisääthän myös kuvan itsestäsi
+          ilmoittautumisen yhteydessä!
         </p>
         <p>
           Kalenterin tiedot tulee pitää ajan tasalla sekä riittävän selkeinä ja
@@ -127,6 +128,10 @@ export default function Registration({ tournament }) {
           käytössä ilmenee minkäänlaisia ongelmia, ilmoitathan viasta
           tuomaristolle sähköpostitse tuomaristo@salamurhaajat.net. Myös
           kaikenlainen palaute on erittäin tervetullutta!
+        </p>
+        <p>
+          Otathan myös huomioon, että jos painat enteriä kalenterikenttien
+          ulkopuolella, lomake lähetetään automaattisesti.
         </p>
         <form>
           <label>Valitse kuva itsestäsi (näkyy jahtaajillesi)</label>
