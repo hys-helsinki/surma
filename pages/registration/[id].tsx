@@ -17,10 +17,10 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
     select: {
       id: true,
       name: true,
-      start: true,
-      end: true,
-      registrationStart: true,
-      registrationEnd: true
+      startTime: true,
+      endTime: true,
+      registrationStartTime: true,
+      registrationEndTime: true
     }
   });
   tournament = JSON.parse(JSON.stringify(tournament)); // to avoid Next.js serialization error
@@ -48,8 +48,8 @@ export default function Registration({ tournament }) {
   const [selectedFile, setSelectedFile] = useState();
   const [selectedFileName, setSelectedFileName] = useState("");
 
-  const start = new Date(tournament.start);
-  const end = new Date(tournament.end);
+  const start = new Date(tournament.startTime);
+  const end = new Date(tournament.endTime);
   let dates: Array<any> = [];
   dates.push(`${start.getDate()}.${start.getMonth() + 1}.`);
   let loopDay = start;
@@ -106,7 +106,8 @@ export default function Registration({ tournament }) {
           Tervetuloa ilmoittatumaan turnaukseen &quot;{tournament.name}&quot;.
           Nimi, puhelinnumero, sähköpostiosoite sekä peitenimi ovat pakollisia
           kenttiä, muut kentät voi täyttää ilmoittautumisen jälkeenkin mutta
-          mieluusti ennen turnauksen alkua.
+          mieluusti ennen turnauksen alkua. Lisääthän myös kuvan itsestäsi
+          ilmoittautumisen yhteydessä!
         </p>
         <p>
           Kalenterin tiedot tulee pitää ajan tasalla sekä riittävän selkeinä ja
@@ -127,6 +128,10 @@ export default function Registration({ tournament }) {
           käytössä ilmenee minkäänlaisia ongelmia, ilmoitathan viasta
           tuomaristolle sähköpostitse tuomaristo@salamurhaajat.net. Myös
           kaikenlainen palaute on erittäin tervetullutta!
+        </p>
+        <p>
+          Otathan myös huomioon, että jos painat enteriä kalenterikenttien
+          ulkopuolella, lomake lähetetään automaattisesti.
         </p>
         <form>
           <label>Valitse kuva itsestäsi (näkyy jahtaajillesi)</label>

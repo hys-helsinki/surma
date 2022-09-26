@@ -154,7 +154,7 @@ export default function Target({ player, imageUrl }): JSX.Element {
 }
 
 export async function getStaticPaths() {
-  const targetIds = await prisma.user.findMany({ select: { id: true } });
+  const targetIds = await prisma.player.findMany({ select: { id: true } });
   return {
     paths: targetIds.map((target) => ({
       params: target

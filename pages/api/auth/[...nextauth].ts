@@ -35,7 +35,7 @@ export const authConfig = {
           umpire: true
         }
       });
-      const isAllowedToSignIn = true; // currentUser.umpire != null; // EI-TUOMARIPELAAJAT EIVÄT SAA KIRJAUTUA VIELÄ
+      const isAllowedToSignIn = currentUser.umpire != null; // EI-TUOMARIPELAAJAT EIVÄT SAA KIRJAUTUA VIELÄ
       if (isAllowedToSignIn) {
         return true;
       } else {

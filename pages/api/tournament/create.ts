@@ -3,10 +3,10 @@ import type { NextApiRequest, NextApiResponse } from "next";
 
 type Tournament = {
   name: string;
-  start: Date;
-  end: Date;
-  registrationStart: Date;
-  registrationEnd: Date;
+  startTime: Date;
+  endTime: Date;
+  registrationStartTime: Date;
+  registrationEndTime: Date;
 };
 
 export default async function create(
@@ -17,13 +17,7 @@ export default async function create(
     const tournament: Tournament = JSON.parse(req.body);
 
     const result = await prisma.tournament.create({
-      data: {
-        name: tournament.name,
-        start: tournament.start,
-        end: tournament.end,
-        registrationStart: tournament.registrationStart,
-        registrationEnd: tournament.registrationEnd
-      }
+      data: tournament
     });
     res.status(201).end();
   }

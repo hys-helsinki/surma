@@ -31,10 +31,10 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
   let tournament = await prisma.tournament.findFirst({
     select: {
       name: true,
-      start: true,
-      end: true,
-      registrationStart: true,
-      registrationEnd: true,
+      startTime: true,
+      endTime: true,
+      registrationStartTime: true,
+      registrationEndTime: true,
       players: true,
       users: true
     }
@@ -93,8 +93,8 @@ export default function UserInfo({ user, tournament, imageUrl }): JSX.Element {
     }
   }, []);
 
-  const start = new Date(tournament.start);
-  const end = new Date(tournament.end);
+  const start = new Date(tournament.startTime);
+  const end = new Date(tournament.endTime);
   let dates: Array<any> = [];
   dates.push(`${start.getDate()}.${start.getMonth() + 1}.`);
   let loopDay = start;
@@ -180,27 +180,29 @@ export default function UserInfo({ user, tournament, imageUrl }): JSX.Element {
   );
 
   return (
-    <div>
-      <NavigationBar targets={targetUsers} userId={user.id} />
-      <Grid container>
-        <Grid item xs={12} md={5}>
-          <div
-            style={{
-              paddingLeft: "10px",
-              display: "inline-block"
-            }}
-          >
-            {notification ? (
-              <p className="notification">Ilmoittautuminen onnistui!</p>
-            ) : null}
-            <h1>
-              {user.firstName} {user.lastName}, alias: {user.player.alias}
-            </h1>
-            {imageUrl !== "" ? (
-              <div>
-                {showPicture ? (
-                  <div>
-                    <Image src={imageUrl} width={350} height={500}></Image>
+    <AuthenticationRequired>
+      <div>
+        <NavigationBar targets={targetUsers} userId={user.id} />
+        <Grid container>
+          <Grid item xs={12} md={5}>
+            <div
+              style={{
+                paddingLeft: "10px",
+                display: "inline-block"
+              }}
+            >
+              {notification ? (
+                <p className="notification">Ilmoittautuminen onnistui!</p>
+              ) : null}
+
+              <h1>
+                {user.firstName} {user.lastName}, alias: {user.player.alias}
+              </h1>
+              {imageUrl !== "" ? (
+                <div>
+                  {showPicture ? (
+                    <div>
+                    <Image src={imageUrl} width={200} height={100}></Image>
                   </div>
                 ) : null}
                 <button onClick={togglePicture}>
