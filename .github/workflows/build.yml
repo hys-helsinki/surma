@@ -46,6 +46,8 @@ jobs:
         run: npm ci
       - name: initialize database
         run: npx prisma generate && npx prisma db push
+        env:
+          DATABASE_URL: postgres://postgres:postgres@postgres:5432
       - run: npm run build --if-present
         env:
           DATABASE_URL: postgres://postgres:postgres@postgres:5432
