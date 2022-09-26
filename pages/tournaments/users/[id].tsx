@@ -11,6 +11,7 @@ import NavigationBar from "../../../components/NavigationBar";
 import { Calendar } from "../../../components/Calendar";
 import Image from "next/image";
 import { Grid } from "@mui/material";
+import { AuthenticationRequired } from "../../../components/AuthenticationRequired";
 
 export const getStaticProps: GetStaticProps = async ({ params }) => {
   require("dotenv").config();
@@ -167,17 +168,20 @@ export default function UserInfo({ user, tournament, imageUrl }): JSX.Element {
       setShowPicture(true);
     }
   };
+  let targetUsers = [];
+  if (user.player != null) {
+    const targetPlayerIds = [
+      // everything works fine but vscode says that targets, players and users don't exist.
 
-  const targetPlayerIds = [
-    // everything works fine but vscode says that targets, players and users don't exist.
-    user.player.targets.map(
-      (t) => tournament.players.find((p) => p.id == t.targetId).userId
-    )
-  ];
+      user.player.targets.map(
+        (t) => tournament.players.find((p) => p.id == t.targetId).userId
+      )
+    ];
 
-  const targetUsers = tournament.users.filter((user) =>
-    targetPlayerIds[0].includes(user.id)
-  );
+    targetUsers = tournament.users.filter((user) =>
+      targetPlayerIds[0].includes(user.id)
+    );
+  }
 
   return (
     <AuthenticationRequired>
@@ -196,51 +200,57 @@ export default function UserInfo({ user, tournament, imageUrl }): JSX.Element {
               ) : null}
 
               <h1>
-                {user.firstName} {user.lastName}, alias: {user.player.alias}
+                {user.firstName} {user.lastName}
               </h1>
               {imageUrl !== "" ? (
                 <div>
                   {showPicture ? (
                     <div>
-                    <Image src={imageUrl} width={200} height={100}></Image>
-                  </div>
-                ) : null}
-                <button onClick={togglePicture}>
-                  {showPicture ? "piilota" : "näytä kuva"}
+                      <Image src={imageUrl} width={200} height={100}></Image>
+                    </div>
+                  ) : null}
+                  <button onClick={togglePicture}>
+                    {showPicture ? "piilota" : "näytä kuva"}
+                  </button>
+                </div>
+              ) : (
+                <p>Ei kuvaa</p>
+              )}
+
+              <div>
+                <button onClick={handleUpdateStatusClick}>
+                  {isUpdated ? "muokkaa tietoja" : "peruuta"}
                 </button>
               </div>
-            ) : (
-              <p>Ei kuvaa</p>
-            )}
-
-            <div>
-              <button onClick={handleUpdateStatusClick}>
-                {isUpdated ? "muokkaa tietoja" : "peruuta"}
-              </button>
-            </div>
-            {isUpdated ? (
-              <div>
-                <div className="userdetails">
-                  <PlayerContactInfo user={user} />
-                  <PlayerDetails player={user.player} />
+              {isUpdated ? (
+                <div>
+                  <div className="userdetails">
+                    <PlayerContactInfo user={user} />
+                    {user.player && <PlayerDetails player={user.player} />}
+                  </div>
                 </div>
-              </div>
-            ) : (
-              <div>
-                <PlayerContactInfo user={user} />
-                <UpdateForm
-                  data={user.player}
-                  handleSubmit={handleDetailsSubmit}
-                />
-              </div>
-            )}
-          </div>
+              ) : (
+                <div>
+                  <PlayerContactInfo user={user} />
+                  {user.player && (
+                    <UpdateForm
+                      data={user.player}
+                      handleSubmit={handleDetailsSubmit}
+                    />
+                  )}
+                </div>
+              )}
+            </div>
+          </Grid>
+          <Grid item xs={12} md={7}>
+            <Calendar
+              player={user.player}
+              handleSubmit={handleCalendarSubmit}
+            />
+          </Grid>
         </Grid>
-        <Grid item xs={12} md={7}>
-          <Calendar player={user.player} handleSubmit={handleCalendarSubmit} />
-        </Grid>
-      </Grid>
-    </div>
+      </div>
+    </AuthenticationRequired>
   );
 }
 
