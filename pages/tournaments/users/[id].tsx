@@ -7,7 +7,10 @@ import React, { MouseEventHandler, useEffect } from "react";
 import { useState } from "react";
 import { UpdateForm } from "../../../components/UpdateForm";
 import { useRouter } from "next/router";
+import NavigationBar from "../../../components/NavigationBar";
+import { Calendar } from "../../../components/Calendar";
 import Image from "next/image";
+import { Grid } from "@mui/material";
 import { AuthenticationRequired } from "../../../components/AuthenticationRequired";
 
 export const getStaticProps: GetStaticProps = async ({ params }) => {
@@ -32,21 +35,25 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
       startTime: true,
       endTime: true,
       registrationStartTime: true,
-      registrationEndTime: true
+      registrationEndTime: true,
+      players: true,
+      users: true
     }
   });
   tournament = JSON.parse(JSON.stringify(tournament)); // avoid Next.js serialization error
-  const user = await prisma.user.findUnique({
+  let user = await prisma.user.findUnique({
     where: {
       id: params.id as string
     },
     select: {
+      id: true,
       firstName: true,
       lastName: true,
       phone: true,
       email: true,
       player: {
         select: {
+          id: true,
           alias: true,
           address: true,
           learningInstitution: true,
@@ -55,32 +62,19 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
           height: true,
           glasses: true,
           other: true,
-          calendar: true
+          calendar: true,
+          targets: true
         }
       }
     }
   });
+  user = JSON.parse(JSON.stringify(user));
   return {
     props: { user, tournament, imageUrl }
   };
 };
 
-type UserWithPlayer = Prisma.UserGetPayload<{
-  include: {
-    player: true;
-    tournament: true;
-  };
-}>;
-
-export default function UserInfo({
-  user,
-  tournament,
-  imageUrl
-}: {
-  user: UserWithPlayer;
-  tournament: Tournament;
-  imageUrl: string;
-}): JSX.Element {
+export default function UserInfo({ user, tournament, imageUrl }): JSX.Element {
   const [notification, setNotification] = useState("");
   const [isUpdated, setIsUpdated] = useState(true);
   const [showPicture, setShowPicture] = useState(false);
@@ -127,7 +121,9 @@ export default function UserInfo({
     other: string;
     calendar: object;
   };
-  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+  const handleDetailsSubmit = async (
+    event: React.FormEvent<HTMLFormElement>
+  ) => {
     const cal = {};
     dates.forEach((x, i) => (cal[x] = event.currentTarget.dates[i].value));
     event.preventDefault();
@@ -148,6 +144,23 @@ export default function UserInfo({
     }).then((response) => router.reload());
   };
 
+  const handleCalendarSubmit = async (
+    event: React.FormEvent<HTMLFormElement>
+  ) => {
+    console.log("tapahtuuko mitään?");
+    const cal = {};
+    dates.forEach((x, i) => (cal[x] = event.currentTarget.dates[i].value));
+    event.preventDefault();
+    const data = {
+      calendar: cal
+    };
+
+    fetch(`/api/user/update/${id}`, {
+      method: "PUT",
+      body: JSON.stringify(data)
+    }).then((response) => router.reload());
+  };
+
   const togglePicture: MouseEventHandler = () => {
     if (showPicture === true) {
       setShowPicture(false);
@@ -155,55 +168,87 @@ export default function UserInfo({
       setShowPicture(true);
     }
   };
+  let targetUsers = [];
+  if (user.player != null) {
+    const targetPlayerIds = [
+      // everything works fine but vscode says that targets, players and users don't exist.
+
+      user.player.targets.map(
+        (t) => tournament.players.find((p) => p.id == t.targetId).userId
+      )
+    ];
+
+    targetUsers = tournament.users.filter((user) =>
+      targetPlayerIds[0].includes(user.id)
+    );
+  }
 
   return (
     <AuthenticationRequired>
       <div>
-        {notification ? (
-          <p className="notification">Ilmoittautuminen onnistui!</p>
-        ) : null}
-        {isUpdated ? (
-          <div>
-            <h1>
-              {user.firstName} {user.lastName}
-            </h1>
-            {imageUrl !== "" ? (
+        <NavigationBar targets={targetUsers} userId={user.id} />
+        <Grid container>
+          <Grid item xs={12} md={5}>
+            <div
+              style={{
+                paddingLeft: "10px",
+                display: "inline-block"
+              }}
+            >
+              {notification ? (
+                <p className="notification">Ilmoittautuminen onnistui!</p>
+              ) : null}
+
+              <h1>
+                {user.firstName} {user.lastName}
+              </h1>
+              {imageUrl !== "" ? (
+                <div>
+                  {showPicture ? (
+                    <div>
+                      <Image src={imageUrl} width={200} height={100}></Image>
+                    </div>
+                  ) : null}
+                  <button onClick={togglePicture}>
+                    {showPicture ? "piilota" : "näytä kuva"}
+                  </button>
+                </div>
+              ) : (
+                <p>Ei kuvaa</p>
+              )}
+
               <div>
-                {showPicture ? (
-                  <div>
-                    <Image src={imageUrl} width={200} height={100}></Image>
-                  </div>
-                ) : null}
-                <button onClick={togglePicture}>
-                  {showPicture ? "piilota" : "näytä kuva"}
+                <button onClick={handleUpdateStatusClick}>
+                  {isUpdated ? "muokkaa tietoja" : "peruuta"}
                 </button>
               </div>
-            ) : (
-              <p>Ei kuvaa</p>
-            )}
-            <PlayerContactInfo user={user} />
-            {user.player && <PlayerDetails player={user.player} />}
-          </div>
-        ) : (
-          <div>
-            <h1>
-              {user.firstName} {user.lastName}
-            </h1>
-            <PlayerContactInfo user={user} />
-            {user.player && (
-              <UpdateForm
-                data={user.player}
-                handleSubmit={handleSubmit}
-                calendar={user.player.calendar}
-              />
-            )}
-          </div>
-        )}
-        <div>
-          <button onClick={handleUpdateStatusClick}>
-            {isUpdated ? "muokkaa tietoja" : "peruuta"}
-          </button>
-        </div>
+              {isUpdated ? (
+                <div>
+                  <div className="userdetails">
+                    <PlayerContactInfo user={user} />
+                    {user.player && <PlayerDetails player={user.player} />}
+                  </div>
+                </div>
+              ) : (
+                <div>
+                  <PlayerContactInfo user={user} />
+                  {user.player && (
+                    <UpdateForm
+                      data={user.player}
+                      handleSubmit={handleDetailsSubmit}
+                    />
+                  )}
+                </div>
+              )}
+            </div>
+          </Grid>
+          <Grid item xs={12} md={7}>
+            <Calendar
+              player={user.player}
+              handleSubmit={handleCalendarSubmit}
+            />
+          </Grid>
+        </Grid>
       </div>
     </AuthenticationRequired>
   );

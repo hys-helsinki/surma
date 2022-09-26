@@ -1,9 +1,4 @@
-export const UpdateForm = ({ data, handleSubmit, calendar }): JSX.Element => {
-  const cal = [];
-  for (const x in calendar) {
-    cal.push([x, calendar[x]]);
-  }
-
+export const UpdateForm = ({ data, handleSubmit }): JSX.Element => {
   return (
     <div className="updateform">
       <form onSubmit={handleSubmit}>
@@ -79,17 +74,6 @@ export const UpdateForm = ({ data, handleSubmit, calendar }): JSX.Element => {
               defaultValue={data.other}
             />
           </label>
-        </div>
-        <div>
-          <h3>Kalenteri</h3>
-          {cal.sort().map((c, i) => (
-            <div key={i}>
-              <label htmlFor={c[0]}>
-                {c[0]}:
-                <textarea id={c[0]} name="dates" defaultValue={c[1]} />
-              </label>
-            </div>
-          ))}
         </div>
 
         <button type="submit">Tallenna muokkaukset</button>
