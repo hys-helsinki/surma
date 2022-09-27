@@ -1,9 +1,9 @@
-import { GetStaticPaths, GetStaticProps } from "next";
+import { GetServerSideProps } from "next";
 import { AuthenticationRequired } from "../../components/AuthenticationRequired";
 import { TournamentRings } from "../../components/TournamentRings";
 import prisma from "../../lib/prisma";
 
-export const getStaticProps: GetStaticProps = async ({ params }) => {
+export const getServerSideProps: GetServerSideProps = async ({ params }) => {
   let tournament = await prisma.tournament.findUnique({
     where: {
       id: params.id as string
@@ -57,15 +57,3 @@ export default function Tournament({ tournament, players, rings }) {
     </AuthenticationRequired>
   );
 }
-
-export const getStaticPaths: GetStaticPaths = async () => {
-  const tournamentIds = await prisma.tournament.findMany({
-    select: { id: true }
-  });
-  return {
-    paths: tournamentIds.map((tournament) => ({
-      params: tournament
-    })),
-    fallback: false
-  };
-};
