@@ -1,19 +1,19 @@
-import { GetStaticProps, GetStaticPaths } from "next";
+import { GetServerSideProps } from "next";
 import { Prisma, Tournament } from "@prisma/client";
-import { PlayerDetails } from "../../../components/PlayerDetails";
-import { PlayerContactInfo } from "../../../components/PlayerContactInfo";
-import prisma from "../../../lib/prisma";
+import { PlayerDetails } from "../../../../components/PlayerDetails";
+import { PlayerContactInfo } from "../../../../components/PlayerContactInfo";
+import prisma from "../../../../lib/prisma";
 import React, { MouseEventHandler, useEffect } from "react";
 import { useState } from "react";
-import { UpdateForm } from "../../../components/UpdateForm";
+import { UpdateForm } from "../../../../components/UpdateForm";
 import { useRouter } from "next/router";
-import NavigationBar from "../../../components/NavigationBar";
-import { Calendar } from "../../../components/Calendar";
+import NavigationBar from "../../../../components/NavigationBar";
+import { Calendar } from "../../../../components/Calendar";
 import Image from "next/image";
 import { Grid } from "@mui/material";
-import { AuthenticationRequired } from "../../../components/AuthenticationRequired";
+import { AuthenticationRequired } from "../../../../components/AuthenticationRequired";
 
-export const getStaticProps: GetStaticProps = async ({ params }) => {
+export const getServerSideProps: GetServerSideProps = async ({ params }) => {
   require("dotenv").config();
   const cloudinary = require("cloudinary").v2;
   cloudinary.config({
@@ -29,6 +29,7 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
     console.log(error);
   }
 
+  console.log("PARAMS", params);
   let tournament = await prisma.tournament.findFirst({
     select: {
       name: true,
@@ -255,13 +256,3 @@ export default function UserInfo({ user, tournament, imageUrl }): JSX.Element {
     </AuthenticationRequired>
   );
 }
-
-export const getStaticPaths: GetStaticPaths = async () => {
-  const userIds = await prisma.user.findMany({ select: { id: true } });
-  return {
-    paths: userIds.map((player) => ({
-      params: player
-    })),
-    fallback: false
-  };
-};
