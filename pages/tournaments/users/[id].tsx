@@ -1,4 +1,4 @@
-import { GetStaticProps, GetStaticPaths } from "next";
+import { GetServerSideProps } from "next";
 import { Prisma, Tournament } from "@prisma/client";
 import { PlayerDetails } from "../../../components/PlayerDetails";
 import { PlayerContactInfo } from "../../../components/PlayerContactInfo";
@@ -13,7 +13,7 @@ import Image from "next/image";
 import { Grid } from "@mui/material";
 import { AuthenticationRequired } from "../../../components/AuthenticationRequired";
 
-export const getStaticProps: GetStaticProps = async ({ params }) => {
+export const getServerSideProps: GetServerSideProps = async ({ params }) => {
   require("dotenv").config();
   const cloudinary = require("cloudinary").v2;
   cloudinary.config({
@@ -255,13 +255,3 @@ export default function UserInfo({ user, tournament, imageUrl }): JSX.Element {
     </AuthenticationRequired>
   );
 }
-
-export const getStaticPaths: GetStaticPaths = async () => {
-  const userIds = await prisma.user.findMany({ select: { id: true } });
-  return {
-    paths: userIds.map((player) => ({
-      params: player
-    })),
-    fallback: false
-  };
-};
