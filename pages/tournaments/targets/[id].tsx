@@ -12,8 +12,37 @@ import { Calendar } from "../../../components/Calendar";
 import Image from "next/image";
 import { Grid } from "@mui/material";
 import { AuthenticationRequired } from "../../../components/AuthenticationRequired";
+import { unstable_getServerSession } from "next-auth";
+import { authConfig } from "../../api/auth/[...nextauth]";
 
-export const getServerSideProps: GetServerSideProps = async ({ params }) => {
+const isCurrentUserAuthorized = async (targetId, context) => {
+  const session = await unstable_getServerSession(
+    context.req,
+    context.res,
+    authConfig
+  );
+  // TODO add tournamentId to where clauses
+  const isUmpire = await prisma.umpire.findUnique({
+    where: {
+      userId: session.user.id
+    }
+  });
+  const isHunter = await prisma.assignment.findFirst({
+    where: {
+      hunterId: session.user.id,
+      targetId: targetId
+    }
+  });
+  return isUmpire || isHunter;
+};
+
+export const getServerSideProps: GetServerSideProps = async ({
+  params,
+  ...context
+}) => {
+  if (await !isCurrentUserAuthorized(params.id, context))
+    return { redirect: { destination: "/personal", permanent: false } };
+
   require("dotenv").config();
   const cloudinary = require("cloudinary").v2;
   cloudinary.config({
