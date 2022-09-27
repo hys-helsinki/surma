@@ -243,10 +243,12 @@ export default function UserInfo({ user, tournament, imageUrl }): JSX.Element {
             </div>
           </Grid>
           <Grid item xs={12} md={7}>
-            <Calendar
-              player={user.player}
-              handleSubmit={handleCalendarSubmit}
-            />
+            {user.player && (
+              <Calendar
+                player={user.player}
+                handleSubmit={handleCalendarSubmit}
+              />
+            )}
           </Grid>
         </Grid>
       </div>
