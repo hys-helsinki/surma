@@ -8,6 +8,7 @@ export const TournamentRings = ({
   const [allRings, setRings] = useState(rings);
   const [newRing, setNewRing] = useState([]);
   const [showForm, setShowForm] = useState(false);
+  const [showRing, setShowRing] = useState("");
 
   const createRing = async (event) => {
     event.preventDefault();
@@ -48,6 +49,27 @@ export const TournamentRings = ({
     }
   };
 
+  const toggleShowRing = (ringId) => {
+    if (showRing == ringId) {
+      setShowRing("");
+    } else {
+      setShowRing(ringId);
+    }
+  };
+
+  const updateRing = async (ringId, event) => {
+    event.preventDefault();
+    const readyRing = {
+      assignments: Object.values(newRing),
+      ring: ringId
+    };
+    fetch("/api/tournament/rings", {
+      method: "PUT",
+      body: JSON.stringify(readyRing)
+    });
+    setShowRing("");
+  };
+
   const getTargetName = (targetId) => {
     const searchedPlayer = players.find((player) => targetId == player.id);
 
@@ -57,7 +79,41 @@ export const TournamentRings = ({
   return (
     <div>
       <h2>Ringit</h2>
-      <p>Rinkejä luotu: {!allRings ? "0" : allRings.length}</p>
+      {allRings.map((ring) => (
+        <div>
+          <a key={ring.id} onClick={() => toggleShowRing(ring.id)}>
+            {ring.name}
+          </a>
+          {!showRing ? (
+            <div>Ei näy</div>
+          ) : (
+            <div>
+              <form onSubmit={(e) => updateRing(ring.id, e)}>
+                {ring.assignments.map((a) => (
+                  <div key={a.id}>
+                    <p>Metsästäjä {a.hunterId}</p>
+                    <label>
+                      Kohde
+                      <select
+                        name="assignments"
+                        onChange={(e) => handleRingChange(a.hunterId, e)}
+                      >
+                        <option>{a.targetId}</option>
+                        {players.map((player) => (
+                          <option key={player.id} value={player.id}>
+                            {player.user.firstName} {player.user.lastName}
+                          </option>
+                        ))}
+                      </select>
+                    </label>
+                  </div>
+                ))}
+                <button type="submit">Tallenna muokkaukset</button>
+              </form>
+            </div>
+          )}
+        </div>
+      ))}
       {players.map((player) => (
         <div key={player.id}>
           <h3>
