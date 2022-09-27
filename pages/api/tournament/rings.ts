@@ -17,12 +17,5 @@ export default async function rings(req: NextApiRequest, res: NextApiResponse) {
       data: newAssignments
     });
     res.status(201).end();
-  } else if (req.method === "PUT") {
-    const updatedRing = JSON.parse(req.body);
-    // update assignment where ringid == updatedRIng.ring and hunterId == updatedRing.{loop.hunterId}
-
-    const updatedAssignments = updatedRing.assignments.map((a) => {
-      return { ...a, ringId: updatedRing.id };
-    });
   }
 }

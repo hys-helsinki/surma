@@ -9,6 +9,8 @@ export const TournamentRings = ({
   const [newRing, setNewRing] = useState([]);
   const [showForm, setShowForm] = useState(false);
   const [showRing, setShowRing] = useState("");
+  const [newHunter, setNewHunter] = useState("");
+  const [newTarget, setNewTarget] = useState("");
 
   const createRing = async (event) => {
     event.preventDefault();
@@ -57,17 +59,32 @@ export const TournamentRings = ({
     }
   };
 
-  const updateRing = async (ringId, event) => {
+  const deleteAssignment = async (event, assignmentId) => {
     event.preventDefault();
-    const readyRing = {
-      assignments: Object.values(newRing),
-      ring: ringId
-    };
-    fetch("/api/tournament/rings", {
-      method: "PUT",
-      body: JSON.stringify(readyRing)
+
+    fetch("/api/tournament/assignments", {
+      method: "DELETE",
+      body: assignmentId
     });
-    setShowRing("");
+  };
+
+  const addAssignment = async (event, ring) => {
+    event.preventDefault();
+    console.log(newHunter);
+    console.log(newTarget);
+    if (newHunter && newTarget) {
+      console.log("ok");
+      const newAssignment = {
+        ringId: ring,
+        hunterId: newHunter,
+        targetId: newTarget
+      };
+
+      fetch("/api/tournament/assignments", {
+        method: "POST",
+        body: JSON.stringify(newAssignment)
+      });
+    }
   };
 
   const getTargetName = (targetId) => {
@@ -88,27 +105,46 @@ export const TournamentRings = ({
             <div>Ei näy</div>
           ) : (
             <div>
-              <form onSubmit={(e) => updateRing(ring.id, e)}>
-                {ring.assignments.map((a) => (
-                  <div key={a.id}>
-                    <p>Metsästäjä {a.hunterId}</p>
-                    <label>
-                      Kohde
-                      <select
-                        name="assignments"
-                        onChange={(e) => handleRingChange(a.hunterId, e)}
-                      >
-                        <option>{a.targetId}</option>
-                        {players.map((player) => (
-                          <option key={player.id} value={player.id}>
-                            {player.user.firstName} {player.user.lastName}
-                          </option>
-                        ))}
-                      </select>
-                    </label>
-                  </div>
-                ))}
-                <button type="submit">Tallenna muokkaukset</button>
+              {ring.assignments.map((a) => (
+                <div key={a.id}>
+                  <p>Metsästäjä {a.hunterId}</p>
+                  <p>Kohde {a.targetId}</p>
+                  <button onClick={(e) => deleteAssignment(e, a.id)}>
+                    Poista
+                  </button>
+                </div>
+              ))}
+              <p>Lisää uusi toimeksianto</p>
+              <form onSubmit={(e) => addAssignment(e, ring.id)}>
+                <label>
+                  Metsästäjä
+                  <select
+                    name="assignments"
+                    onChange={(e) => setNewHunter(e.target.value)}
+                  >
+                    <option>--</option>
+                    {players.map((player) => (
+                      <option key={player.id} value={player.id}>
+                        {player.user.firstName} {player.user.lastName}
+                      </option>
+                    ))}
+                  </select>
+                </label>
+                <label>
+                  Kohde
+                  <select
+                    name="assignments"
+                    onChange={(e) => setNewTarget(e.target.value)}
+                  >
+                    <option>--</option>
+                    {players.map((player) => (
+                      <option key={player.id} value={player.id}>
+                        {player.user.firstName} {player.user.lastName}
+                      </option>
+                    ))}
+                  </select>
+                </label>
+                <button type="submit">Luo uusi toimeksianto</button>
               </form>
             </div>
           )}
