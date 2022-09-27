@@ -104,11 +104,6 @@ export default function Registration({ tournament }) {
     }
   };
 
-  const checkTime = () => {
-    const currentTime = new Date();
-    console.log(currentTime);
-  };
-
   return (
     <div>
       {registrationOpen ? (
