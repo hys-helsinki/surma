@@ -1,9 +1,9 @@
 import Link from "next/link";
 import { GetServerSideProps } from "next";
-import prisma from "../../lib/prisma";
-import { AuthenticationRequired } from "../../components/AuthenticationRequired";
+import prisma from "../../../lib/prisma";
+import { AuthenticationRequired } from "../../../components/AuthenticationRequired";
 
-export const getServerSideProps: GetServerSideProps = async () => {
+export const getServerSideProps: GetServerSideProps = async ({ params }) => {
   const objects = await prisma.player.findMany({
     select: {
       id: true,
@@ -11,6 +11,9 @@ export const getServerSideProps: GetServerSideProps = async () => {
       user: {
         select: { firstName: true, lastName: true }
       }
+    },
+    where: {
+      tournamentId: params.tournamentId as string
     }
   });
 
