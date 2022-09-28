@@ -40,7 +40,7 @@ export const getServerSideProps: GetServerSideProps = async ({
   params,
   ...context
 }) => {
-  if (await !isCurrentUserAuthorized(params.id, context))
+  if (!(await isCurrentUserAuthorized(params.id, context)))
     return { redirect: { destination: "/personal", permanent: false } };
 
   require("dotenv").config();

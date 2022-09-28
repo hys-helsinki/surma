@@ -19,9 +19,11 @@ export default async function rings(req: NextApiRequest, res: NextApiResponse) {
   if (req.method === "POST") {
     const newRing = JSON.parse(req.body);
     // TODO make a dynamic route to supply tournament id as path parameter and move this before method check
-    if (!isCurrentUserAuthorized(newRing.tournament, req, res)) {
+    if (!(await isCurrentUserAuthorized(newRing.tournament, req, res))) {
+      console.log("unauthorized!");
       res.status(403).end();
     }
+    console.log("authorized to create ring");
     const savedRing = await prisma.assignmentRing.create({
       data: {
         name: newRing.name,

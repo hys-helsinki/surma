@@ -18,6 +18,8 @@ const isCurrentUserAuthorized = async (tournamentId, context) => {
       tournamentId: tournamentId
     }
   });
+  console.log("access check for tournament", tournamentId);
+  console.log("checking current user umpire status:", umpire);
   return umpire != null;
 };
 
@@ -25,9 +27,11 @@ export const getServerSideProps: GetServerSideProps = async ({
   params,
   ...context
 }) => {
-  if (await !isCurrentUserAuthorized(params.id, context))
+  if (!(await isCurrentUserAuthorized(params.id, context))) {
+    console.log("is not authorized!");
     return { redirect: { destination: "/personal", permanent: false } };
-
+  }
+  console.log("is authorized!");
   let tournament = await prisma.tournament.findUnique({
     where: {
       id: params.id as string
