@@ -3,7 +3,7 @@ import { GetStaticPaths, GetStaticProps } from "next";
 import { useRouter } from "next/router";
 import prisma from "../../lib/prisma";
 import * as Yup from "yup";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import Link from "next/link";
 import GdprModal from "../../components/GdprModal";
 import logo from "/public/images/surma_logo.svg";
@@ -47,7 +47,6 @@ export default function Registration({ tournament }) {
   const [fileInputState, setFileInputState] = useState("");
   const [selectedFile, setSelectedFile] = useState();
   const [selectedFileName, setSelectedFileName] = useState("");
-  const [registrationOpen, setRegistrationOpen] = useState(true);
 
   const start = new Date(tournament.startTime);
   const end = new Date(tournament.endTime);
@@ -58,14 +57,6 @@ export default function Registration({ tournament }) {
     loopDay.setDate(loopDay.getDate() + 1);
     dates.push(`${loopDay.getDate()}.${loopDay.getMonth() + 1}.`);
   }
-
-  useEffect(() => {
-    const currentTime = new Date();
-    const endTime = new Date(tournament.registrationEndTime);
-    if (currentTime.getTime() > endTime.getTime()) {
-      setRegistrationOpen(false);
-    }
-  }, []);
 
   const router = useRouter();
 
@@ -106,12 +97,20 @@ export default function Registration({ tournament }) {
 
   return (
     <div>
-      {registrationOpen ? (
+      {new Date().getTime() <
+      new Date(tournament.registrationEndTime).getTime() ? (
         <div className="registration-form">
           <div style={{ float: "left", width: "10%" }}>
             <Image src={logo} width={60} height={60} />
           </div>
           <h1 className="registration-form-title">Ilmoittautuminen</h1>
+          <p>
+            Ilmoittatuminen auki&nbsp;
+            {new Date(tournament.registrationEndTime).getDate()}.
+            {new Date(tournament.registrationEndTime).getMonth() + 1}. klo&nbsp;
+            {new Date(tournament.registrationEndTime).getHours()}:
+            {new Date(tournament.registrationEndTime).getMinutes()} asti
+          </p>
           <p>
             Tervetuloa ilmoittatumaan turnaukseen &quot;{tournament.name}&quot;.
             Nimi, puhelinnumero, sähköpostiosoite sekä peitenimi ovat pakollisia
