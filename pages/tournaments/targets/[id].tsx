@@ -27,12 +27,22 @@ const isCurrentUserAuthorized = async (targetId, context) => {
       userId: session.user.id
     }
   });
+
   const isHunter = await prisma.assignment.findFirst({
     where: {
-      hunterId: session.user.id,
-      targetId: targetId
+      target: {
+        user: {
+          id: targetId
+        }
+      },
+      hunter: {
+        user: {
+          id: session.user.id
+        }
+      }
     }
   });
+  console.log("assignment:", isHunter);
   return isUmpire || isHunter;
 };
 
