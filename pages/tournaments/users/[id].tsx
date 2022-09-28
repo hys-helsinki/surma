@@ -1,4 +1,4 @@
-import { GetStaticProps, GetStaticPaths } from "next";
+import { GetServerSideProps } from "next";
 import { Prisma, Tournament } from "@prisma/client";
 import { PlayerDetails } from "../../../components/PlayerDetails";
 import { PlayerContactInfo } from "../../../components/PlayerContactInfo";
@@ -12,8 +12,36 @@ import { Calendar } from "../../../components/Calendar";
 import Image from "next/image";
 import { Grid } from "@mui/material";
 import { AuthenticationRequired } from "../../../components/AuthenticationRequired";
+import { unstable_getServerSession } from "next-auth";
+import { authConfig } from "../../api/auth/[...nextauth]";
 
-export const getStaticProps: GetStaticProps = async ({ params }) => {
+const isCurrentUserAuthorized = async (userId, context) => {
+  const session = await unstable_getServerSession(
+    context.req,
+    context.res,
+    authConfig
+  );
+
+  if (session.user.id == userId) {
+    return true;
+  } else {
+    // TODO add tournamentId to where clause
+    const umpire = await prisma.umpire.findUnique({
+      where: {
+        userId: session.user.id
+      }
+    });
+    return umpire != null;
+  }
+};
+
+export const getServerSideProps: GetServerSideProps = async ({
+  params,
+  ...context
+}) => {
+  if (!(await isCurrentUserAuthorized(params.id, context)))
+    return { redirect: { destination: "/personal", permanent: false } };
+
   require("dotenv").config();
   const cloudinary = require("cloudinary").v2;
   cloudinary.config({
@@ -255,13 +283,3 @@ export default function UserInfo({ user, tournament, imageUrl }): JSX.Element {
     </AuthenticationRequired>
   );
 }
-
-export const getStaticPaths: GetStaticPaths = async () => {
-  const userIds = await prisma.user.findMany({ select: { id: true } });
-  return {
-    paths: userIds.map((player) => ({
-      params: player
-    })),
-    fallback: false
-  };
-};
