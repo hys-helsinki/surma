@@ -36,7 +36,7 @@ export const getServerSideProps: GetServerSideProps = async ({
       id: true,
       alias: true,
       user: {
-        select: { firstName: true, lastName: true }
+        select: { id: true, firstName: true, lastName: true }
       }
     },
     where: {
@@ -61,13 +61,14 @@ export default function PlayerList({ objects }) {
             id: string;
             alias: string;
             user: {
+              id: string;
               firstName: string;
               lastName: string;
             };
           }) => {
             return (
               <li key={o.id}>
-                <Link href={`/tournaments/users/${o.id}`}>
+                <Link href={`/tournaments/users/${o.user.id}`}>
                   <a>
                     {o.user.firstName} {o.user.lastName} ({o.alias})
                   </a>
