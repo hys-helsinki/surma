@@ -79,15 +79,20 @@ export const TournamentRings = ({
         hunterId: newHunter,
         targetId: newTarget
       };
+      const updatedRing = rings.find((r) => (r.id = ring.id));
 
       fetch("/api/tournament/assignments", {
         method: "POST",
         body: JSON.stringify(newAssignment)
-      });
+      })
+        .then((res) => res.json())
+        .then((data) => updatedRing.assignments.concat(data));
+
+      rings = rings.map((r) => (r.id !== ring.id ? r : updatedRing));
     }
   };
 
-  const getTargetName = (targetId) => {
+  const getPlayerName = (targetId) => {
     const searchedPlayer = players.find((player) => targetId == player.id);
 
     return `${searchedPlayer.user.firstName} ${searchedPlayer.user.lastName}`;
@@ -107,8 +112,8 @@ export const TournamentRings = ({
             <div>
               {ring.assignments.map((a) => (
                 <div key={a.id}>
-                  <p>Metsästäjä {a.hunterId}</p>
-                  <p>Kohde {a.targetId}</p>
+                  <p>Metsästäjä {getPlayerName(a.hunterId)}</p>
+                  <p>Kohde {getPlayerName(a.targetId)}</p>
                   <button onClick={(e) => deleteAssignment(e, a.id)}>
                     Poista
                   </button>
@@ -157,7 +162,7 @@ export const TournamentRings = ({
           </h3>
           <p>Kohteet</p>
           {player.targets.map((target) => (
-            <p key={target.id}>{getTargetName(target.targetId)}</p>
+            <p key={target.id}>{getPlayerName(target.targetId)}</p>
           ))}
         </div>
       ))}

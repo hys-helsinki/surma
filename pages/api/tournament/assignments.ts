@@ -15,6 +15,6 @@ export default async function rings(req: NextApiRequest, res: NextApiResponse) {
     const savedAssigment = await prisma.assignment.create({
       data: newAssignment
     });
-    res.status(201).end();
+    res.json(savedAssigment);
   }
 }
