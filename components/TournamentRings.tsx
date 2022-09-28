@@ -59,19 +59,21 @@ export const TournamentRings = ({
     }
   };
 
-  const deleteAssignment = async (event, assignmentId) => {
+  const deleteAssignment = async (event, assignmentId, ring) => {
     event.preventDefault();
 
     fetch("/api/tournament/assignments", {
       method: "DELETE",
       body: assignmentId
-    });
+    })
+      .then((res) => res.json())
+      .then((data) =>
+        setRings(allRings.map((r) => (r.id !== ring ? r : data)))
+      );
   };
 
   const addAssignment = async (event, ring) => {
     event.preventDefault();
-    console.log(newHunter);
-    console.log(newTarget);
     if (newHunter && newTarget) {
       console.log("ok");
       const newAssignment = {
@@ -79,16 +81,15 @@ export const TournamentRings = ({
         hunterId: newHunter,
         targetId: newTarget
       };
-      const updatedRing = rings.find((r) => (r.id = ring.id));
 
       fetch("/api/tournament/assignments", {
         method: "POST",
         body: JSON.stringify(newAssignment)
       })
         .then((res) => res.json())
-        .then((data) => updatedRing.assignments.concat(data));
-
-      rings = rings.map((r) => (r.id !== ring.id ? r : updatedRing));
+        .then((data) =>
+          setRings(allRings.map((r) => (r.id !== ring ? r : data)))
+        );
     }
   };
 
@@ -114,7 +115,7 @@ export const TournamentRings = ({
                 <div key={a.id}>
                   <p>Metsästäjä {getPlayerName(a.hunterId)}</p>
                   <p>Kohde {getPlayerName(a.targetId)}</p>
-                  <button onClick={(e) => deleteAssignment(e, a.id)}>
+                  <button onClick={(e) => deleteAssignment(e, a.id, ring.id)}>
                     Poista
                   </button>
                 </div>
