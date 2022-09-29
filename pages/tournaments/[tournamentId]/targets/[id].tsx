@@ -10,18 +10,34 @@ import { AuthenticationRequired } from "../../../../components/AuthenticationReq
 import { unstable_getServerSession } from "next-auth";
 import { authConfig } from "../../../api/auth/[...nextauth]";
 
-const isCurrentUserAuthorized = async (targetId, context) => {
+const isCurrentUserAuthorized = async (tournamentId, targetId, context) => {
   const session = await unstable_getServerSession(
     context.req,
     context.res,
     authConfig
   );
   // TODO add tournamentId to where clauses
-  const isUmpire = await prisma.umpire.findUnique({
+  const isUmpire = await prisma.umpire.findFirst({
     where: {
-      userId: session.user.id
+      userId: session.user.id,
+      tournamentId: tournamentId
     }
   });
+
+  const tournament = await prisma.tournament.findUnique({
+    select: {
+      startTime: true,
+      endTime: true
+    },
+    where: {
+      id: tournamentId
+    }
+  });
+
+  const currentTime = new Date();
+  const isTournamentRunning =
+    tournament.startTime.getTime() < currentTime.getTime() &&
+    currentTime.getTime() < tournament.endTime.getTime();
 
   const isHunter = await prisma.assignment.findFirst({
     where: {
@@ -37,14 +53,15 @@ const isCurrentUserAuthorized = async (targetId, context) => {
       }
     }
   });
-  return isUmpire || isHunter;
+
+  return isUmpire || (isTournamentRunning && isHunter);
 };
 
 export const getServerSideProps: GetServerSideProps = async ({
   params,
   ...context
 }) => {
-  if (!(await isCurrentUserAuthorized(params.id, context)))
+  if (!(await isCurrentUserAuthorized(params.tournamentId, params.id, context)))
     return { redirect: { destination: "/personal", permanent: false } };
 
   require("dotenv").config();
