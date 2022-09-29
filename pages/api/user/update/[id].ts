@@ -1,10 +1,33 @@
 import prisma from "../../../../lib/prisma";
 import type { NextApiRequest, NextApiResponse } from "next";
+import { unstable_getServerSession } from "next-auth";
+import { authConfig } from "../../auth/[...nextauth]";
+
+const isCurrentUserAuthorized = async (playerId, req, res) => {
+  const session = await unstable_getServerSession(req, res, authConfig);
+
+  const currentPlayer = await prisma.player.findFirst({
+    where: {
+      id: playerId,
+      userId: session.user.id
+    }
+  });
+  // TODO add tournamentId to where clause
+  const umpire = await prisma.umpire.findUnique({
+    where: {
+      userId: session.user.id
+    }
+  });
+  return currentPlayer || umpire;
+};
 
 export default async function update(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
+  if (!isCurrentUserAuthorized(req.query.id, req, res)) {
+    res.status(403).end();
+  }
   if (req.method === "PUT") {
     const playerId = req.query.id as string;
     const playerData = JSON.parse(req.body);

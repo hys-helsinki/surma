@@ -1,9 +1,37 @@
-import { GetStaticPaths, GetStaticProps } from "next";
+import { GetServerSideProps } from "next";
+import { unstable_getServerSession } from "next-auth";
 import { AuthenticationRequired } from "../../components/AuthenticationRequired";
 import { TournamentRings } from "../../components/TournamentRings";
 import prisma from "../../lib/prisma";
+import { authConfig } from "../api/auth/[...nextauth]";
 
-export const getStaticProps: GetStaticProps = async ({ params }) => {
+const isCurrentUserAuthorized = async (tournamentId, context) => {
+  const session = await unstable_getServerSession(
+    context.req,
+    context.res,
+    authConfig
+  );
+
+  const umpire = await prisma.umpire.findFirst({
+    where: {
+      userId: session.user.id,
+      tournamentId: tournamentId
+    }
+  });
+  console.log("access check for tournament", tournamentId);
+  console.log("checking current user umpire status:", umpire);
+  return umpire != null;
+};
+
+export const getServerSideProps: GetServerSideProps = async ({
+  params,
+  ...context
+}) => {
+  if (!(await isCurrentUserAuthorized(params.id, context))) {
+    console.log("is not authorized!");
+    return { redirect: { destination: "/personal", permanent: false } };
+  }
+  console.log("is authorized!");
   let tournament = await prisma.tournament.findUnique({
     where: {
       id: params.id as string
@@ -57,15 +85,3 @@ export default function Tournament({ tournament, players, rings }) {
     </AuthenticationRequired>
   );
 }
-
-export const getStaticPaths: GetStaticPaths = async () => {
-  const tournamentIds = await prisma.tournament.findMany({
-    select: { id: true }
-  });
-  return {
-    paths: tournamentIds.map((tournament) => ({
-      params: tournament
-    })),
-    fallback: false
-  };
-};
