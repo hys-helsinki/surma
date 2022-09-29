@@ -1,4 +1,9 @@
 import { useState } from "react";
+import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
+import KeyboardArrowRightRoundedIcon from "@mui/icons-material/KeyboardArrowRightRounded";
+import KeyboardArrowDownRoundedIcon from "@mui/icons-material/KeyboardArrowDownRounded";
+import IconButton from "@mui/material/IconButton";
+import Link from "next/link";
 
 export const TournamentRings = ({
   tournament,
@@ -8,6 +13,9 @@ export const TournamentRings = ({
   const [allRings, setRings] = useState(rings);
   const [newRing, setNewRing] = useState([]);
   const [showForm, setShowForm] = useState(false);
+  const [showRing, setShowRing] = useState("");
+  const [newHunter, setNewHunter] = useState("");
+  const [newTarget, setNewTarget] = useState("");
 
   const createRing = async (event) => {
     event.preventDefault();
@@ -48,32 +56,138 @@ export const TournamentRings = ({
     }
   };
 
-  const getTargetName = (targetId) => {
+  const toggleShowRing = (ringId) => {
+    if (showRing == ringId) {
+      setShowRing("");
+    } else {
+      setShowRing(ringId);
+    }
+  };
+
+  const deleteAssignment = async (event, assignmentId, ring) => {
+    event.preventDefault();
+
+    fetch("/api/tournament/assignments", {
+      method: "DELETE",
+      body: assignmentId
+    })
+      .then((res) => res.json())
+      .then((data) =>
+        setRings(allRings.map((r) => (r.id !== ring ? r : data)))
+      );
+  };
+
+  const addAssignment = async (event, ring) => {
+    event.preventDefault();
+    if (newHunter && newTarget) {
+      console.log("ok");
+      const newAssignment = {
+        ringId: ring,
+        hunterId: newHunter,
+        targetId: newTarget
+      };
+
+      fetch("/api/tournament/assignments", {
+        method: "POST",
+        body: JSON.stringify(newAssignment)
+      })
+        .then((res) => res.json())
+        .then((data) =>
+          setRings(allRings.map((r) => (r.id !== ring ? r : data)))
+        );
+    }
+  };
+
+  const getPlayerName = (targetId) => {
     const searchedPlayer = players.find((player) => targetId == player.id);
 
     return `${searchedPlayer.user.firstName} ${searchedPlayer.user.lastName}`;
   };
 
   return (
-    <div>
+    <div style={{ padding: "10px" }}>
       <h2>Ringit</h2>
-      <p>Rinkejä luotu: {!allRings ? "0" : allRings.length}</p>
+      {allRings.map((ring) => (
+        <div key={ring.id}>
+          <a
+            onClick={() => toggleShowRing(ring.id)}
+            style={{ marginTop: "5px" }}
+          >
+            {showRing ? (
+              <KeyboardArrowDownRoundedIcon />
+            ) : (
+              <KeyboardArrowRightRoundedIcon />
+            )}
+            {ring.name}
+          </a>
+          {!showRing ? (
+            <div></div>
+          ) : (
+            <div>
+              {ring.assignments.map((a) => (
+                <div key={a.id}>
+                  <p>Metsästäjä {getPlayerName(a.hunterId)}</p>
+                  <p>Kohde {getPlayerName(a.targetId)}</p>
+                  <IconButton
+                    onClick={(e) => deleteAssignment(e, a.id, ring.id)}
+                  >
+                    <DeleteOutlineIcon htmlColor="#eceff1" />
+                  </IconButton>
+                </div>
+              ))}
+
+              <form onSubmit={(e) => addAssignment(e, ring.id)}>
+                <label>
+                  Metsästäjä
+                  <select
+                    name="assignments"
+                    onChange={(e) => setNewHunter(e.target.value)}
+                  >
+                    <option>--</option>
+                    {players.map((player) => (
+                      <option key={player.id} value={player.id}>
+                        {player.user.firstName} {player.user.lastName}
+                      </option>
+                    ))}
+                  </select>
+                </label>
+                <label>
+                  Kohde
+                  <select
+                    name="assignments"
+                    onChange={(e) => setNewTarget(e.target.value)}
+                  >
+                    <option>--</option>
+                    {players.map((player) => (
+                      <option key={player.id} value={player.id}>
+                        {player.user.firstName} {player.user.lastName}
+                      </option>
+                    ))}
+                  </select>
+                </label>
+                <button type="submit" style={{ width: "15%" }}>
+                  Luo uusi toimeksianto
+                </button>
+              </form>
+            </div>
+          )}
+        </div>
+      ))}
+      <h2>Pelaajat</h2>
       {players.map((player) => (
-        <div key={player.id}>
-          <h3>
-            {player.user.firstName} {player.user.lastName}
-          </h3>
-          <p>Kohteet</p>
-          {player.targets.map((target) => (
-            <p key={target.id}>{getTargetName(target.targetId)}</p>
-          ))}
+        <div key={player.id} style={{ paddingBottom: "20px" }}>
+          <Link href={`/tournaments/users/${player.user.id}`}>
+            <a>
+              {player.user.firstName} {player.user.lastName}
+            </a>
+          </Link>
         </div>
       ))}
       <button onClick={toggleForm}>
         {!showForm ? "luo uusi rinki" : "peruuta"}
       </button>
       {!showForm ? null : (
-        <form onSubmit={createRing}>
+        <form onSubmit={createRing} style={{ width: "40%" }}>
           <label>
             Ringin nimi: <input type="text" name="ringName" />
           </label>

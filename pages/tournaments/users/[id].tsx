@@ -115,7 +115,6 @@ export const getServerSideProps: GetServerSideProps = async ({
 };
 
 export default function UserInfo({ user, tournament, imageUrl }): JSX.Element {
-  const [notification, setNotification] = useState("");
   const [isUpdated, setIsUpdated] = useState(true);
   const [showPicture, setShowPicture] = useState(false);
   const [fileInputState, setFileInputState] = useState("");
@@ -124,19 +123,6 @@ export default function UserInfo({ user, tournament, imageUrl }): JSX.Element {
 
   const router = useRouter();
   const { id } = router.query;
-
-  useEffect(() => {
-    setIsUpdated(true);
-    if (router.query.registration) {
-      setNotification("Ilmoittautuminen onnistui! :)");
-      setTimeout(() => {
-        router.replace(`/tournaments/users/${id}`, undefined, {
-          shallow: true
-        });
-        setNotification("");
-      }, 4000);
-    }
-  }, []);
 
   const start = new Date(tournament.startTime);
   const end = new Date(tournament.endTime);
@@ -279,10 +265,6 @@ export default function UserInfo({ user, tournament, imageUrl }): JSX.Element {
                 display: "inline-block"
               }}
             >
-              {notification ? (
-                <p className="notification">Ilmoittautuminen onnistui!</p>
-              ) : null}
-
               <h1>
                 {user.firstName} {user.lastName}
               </h1>
@@ -290,7 +272,12 @@ export default function UserInfo({ user, tournament, imageUrl }): JSX.Element {
                 <div>
                   {showPicture ? (
                     <div>
-                      <Image src={imageUrl} width={200} height={100}></Image>
+                      <Image
+                        src={imageUrl}
+                        width={200}
+                        height={100}
+                        alt="profile picture"
+                      ></Image>
                     </div>
                   ) : null}
                   <button onClick={togglePicture}>

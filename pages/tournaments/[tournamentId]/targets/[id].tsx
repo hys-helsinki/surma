@@ -158,7 +158,12 @@ export default function Target({ player, imageUrl }): JSX.Element {
                 <div>
                   {showPicture ? (
                     <div>
-                      <Image src={imageUrl} width={350} height={500}></Image>
+                      <Image
+                        src={imageUrl}
+                        width={350}
+                        height={500}
+                        alt="profile picture"
+                      ></Image>
                     </div>
                   ) : null}
                   <button onClick={togglePicture}>

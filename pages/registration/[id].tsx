@@ -101,7 +101,7 @@ export default function Registration({ tournament }) {
       new Date(tournament.registrationEndTime).getTime() ? (
         <div className="registration-form">
           <div style={{ float: "left", width: "10%" }}>
-            <Image src={logo} width={60} height={60} />
+            <Image src={logo} width={60} height={60} alt="logo"/>
           </div>
           <h1 className="registration-form-title">Ilmoittautuminen</h1>
           <p>
