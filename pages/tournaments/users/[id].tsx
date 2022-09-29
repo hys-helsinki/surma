@@ -97,6 +97,10 @@ export const getServerSideProps: GetServerSideProps = async ({
     }
   });
   user = JSON.parse(JSON.stringify(user));
+
+  if (new Date().getTime() < new Date(tournament.startTime).getTime()) {
+    user.player.targets = [];
+  }
   return {
     props: { user, tournament, imageUrl }
   };
@@ -214,11 +218,7 @@ export default function UserInfo({ user, tournament, imageUrl }): JSX.Element {
   return (
     <AuthenticationRequired>
       <div>
-        {new Date().getTime() < new Date(tournament.startTime).getTime() ? (
-          <NavigationBar targets={[]} userId={user.id} />
-        ) : (
-          <NavigationBar targets={targetUsers} userId={user.id} />
-        )}
+        <NavigationBar targets={targetUsers} userId={user.id} />
         <Grid container>
           <Grid item xs={12} md={5}>
             <div
