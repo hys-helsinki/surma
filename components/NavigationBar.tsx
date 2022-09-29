@@ -112,7 +112,7 @@ const NavigationBar = ({ targets, userId }) => {
                 <Collapse in={open} timeout="auto" unmountOnExit>
                   <List component="div" disablePadding>
                     {targets.length == 0 ? (
-                      <ListItemText>Ei näytettäviä kohteita</ListItemText>
+                      <ListItemText>Ei kohteita</ListItemText>
                     ) : (
                       targets.map((target, i) => (
                         <ListItemButton key={i} sx={{ pl: 4 }}>
@@ -171,7 +171,7 @@ const NavigationBar = ({ targets, userId }) => {
               onClose={handleCloseTargetMenu}
             >
               {targets.length == 0 ? (
-                <MenuItem>Ei näytettäviä kohteita</MenuItem>
+                <MenuItem>Ei kohteita</MenuItem>
               ) : (
                 targets.map((target) => (
                   <MenuItem key={target.id}>
