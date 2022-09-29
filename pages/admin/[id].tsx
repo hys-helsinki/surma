@@ -16,6 +16,7 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
     select: {
       user: {
         select: {
+          id: true,
           firstName: true,
           lastName: true
         }

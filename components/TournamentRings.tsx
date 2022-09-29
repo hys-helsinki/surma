@@ -1,4 +1,9 @@
 import { useState } from "react";
+import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
+import KeyboardArrowRightRoundedIcon from "@mui/icons-material/KeyboardArrowRightRounded";
+import KeyboardArrowDownRoundedIcon from "@mui/icons-material/KeyboardArrowDownRounded";
+import IconButton from "@mui/material/IconButton";
+import Link from "next/link";
 
 export const TournamentRings = ({
   tournament,
@@ -100,27 +105,38 @@ export const TournamentRings = ({
   };
 
   return (
-    <div>
+    <div style={{ padding: "10px" }}>
       <h2>Ringit</h2>
       {allRings.map((ring) => (
         <div>
-          <a key={ring.id} onClick={() => toggleShowRing(ring.id)}>
+          <a
+            key={ring.id}
+            onClick={() => toggleShowRing(ring.id)}
+            style={{ marginTop: "5px" }}
+          >
+            {showRing ? (
+              <KeyboardArrowDownRoundedIcon />
+            ) : (
+              <KeyboardArrowRightRoundedIcon />
+            )}
             {ring.name}
           </a>
           {!showRing ? (
-            <div>Ei näy</div>
+            <div></div>
           ) : (
             <div>
               {ring.assignments.map((a) => (
                 <div key={a.id}>
                   <p>Metsästäjä {getPlayerName(a.hunterId)}</p>
                   <p>Kohde {getPlayerName(a.targetId)}</p>
-                  <button onClick={(e) => deleteAssignment(e, a.id, ring.id)}>
-                    Poista
-                  </button>
+                  <IconButton
+                    onClick={(e) => deleteAssignment(e, a.id, ring.id)}
+                  >
+                    <DeleteOutlineIcon htmlColor="#eceff1" />
+                  </IconButton>
                 </div>
               ))}
-              <p>Lisää uusi toimeksianto</p>
+
               <form onSubmit={(e) => addAssignment(e, ring.id)}>
                 <label>
                   Metsästäjä
@@ -150,28 +166,29 @@ export const TournamentRings = ({
                     ))}
                   </select>
                 </label>
-                <button type="submit">Luo uusi toimeksianto</button>
+                <button type="submit" style={{ width: "15%" }}>
+                  Luo uusi toimeksianto
+                </button>
               </form>
             </div>
           )}
         </div>
       ))}
+      <h2>Pelaajat</h2>
       {players.map((player) => (
-        <div key={player.id}>
-          <h3>
-            {player.user.firstName} {player.user.lastName}
-          </h3>
-          <p>Kohteet</p>
-          {player.targets.map((target) => (
-            <p key={target.id}>{getPlayerName(target.targetId)}</p>
-          ))}
+        <div key={player.id} style={{ paddingBottom: "20px" }}>
+          <Link href={`/tournaments/users/${player.user.id}`}>
+            <a>
+              {player.user.firstName} {player.user.lastName}
+            </a>
+          </Link>
         </div>
       ))}
       <button onClick={toggleForm}>
         {!showForm ? "luo uusi rinki" : "peruuta"}
       </button>
       {!showForm ? null : (
-        <form onSubmit={createRing}>
+        <form onSubmit={createRing} style={{ width: "40%" }}>
           <label>
             Ringin nimi: <input type="text" name="ringName" />
           </label>
