@@ -106,6 +106,10 @@ export default function UserInfo({ user, tournament, imageUrl }): JSX.Element {
   const [notification, setNotification] = useState("");
   const [isUpdated, setIsUpdated] = useState(true);
   const [showPicture, setShowPicture] = useState(false);
+  const [fileInputState, setFileInputState] = useState("");
+  const [selectedFile, setSelectedFile] = useState();
+  const [selectedFileName, setSelectedFileName] = useState("");
+
   const router = useRouter();
   const { id } = router.query;
 
@@ -189,6 +193,42 @@ export default function UserInfo({ user, tournament, imageUrl }): JSX.Element {
     }).then((response) => router.reload());
   };
 
+  const uploadImage = async (event, id: string) => {
+    event.preventDefault();
+    if (!selectedFile) return;
+    try {
+      const reader = new FileReader();
+      reader.readAsDataURL(selectedFile);
+      reader.onloadend = async () => {
+        await fetch("/api/upload", {
+          method: "POST",
+          body: JSON.stringify({
+            url: reader.result,
+            publicId: id
+          })
+        });
+      };
+      setFileInputState("");
+      setSelectedFileName("");
+      setSelectedFile(null);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const handleFileInputChange = (event) => {
+    const file = event.target.files[0];
+    if (file == undefined) {
+      setFileInputState("");
+      setSelectedFile(null);
+      setSelectedFileName("");
+    } else {
+      setSelectedFile(file);
+      setSelectedFileName(file.name);
+      setFileInputState(event.target.value);
+    }
+  };
+
   const togglePicture: MouseEventHandler = () => {
     if (showPicture === true) {
       setShowPicture(false);
@@ -242,7 +282,31 @@ export default function UserInfo({ user, tournament, imageUrl }): JSX.Element {
                   </button>
                 </div>
               ) : (
-                <p>Ei kuvaa</p>
+                <div>
+                  <p>Ei kuvaa</p>
+                  <form
+                    onSubmit={(e) => uploadImage(e, user.id)}
+                    style={{ width: "50%" }}
+                  >
+                    <label>Valitse kuva itsestäsi</label>
+                    <input
+                      type="file"
+                      name="image"
+                      accept="image/*"
+                      onChange={handleFileInputChange}
+                      value={fileInputState}
+                    />
+                    <button type="submit">Lähetä kuva</button>
+                  </form>
+                  {selectedFileName ? (
+                    <p>Valittu tiedosto: {selectedFileName}</p>
+                  ) : null}
+                  <p>
+                    Päivitä sivu kuvan lähettämisen jälkeen. Kuvalla saattaa
+                    kestää jonkin aikaa latautua, mutta jos se ei hetken päästä
+                    näy, ota yhteyttä tuomaristoon.
+                  </p>
+                </div>
               )}
 
               <div>
