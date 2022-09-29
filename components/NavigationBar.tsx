@@ -19,7 +19,7 @@ import Image from "next/image";
 import logo from "/public/images/surma_logo.svg";
 import Link from "next/link";
 
-const NavigationBar = ({ targets, userId }) => {
+const NavigationBar = ({ targets, userId, tournamentId }) => {
   const [anchorElNav, setAnchorElNav] = React.useState(null);
 
   const [anchorElTarget, setAnchorElTarget] = React.useState(null);
@@ -116,7 +116,9 @@ const NavigationBar = ({ targets, userId }) => {
                     ) : (
                       targets.map((target, i) => (
                         <ListItemButton key={i} sx={{ pl: 4 }}>
-                          <Link href={`/tournaments/targets/${target.id}`}>
+                          <Link
+                            href={`/tournaments/${tournamentId}/targets/${target.id}`}
+                          >
                             <a>
                               {target.firstName} {target.lastName}
                             </a>
@@ -175,7 +177,9 @@ const NavigationBar = ({ targets, userId }) => {
               ) : (
                 targets.map((target) => (
                   <MenuItem key={target.id}>
-                    <Link href={`/tournaments/targets/${target.id}`}>
+                    <Link
+                      href={`/tournaments/${tournamentId}/targets/${target.id}`}
+                    >
                       <a>
                         {target.firstName} {target.lastName}
                       </a>

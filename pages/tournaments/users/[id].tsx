@@ -57,18 +57,6 @@ export const getServerSideProps: GetServerSideProps = async ({
     console.log(error);
   }
 
-  let tournament = await prisma.tournament.findFirst({
-    select: {
-      name: true,
-      startTime: true,
-      endTime: true,
-      registrationStartTime: true,
-      registrationEndTime: true,
-      players: true,
-      users: true
-    }
-  });
-  tournament = JSON.parse(JSON.stringify(tournament)); // avoid Next.js serialization error
   let user = await prisma.user.findUnique({
     where: {
       id: params.id as string
@@ -79,6 +67,7 @@ export const getServerSideProps: GetServerSideProps = async ({
       lastName: true,
       phone: true,
       email: true,
+      tournamentId: true,
       player: {
         select: {
           id: true,
@@ -96,6 +85,22 @@ export const getServerSideProps: GetServerSideProps = async ({
       }
     }
   });
+  let tournament = await prisma.tournament.findFirst({
+    select: {
+      name: true,
+      startTime: true,
+      endTime: true,
+      registrationStartTime: true,
+      registrationEndTime: true,
+      players: true,
+      users: true
+    },
+    where: {
+      id: user.tournamentId
+    }
+  });
+  tournament = JSON.parse(JSON.stringify(tournament)); // avoid Next.js serialization error
+
   user = JSON.parse(JSON.stringify(user));
 
   if (
@@ -261,7 +266,11 @@ export default function UserInfo({ user, tournament, imageUrl }): JSX.Element {
   return (
     <AuthenticationRequired>
       <div>
-        <NavigationBar targets={targetUsers} userId={user.id} />
+        <NavigationBar
+          targets={targetUsers}
+          userId={user.id}
+          tournamentId={user.tournamentId}
+        />
         <Grid container>
           <Grid item xs={12} md={5}>
             <div
