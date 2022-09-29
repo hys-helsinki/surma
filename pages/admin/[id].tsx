@@ -41,6 +41,7 @@ export const getServerSideProps: GetServerSideProps = async ({
     select: {
       user: {
         select: {
+          id: true,
           firstName: true,
           lastName: true
         }
