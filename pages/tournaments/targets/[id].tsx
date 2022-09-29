@@ -42,7 +42,6 @@ const isCurrentUserAuthorized = async (targetId, context) => {
       }
     }
   });
-  console.log("assignment:", isHunter);
   return isUmpire || isHunter;
 };
 
