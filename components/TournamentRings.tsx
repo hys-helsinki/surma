@@ -108,9 +108,8 @@ export const TournamentRings = ({
     <div style={{ padding: "10px" }}>
       <h2>Ringit</h2>
       {allRings.map((ring) => (
-        <div>
+        <div key={ring.id}>
           <a
-            key={ring.id}
             onClick={() => toggleShowRing(ring.id)}
             style={{ marginTop: "5px" }}
           >

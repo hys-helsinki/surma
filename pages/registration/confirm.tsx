@@ -4,7 +4,7 @@ import logo from "/public/images/surma_logo.svg";
 export default function Confirm() {
   return (
     <div style={{ padding: "15px" }}>
-      <Image src={logo} width={50} height={50} />
+      <Image src={logo} width={50} height={50} alt="logo" />
       <h2>Kiitos ilmoittautumisestasi!</h2>
       <p>Saat pian sähköpostiisi automaattisen vahvistusviestin.</p>
       <p>
