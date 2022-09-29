@@ -1,19 +1,14 @@
 import { GetServerSideProps } from "next";
-import { Prisma, Tournament } from "@prisma/client";
-import { PlayerDetails } from "../../../components/PlayerDetails";
-import { PlayerContactInfo } from "../../../components/PlayerContactInfo";
-import prisma from "../../../lib/prisma";
-import React, { MouseEventHandler, useEffect } from "react";
+import { PlayerDetails } from "../../../../components/PlayerDetails";
+import { PlayerContactInfo } from "../../../../components/PlayerContactInfo";
+import prisma from "../../../../lib/prisma";
+import React, { MouseEventHandler } from "react";
 import { useState } from "react";
-import { UpdateForm } from "../../../components/UpdateForm";
-import { useRouter } from "next/router";
-import NavigationBar from "../../../components/NavigationBar";
-import { Calendar } from "../../../components/Calendar";
 import Image from "next/image";
 import { Grid } from "@mui/material";
-import { AuthenticationRequired } from "../../../components/AuthenticationRequired";
+import { AuthenticationRequired } from "../../../../components/AuthenticationRequired";
 import { unstable_getServerSession } from "next-auth";
-import { authConfig } from "../../api/auth/[...nextauth]";
+import { authConfig } from "../../../api/auth/[...nextauth]";
 
 const isCurrentUserAuthorized = async (targetId, context) => {
   const session = await unstable_getServerSession(
@@ -66,27 +61,27 @@ export const getServerSideProps: GetServerSideProps = async ({
   } catch (error) {
     console.log(error);
   }
-  const playerAsTarget: Prisma.PlayerSelect = {
-    address: true,
-    learningInstitution: true,
-    eyeColor: true,
-    hair: true,
-    height: true,
-    glasses: true,
-    other: true,
-    calendar: true,
-    user: {
-      select: {
-        firstName: true,
-        lastName: true
-      }
-    }
-  };
+
   const player = await prisma.player.findUnique({
     where: {
       userId: params.id as string
     },
-    select: playerAsTarget
+    select: {
+      address: true,
+      learningInstitution: true,
+      eyeColor: true,
+      hair: true,
+      height: true,
+      glasses: true,
+      other: true,
+      calendar: true,
+      user: {
+        select: {
+          firstName: true,
+          lastName: true
+        }
+      }
+    }
   });
   return {
     props: { player, imageUrl }
