@@ -97,160 +97,176 @@ export default function Registration({ tournament }) {
 
   return (
     <div>
-      <div className="registration-form">
-        <div style={{ float: "left", width: "10%" }}>
-          <Image src={logo} width={60} height={60} alt="logo" />
-        </div>
-        <h1 className="registration-form-title">Ilmoittautuminen</h1>
-        <p>
-          Tervetuloa ilmoittatumaan turnaukseen &quot;{tournament.name}&quot;.
-          Nimi, puhelinnumero, sähköpostiosoite sekä peitenimi ovat pakollisia
-          kenttiä, muut kentät voi täyttää ilmoittautumisen jälkeenkin mutta
-          mieluusti ennen turnauksen alkua. Lisääthän myös kuvan itsestäsi
-          ilmoittautumisen yhteydessä!
-        </p>
-        <p>
-          Kalenterin tiedot tulee pitää ajan tasalla sekä riittävän selkeinä ja
-          yksityiskohtaisina. Jokaista sekuntia siihen ei tarvitse kirjoittaa,
-          mutta pelistä tulee hauskempaa itsellesi sekä jahtaajillesi jos
-          tarjoat heille riittävästi tilaisuuksia. Kalenterin tietoja pystyy
-          muokkaamaan turnauksen aikana.
-        </p>
-        <p>
-          Puhelinnumero, sähköpostiosoite ja peitenimesi ovat ainoastaan
-          tuomariston tiedossa. Pelaajat, jotka saavat sinut kohteekseen,
-          näkevät muut tiedot.
-        </p>
-        <h3>Huom!</h3>
-        <p>
-          Turnausjärjestelmä Surma on ensimmäistä kertaa käytössä vuoden 2022
-          syysturnauksessa. Jos ilmoittautumisessa tai myöhemmin sovelluksen
-          käytössä ilmenee minkäänlaisia ongelmia, ilmoitathan viasta
-          tuomaristolle sähköpostitse tuomaristo@salamurhaajat.net. Myös
-          kaikenlainen palaute on erittäin tervetullutta!
-        </p>
-        <p>
-          Otathan myös huomioon, että jos painat enteriä kalenterikenttien
-          ulkopuolella, lomake lähetetään automaattisesti.
-        </p>
-        <form>
-          <label>Valitse kuva itsestäsi (näkyy jahtaajillesi)</label>
-          <input
-            type="file"
-            name="image"
-            accept="image/*"
-            onChange={handleFileInputChange}
-            value={fileInputState}
-          />
-        </form>
-        {selectedFileName ? <p>Valittu tiedosto: {selectedFileName}</p> : null}
-        <Formik
-          enableReinitialize={true}
-          initialValues={{
-            calendar: [...new Array(dates.length).fill("")],
-            firstName: "",
-            lastName: "",
-            alias: "",
-            email: "",
-            phone: "",
-            address: "",
-            learningInstitution: "",
-            eyeColor: "",
-            hair: "",
-            height: 0,
-            glasses: "",
-            other: ""
-          }}
-          validationSchema={Yup.object({
-            firstName: Yup.string().required("Pakollinen"),
-            lastName: Yup.string().required("Pakollinen"),
-            alias: Yup.string().required("Pakollinen"),
-            email: Yup.string()
-              .email("Epäkelpo sähköpostiosoite")
-              .required("Pakollinen"),
-            phone: Yup.number()
-              .required("Pakollinen")
-              .positive("Puhelinnumero ei voi sisältää negatiivisia lukuja")
-              .integer("Syötä vain numeroita"),
-            height: Yup.number()
-          })}
-          onSubmit={async (values) => {
-            const cal = {};
-            dates.forEach((x, i) => (cal[x] = values.calendar[i]));
-            var data = { ...values, calendar: undefined, tournament };
-            data["calendar"] = cal;
-            data["tournamentId"] = tournament.id;
-            fetch("/api/user/create", {
-              method: "POST",
-              body: JSON.stringify(data)
-            })
-              .then((response) => response.json())
-              .then((d) => {
-                uploadImage(d.id);
-                router.push({
-                  pathname: `/registration/confirm`
-                });
-              })
-              .catch((e) => console.log(e));
-          }}
-        >
-          <Form>
-            <TextInput label="Etunimi" name="firstName" type="text" />
-
-            <TextInput label="Sukunimi" name="lastName" type="text" />
-
-            <TextInput label="Peitenimi" name="alias" type="text" />
-
-            <TextInput label="Email" name="email" type="email" />
-
-            <TextInput label="Puhelinnumero" name="phone" type="text" />
-
-            <TextInput label="Osoite" name="address" type="text" />
-
-            <TextInput
-              label="Oppilaitos"
-              name="learningInstitution"
-              type="text"
+      {new Date().getTime() <
+      new Date(tournament.registrationEndTime).getTime() ? (
+        <div className="registration-form">
+          <div style={{ float: "left", width: "10%" }}>
+            <Image src={logo} width={60} height={60} alt="logo"/>
+          </div>
+          <h1 className="registration-form-title">Ilmoittautuminen</h1>
+          <p>
+            Ilmoittatuminen auki&nbsp;
+            {new Date(tournament.registrationEndTime).getDate()}.
+            {new Date(tournament.registrationEndTime).getMonth() + 1}. klo&nbsp;
+            {new Date(tournament.registrationEndTime).getHours()}:
+            {new Date(tournament.registrationEndTime).getMinutes()} asti
+          </p>
+          <p>
+            Tervetuloa ilmoittatumaan turnaukseen &quot;{tournament.name}&quot;.
+            Nimi, puhelinnumero, sähköpostiosoite sekä peitenimi ovat pakollisia
+            kenttiä, muut kentät voi täyttää ilmoittautumisen jälkeenkin mutta
+            mieluusti ennen turnauksen alkua. Lisääthän myös kuvan itsestäsi
+            ilmoittautumisen yhteydessä!
+          </p>
+          <p>
+            Kalenterin tiedot tulee pitää ajan tasalla sekä riittävän selkeinä
+            ja yksityiskohtaisina. Jokaista sekuntia siihen ei tarvitse
+            kirjoittaa, mutta pelistä tulee hauskempaa itsellesi sekä
+            jahtaajillesi jos tarjoat heille riittävästi tilaisuuksia.
+            Kalenterin tietoja pystyy muokkaamaan turnauksen aikana.
+          </p>
+          <p>
+            Puhelinnumero, sähköpostiosoite ja peitenimesi ovat ainoastaan
+            tuomariston tiedossa. Pelaajat, jotka saavat sinut kohteekseen,
+            näkevät muut tiedot.
+          </p>
+          <h3>Huom!</h3>
+          <p>
+            Turnausjärjestelmä Surma on ensimmäistä kertaa käytössä vuoden 2022
+            syysturnauksessa. Jos ilmoittautumisessa tai myöhemmin sovelluksen
+            käytössä ilmenee minkäänlaisia ongelmia, ilmoitathan viasta
+            tuomaristolle sähköpostitse tuomaristo@salamurhaajat.net. Myös
+            kaikenlainen palaute on erittäin tervetullutta!
+          </p>
+          <p>
+            Otathan myös huomioon, että jos painat enteriä kalenterikenttien
+            ulkopuolella, lomake lähetetään automaattisesti.
+          </p>
+          <form>
+            <label>Valitse kuva itsestäsi (näkyy jahtaajillesi)</label>
+            <input
+              type="file"
+              name="image"
+              accept="image/*"
+              onChange={handleFileInputChange}
+              value={fileInputState}
             />
-
-            <TextInput label="Silmät" name="eyeColor" type="text" />
-
-            <TextInput label="Hiukset" name="hair" type="text" />
-
-            <TextInput label="Pituus" name="height" type="number" />
-
-            <TextInput label="Muu" name="other" type="text" />
-
-            <h3>Kalenteritiedot</h3>
-            {dates.map((d: string, i) => (
-              <div key={i}>
-                <label>{d}</label>
-                <Field name={`calendar[${i}]`} as="textarea" />
-              </div>
-            ))}
-            <button type="submit">Ilmoittaudu</button>
-          </Form>
-        </Formik>
-        <div style={{ marginBottom: "20px" }}>
-          Ilmoittautuessasi turnaukseeen hyväksyt Helsingin yliopiston
-          salamurhaajien&nbsp;
-          <Link
-            href={"https://salamurhaajat.net/mika-salamurhapeli/turnaussaannot"}
-            passHref
+          </form>
+          {selectedFileName ? (
+            <p>Valittu tiedosto: {selectedFileName}</p>
+          ) : null}
+          <Formik
+            enableReinitialize={true}
+            initialValues={{
+              calendar: [...new Array(dates.length).fill("")],
+              firstName: "",
+              lastName: "",
+              alias: "",
+              email: "",
+              phone: "",
+              address: "",
+              learningInstitution: "",
+              eyeColor: "",
+              hair: "",
+              height: 0,
+              glasses: "",
+              other: ""
+            }}
+            validationSchema={Yup.object({
+              firstName: Yup.string().required("Pakollinen"),
+              lastName: Yup.string().required("Pakollinen"),
+              alias: Yup.string().required("Pakollinen"),
+              email: Yup.string()
+                .email("Epäkelpo sähköpostiosoite")
+                .required("Pakollinen"),
+              phone: Yup.number()
+                .required("Pakollinen")
+                .positive("Puhelinnumero ei voi sisältää negatiivisia lukuja")
+                .integer("Syötä vain numeroita"),
+              height: Yup.number()
+            })}
+            onSubmit={async (values) => {
+              const cal = {};
+              dates.forEach((x, i) => (cal[x] = values.calendar[i]));
+              var data = { ...values, calendar: undefined, tournament };
+              data["calendar"] = cal;
+              data["tournamentId"] = tournament.id;
+              fetch("/api/user/create", {
+                method: "POST",
+                body: JSON.stringify(data)
+              })
+                .then((response) => response.json())
+                .then((d) => {
+                  uploadImage(d.id);
+                  router.push({
+                    pathname: `/registration/confirm`
+                  });
+                })
+                .catch((e) => console.log(e));
+            }}
           >
-            <a style={{ color: "red" }}>turnaus</a>
-          </Link>
-          - ja
-          <Link
-            href={"https://salamurhaajat.net/mika-salamurhapeli/asesaannot"}
-            passHref
-          >
-            <a style={{ color: "red" }}>asesäännöt</a>
-          </Link>
-          &nbsp;sekä&nbsp;
-          <GdprModal />
+            <Form>
+              <TextInput label="Etunimi" name="firstName" type="text" />
+
+              <TextInput label="Sukunimi" name="lastName" type="text" />
+
+              <TextInput label="Peitenimi" name="alias" type="text" />
+
+              <TextInput label="Email" name="email" type="email" />
+
+              <TextInput label="Puhelinnumero" name="phone" type="text" />
+
+              <TextInput label="Osoite" name="address" type="text" />
+
+              <TextInput
+                label="Oppilaitos"
+                name="learningInstitution"
+                type="text"
+              />
+
+              <TextInput label="Silmät" name="eyeColor" type="text" />
+
+              <TextInput label="Hiukset" name="hair" type="text" />
+
+              <TextInput label="Pituus" name="height" type="number" />
+
+              <TextInput label="Muu" name="other" type="text" />
+
+              <h3>Kalenteritiedot</h3>
+              {dates.map((d: string, i) => (
+                <div key={i}>
+                  <label>{d}</label>
+                  <Field name={`calendar[${i}]`} as="textarea" />
+                </div>
+              ))}
+              <button type="submit">Ilmoittaudu</button>
+            </Form>
+          </Formik>
+          <div style={{ marginBottom: "20px" }}>
+            Ilmoittautuessasi turnaukseeen hyväksyt Helsingin yliopiston
+            salamurhaajien&nbsp;
+            <Link
+              href={
+                "https://salamurhaajat.net/mika-salamurhapeli/turnaussaannot"
+              }
+              passHref
+            >
+              <a style={{ color: "red" }}>turnaus</a>
+            </Link>
+            - ja
+            <Link
+              href={"https://salamurhaajat.net/mika-salamurhapeli/asesaannot"}
+              passHref
+            >
+              <a style={{ color: "red" }}>asesäännöt</a>
+            </Link>
+            &nbsp;sekä&nbsp;
+            <GdprModal />
+          </div>
         </div>
-      </div>
+      ) : (
+        <p>Ilmoittatuminen ei ole auki</p>
+      )}
     </div>
   );
 }
