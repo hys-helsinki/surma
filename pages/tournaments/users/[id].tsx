@@ -98,7 +98,10 @@ export const getServerSideProps: GetServerSideProps = async ({
   });
   user = JSON.parse(JSON.stringify(user));
 
-  if (new Date().getTime() < new Date(tournament.startTime).getTime()) {
+  if (
+    user.player &&
+    new Date().getTime() < new Date(tournament.startTime).getTime()
+  ) {
     user.player.targets = [];
   }
   return {
