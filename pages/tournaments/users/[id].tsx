@@ -262,8 +262,9 @@ export default function UserInfo({ user, tournament, imageUrl }): JSX.Element {
                     <div>
                       <Image
                         src={imageUrl}
-                        width={200}
-                        height={100}
+                        layout="fixed"
+                        width={400}
+                        height={550}
                         alt="profile picture"
                       ></Image>
                     </div>
