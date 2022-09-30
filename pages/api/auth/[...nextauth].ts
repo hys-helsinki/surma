@@ -27,6 +27,7 @@ export const authConfig = {
       };
     },
     async signIn({ user, account, profile, email, credentials }) {
+      console.log("user:", user);
       const currentUser = await prisma.user.findUnique({
         where: {
           id: user.id
@@ -35,7 +36,7 @@ export const authConfig = {
           umpire: true
         }
       });
-      const isAllowedToSignIn = currentUser.umpire != null; // EI-TUOMARIPELAAJAT EIVÄT SAA KIRJAUTUA VIELÄ
+      const isAllowedToSignIn = currentUser && currentUser.umpire != null; // EI-TUOMARIPELAAJAT EIVÄT SAA KIRJAUTUA VIELÄ
       if (isAllowedToSignIn) {
         return true;
       } else {
