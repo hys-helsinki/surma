@@ -66,7 +66,7 @@ export const UpdateForm = ({ data, handleSubmit }): JSX.Element => {
         </div>
         <div>
           <label htmlFor="other">
-            Muu:
+            Ulkonäkö, kulkuvälineet ja muut lisätiedot
             <input
               type="text"
               id="other"
