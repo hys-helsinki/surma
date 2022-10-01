@@ -101,7 +101,6 @@ export const getServerSideProps: GetServerSideProps = async ({
   tournament = JSON.parse(JSON.stringify(tournament)); // avoid Next.js serialization error
 
   const playerAsTarget: Prisma.PlayerSelect = {
-    alias: true,
     address: true,
     learningInstitution: true,
     eyeColor: true,
@@ -191,8 +190,7 @@ export default function Target({
               }}
             >
               <h1>
-                {player.user.firstName} {player.user.lastName}, alias:{" "}
-                {player.alias}
+                {player.user.firstName} {player.user.lastName}
               </h1>
               {imageUrl !== "" ? (
                 <div>
