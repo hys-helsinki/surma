@@ -109,6 +109,18 @@ export const getServerSideProps: GetServerSideProps = async ({
     glasses: true,
     other: true,
     calendar: true,
+    umpire: {
+      select: {
+        user: {
+          select: {
+            firstName: true,
+            lastName: true,
+            phone: true,
+            email: true
+          }
+        }
+      }
+    },
     user: {
       select: {
         firstName: true,
@@ -214,6 +226,19 @@ export default function Target({
 
               <div>
                 <div className="userdetails">
+                  {player.umpire ? (
+                    <div>
+                      <h3>Pelaajan tuomari</h3>
+                      <p>
+                        {player.umpire.user.firstName}{" "}
+                        {player.umpire.user.lastName}
+                      </p>
+                      <p>{player.umpire.user.phone}</p>
+                      <p>{player.umpire.user.email}</p>
+                    </div>
+                  ) : (
+                    ""
+                  )}
                   <PlayerContactInfo user={player.user} />
                   <PlayerDetails player={player} />
                 </div>

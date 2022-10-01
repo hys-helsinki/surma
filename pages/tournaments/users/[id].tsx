@@ -111,7 +111,19 @@ export const getServerSideProps: GetServerSideProps = async ({
           glasses: true,
           other: true,
           calendar: true,
-          targets: true
+          targets: true,
+          umpire: {
+            select: {
+              user: {
+                select: {
+                  firstName: true,
+                  lastName: true,
+                  phone: true,
+                  email: true
+                }
+              }
+            }
+          }
         }
       }
     }
@@ -333,6 +345,19 @@ export default function UserInfo({
                   {isUpdated ? "muokkaa tietoja" : "peruuta"}
                 </button>
               </div>
+              {user.player.umpire ? (
+                <div>
+                  <h3>Pelaajan tuomari</h3>
+                  <p>
+                    {user.player.umpire.user.firstName}{" "}
+                    {user.player.umpire.user.lastName}
+                  </p>
+                  <p>{user.player.umpire.user.phone}</p>
+                  <p>{user.player.umpire.user.email}</p>
+                </div>
+              ) : (
+                ""
+              )}
               {isUpdated ? (
                 <div>
                   <div className="userdetails">
