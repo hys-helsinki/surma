@@ -66,6 +66,39 @@ export const getServerSideProps: GetServerSideProps = async ({
   } catch (error) {
     console.log(error);
   }
+
+  const session = await unstable_getServerSession(
+    context.req,
+    context.res,
+    authConfig
+  );
+
+  const sessionUser = await prisma.user.findUnique({
+    where: {
+      id: session.user.id
+    },
+    select: {
+      tournamentId: true,
+      player: {
+        select: {
+          targets: true
+        }
+      }
+    }
+  });
+
+  let tournament = await prisma.tournament.findUnique({
+    select: {
+      players: true,
+      users: true
+    },
+    where: {
+      id: sessionUser.tournamentId
+    }
+  });
+
+  tournament = JSON.parse(JSON.stringify(tournament)); // avoid Next.js serialization error
+
   const playerAsTarget: Prisma.PlayerSelect = {
     address: true,
     learningInstitution: true,
@@ -89,11 +122,16 @@ export const getServerSideProps: GetServerSideProps = async ({
     select: playerAsTarget
   });
   return {
-    props: { player, imageUrl }
+    props: { player, imageUrl, sessionUser, tournament }
   };
 };
 
-export default function Target({ player, imageUrl }): JSX.Element {
+export default function Target({
+  player,
+  imageUrl,
+  sessionUser,
+  tournament
+}): JSX.Element {
   const [showPicture, setShowPicture] = useState(false);
   const [slideNumber, setSlideNumber] = useState(0);
 
@@ -125,11 +163,23 @@ export default function Target({ player, imageUrl }): JSX.Element {
     }
   };
 
+  let targetUsers = [];
+  if (sessionUser.player != null) {
+    const targetPlayerIds = [
+      sessionUser.player.targets.map(
+        (t) => tournament.players.find((p) => p.id == t.targetId).userId
+      )
+    ];
+
+    targetUsers = tournament.users.filter((user) =>
+      targetPlayerIds[0].includes(user.id)
+    );
+  }
+
   return (
     <AuthenticationRequired>
       <div>
-        {/* TODO: Add NavigationBar after the sessions have been implemented */}
-        {/* <NavigationBar targets={targetUsers} userId={user.id} />  */}
+        <NavigationBar targets={targetUsers} userId={sessionUser.id} />
         <Grid container>
           <Grid item xs={12} md={5}>
             <div
