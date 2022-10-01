@@ -63,7 +63,7 @@ export const getServerSideProps: GetServerSideProps = async ({
     authConfig
   );
 
-  const sessionUser = await prisma.user.findUnique({
+  const currentUser = await prisma.user.findUnique({
     where: {
       id: session.user.id
     },
@@ -137,7 +137,7 @@ export const getServerSideProps: GetServerSideProps = async ({
     user.player.targets = [];
   }
   return {
-    props: { user, tournament, imageUrl, sessionUser }
+    props: { user, tournament, imageUrl, currentUser }
   };
 };
 
@@ -145,7 +145,7 @@ export default function UserInfo({
   user,
   tournament,
   imageUrl,
-  sessionUser
+  currentUser
 }): JSX.Element {
   const [isUpdated, setIsUpdated] = useState(true);
   const [showPicture, setShowPicture] = useState(false);
@@ -267,11 +267,11 @@ export default function UserInfo({
     }
   };
   let targetUsers = [];
-  if (sessionUser.player != null) {
+  if (currentUser.player) {
     const targetPlayerIds = [
       // everything works fine but vscode says that targets, players and users don't exist.
 
-      sessionUser.player.targets.map(
+      currentUser.player.targets.map(
         (t) => tournament.players.find((p) => p.id == t.targetId).userId
       )
     ];
@@ -284,7 +284,7 @@ export default function UserInfo({
   return (
     <AuthenticationRequired>
       <div>
-        <NavigationBar targets={targetUsers} userId={sessionUser.id} />
+        <NavigationBar targets={targetUsers} userId={currentUser.id} />
         <Grid container>
           <Grid item xs={12} md={5}>
             <div
@@ -345,7 +345,7 @@ export default function UserInfo({
                   {isUpdated ? "muokkaa tietoja" : "peruuta"}
                 </button>
               </div>
-              {user.player.umpire ? (
+              {user.player.umpire && (
                 <div>
                   <h3>Pelaajan tuomari</h3>
                   <p>
@@ -355,8 +355,6 @@ export default function UserInfo({
                   <p>{user.player.umpire.user.phone}</p>
                   <p>{user.player.umpire.user.email}</p>
                 </div>
-              ) : (
-                ""
               )}
               {isUpdated ? (
                 <div>

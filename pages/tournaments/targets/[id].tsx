@@ -73,7 +73,7 @@ export const getServerSideProps: GetServerSideProps = async ({
     authConfig
   );
 
-  const sessionUser = await prisma.user.findUnique({
+  const currentUser = await prisma.user.findUnique({
     where: {
       id: session.user.id
     },
@@ -94,7 +94,7 @@ export const getServerSideProps: GetServerSideProps = async ({
       users: true
     },
     where: {
-      id: sessionUser.tournamentId
+      id: currentUser.tournamentId
     }
   });
 
@@ -135,14 +135,14 @@ export const getServerSideProps: GetServerSideProps = async ({
     select: playerAsTarget
   });
   return {
-    props: { player, imageUrl, sessionUser, tournament }
+    props: { player, imageUrl, currentUser, tournament }
   };
 };
 
 export default function Target({
   player,
   imageUrl,
-  sessionUser,
+  currentUser,
   tournament
 }): JSX.Element {
   const [showPicture, setShowPicture] = useState(false);
@@ -177,9 +177,9 @@ export default function Target({
   };
 
   let targetUsers = [];
-  if (sessionUser.player != null) {
+  if (currentUser.player) {
     const targetPlayerIds = [
-      sessionUser.player.targets.map(
+      currentUser.player.targets.map(
         (t) => tournament.players.find((p) => p.id == t.targetId).userId
       )
     ];
@@ -192,7 +192,7 @@ export default function Target({
   return (
     <AuthenticationRequired>
       <div>
-        <NavigationBar targets={targetUsers} userId={sessionUser.id} />
+        <NavigationBar targets={targetUsers} userId={currentUser.id} />
         <Grid container>
           <Grid item xs={12} md={5}>
             <div
@@ -226,7 +226,7 @@ export default function Target({
 
               <div>
                 <div className="userdetails">
-                  {player.umpire ? (
+                  {player.umpire && (
                     <div>
                       <h3>Pelaajan tuomari</h3>
                       <p>
@@ -236,8 +236,6 @@ export default function Target({
                       <p>{player.umpire.user.phone}</p>
                       <p>{player.umpire.user.email}</p>
                     </div>
-                  ) : (
-                    ""
                   )}
                   <PlayerContactInfo user={player.user} />
                   <PlayerDetails player={player} />
