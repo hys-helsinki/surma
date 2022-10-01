@@ -1,5 +1,7 @@
+import { Grid } from "@mui/material";
 import { GetServerSideProps } from "next";
 import { unstable_getServerSession } from "next-auth";
+import Link from "next/link";
 import { AuthenticationRequired } from "../../components/AuthenticationRequired";
 import { TournamentRings } from "../../components/TournamentRings";
 import prisma from "../../lib/prisma";
@@ -70,15 +72,60 @@ export const getServerSideProps: GetServerSideProps = async ({
 };
 
 export default function Tournament({ tournament, players, rings }) {
+  const handlePlayerStatus = () => {
+    // TODO: change status
+    console.log("statusta vaihdettiin");
+  };
   return (
     <AuthenticationRequired>
       <div>
-        <h2>{tournament.name}</h2>
-        <TournamentRings
-          tournament={tournament}
-          players={players}
-          rings={rings}
-        />
+        <h2 style={{ width: "100%" }}>{tournament.name}</h2>
+        <Grid container>
+          <Grid item xs={12} md={6}>
+            <div style={{ paddingLeft: "10px" }}>
+              <h2>Pelaajat</h2>
+              <p>
+                <i>Kuollut</i>
+              </p>
+              <p>
+                <i>Etsivä</i>
+              </p>
+              <p>
+                <i>Lisäkohde</i>
+              </p>
+              <h3>
+                <i>Elossa</i>
+              </h3>
+              <table>
+                <tbody>
+                  {players.map((player) => (
+                    <tr key={player.id}>
+                      <td>
+                        <Link href={`/tournaments/users/${player.user.id}`}>
+                          <a>
+                            {player.user.firstName} {player.user.lastName}
+                          </a>
+                        </Link>
+                      </td>
+                      <td>
+                        <button onClick={handlePlayerStatus}>Kuollut</button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </Grid>
+          <Grid item xs={12} md={6}>
+            <div>
+              <TournamentRings
+                tournament={tournament}
+                players={players}
+                rings={rings}
+              />
+            </div>
+          </Grid>
+        </Grid>
       </div>
     </AuthenticationRequired>
   );

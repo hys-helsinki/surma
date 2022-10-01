@@ -173,16 +173,6 @@ export const TournamentRings = ({
           )}
         </div>
       ))}
-      <h2>Pelaajat</h2>
-      {players.map((player) => (
-        <div key={player.id} style={{ paddingBottom: "20px" }}>
-          <Link href={`/tournaments/users/${player.user.id}`}>
-            <a>
-              {player.user.firstName} {player.user.lastName}
-            </a>
-          </Link>
-        </div>
-      ))}
       <button onClick={toggleForm}>
         {!showForm ? "luo uusi rinki" : "peruuta"}
       </button>
