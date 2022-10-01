@@ -57,6 +57,26 @@ export const getServerSideProps: GetServerSideProps = async ({
     console.log(error);
   }
 
+  const session = await unstable_getServerSession(
+    context.req,
+    context.res,
+    authConfig
+  );
+
+  const sessionUser = await prisma.user.findUnique({
+    where: {
+      id: session.user.id
+    },
+    select: {
+      id: true,
+      player: {
+        select: {
+          targets: true
+        }
+      }
+    }
+  });
+
   let tournament = await prisma.tournament.findFirst({
     select: {
       name: true,
@@ -98,15 +118,23 @@ export const getServerSideProps: GetServerSideProps = async ({
   });
   user = JSON.parse(JSON.stringify(user));
 
-  if (new Date().getTime() < new Date(tournament.startTime).getTime()) {
+  if (
+    new Date().getTime() < new Date(tournament.startTime).getTime() &&
+    user.player
+  ) {
     user.player.targets = [];
   }
   return {
-    props: { user, tournament, imageUrl }
+    props: { user, tournament, imageUrl, sessionUser }
   };
 };
 
-export default function UserInfo({ user, tournament, imageUrl }): JSX.Element {
+export default function UserInfo({
+  user,
+  tournament,
+  imageUrl,
+  sessionUser
+}): JSX.Element {
   const [isUpdated, setIsUpdated] = useState(true);
   const [showPicture, setShowPicture] = useState(false);
   const [fileInputState, setFileInputState] = useState("");
@@ -227,11 +255,11 @@ export default function UserInfo({ user, tournament, imageUrl }): JSX.Element {
     }
   };
   let targetUsers = [];
-  if (user.player != null) {
+  if (sessionUser.player != null) {
     const targetPlayerIds = [
       // everything works fine but vscode says that targets, players and users don't exist.
 
-      user.player.targets.map(
+      sessionUser.player.targets.map(
         (t) => tournament.players.find((p) => p.id == t.targetId).userId
       )
     ];
@@ -244,7 +272,7 @@ export default function UserInfo({ user, tournament, imageUrl }): JSX.Element {
   return (
     <AuthenticationRequired>
       <div>
-        <NavigationBar targets={targetUsers} userId={user.id} />
+        <NavigationBar targets={targetUsers} userId={sessionUser.id} />
         <Grid container>
           <Grid item xs={12} md={5}>
             <div

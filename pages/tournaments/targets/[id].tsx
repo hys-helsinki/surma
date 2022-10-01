@@ -78,6 +78,7 @@ export const getServerSideProps: GetServerSideProps = async ({
       id: session.user.id
     },
     select: {
+      id: true,
       tournamentId: true,
       player: {
         select: {
@@ -100,6 +101,7 @@ export const getServerSideProps: GetServerSideProps = async ({
   tournament = JSON.parse(JSON.stringify(tournament)); // avoid Next.js serialization error
 
   const playerAsTarget: Prisma.PlayerSelect = {
+    alias: true,
     address: true,
     learningInstitution: true,
     eyeColor: true,
