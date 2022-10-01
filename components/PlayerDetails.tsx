@@ -22,7 +22,7 @@ export const PlayerDetails = ({ player }): JSX.Element => {
           <b>silmälasit:</b> {player.glasses}
         </p>
         <p>
-          <b>muu:</b> {player.other}
+          <b>ulkonäkö, kulkuvälineet ja muut lisätiedot:</b> {player.other}
         </p>
       </div>
     </div>
