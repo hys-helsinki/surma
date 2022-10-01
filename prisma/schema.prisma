@@ -51,8 +51,15 @@ model Player {
   glasses             String?
   other               String?
   calendar            Json?
+  state               PlayerState  @default(ACTIVE)
   targets             Assignment[] @relation(name: "PlayerHasTarget")
   hunters             Assignment[] @relation(name: "PlayerIsHunted")
+}
+
+enum PlayerState {
+  ACTIVE
+  DEAD
+  DETECTIVE
 }
 
 model Umpire {
