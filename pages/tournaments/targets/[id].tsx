@@ -148,8 +148,9 @@ export default function Target({ player, imageUrl }): JSX.Element {
                     <div>
                       <Image
                         src={imageUrl}
-                        width={350}
-                        height={500}
+                        layout="fixed"
+                        width={400}
+                        height={550}
                         alt="profile picture"
                       ></Image>
                     </div>
