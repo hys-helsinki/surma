@@ -57,6 +57,26 @@ export const getServerSideProps: GetServerSideProps = async ({
     console.log(error);
   }
 
+  const session = await unstable_getServerSession(
+    context.req,
+    context.res,
+    authConfig
+  );
+
+  const currentUser = await prisma.user.findUnique({
+    where: {
+      id: session.user.id
+    },
+    select: {
+      id: true,
+      player: {
+        select: {
+          targets: true
+        }
+      }
+    }
+  });
+
   let tournament = await prisma.tournament.findFirst({
     select: {
       name: true,
@@ -91,22 +111,42 @@ export const getServerSideProps: GetServerSideProps = async ({
           glasses: true,
           other: true,
           calendar: true,
-          targets: true
+          targets: true,
+          umpire: {
+            select: {
+              user: {
+                select: {
+                  firstName: true,
+                  lastName: true,
+                  phone: true,
+                  email: true
+                }
+              }
+            }
+          }
         }
       }
     }
   });
   user = JSON.parse(JSON.stringify(user));
 
-  if (new Date().getTime() < new Date(tournament.startTime).getTime()) {
+  if (
+    new Date().getTime() < new Date(tournament.startTime).getTime() &&
+    user.player
+  ) {
     user.player.targets = [];
   }
   return {
-    props: { user, tournament, imageUrl }
+    props: { user, tournament, imageUrl, currentUser }
   };
 };
 
-export default function UserInfo({ user, tournament, imageUrl }): JSX.Element {
+export default function UserInfo({
+  user,
+  tournament,
+  imageUrl,
+  currentUser
+}): JSX.Element {
   const [isUpdated, setIsUpdated] = useState(true);
   const [showPicture, setShowPicture] = useState(false);
   const [fileInputState, setFileInputState] = useState("");
@@ -227,11 +267,11 @@ export default function UserInfo({ user, tournament, imageUrl }): JSX.Element {
     }
   };
   let targetUsers = [];
-  if (user.player != null) {
+  if (currentUser.player) {
     const targetPlayerIds = [
       // everything works fine but vscode says that targets, players and users don't exist.
 
-      user.player.targets.map(
+      currentUser.player.targets.map(
         (t) => tournament.players.find((p) => p.id == t.targetId).userId
       )
     ];
@@ -244,7 +284,7 @@ export default function UserInfo({ user, tournament, imageUrl }): JSX.Element {
   return (
     <AuthenticationRequired>
       <div>
-        <NavigationBar targets={targetUsers} userId={user.id} />
+        <NavigationBar targets={targetUsers} userId={currentUser.id} />
         <Grid container>
           <Grid item xs={12} md={5}>
             <div
@@ -306,6 +346,17 @@ export default function UserInfo({ user, tournament, imageUrl }): JSX.Element {
                   {isUpdated ? "muokkaa tietoja" : "peruuta"}
                 </button>
               </div>
+              {user.player.umpire && (
+                <div>
+                  <h3>Pelaajan tuomari</h3>
+                  <p>
+                    {user.player.umpire.user.firstName}{" "}
+                    {user.player.umpire.user.lastName}
+                  </p>
+                  <p>{user.player.umpire.user.phone}</p>
+                  <p>{user.player.umpire.user.email}</p>
+                </div>
+              )}
               {isUpdated ? (
                 <div>
                   <div className="userdetails">

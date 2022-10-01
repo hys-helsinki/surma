@@ -66,6 +66,40 @@ export const getServerSideProps: GetServerSideProps = async ({
   } catch (error) {
     console.log(error);
   }
+
+  const session = await unstable_getServerSession(
+    context.req,
+    context.res,
+    authConfig
+  );
+
+  const currentUser = await prisma.user.findUnique({
+    where: {
+      id: session.user.id
+    },
+    select: {
+      id: true,
+      tournamentId: true,
+      player: {
+        select: {
+          targets: true
+        }
+      }
+    }
+  });
+
+  let tournament = await prisma.tournament.findUnique({
+    select: {
+      players: true,
+      users: true
+    },
+    where: {
+      id: currentUser.tournamentId
+    }
+  });
+
+  tournament = JSON.parse(JSON.stringify(tournament)); // avoid Next.js serialization error
+
   const playerAsTarget: Prisma.PlayerSelect = {
     address: true,
     learningInstitution: true,
@@ -75,6 +109,18 @@ export const getServerSideProps: GetServerSideProps = async ({
     glasses: true,
     other: true,
     calendar: true,
+    umpire: {
+      select: {
+        user: {
+          select: {
+            firstName: true,
+            lastName: true,
+            phone: true,
+            email: true
+          }
+        }
+      }
+    },
     user: {
       select: {
         firstName: true,
@@ -89,11 +135,16 @@ export const getServerSideProps: GetServerSideProps = async ({
     select: playerAsTarget
   });
   return {
-    props: { player, imageUrl }
+    props: { player, imageUrl, currentUser, tournament }
   };
 };
 
-export default function Target({ player, imageUrl }): JSX.Element {
+export default function Target({
+  player,
+  imageUrl,
+  currentUser,
+  tournament
+}): JSX.Element {
   const [showPicture, setShowPicture] = useState(false);
   const [slideNumber, setSlideNumber] = useState(0);
 
@@ -125,11 +176,23 @@ export default function Target({ player, imageUrl }): JSX.Element {
     }
   };
 
+  let targetUsers = [];
+  if (currentUser.player) {
+    const targetPlayerIds = [
+      currentUser.player.targets.map(
+        (t) => tournament.players.find((p) => p.id == t.targetId).userId
+      )
+    ];
+
+    targetUsers = tournament.users.filter((user) =>
+      targetPlayerIds[0].includes(user.id)
+    );
+  }
+
   return (
     <AuthenticationRequired>
       <div>
-        {/* TODO: Add NavigationBar after the sessions have been implemented */}
-        {/* <NavigationBar targets={targetUsers} userId={user.id} />  */}
+        <NavigationBar targets={targetUsers} userId={currentUser.id} />
         <Grid container>
           <Grid item xs={12} md={5}>
             <div
@@ -139,8 +202,7 @@ export default function Target({ player, imageUrl }): JSX.Element {
               }}
             >
               <h1>
-                {player.user.firstName} {player.user.lastName}, alias:{" "}
-                {player.alias}
+                {player.user.firstName} {player.user.lastName}
               </h1>
               {imageUrl !== "" ? (
                 <div>
@@ -165,6 +227,17 @@ export default function Target({ player, imageUrl }): JSX.Element {
 
               <div>
                 <div className="userdetails">
+                  {player.umpire && (
+                    <div>
+                      <h3>Pelaajan tuomari</h3>
+                      <p>
+                        {player.umpire.user.firstName}{" "}
+                        {player.umpire.user.lastName}
+                      </p>
+                      <p>{player.umpire.user.phone}</p>
+                      <p>{player.umpire.user.email}</p>
+                    </div>
+                  )}
                   <PlayerContactInfo user={player.user} />
                   <PlayerDetails player={player} />
                 </div>
