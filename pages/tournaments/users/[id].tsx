@@ -1,9 +1,8 @@
 import { GetServerSideProps } from "next";
-import { Prisma, Tournament } from "@prisma/client";
 import { PlayerDetails } from "../../../components/PlayerDetails";
 import { PlayerContactInfo } from "../../../components/PlayerContactInfo";
 import prisma from "../../../lib/prisma";
-import React, { MouseEventHandler, useEffect } from "react";
+import React, { MouseEventHandler } from "react";
 import { useState } from "react";
 import { UpdateForm } from "../../../components/UpdateForm";
 import { useRouter } from "next/router";
@@ -44,11 +43,6 @@ export const getServerSideProps: GetServerSideProps = async ({
 
   require("dotenv").config();
   const cloudinary = require("cloudinary").v2;
-  cloudinary.config({
-    cloud_name: process.env.CLOUDINARY_NAME,
-    api_key: process.env.CLOUDINARY_API_KEY,
-    api_secret: process.env.CLOUDINARY_API_SECRET
-  });
   let imageUrl = "";
   try {
     const result = await cloudinary.api.resource(params.id);
