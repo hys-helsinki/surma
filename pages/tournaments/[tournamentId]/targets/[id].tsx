@@ -1,32 +1,43 @@
 import { GetServerSideProps } from "next";
-import { Prisma, Tournament } from "@prisma/client";
-import { PlayerDetails } from "../../../components/PlayerDetails";
-import { PlayerContactInfo } from "../../../components/PlayerContactInfo";
-import prisma from "../../../lib/prisma";
-import React, { MouseEventHandler, useEffect } from "react";
+import { PlayerDetails } from "../../../../components/PlayerDetails";
+import { PlayerContactInfo } from "../../../../components/PlayerContactInfo";
+import prisma from "../../../../lib/prisma";
+import React, { MouseEventHandler } from "react";
 import { useState } from "react";
-import { UpdateForm } from "../../../components/UpdateForm";
-import { useRouter } from "next/router";
-import NavigationBar from "../../../components/NavigationBar";
-import { Calendar } from "../../../components/Calendar";
 import Image from "next/image";
 import { Grid } from "@mui/material";
-import { AuthenticationRequired } from "../../../components/AuthenticationRequired";
+import { AuthenticationRequired } from "../../../../components/AuthenticationRequired";
 import { unstable_getServerSession } from "next-auth";
-import { authConfig } from "../../api/auth/[...nextauth]";
+import { authConfig } from "../../../api/auth/[...nextauth]";
 
-const isCurrentUserAuthorized = async (targetId, context) => {
+const isCurrentUserAuthorized = async (tournamentId, targetId, context) => {
   const session = await unstable_getServerSession(
     context.req,
     context.res,
     authConfig
   );
   // TODO add tournamentId to where clauses
-  const isUmpire = await prisma.umpire.findUnique({
+  const isUmpire = await prisma.umpire.findFirst({
     where: {
-      userId: session.user.id
+      userId: session.user.id,
+      tournamentId: tournamentId
     }
   });
+
+  const tournament = await prisma.tournament.findUnique({
+    select: {
+      startTime: true,
+      endTime: true
+    },
+    where: {
+      id: tournamentId
+    }
+  });
+
+  const currentTime = new Date();
+  const isTournamentRunning =
+    tournament.startTime.getTime() < currentTime.getTime() &&
+    currentTime.getTime() < tournament.endTime.getTime();
 
   const isHunter = await prisma.assignment.findFirst({
     where: {
@@ -42,14 +53,15 @@ const isCurrentUserAuthorized = async (targetId, context) => {
       }
     }
   });
-  return isUmpire || isHunter;
+
+  return isUmpire || (isTournamentRunning && isHunter);
 };
 
 export const getServerSideProps: GetServerSideProps = async ({
   params,
   ...context
 }) => {
-  if (!(await isCurrentUserAuthorized(params.id, context)))
+  if (!(await isCurrentUserAuthorized(params.tournamentId, params.id, context)))
     return { redirect: { destination: "/personal", permanent: false } };
 
   require("dotenv").config();
@@ -61,27 +73,27 @@ export const getServerSideProps: GetServerSideProps = async ({
   } catch (error) {
     console.log(error);
   }
-  const playerAsTarget: Prisma.PlayerSelect = {
-    address: true,
-    learningInstitution: true,
-    eyeColor: true,
-    hair: true,
-    height: true,
-    glasses: true,
-    other: true,
-    calendar: true,
-    user: {
-      select: {
-        firstName: true,
-        lastName: true
-      }
-    }
-  };
+
   const player = await prisma.player.findUnique({
     where: {
       userId: params.id as string
     },
-    select: playerAsTarget
+    select: {
+      address: true,
+      learningInstitution: true,
+      eyeColor: true,
+      hair: true,
+      height: true,
+      glasses: true,
+      other: true,
+      calendar: true,
+      user: {
+        select: {
+          firstName: true,
+          lastName: true
+        }
+      }
+    }
   });
   return {
     props: { player, imageUrl }
