@@ -108,19 +108,24 @@ export const getServerSideProps: GetServerSideProps = async ({
   tournament = JSON.parse(JSON.stringify(tournament)); // avoid Next.js serialization error
 
   user = JSON.parse(JSON.stringify(user));
-
+  let targets = [];
   if (
     user.player &&
-    new Date().getTime() < new Date(tournament.startTime).getTime()
+    new Date().getTime() > new Date(tournament.startTime).getTime()
   ) {
-    user.player.targets = [];
+    targets = user.player.targets;
   }
   return {
-    props: { user, tournament, imageUrl }
+    props: { user, tournament, imageUrl, targets }
   };
 };
 
-export default function UserInfo({ user, tournament, imageUrl }): JSX.Element {
+export default function UserInfo({
+  user,
+  tournament,
+  imageUrl,
+  targets
+}): JSX.Element {
   const [isUpdated, setIsUpdated] = useState(true);
   const [showPicture, setShowPicture] = useState(false);
   const [fileInputState, setFileInputState] = useState("");
@@ -179,7 +184,6 @@ export default function UserInfo({ user, tournament, imageUrl }): JSX.Element {
   const handleCalendarSubmit = async (
     event: React.FormEvent<HTMLFormElement>
   ) => {
-    console.log("tapahtuuko mitään?");
     const cal = {};
     dates.forEach((x, i) => (cal[x] = event.currentTarget.dates[i].value));
     event.preventDefault();
@@ -237,11 +241,11 @@ export default function UserInfo({ user, tournament, imageUrl }): JSX.Element {
     }
   };
   let targetUsers = [];
-  if (user.player!) {
+  if (targets) {
     const targetPlayerIds = [
       // everything works fine but vscode says that targets, players and users don't exist.
 
-      user.player.targets.map(
+      targets.map(
         (t) => tournament.players.find((p) => p.id == t.targetId).userId
       )
     ];
