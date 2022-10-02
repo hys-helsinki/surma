@@ -12,13 +12,12 @@ import { authConfig } from "../../../api/auth/[...nextauth]";
 import { v2 as cloudinary } from "cloudinary";
 import NavigationBar from "../../../../components/NavigationBar";
 
-const isCurrentUserAuthorized = async (tournamentId, targetId, context) => {
-  const session = await unstable_getServerSession(
-    context.req,
-    context.res,
-    authConfig
-  );
-  // TODO add tournamentId to where clauses
+const isCurrentUserAuthorized = async (
+  tournamentId,
+  targetId,
+  context,
+  session
+) => {
   const isUmpire = await prisma.umpire.findFirst({
     where: {
       userId: session.user.id,
@@ -26,22 +25,21 @@ const isCurrentUserAuthorized = async (tournamentId, targetId, context) => {
     }
   });
 
-  const tournament = await prisma.tournament.findUnique({
-    select: {
-      startTime: true,
-      endTime: true
-    },
-    where: {
-      id: tournamentId
-    }
-  });
-
-  const currentTime = new Date();
-  const isTournamentRunning =
-    tournament.startTime.getTime() < currentTime.getTime() &&
-    currentTime.getTime() < tournament.endTime.getTime();
-
   const isHunter = await prisma.assignment.findFirst({
+    select: {
+      target: true,
+      hunter: true,
+      ring: {
+        select: {
+          tournament: {
+            select: {
+              startTime: true,
+              endTime: true
+            }
+          }
+        }
+      }
+    },
     where: {
       target: {
         user: {
@@ -56,15 +54,35 @@ const isCurrentUserAuthorized = async (tournamentId, targetId, context) => {
     }
   });
 
-  return isUmpire || (isTournamentRunning && isHunter);
+  const currentTime = new Date();
+  const tournament = isHunter && isHunter.ring.tournament;
+  const isTournamentRunning =
+    tournament.startTime.getTime() < currentTime.getTime() &&
+    currentTime.getTime() < tournament.endTime.getTime();
+
+  return isUmpire || (isHunter != null && isTournamentRunning);
 };
 
 export const getServerSideProps: GetServerSideProps = async ({
   params,
   ...context
 }) => {
-  if (!(await isCurrentUserAuthorized(params.tournamentId, params.id, context)))
+  const session = await unstable_getServerSession(
+    context.req,
+    context.res,
+    authConfig
+  );
+
+  if (
+    !(await isCurrentUserAuthorized(
+      params.tournamentId,
+      params.id,
+      context,
+      session
+    ))
+  ) {
     return { redirect: { destination: "/personal", permanent: false } };
+  }
 
   let imageUrl = "";
   try {
@@ -74,12 +92,6 @@ export const getServerSideProps: GetServerSideProps = async ({
     console.log(error);
   }
 
-  const session = await unstable_getServerSession(
-    context.req,
-    context.res,
-    authConfig
-  );
-
   let currentUser = await prisma.user.findUnique({
     where: {
       id: session.user.id
@@ -87,9 +99,30 @@ export const getServerSideProps: GetServerSideProps = async ({
     select: {
       id: true,
       tournamentId: true,
+      tournament: {
+        select: {
+          startTime: true,
+          endTime: true,
+          id: true
+        }
+      },
       player: {
         select: {
-          targets: true
+          targets: {
+            select: {
+              target: {
+                select: {
+                  user: {
+                    select: {
+                      id: true,
+                      firstName: true,
+                      lastName: true
+                    }
+                  }
+                }
+              }
+            }
+          }
         }
       }
     }
@@ -97,20 +130,7 @@ export const getServerSideProps: GetServerSideProps = async ({
 
   currentUser = JSON.parse(JSON.stringify(currentUser));
 
-  let tournament = await prisma.tournament.findUnique({
-    select: {
-      players: true,
-      users: true,
-      startTime: true,
-      endTime: true,
-      id: true
-    },
-    where: {
-      id: currentUser.tournamentId
-    }
-  });
-
-  tournament = JSON.parse(JSON.stringify(tournament));
+  let tournament = currentUser.tournament;
 
   const player = await prisma.player.findUnique({
     where: {
@@ -187,17 +207,7 @@ export default function Target({
 
   let targetUsers = [];
   if (targets) {
-    const targetPlayerIds = [
-      // everything works fine but vscode says that targets, players and users don't exist.
-
-      targets.map(
-        (t) => tournament.players.find((p) => p.id == t.targetId).userId
-      )
-    ];
-
-    targetUsers = tournament.users.filter((user) =>
-      targetPlayerIds[0].includes(user.id)
-    );
+    targetUsers = targets.map((assignment) => assignment.target.user);
   }
 
   return (
