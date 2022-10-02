@@ -9,6 +9,7 @@ import { Grid } from "@mui/material";
 import { AuthenticationRequired } from "../../../../components/AuthenticationRequired";
 import { unstable_getServerSession } from "next-auth";
 import { authConfig } from "../../../api/auth/[...nextauth]";
+import { v2 as cloudinary } from "cloudinary";
 import NavigationBar from "../../../../components/NavigationBar";
 
 const isCurrentUserAuthorized = async (tournamentId, targetId, context) => {
@@ -65,11 +66,9 @@ export const getServerSideProps: GetServerSideProps = async ({
   if (!(await isCurrentUserAuthorized(params.tournamentId, params.id, context)))
     return { redirect: { destination: "/personal", permanent: false } };
 
-  require("dotenv").config();
-  const cloudinary = require("cloudinary").v2;
   let imageUrl = "";
   try {
-    const result = await cloudinary.api.resource(params.id);
+    const result = await cloudinary.api.resource(params.id as string);
     imageUrl = result.url;
   } catch (error) {
     console.log(error);
