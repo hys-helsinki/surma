@@ -67,7 +67,7 @@ export const getServerSideProps: GetServerSideProps = async ({
 
   let imageUrl = "";
   try {
-    const result = await cloudinary.api.resource(params.id);
+    const result = await cloudinary.api.resource(params.id as string);
     imageUrl = result.url;
   } catch (error) {
     console.log(error);
