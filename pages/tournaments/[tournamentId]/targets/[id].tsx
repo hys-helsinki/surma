@@ -99,9 +99,30 @@ export const getServerSideProps: GetServerSideProps = async ({
     select: {
       id: true,
       tournamentId: true,
+      tournament: {
+        select: {
+          startTime: true,
+          endTime: true,
+          id: true
+        }
+      },
       player: {
         select: {
-          targets: true
+          targets: {
+            select: {
+              target: {
+                select: {
+                  user: {
+                    select: {
+                      id: true,
+                      firstName: true,
+                      lastName: true
+                    }
+                  }
+                }
+              }
+            }
+          }
         }
       }
     }
@@ -109,20 +130,7 @@ export const getServerSideProps: GetServerSideProps = async ({
 
   currentUser = JSON.parse(JSON.stringify(currentUser));
 
-  let tournament = await prisma.tournament.findUnique({
-    select: {
-      players: true,
-      users: true,
-      startTime: true,
-      endTime: true,
-      id: true
-    },
-    where: {
-      id: currentUser.tournamentId
-    }
-  });
-
-  tournament = JSON.parse(JSON.stringify(tournament));
+  let tournament = currentUser.tournament;
 
   const player = await prisma.player.findUnique({
     where: {
@@ -199,17 +207,7 @@ export default function Target({
 
   let targetUsers = [];
   if (targets) {
-    const targetPlayerIds = [
-      // everything works fine but vscode says that targets, players and users don't exist.
-
-      targets.map(
-        (t) => tournament.players.find((p) => p.id == t.targetId).userId
-      )
-    ];
-
-    targetUsers = tournament.users.filter((user) =>
-      targetPlayerIds[0].includes(user.id)
-    );
+    targetUsers = targets.map((assignment) => assignment.target.user);
   }
 
   return (
