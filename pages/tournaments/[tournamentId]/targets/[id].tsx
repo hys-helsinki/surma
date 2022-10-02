@@ -12,13 +12,12 @@ import { authConfig } from "../../../api/auth/[...nextauth]";
 import { v2 as cloudinary } from "cloudinary";
 import NavigationBar from "../../../../components/NavigationBar";
 
-const isCurrentUserAuthorized = async (tournamentId, targetId, context) => {
-  const session = await unstable_getServerSession(
-    context.req,
-    context.res,
-    authConfig
-  );
-  // TODO add tournamentId to where clauses
+const isCurrentUserAuthorized = async (
+  tournamentId,
+  targetId,
+  context,
+  session
+) => {
   const isUmpire = await prisma.umpire.findFirst({
     where: {
       userId: session.user.id,
@@ -26,22 +25,21 @@ const isCurrentUserAuthorized = async (tournamentId, targetId, context) => {
     }
   });
 
-  const tournament = await prisma.tournament.findUnique({
-    select: {
-      startTime: true,
-      endTime: true
-    },
-    where: {
-      id: tournamentId
-    }
-  });
-
-  const currentTime = new Date();
-  const isTournamentRunning =
-    tournament.startTime.getTime() < currentTime.getTime() &&
-    currentTime.getTime() < tournament.endTime.getTime();
-
   const isHunter = await prisma.assignment.findFirst({
+    select: {
+      target: true,
+      hunter: true,
+      ring: {
+        select: {
+          tournament: {
+            select: {
+              startTime: true,
+              endTime: true
+            }
+          }
+        }
+      }
+    },
     where: {
       target: {
         user: {
@@ -56,15 +54,35 @@ const isCurrentUserAuthorized = async (tournamentId, targetId, context) => {
     }
   });
 
-  return isUmpire || (isTournamentRunning && isHunter);
+  const currentTime = new Date();
+  const tournament = isHunter && isHunter.ring.tournament;
+  const isTournamentRunning =
+    tournament.startTime.getTime() < currentTime.getTime() &&
+    currentTime.getTime() < tournament.endTime.getTime();
+
+  return isUmpire || (isHunter != null && isTournamentRunning);
 };
 
 export const getServerSideProps: GetServerSideProps = async ({
   params,
   ...context
 }) => {
-  if (!(await isCurrentUserAuthorized(params.tournamentId, params.id, context)))
+  const session = await unstable_getServerSession(
+    context.req,
+    context.res,
+    authConfig
+  );
+
+  if (
+    !(await isCurrentUserAuthorized(
+      params.tournamentId,
+      params.id,
+      context,
+      session
+    ))
+  ) {
     return { redirect: { destination: "/personal", permanent: false } };
+  }
 
   let imageUrl = "";
   try {
@@ -73,12 +91,6 @@ export const getServerSideProps: GetServerSideProps = async ({
   } catch (error) {
     console.log(error);
   }
-
-  const session = await unstable_getServerSession(
-    context.req,
-    context.res,
-    authConfig
-  );
 
   let currentUser = await prisma.user.findUnique({
     where: {
