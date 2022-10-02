@@ -73,7 +73,21 @@ export const getServerSideProps: GetServerSideProps = async ({
           glasses: true,
           other: true,
           calendar: true,
-          targets: true,
+          targets: {
+            select: {
+              target: {
+                select: {
+                  user: {
+                    select: {
+                      id: true,
+                      firstName: true,
+                      lastName: true
+                    }
+                  }
+                }
+              }
+            }
+          },
           umpire: {
             select: {
               user: {
@@ -94,9 +108,7 @@ export const getServerSideProps: GetServerSideProps = async ({
           startTime: true,
           endTime: true,
           registrationStartTime: true,
-          registrationEndTime: true,
-          players: true,
-          users: true
+          registrationEndTime: true
         }
       }
     }
@@ -238,16 +250,8 @@ export default function UserInfo({
   };
   let targetUsers = [];
   if (targets) {
-    const targetPlayerIds = [
-      // everything works fine but vscode says that targets, players and users don't exist.
-
-      targets.map(
-        (t) => tournament.players.find((p) => p.id == t.targetId).userId
-      )
-    ];
-
-    targetUsers = tournament.users.filter((user) =>
-      targetPlayerIds[0].includes(user.id)
+    targetUsers = user.player.targets.map(
+      (assignment) => assignment.target.user
     );
   }
 
