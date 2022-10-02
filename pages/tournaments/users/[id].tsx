@@ -325,7 +325,7 @@ export default function UserInfo({
                   {isUpdated ? "muokkaa tietoja" : "peruuta"}
                 </button>
               </div>
-              {/* {user.player.umpire && (
+              {user.player && user.player.umpire ? (
                 <div>
                   <h3>Pelaajan tuomari</h3>
                   <p>
@@ -335,7 +335,9 @@ export default function UserInfo({
                   <p>{user.player.umpire.user.phone}</p>
                   <p>{user.player.umpire.user.email}</p>
                 </div>
-              )} */}
+              ) : (
+                ""
+              )}
               {isUpdated ? (
                 <div>
                   <div className="userdetails">
