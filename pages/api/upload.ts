@@ -1,6 +1,5 @@
 import type { NextApiRequest, NextApiResponse } from "next";
-require("dotenv").config();
-const cloudinary = require("cloudinary").v2;
+import { v2 as cloudinary } from "cloudinary";
 
 export default async function upload(
   req: NextApiRequest,
