@@ -25,21 +25,22 @@ const isCurrentUserAuthorized = async (
     }
   });
 
-  const isHunter = await prisma.assignment.findFirst({
+  const tournament = await prisma.tournament.findUnique({
     select: {
-      target: true,
-      hunter: true,
-      ring: {
-        select: {
-          tournament: {
-            select: {
-              startTime: true,
-              endTime: true
-            }
-          }
-        }
-      }
+      startTime: true,
+      endTime: true
     },
+    where: {
+      id: tournamentId
+    }
+  });
+
+  const currentTime = new Date();
+  const isTournamentRunning =
+    tournament.startTime.getTime() < currentTime.getTime() &&
+    currentTime.getTime() < tournament.endTime.getTime();
+
+  const isHunter = await prisma.assignment.findFirst({
     where: {
       target: {
         user: {
@@ -54,13 +55,7 @@ const isCurrentUserAuthorized = async (
     }
   });
 
-  const currentTime = new Date();
-  const tournament = isHunter && isHunter.ring.tournament;
-  const isTournamentRunning =
-    tournament.startTime.getTime() < currentTime.getTime() &&
-    currentTime.getTime() < tournament.endTime.getTime();
-
-  return isUmpire || (isHunter != null && isTournamentRunning);
+  return isUmpire || (isTournamentRunning && isHunter);
 };
 
 export const getServerSideProps: GetServerSideProps = async ({
