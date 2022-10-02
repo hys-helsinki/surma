@@ -87,26 +87,23 @@ export const getServerSideProps: GetServerSideProps = async ({
             }
           }
         }
+      },
+      tournament: {
+        select: {
+          name: true,
+          startTime: true,
+          endTime: true,
+          registrationStartTime: true,
+          registrationEndTime: true,
+          players: true,
+          users: true
+        }
       }
     }
   });
-  let tournament = await prisma.tournament.findFirst({
-    select: {
-      name: true,
-      startTime: true,
-      endTime: true,
-      registrationStartTime: true,
-      registrationEndTime: true,
-      players: true,
-      users: true
-    },
-    where: {
-      id: user.tournamentId
-    }
-  });
-  tournament = JSON.parse(JSON.stringify(tournament)); // avoid Next.js serialization error
 
   user = JSON.parse(JSON.stringify(user));
+  let tournament = user.tournament;
   let targets = [];
   if (
     user.player &&
