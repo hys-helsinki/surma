@@ -1,9 +1,8 @@
 import { GetServerSideProps } from "next";
-import { Prisma, Tournament } from "@prisma/client";
 import { PlayerDetails } from "../../../components/PlayerDetails";
 import { PlayerContactInfo } from "../../../components/PlayerContactInfo";
 import prisma from "../../../lib/prisma";
-import React, { MouseEventHandler, useEffect } from "react";
+import React, { MouseEventHandler } from "react";
 import { useState } from "react";
 import { UpdateForm } from "../../../components/UpdateForm";
 import { useRouter } from "next/router";
@@ -44,11 +43,6 @@ export const getServerSideProps: GetServerSideProps = async ({
 
   require("dotenv").config();
   const cloudinary = require("cloudinary").v2;
-  cloudinary.config({
-    cloud_name: process.env.CLOUDINARY_NAME,
-    api_key: process.env.CLOUDINARY_API_KEY,
-    api_secret: process.env.CLOUDINARY_API_SECRET
-  });
   let imageUrl = "";
   try {
     const result = await cloudinary.api.resource(params.id);
@@ -57,38 +51,6 @@ export const getServerSideProps: GetServerSideProps = async ({
     console.log(error);
   }
 
-  const session = await unstable_getServerSession(
-    context.req,
-    context.res,
-    authConfig
-  );
-
-  const currentUser = await prisma.user.findUnique({
-    where: {
-      id: session.user.id
-    },
-    select: {
-      id: true,
-      player: {
-        select: {
-          targets: true
-        }
-      }
-    }
-  });
-
-  let tournament = await prisma.tournament.findFirst({
-    select: {
-      name: true,
-      startTime: true,
-      endTime: true,
-      registrationStartTime: true,
-      registrationEndTime: true,
-      players: true,
-      users: true
-    }
-  });
-  tournament = JSON.parse(JSON.stringify(tournament)); // avoid Next.js serialization error
   let user = await prisma.user.findUnique({
     where: {
       id: params.id as string
@@ -99,6 +61,7 @@ export const getServerSideProps: GetServerSideProps = async ({
       lastName: true,
       phone: true,
       email: true,
+      tournamentId: true,
       player: {
         select: {
           id: true,
@@ -128,25 +91,36 @@ export const getServerSideProps: GetServerSideProps = async ({
       }
     }
   });
+  let tournament = await prisma.tournament.findFirst({
+    select: {
+      name: true,
+      startTime: true,
+      endTime: true,
+      registrationStartTime: true,
+      registrationEndTime: true,
+      players: true,
+      users: true
+    },
+    where: {
+      id: user.tournamentId
+    }
+  });
+  tournament = JSON.parse(JSON.stringify(tournament)); // avoid Next.js serialization error
+
   user = JSON.parse(JSON.stringify(user));
 
   if (
-    new Date().getTime() < new Date(tournament.startTime).getTime() &&
-    user.player
+    user.player &&
+    new Date().getTime() < new Date(tournament.startTime).getTime()
   ) {
     user.player.targets = [];
   }
   return {
-    props: { user, tournament, imageUrl, currentUser }
+    props: { user, tournament, imageUrl }
   };
 };
 
-export default function UserInfo({
-  user,
-  tournament,
-  imageUrl,
-  currentUser
-}): JSX.Element {
+export default function UserInfo({ user, tournament, imageUrl }): JSX.Element {
   const [isUpdated, setIsUpdated] = useState(true);
   const [showPicture, setShowPicture] = useState(false);
   const [fileInputState, setFileInputState] = useState("");
@@ -181,13 +155,10 @@ export default function UserInfo({
     height: number;
     glasses: string;
     other: string;
-    calendar: object;
   };
   const handleDetailsSubmit = async (
     event: React.FormEvent<HTMLFormElement>
   ) => {
-    const cal = {};
-    dates.forEach((x, i) => (cal[x] = event.currentTarget.dates[i].value));
     event.preventDefault();
     const data: formData = {
       address: event.currentTarget.address.value,
@@ -196,8 +167,7 @@ export default function UserInfo({
       hair: event.currentTarget.hair.value,
       height: parseInt(event.currentTarget.height.value),
       glasses: event.currentTarget.glasses.value,
-      other: event.currentTarget.other.value,
-      calendar: cal
+      other: event.currentTarget.other.value
     };
 
     fetch(`/api/user/update/${id}`, {
@@ -267,11 +237,11 @@ export default function UserInfo({
     }
   };
   let targetUsers = [];
-  if (currentUser.player) {
+  if (user.player!) {
     const targetPlayerIds = [
       // everything works fine but vscode says that targets, players and users don't exist.
 
-      currentUser.player.targets.map(
+      user.player.targets.map(
         (t) => tournament.players.find((p) => p.id == t.targetId).userId
       )
     ];
@@ -284,7 +254,11 @@ export default function UserInfo({
   return (
     <AuthenticationRequired>
       <div>
-        <NavigationBar targets={targetUsers} userId={currentUser.id} />
+        <NavigationBar
+          targets={targetUsers}
+          userId={user.id}
+          tournamentId={user.tournamentId}
+        />
         <Grid container>
           <Grid item xs={12} md={5}>
             <div
@@ -302,9 +276,10 @@ export default function UserInfo({
                     <div>
                       <Image
                         src={imageUrl}
-                        layout="fixed"
-                        width={400}
-                        height={550}
+                        width="100%"
+                        height="100%"
+                        layout="responsive"
+                        objectFit="contain"
                         alt="profile picture"
                       ></Image>
                     </div>
@@ -346,7 +321,7 @@ export default function UserInfo({
                   {isUpdated ? "muokkaa tietoja" : "peruuta"}
                 </button>
               </div>
-              {user.player.umpire && (
+              {/* {user.player.umpire && (
                 <div>
                   <h3>Pelaajan tuomari</h3>
                   <p>
@@ -356,7 +331,7 @@ export default function UserInfo({
                   <p>{user.player.umpire.user.phone}</p>
                   <p>{user.player.umpire.user.email}</p>
                 </div>
-              )}
+              )} */}
               {isUpdated ? (
                 <div>
                   <div className="userdetails">

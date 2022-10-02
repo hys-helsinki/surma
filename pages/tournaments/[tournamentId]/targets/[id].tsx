@@ -1,32 +1,43 @@
 import { GetServerSideProps } from "next";
-import { Prisma, Tournament } from "@prisma/client";
-import { PlayerDetails } from "../../../components/PlayerDetails";
-import { PlayerContactInfo } from "../../../components/PlayerContactInfo";
-import prisma from "../../../lib/prisma";
-import React, { MouseEventHandler, useEffect } from "react";
+import { PlayerDetails } from "../../../../components/PlayerDetails";
+import { PlayerContactInfo } from "../../../../components/PlayerContactInfo";
+import prisma from "../../../../lib/prisma";
+import React, { MouseEventHandler } from "react";
 import { useState } from "react";
-import { UpdateForm } from "../../../components/UpdateForm";
-import { useRouter } from "next/router";
-import NavigationBar from "../../../components/NavigationBar";
-import { Calendar } from "../../../components/Calendar";
 import Image from "next/image";
 import { Grid } from "@mui/material";
-import { AuthenticationRequired } from "../../../components/AuthenticationRequired";
+import { AuthenticationRequired } from "../../../../components/AuthenticationRequired";
 import { unstable_getServerSession } from "next-auth";
-import { authConfig } from "../../api/auth/[...nextauth]";
+import { authConfig } from "../../../api/auth/[...nextauth]";
 
-const isCurrentUserAuthorized = async (targetId, context) => {
+const isCurrentUserAuthorized = async (tournamentId, targetId, context) => {
   const session = await unstable_getServerSession(
     context.req,
     context.res,
     authConfig
   );
   // TODO add tournamentId to where clauses
-  const isUmpire = await prisma.umpire.findUnique({
+  const isUmpire = await prisma.umpire.findFirst({
     where: {
-      userId: session.user.id
+      userId: session.user.id,
+      tournamentId: tournamentId
     }
   });
+
+  const tournament = await prisma.tournament.findUnique({
+    select: {
+      startTime: true,
+      endTime: true
+    },
+    where: {
+      id: tournamentId
+    }
+  });
+
+  const currentTime = new Date();
+  const isTournamentRunning =
+    tournament.startTime.getTime() < currentTime.getTime() &&
+    currentTime.getTime() < tournament.endTime.getTime();
 
   const isHunter = await prisma.assignment.findFirst({
     where: {
@@ -42,23 +53,19 @@ const isCurrentUserAuthorized = async (targetId, context) => {
       }
     }
   });
-  return isUmpire || isHunter;
+
+  return isUmpire || (isTournamentRunning && isHunter);
 };
 
 export const getServerSideProps: GetServerSideProps = async ({
   params,
   ...context
 }) => {
-  if (!(await isCurrentUserAuthorized(params.id, context)))
+  if (!(await isCurrentUserAuthorized(params.tournamentId, params.id, context)))
     return { redirect: { destination: "/personal", permanent: false } };
 
   require("dotenv").config();
   const cloudinary = require("cloudinary").v2;
-  cloudinary.config({
-    cloud_name: process.env.CLOUDINARY_NAME,
-    api_key: process.env.CLOUDINARY_API_KEY,
-    api_secret: process.env.CLOUDINARY_API_SECRET
-  });
   let imageUrl = "";
   try {
     const result = await cloudinary.api.resource(params.id);
@@ -67,84 +74,33 @@ export const getServerSideProps: GetServerSideProps = async ({
     console.log(error);
   }
 
-  const session = await unstable_getServerSession(
-    context.req,
-    context.res,
-    authConfig
-  );
-
-  const currentUser = await prisma.user.findUnique({
-    where: {
-      id: session.user.id
-    },
-    select: {
-      id: true,
-      tournamentId: true,
-      player: {
-        select: {
-          targets: true
-        }
-      }
-    }
-  });
-
-  let tournament = await prisma.tournament.findUnique({
-    select: {
-      players: true,
-      users: true
-    },
-    where: {
-      id: currentUser.tournamentId
-    }
-  });
-
-  tournament = JSON.parse(JSON.stringify(tournament)); // avoid Next.js serialization error
-
-  const playerAsTarget: Prisma.PlayerSelect = {
-    address: true,
-    learningInstitution: true,
-    eyeColor: true,
-    hair: true,
-    height: true,
-    glasses: true,
-    other: true,
-    calendar: true,
-    umpire: {
-      select: {
-        user: {
-          select: {
-            firstName: true,
-            lastName: true,
-            phone: true,
-            email: true
-          }
-        }
-      }
-    },
-    user: {
-      select: {
-        firstName: true,
-        lastName: true
-      }
-    }
-  };
   const player = await prisma.player.findUnique({
     where: {
       userId: params.id as string
     },
-    select: playerAsTarget
+    select: {
+      address: true,
+      learningInstitution: true,
+      eyeColor: true,
+      hair: true,
+      height: true,
+      glasses: true,
+      other: true,
+      calendar: true,
+      user: {
+        select: {
+          firstName: true,
+          lastName: true
+        }
+      }
+    }
   });
   return {
-    props: { player, imageUrl, currentUser, tournament }
+    props: { player, imageUrl }
   };
 };
 
-export default function Target({
-  player,
-  imageUrl,
-  currentUser,
-  tournament
-}): JSX.Element {
+export default function Target({ player, imageUrl }): JSX.Element {
   const [showPicture, setShowPicture] = useState(false);
   const [slideNumber, setSlideNumber] = useState(0);
 
@@ -176,23 +132,23 @@ export default function Target({
     }
   };
 
-  let targetUsers = [];
-  if (currentUser.player) {
-    const targetPlayerIds = [
-      currentUser.player.targets.map(
-        (t) => tournament.players.find((p) => p.id == t.targetId).userId
-      )
-    ];
+  // let targetUsers = [];
+  // if (currentUser.player) {
+  //   const targetPlayerIds = [
+  //     currentUser.player.targets.map(
+  //       (t) => tournament.players.find((p) => p.id == t.targetId).userId
+  //     )
+  //   ];
 
-    targetUsers = tournament.users.filter((user) =>
-      targetPlayerIds[0].includes(user.id)
-    );
-  }
+  //   targetUsers = tournament.users.filter((user) =>
+  //     targetPlayerIds[0].includes(user.id)
+  //   );
+  // }
 
   return (
     <AuthenticationRequired>
       <div>
-        <NavigationBar targets={targetUsers} userId={currentUser.id} />
+        {/* <NavigationBar targets={targetUsers} userId={currentUser.id} /> */}
         <Grid container>
           <Grid item xs={12} md={5}>
             <div
@@ -210,9 +166,10 @@ export default function Target({
                     <div>
                       <Image
                         src={imageUrl}
-                        layout="fixed"
-                        width={400}
-                        height={550}
+                        width="100%"
+                        height="100%"
+                        layout="responsive"
+                        objectFit="contain"
                         alt="profile picture"
                       ></Image>
                     </div>
