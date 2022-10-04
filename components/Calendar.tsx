@@ -44,7 +44,10 @@ export const Calendar = ({ player, handleSubmit }): JSX.Element => {
         <div>
           <ul>
             {chunks[slideNumber].map((c, index) => (
-              <li key={index} style={{ paddingBottom: "20px" }}>
+              <li
+                key={index}
+                style={{ paddingBottom: "20px", whiteSpace: "pre-line" }}
+              >
                 {c[0]}: {c[1]}
               </li>
             ))}
