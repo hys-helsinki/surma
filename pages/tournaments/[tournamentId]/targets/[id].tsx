@@ -145,6 +145,18 @@ export const getServerSideProps: GetServerSideProps = async ({
           firstName: true,
           lastName: true
         }
+      },
+      umpire: {
+        select: {
+          user: {
+            select: {
+              firstName: true,
+              lastName: true,
+              phone: true,
+              email: true
+            }
+          }
+        }
       }
     }
   });
@@ -259,6 +271,7 @@ export default function Target({
                       <p>{player.umpire.user.email}</p>
                     </div>
                   )}
+                  <h2>Kohteen tiedot</h2>
                   <PlayerContactInfo user={player.user} />
                   <PlayerDetails player={player} />
                 </div>
