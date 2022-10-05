@@ -60,6 +60,7 @@ enum PlayerState {
   ACTIVE
   DEAD
   DETECTIVE
+  EXTRA
 }
 
 model Umpire {
