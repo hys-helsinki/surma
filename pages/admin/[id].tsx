@@ -72,9 +72,12 @@ export const getServerSideProps: GetServerSideProps = async ({
 };
 
 export default function Tournament({ tournament, players, rings }) {
-  const handlePlayerStatus = () => {
-    // TODO: change status
-    console.log("statusta vaihdettiin");
+  const handlePlayerStatus = (playerState, id) => {
+    const data = { state: playerState };
+    fetch(`/api/player/${id}/state`, {
+      method: "PATCH",
+      body: JSON.stringify(data)
+    });
   };
   return (
     <AuthenticationRequired>
@@ -108,7 +111,20 @@ export default function Tournament({ tournament, players, rings }) {
                         </Link>
                       </td>
                       <td>
-                        <button onClick={handlePlayerStatus}>Kuollut</button>
+                        <button
+                          onClick={() => handlePlayerStatus("DEAD", player.id)}
+                        >
+                          Tapa
+                        </button>
+                      </td>
+                      <td>
+                        <button
+                          onClick={() =>
+                            handlePlayerStatus("DETECTIVE", player.id)
+                          }
+                        >
+                          Etsiväksi
+                        </button>
                       </td>
                     </tr>
                   ))}
