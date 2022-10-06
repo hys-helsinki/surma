@@ -1,9 +1,8 @@
 import { GetServerSideProps } from "next";
-import { Prisma, Tournament } from "@prisma/client";
 import { PlayerDetails } from "../../../components/PlayerDetails";
 import { PlayerContactInfo } from "../../../components/PlayerContactInfo";
 import prisma from "../../../lib/prisma";
-import React, { MouseEventHandler, useEffect } from "react";
+import React, { MouseEventHandler } from "react";
 import { useState } from "react";
 import { UpdateForm } from "../../../components/UpdateForm";
 import { useRouter } from "next/router";
@@ -14,6 +13,7 @@ import { Grid } from "@mui/material";
 import { AuthenticationRequired } from "../../../components/AuthenticationRequired";
 import { unstable_getServerSession } from "next-auth";
 import { authConfig } from "../../api/auth/[...nextauth]";
+import { v2 as cloudinary } from "cloudinary";
 
 const isCurrentUserAuthorized = async (userId, context) => {
   const session = await unstable_getServerSession(
@@ -42,33 +42,14 @@ export const getServerSideProps: GetServerSideProps = async ({
   if (!(await isCurrentUserAuthorized(params.id, context)))
     return { redirect: { destination: "/personal", permanent: false } };
 
-  require("dotenv").config();
-  const cloudinary = require("cloudinary").v2;
-  cloudinary.config({
-    cloud_name: process.env.CLOUDINARY_NAME,
-    api_key: process.env.CLOUDINARY_API_KEY,
-    api_secret: process.env.CLOUDINARY_API_SECRET
-  });
   let imageUrl = "";
   try {
-    const result = await cloudinary.api.resource(params.id);
+    const result = await cloudinary.api.resource(params.id as string);
     imageUrl = result.url;
   } catch (error) {
     console.log(error);
   }
 
-  let tournament = await prisma.tournament.findFirst({
-    select: {
-      name: true,
-      startTime: true,
-      endTime: true,
-      registrationStartTime: true,
-      registrationEndTime: true,
-      players: true,
-      users: true
-    }
-  });
-  tournament = JSON.parse(JSON.stringify(tournament)); // avoid Next.js serialization error
   let user = await prisma.user.findUnique({
     where: {
       id: params.id as string
@@ -79,6 +60,7 @@ export const getServerSideProps: GetServerSideProps = async ({
       lastName: true,
       phone: true,
       email: true,
+      tournamentId: true,
       player: {
         select: {
           id: true,
@@ -91,22 +73,67 @@ export const getServerSideProps: GetServerSideProps = async ({
           glasses: true,
           other: true,
           calendar: true,
-          targets: true
+          targets: {
+            select: {
+              target: {
+                select: {
+                  user: {
+                    select: {
+                      id: true,
+                      firstName: true,
+                      lastName: true
+                    }
+                  }
+                }
+              }
+            }
+          },
+          umpire: {
+            select: {
+              user: {
+                select: {
+                  firstName: true,
+                  lastName: true,
+                  phone: true,
+                  email: true
+                }
+              }
+            }
+          }
+        }
+      },
+      tournament: {
+        select: {
+          name: true,
+          startTime: true,
+          endTime: true,
+          registrationStartTime: true,
+          registrationEndTime: true
         }
       }
     }
   });
-  user = JSON.parse(JSON.stringify(user));
 
-  if (new Date().getTime() < new Date(tournament.startTime).getTime()) {
-    user.player.targets = [];
+  user = JSON.parse(JSON.stringify(user));
+  let tournament = user.tournament;
+  let targets = [];
+  if (
+    user.player &&
+    new Date().getTime() > new Date(tournament.startTime).getTime()
+  ) {
+    targets = user.player.targets;
   }
   return {
-    props: { user, tournament, imageUrl }
+    props: { user, tournament, imageUrl, targets }
   };
 };
 
-export default function UserInfo({ user, tournament, imageUrl }): JSX.Element {
+export default function UserInfo({
+  user,
+  tournament,
+  imageUrl,
+  targets
+}): JSX.Element {
   const [isUpdated, setIsUpdated] = useState(true);
   const [showPicture, setShowPicture] = useState(false);
   const [fileInputState, setFileInputState] = useState("");
@@ -141,13 +168,10 @@ export default function UserInfo({ user, tournament, imageUrl }): JSX.Element {
     height: number;
     glasses: string;
     other: string;
-    calendar: object;
   };
   const handleDetailsSubmit = async (
     event: React.FormEvent<HTMLFormElement>
   ) => {
-    const cal = {};
-    dates.forEach((x, i) => (cal[x] = event.currentTarget.dates[i].value));
     event.preventDefault();
     const data: formData = {
       address: event.currentTarget.address.value,
@@ -156,8 +180,7 @@ export default function UserInfo({ user, tournament, imageUrl }): JSX.Element {
       hair: event.currentTarget.hair.value,
       height: parseInt(event.currentTarget.height.value),
       glasses: event.currentTarget.glasses.value,
-      other: event.currentTarget.other.value,
-      calendar: cal
+      other: event.currentTarget.other.value
     };
 
     fetch(`/api/user/update/${id}`, {
@@ -169,7 +192,6 @@ export default function UserInfo({ user, tournament, imageUrl }): JSX.Element {
   const handleCalendarSubmit = async (
     event: React.FormEvent<HTMLFormElement>
   ) => {
-    console.log("tapahtuuko mitään?");
     const cal = {};
     dates.forEach((x, i) => (cal[x] = event.currentTarget.dates[i].value));
     event.preventDefault();
@@ -227,24 +249,20 @@ export default function UserInfo({ user, tournament, imageUrl }): JSX.Element {
     }
   };
   let targetUsers = [];
-  if (user.player != null) {
-    const targetPlayerIds = [
-      // everything works fine but vscode says that targets, players and users don't exist.
-
-      user.player.targets.map(
-        (t) => tournament.players.find((p) => p.id == t.targetId).userId
-      )
-    ];
-
-    targetUsers = tournament.users.filter((user) =>
-      targetPlayerIds[0].includes(user.id)
+  if (targets) {
+    targetUsers = user.player.targets.map(
+      (assignment) => assignment.target.user
     );
   }
 
   return (
     <AuthenticationRequired>
       <div>
-        <NavigationBar targets={targetUsers} userId={user.id} />
+        <NavigationBar
+          targets={targetUsers}
+          userId={user.id}
+          tournamentId={user.tournamentId}
+        />
         <Grid container>
           <Grid item xs={12} md={5}>
             <div
@@ -262,8 +280,10 @@ export default function UserInfo({ user, tournament, imageUrl }): JSX.Element {
                     <div>
                       <Image
                         src={imageUrl}
-                        width={200}
-                        height={100}
+                        width="100%"
+                        height="100%"
+                        layout="responsive"
+                        objectFit="contain"
                         alt="profile picture"
                       ></Image>
                     </div>
@@ -305,6 +325,19 @@ export default function UserInfo({ user, tournament, imageUrl }): JSX.Element {
                   {isUpdated ? "muokkaa tietoja" : "peruuta"}
                 </button>
               </div>
+              {user.player && user.player.umpire ? (
+                <div>
+                  <h3>Pelaajan tuomari</h3>
+                  <p>
+                    {user.player.umpire.user.firstName}{" "}
+                    {user.player.umpire.user.lastName}
+                  </p>
+                  <p>{user.player.umpire.user.phone}</p>
+                  <p>{user.player.umpire.user.email}</p>
+                </div>
+              ) : (
+                ""
+              )}
               {isUpdated ? (
                 <div>
                   <div className="userdetails">
