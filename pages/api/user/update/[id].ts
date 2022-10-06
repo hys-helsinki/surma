@@ -2,6 +2,7 @@ import prisma from "../../../../lib/prisma";
 import type { NextApiRequest, NextApiResponse } from "next";
 import { unstable_getServerSession } from "next-auth";
 import { authConfig } from "../../auth/[...nextauth]";
+import _ from "lodash";
 
 const isCurrentUserAuthorized = async (playerId, req, res) => {
   const session = await unstable_getServerSession(req, res, authConfig);
@@ -30,10 +31,21 @@ export default async function update(
   }
   if (req.method === "PUT") {
     const playerId = req.query.id as string;
-    const playerData = JSON.parse(req.body);
+    const allowedFields = [
+      "address",
+      "learningInstitution",
+      "eyeColor",
+      "hair",
+      "height",
+      "glasses",
+      "other",
+      "calendar"
+    ];
+    const updateData = JSON.parse(req.body);
+
     const result = await prisma.player.update({
       where: { userId: playerId },
-      data: playerData
+      data: _.pick(updateData, allowedFields)
     });
     res.status(204).end();
   }
