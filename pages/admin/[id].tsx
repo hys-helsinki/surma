@@ -2,6 +2,7 @@ import { Grid } from "@mui/material";
 import { GetServerSideProps } from "next";
 import { unstable_getServerSession } from "next-auth";
 import Link from "next/link";
+import { useState } from "react";
 import { AuthenticationRequired } from "../../components/AuthenticationRequired";
 import { TournamentRings } from "../../components/TournamentRings";
 import prisma from "../../lib/prisma";
@@ -65,20 +66,26 @@ export const getServerSideProps: GetServerSideProps = async ({
     }
   });
   tournament = JSON.parse(JSON.stringify(tournament));
-  players = JSON.parse(JSON.stringify(players));
+  const playerList = JSON.parse(JSON.stringify(players));
   rings = JSON.parse(JSON.stringify(rings));
   return {
-    props: { tournament, players, rings }
+    props: { tournament, playerList, rings }
   };
 };
 
-export default function Tournament({ tournament, players, rings }) {
+export default function Tournament({ tournament, playerList, rings }) {
+  const [players, setPlayers] = useState(playerList);
   const handlePlayerStatus = (playerState, id) => {
     const data = { state: playerState };
     fetch(`/api/player/${id}/state`, {
       method: "PATCH",
       body: JSON.stringify(data)
     });
+    const playerToBeUpdated = players.find((p) => p.id == id);
+    const updatedPlayer = { ...playerToBeUpdated, state: playerState };
+    setPlayers(
+      players.map((player) => (player.id !== id ? player : updatedPlayer))
+    );
   };
   return (
     <AuthenticationRequired>
