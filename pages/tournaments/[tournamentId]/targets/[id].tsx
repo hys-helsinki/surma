@@ -103,6 +103,7 @@ export const getServerSideProps: GetServerSideProps = async ({
       },
       player: {
         select: {
+          state: true,
           targets: {
             select: {
               target: {
@@ -132,6 +133,7 @@ export const getServerSideProps: GetServerSideProps = async ({
       userId: params.id as string
     },
     select: {
+      alias: true,
       address: true,
       learningInstitution: true,
       eyeColor: true,
@@ -272,7 +274,9 @@ export default function Target({
                     </div>
                   )}
                   <h2>Kohteen tiedot</h2>
-                  <PlayerContactInfo user={player.user} />
+                  {currentUser.player.state == "DETECTIVE" && (
+                    <h3>Pelaajan alias: {player.alias}</h3>
+                  )}
                   <PlayerDetails player={player} />
                 </div>
               </div>

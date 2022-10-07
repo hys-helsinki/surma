@@ -50,7 +50,8 @@ export const getServerSideProps: GetServerSideProps = async ({
       },
       id: true,
       targets: true,
-      hunters: true
+      hunters: true,
+      state: true
     }
   });
   let rings = await prisma.assignmentRing.findMany({
@@ -110,22 +111,27 @@ export default function Tournament({ tournament, players, rings }) {
                           </a>
                         </Link>
                       </td>
-                      <td>
-                        <button
-                          onClick={() => handlePlayerStatus("DEAD", player.id)}
-                        >
-                          Tapa
-                        </button>
-                      </td>
-                      <td>
-                        <button
-                          onClick={() =>
-                            handlePlayerStatus("DETECTIVE", player.id)
-                          }
-                        >
-                          Etsiväksi
-                        </button>
-                      </td>
+                      {player.state == "ACTIVE" ? (
+                        <td>
+                          <button
+                            onClick={() =>
+                              handlePlayerStatus("DEAD", player.id)
+                            }
+                          >
+                            Tapa
+                          </button>
+                        </td>
+                      ) : (
+                        <td>
+                          <button
+                            onClick={() =>
+                              handlePlayerStatus("DETECTIVE", player.id)
+                            }
+                          >
+                            Etsiväksi
+                          </button>
+                        </td>
+                      )}
                     </tr>
                   ))}
                 </tbody>
