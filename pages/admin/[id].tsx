@@ -88,18 +88,6 @@ export default function Tournament({ tournament, players, rings }) {
           <Grid item xs={12} md={6}>
             <div style={{ paddingLeft: "10px" }}>
               <h2>Pelaajat</h2>
-              <p>
-                <i>Kuollut</i>
-              </p>
-              <p>
-                <i>Etsivä</i>
-              </p>
-              <p>
-                <i>Lisäkohde</i>
-              </p>
-              <h3>
-                <i>Elossa</i>
-              </h3>
               <table>
                 <tbody>
                   {players.map((player) => (
@@ -122,15 +110,28 @@ export default function Tournament({ tournament, players, rings }) {
                           </button>
                         </td>
                       ) : (
-                        <td>
-                          <button
-                            onClick={() =>
-                              handlePlayerStatus("DETECTIVE", player.id)
-                            }
-                          >
-                            Etsiväksi
-                          </button>
-                        </td>
+                        <>
+                          <td>
+                            <button
+                              onClick={() =>
+                                handlePlayerStatus("ACTIVE", player.id)
+                              }
+                            >
+                              Herätä henkiin
+                            </button>
+                          </td>
+                          {player.state != "DETECTIVE" && (
+                            <td>
+                              <button
+                                onClick={() =>
+                                  handlePlayerStatus("DETECTIVE", player.id)
+                                }
+                              >
+                                Etsiväksi
+                              </button>
+                            </td>
+                          )}
+                        </>
                       )}
                     </tr>
                   ))}
