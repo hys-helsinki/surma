@@ -113,14 +113,14 @@ export const TournamentRings = ({
             onClick={() => toggleShowRing(ring.id)}
             style={{ marginTop: "5px" }}
           >
-            {showRing ? (
+            {showRing == ring.id ? (
               <KeyboardArrowDownRoundedIcon />
             ) : (
               <KeyboardArrowRightRoundedIcon />
             )}
             {ring.name}
           </a>
-          {!showRing ? (
+          {showRing != ring.id ? (
             <div></div>
           ) : (
             <div>
