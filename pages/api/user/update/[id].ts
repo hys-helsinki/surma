@@ -41,11 +41,11 @@ export default async function update(
       "other",
       "calendar"
     ];
-    const updateData = JSON.parse(req.body);
+    const filteredUpdateData = _.pick(JSON.parse(req.body), allowedFields);
 
     const result = await prisma.player.update({
       where: { userId: playerId },
-      data: _.pick(updateData, allowedFields)
+      data: filteredUpdateData
     });
     res.status(204).end();
   }
