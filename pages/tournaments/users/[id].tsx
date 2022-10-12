@@ -340,7 +340,7 @@ export default function UserInfo({
               </div>
               {currentUserIsUmpire && (
                 <div>
-                  <p>Viimeksi vierailtu:</p>
+                  <p>Käyttäjän viime käynti:</p>
                   <p>{new Date(user.player.lastVisit).toString()}</p>
                 </div>
               )}
