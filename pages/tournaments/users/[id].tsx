@@ -50,6 +50,24 @@ export const getServerSideProps: GetServerSideProps = async ({
     console.log(error);
   }
 
+  const session = await unstable_getServerSession(
+    context.req,
+    context.res,
+    authConfig
+  );
+
+  let currentUser = await prisma.user.findUnique({
+    where: {
+      id: session.user.id
+    },
+    select: {
+      id: true,
+      umpire: true
+    }
+  });
+
+  currentUser = JSON.parse(JSON.stringify(currentUser));
+
   let user = await prisma.user.findUnique({
     where: {
       id: params.id as string
@@ -73,6 +91,7 @@ export const getServerSideProps: GetServerSideProps = async ({
           glasses: true,
           other: true,
           calendar: true,
+          lastVisit: true,
           targets: {
             select: {
               target: {
@@ -124,7 +143,7 @@ export const getServerSideProps: GetServerSideProps = async ({
     targets = user.player.targets;
   }
   return {
-    props: { user, tournament, imageUrl, targets }
+    props: { user, tournament, imageUrl, targets, currentUser }
   };
 };
 
@@ -132,7 +151,8 @@ export default function UserInfo({
   user,
   tournament,
   imageUrl,
-  targets
+  targets,
+  currentUser
 }): JSX.Element {
   const [isUpdated, setIsUpdated] = useState(true);
   const [showPicture, setShowPicture] = useState(false);
@@ -325,6 +345,12 @@ export default function UserInfo({
                   {isUpdated ? "muokkaa tietoja" : "peruuta"}
                 </button>
               </div>
+              {currentUser.umpire && (
+                <div>
+                  <p>Viimeksi vierailtu:</p>
+                  <p>{new Date(user.player.lastVisit).toString()}</p>
+                </div>
+              )}
               {user.player && user.player.umpire ? (
                 <div>
                   <h3>Pelaajan tuomari</h3>
