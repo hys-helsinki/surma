@@ -30,26 +30,6 @@ export const authConfig = {
         user: { id: user.id, ...session.user }
       };
     }
-    // async signIn({ user, account, profile, email, credentials }) {
-    //   console.log("user:", user);
-    //   const currentUser = await prisma.user.findUnique({
-    //     where: {
-    //       id: user.id
-    //     },
-    //     select: {
-    //       umpire: true
-    //     }
-    //   });
-    //   const isAllowedToSignIn = currentUser && currentUser.umpire != null; // EI-TUOMARIPELAAJAT EIVÄT SAA KIRJAUTUA VIELÄ
-    //   if (isAllowedToSignIn) {
-    //     return true;
-    //   } else {
-    //     // Return false to display a default error message
-    //     return false;
-    //     // Or you can return a URL to redirect to:
-    //     // return '/unauthorized'
-    //   }
-    // }
   }
 };
 
