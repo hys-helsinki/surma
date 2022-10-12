@@ -13,7 +13,7 @@ export const TournamentRings = ({
   const [allRings, setRings] = useState(rings);
   const [newRing, setNewRing] = useState([]);
   const [showForm, setShowForm] = useState(false);
-  const [showRing, setShowRing] = useState("");
+  const [shownRingId, setShownRingId] = useState("");
   const [newHunter, setNewHunter] = useState("");
   const [newTarget, setNewTarget] = useState("");
 
@@ -57,10 +57,10 @@ export const TournamentRings = ({
   };
 
   const toggleShowRing = (ringId) => {
-    if (showRing == ringId) {
-      setShowRing("");
+    if (shownRingId == ringId) {
+      setShownRingId("");
     } else {
-      setShowRing(ringId);
+      setShownRingId(ringId);
     }
   };
 
@@ -113,16 +113,14 @@ export const TournamentRings = ({
             onClick={() => toggleShowRing(ring.id)}
             style={{ marginTop: "5px" }}
           >
-            {showRing ? (
+            {shownRingId == ring.id ? (
               <KeyboardArrowDownRoundedIcon />
             ) : (
               <KeyboardArrowRightRoundedIcon />
             )}
             {ring.name}
           </a>
-          {!showRing ? (
-            <div></div>
-          ) : (
+          {shownRingId == ring.id && (
             <div>
               {ring.assignments.map((a) => (
                 <div key={a.id}>
@@ -171,16 +169,6 @@ export const TournamentRings = ({
               </form>
             </div>
           )}
-        </div>
-      ))}
-      <h2>Pelaajat</h2>
-      {players.map((player) => (
-        <div key={player.id} style={{ paddingBottom: "20px" }}>
-          <Link href={`/tournaments/users/${player.user.id}`}>
-            <a>
-              {player.user.firstName} {player.user.lastName}
-            </a>
-          </Link>
         </div>
       ))}
       <button onClick={toggleForm}>
