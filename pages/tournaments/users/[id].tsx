@@ -15,23 +15,12 @@ import { unstable_getServerSession } from "next-auth";
 import { authConfig } from "../../api/auth/[...nextauth]";
 import { v2 as cloudinary } from "cloudinary";
 
-const isCurrentUserAuthorized = async (userId, context) => {
-  const session = await unstable_getServerSession(
-    context.req,
-    context.res,
-    authConfig
-  );
-
-  if (session.user.id == userId) {
+const isCurrentUserAuthorized = async (userId, currentUser) => {
+  if (currentUser.id == userId) {
     return true;
   } else {
-    // TODO add tournamentId to where clause
-    const umpire = await prisma.umpire.findUnique({
-      where: {
-        userId: session.user.id
-      }
-    });
-    return umpire != null;
+    // TODO check that current user is umpire for viewed user's tournament
+    return currentUser.umpire != null;
   }
 };
 
@@ -39,17 +28,6 @@ export const getServerSideProps: GetServerSideProps = async ({
   params,
   ...context
 }) => {
-  if (!(await isCurrentUserAuthorized(params.id, context)))
-    return { redirect: { destination: "/personal", permanent: false } };
-
-  let imageUrl = "";
-  try {
-    const result = await cloudinary.api.resource(params.id as string);
-    imageUrl = result.url;
-  } catch (error) {
-    console.log(error);
-  }
-
   const session = await unstable_getServerSession(
     context.req,
     context.res,
@@ -65,6 +43,17 @@ export const getServerSideProps: GetServerSideProps = async ({
       umpire: true
     }
   });
+
+  if (!(await isCurrentUserAuthorized(params.id, currentUser)))
+    return { redirect: { destination: "/personal", permanent: false } };
+
+  let imageUrl = "";
+  try {
+    const result = await cloudinary.api.resource(params.id as string);
+    imageUrl = result.url;
+  } catch (error) {
+    console.log(error);
+  }
 
   currentUser = JSON.parse(JSON.stringify(currentUser));
 
