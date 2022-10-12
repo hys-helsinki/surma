@@ -15,23 +15,12 @@ import { unstable_getServerSession } from "next-auth";
 import { authConfig } from "../../api/auth/[...nextauth]";
 import { v2 as cloudinary } from "cloudinary";
 
-const isCurrentUserAuthorized = async (userId, context) => {
-  const session = await unstable_getServerSession(
-    context.req,
-    context.res,
-    authConfig
-  );
-
-  if (session.user.id == userId) {
+const isCurrentUserAuthorized = async (currentUser, userId) => {
+  if (currentUser.id == userId) {
     return true;
   } else {
-    // TODO add tournamentId to where clause
-    const umpire = await prisma.umpire.findUnique({
-      where: {
-        userId: session.user.id
-      }
-    });
-    return umpire != null;
+    // TODO check that current user is umpire for viewed user's tournament
+    return currentUser.umpire != null;
   }
 };
 
@@ -39,7 +28,23 @@ export const getServerSideProps: GetServerSideProps = async ({
   params,
   ...context
 }) => {
-  if (!(await isCurrentUserAuthorized(params.id, context)))
+  const session = await unstable_getServerSession(
+    context.req,
+    context.res,
+    authConfig
+  );
+
+  const currentUser = await prisma.user.findUnique({
+    where: {
+      id: session.user.id
+    },
+    select: {
+      id: true,
+      umpire: true
+    }
+  });
+
+  if (!(await isCurrentUserAuthorized(currentUser, params.id)))
     return { redirect: { destination: "/personal", permanent: false } };
 
   let imageUrl = "";
@@ -73,6 +78,7 @@ export const getServerSideProps: GetServerSideProps = async ({
           glasses: true,
           other: true,
           calendar: true,
+          lastVisit: true,
           targets: {
             select: {
               target: {
@@ -115,7 +121,7 @@ export const getServerSideProps: GetServerSideProps = async ({
   });
 
   user = JSON.parse(JSON.stringify(user));
-  let tournament = user.tournament;
+  const tournament = user.tournament;
   let targets = [];
   if (
     user.player &&
@@ -124,7 +130,13 @@ export const getServerSideProps: GetServerSideProps = async ({
     targets = user.player.targets;
   }
   return {
-    props: { user, tournament, imageUrl, targets }
+    props: {
+      user,
+      tournament,
+      imageUrl,
+      targets,
+      currentUserIsUmpire: currentUser.umpire != null
+    }
   };
 };
 
@@ -132,7 +144,8 @@ export default function UserInfo({
   user,
   tournament,
   imageUrl,
-  targets
+  targets,
+  currentUserIsUmpire
 }): JSX.Element {
   const [isUpdated, setIsUpdated] = useState(true);
   const [showPicture, setShowPicture] = useState(false);
@@ -325,6 +338,12 @@ export default function UserInfo({
                   {isUpdated ? "muokkaa tietoja" : "peruuta"}
                 </button>
               </div>
+              {currentUserIsUmpire && (
+                <div>
+                  <p>Käyttäjän viime käynti:</p>
+                  <p>{new Date(user.player.lastVisit).toString()}</p>
+                </div>
+              )}
               {user.player && user.player.umpire ? (
                 <div>
                   <h3>Pelaajan tuomari</h3>
