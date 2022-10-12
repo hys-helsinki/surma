@@ -15,7 +15,7 @@ import { unstable_getServerSession } from "next-auth";
 import { authConfig } from "../../api/auth/[...nextauth]";
 import { v2 as cloudinary } from "cloudinary";
 
-const isCurrentUserAuthorized = async (userId, currentUser) => {
+const isCurrentUserAuthorized = async (currentUser, userId) => {
   if (currentUser.id == userId) {
     return true;
   } else {
@@ -44,7 +44,7 @@ export const getServerSideProps: GetServerSideProps = async ({
     }
   });
 
-  if (!(await isCurrentUserAuthorized(params.id, currentUser)))
+  if (!(await isCurrentUserAuthorized(currentUser, params.id)))
     return { redirect: { destination: "/personal", permanent: false } };
 
   let imageUrl = "";
@@ -121,7 +121,7 @@ export const getServerSideProps: GetServerSideProps = async ({
   });
 
   user = JSON.parse(JSON.stringify(user));
-  let tournament = user.tournament;
+  const tournament = user.tournament;
   let targets = [];
   if (
     user.player &&
