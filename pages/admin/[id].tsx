@@ -75,7 +75,7 @@ export const getServerSideProps: GetServerSideProps = async ({
 
 export default function Tournament({ tournament, playerList, rings }) {
   const [players, setPlayers] = useState(playerList);
-  const handlePlayerStatus = (playerState, id) => {
+  const handlePlayerStatusChange = (playerState, id) => {
     const data = { state: playerState };
     fetch(`/api/player/${id}/state`, {
       method: "PATCH",
@@ -110,7 +110,7 @@ export default function Tournament({ tournament, playerList, rings }) {
                         <td>
                           <button
                             onClick={() =>
-                              handlePlayerStatus("DEAD", player.id)
+                              handlePlayerStatusChange("DEAD", player.id)
                             }
                           >
                             Tapa
@@ -121,7 +121,7 @@ export default function Tournament({ tournament, playerList, rings }) {
                           <td>
                             <button
                               onClick={() =>
-                                handlePlayerStatus("ACTIVE", player.id)
+                                handlePlayerStatusChange("ACTIVE", player.id)
                               }
                             >
                               Herätä henkiin
@@ -131,7 +131,10 @@ export default function Tournament({ tournament, playerList, rings }) {
                             <td>
                               <button
                                 onClick={() =>
-                                  handlePlayerStatus("DETECTIVE", player.id)
+                                  handlePlayerStatusChange(
+                                    "DETECTIVE",
+                                    player.id
+                                  )
                                 }
                               >
                                 Etsiväksi

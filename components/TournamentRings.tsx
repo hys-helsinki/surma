@@ -13,7 +13,7 @@ export const TournamentRings = ({
   const [allRings, setRings] = useState(rings);
   const [newRing, setNewRing] = useState([]);
   const [showForm, setShowForm] = useState(false);
-  const [showRing, setShowRing] = useState("");
+  const [shownRingId, setShownRingId] = useState("");
   const [newHunter, setNewHunter] = useState("");
   const [newTarget, setNewTarget] = useState("");
 
@@ -57,10 +57,10 @@ export const TournamentRings = ({
   };
 
   const toggleShowRing = (ringId) => {
-    if (showRing == ringId) {
-      setShowRing("");
+    if (shownRingId == ringId) {
+      setShownRingId("");
     } else {
-      setShowRing(ringId);
+      setShownRingId(ringId);
     }
   };
 
@@ -113,16 +113,14 @@ export const TournamentRings = ({
             onClick={() => toggleShowRing(ring.id)}
             style={{ marginTop: "5px" }}
           >
-            {showRing == ring.id ? (
+            {shownRingId == ring.id ? (
               <KeyboardArrowDownRoundedIcon />
             ) : (
               <KeyboardArrowRightRoundedIcon />
             )}
             {ring.name}
           </a>
-          {showRing != ring.id ? (
-            <div></div>
-          ) : (
+          {shownRingId == ring.id && (
             <div>
               {ring.assignments.map((a) => (
                 <div key={a.id}>
