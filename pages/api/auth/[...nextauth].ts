@@ -21,7 +21,7 @@ export const authConfig = {
   ],
   callbacks: {
     async session({ session, token, user }) {
-      const result = await prisma.player.update({
+      await prisma.player.update({
         where: { userId: user.id },
         data: { lastVisit: new Date() }
       });
