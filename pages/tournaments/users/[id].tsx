@@ -144,7 +144,7 @@ export default function UserInfo({
   user,
   tournament,
   imageUrl,
-  targets,
+  targets = [],
   currentUserIsUmpire
 }): JSX.Element {
   const [isUpdated, setIsUpdated] = useState(true);
@@ -262,7 +262,7 @@ export default function UserInfo({
     }
   };
   let targetUsers = [];
-  if (targets) {
+  if (targets.length > 0) {
     targetUsers = user.player.targets.map(
       (assignment) => assignment.target.user
     );
