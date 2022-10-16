@@ -338,7 +338,7 @@ export default function UserInfo({
                   {isUpdated ? "muokkaa tietoja" : "peruuta"}
                 </button>
               </div>
-              {currentUserIsUmpire && (
+              {user.player && currentUserIsUmpire && (
                 <div>
                   <p>Käyttäjän viime käynti:</p>
                   <p>{new Date(user.player.lastVisit).toString()}</p>
