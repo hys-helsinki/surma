@@ -1,5 +1,6 @@
 import { unstable_getServerSession } from "next-auth";
 import { authConfig } from "./api/auth/[...nextauth]";
+import prisma from "../lib/prisma";
 import { AuthenticationRequired } from "../components/AuthenticationRequired";
 
 export async function getServerSideProps(context) {
@@ -8,9 +9,17 @@ export async function getServerSideProps(context) {
     context.res,
     authConfig
   );
+  const currentUser = await prisma.user.findUnique({
+    select: {
+      tournamentId: true
+    },
+    where: {
+      id: session.user.id
+    }
+  });
   return {
     redirect: {
-      destination: "/tournaments/users/".concat(session.user.id),
+      destination: `/tournaments/${currentUser.tournamentId}/users/${session.user.id}`,
       permanent: false
     }
   };
