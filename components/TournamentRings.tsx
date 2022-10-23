@@ -129,9 +129,9 @@ export const TournamentRings = ({
             )}
             {ring.name}
           </a>
-          <button onClick={() => deleteRing(ring.id)}>Poista</button>
           {shownRingId == ring.id && (
             <div>
+              <button onClick={() => deleteRing(ring.id)}>Poista</button>
               {ring.assignments.map((a) => (
                 <div key={a.id}>
                   <p>Metsästäjä {getPlayerName(a.hunterId)}</p>
