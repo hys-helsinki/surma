@@ -36,5 +36,25 @@ export default async function rings(req: NextApiRequest, res: NextApiResponse) {
       data: newAssignments
     });
     res.status(201).end();
+  } else if (req.method === "DELETE") {
+    const deletedRing = JSON.parse(req.body);
+    if (!(await isCurrentUserAuthorized(deletedRing.tournamentId, req, res))) {
+      console.log("Unauthorized ring creation attempt!");
+      res.status(403).end();
+    }
+    try {
+      const deletedAssignments = await prisma.assignment.deleteMany({
+        where: {
+          ringId: deletedRing.ringId
+        }
+      });
+    } catch {
+      console.log("No assignments to delete");
+    }
+    const result = await prisma.assignmentRing.delete({
+      where: {
+        id: deletedRing.ringId
+      }
+    });
   }
 }
