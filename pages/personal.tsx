@@ -9,17 +9,9 @@ export async function getServerSideProps(context) {
     context.res,
     authConfig
   );
-  const currentUser = await prisma.user.findUnique({
-    select: {
-      tournamentId: true
-    },
-    where: {
-      id: session.user.id
-    }
-  });
   return {
     redirect: {
-      destination: `/tournaments/${currentUser.tournamentId}/users/${session.user.id}`,
+      destination: `/tournaments/${session.user.tournamentId}/users/${session.user.id}`,
       permanent: false
     }
   };

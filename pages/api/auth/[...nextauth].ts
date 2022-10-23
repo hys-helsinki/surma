@@ -49,7 +49,7 @@ export const authConfig = {
       }
       return {
         ...session,
-        user: { id: user.id, ...session.user }
+        user: { id: user.id, tournamentId: user.tournamentId, ...session.user }
       };
     }
   }
