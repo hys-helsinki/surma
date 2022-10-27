@@ -7,6 +7,43 @@ import { AuthenticationRequired } from "../../components/AuthenticationRequired"
 import { TournamentRings } from "../../components/TournamentRings";
 import prisma from "../../lib/prisma";
 import { authConfig } from "../api/auth/[...nextauth]";
+import Tabs from "@mui/material/Tabs";
+import Tab from "@mui/material/Tab";
+import Typography from "@mui/material/Typography";
+import Box from "@mui/material/Box";
+
+interface TabPanelProps {
+  children?: React.ReactNode;
+  index: number;
+  value: number;
+}
+
+function TabPanel(props: TabPanelProps) {
+  const { children, value, index, ...other } = props;
+
+  return (
+    <div
+      role="tabpanel"
+      hidden={value !== index}
+      id={`simple-tabpanel-${index}`}
+      aria-labelledby={`simple-tab-${index}`}
+      {...other}
+    >
+      {value === index && (
+        <Box sx={{ p: 3 }}>
+          <Typography>{children}</Typography>
+        </Box>
+      )}
+    </div>
+  );
+}
+
+function a11yProps(index: number) {
+  return {
+    id: `simple-tab-${index}`,
+    "aria-controls": `simple-tabpanel-${index}`
+  };
+}
 
 const isCurrentUserAuthorized = async (tournamentId, context) => {
   const session = await unstable_getServerSession(
@@ -75,6 +112,11 @@ export const getServerSideProps: GetServerSideProps = async ({
 
 export default function Tournament({ tournament, playerList, rings }) {
   const [players, setPlayers] = useState(playerList);
+  const [tabValue, setTabValue] = useState(0);
+  const handleTabChange = (event: React.SyntheticEvent, newValue: number) => {
+    setTabValue(newValue);
+  };
+
   const handlePlayerStatusChange = (playerState, id) => {
     const data = { state: playerState };
     fetch(`/api/player/${id}/state`, {
@@ -95,39 +137,82 @@ export default function Tournament({ tournament, playerList, rings }) {
           <Grid item xs={12} md={6}>
             <div style={{ paddingLeft: "10px" }}>
               <h2>Pelaajat</h2>
-              <table>
-                <tbody>
-                  {players.map((player) => (
-                    <tr key={player.id}>
-                      <td>
-                        <Link href={`/tournaments/users/${player.user.id}`}>
-                          <a>
-                            {player.user.firstName} {player.user.lastName}
-                          </a>
-                        </Link>
-                      </td>
-                      {player.state == "ACTIVE" ? (
-                        <td>
-                          <button
-                            onClick={() =>
-                              handlePlayerStatusChange("DEAD", player.id)
-                            }
-                          >
-                            Tapa
-                          </button>
-                        </td>
-                      ) : (
-                        <>
-                          <td>
-                            <button
-                              onClick={() =>
-                                handlePlayerStatusChange("ACTIVE", player.id)
-                              }
-                            >
-                              Herätä henkiin
-                            </button>
-                          </td>
-                          {player.state != "DETECTIVE" && (
+              <Box sx={{ width: "100%" }}>
+                <Box
+                  sx={{
+                    borderBottom: 1,
+                    borderColor: "divider"
+                  }}
+                >
+                  <Tabs
+                    value={tabValue}
+                    onChange={handleTabChange}
+                    sx={{
+                      "& .MuiTabs-indicator": { backgroundColor: "white" },
+                      "& .MuiTab-root": { color: "white" },
+                      "& .Mui-selected": { color: "white" }
+                    }}
+                  >
+                    <Tab label="Elossa" {...a11yProps(0)} />
+                    <Tab label="Kuolleet" {...a11yProps(1)} />
+                    <Tab label="Etsivät" {...a11yProps(2)} />
+                  </Tabs>
+                </Box>
+                <TabPanel value={tabValue} index={0}>
+                  <table>
+                    <tbody>
+                      {players
+                        .filter((p) => p.state == "ACTIVE")
+                        .map((player) => (
+                          <tr key={player.id}>
+                            <td>
+                              <Link
+                                href={`/tournaments/users/${player.user.id}`}
+                              >
+                                <a>
+                                  {player.user.firstName} {player.user.lastName}
+                                </a>
+                              </Link>
+                            </td>
+                            <td>
+                              <button
+                                onClick={() =>
+                                  handlePlayerStatusChange("DEAD", player.id)
+                                }
+                              >
+                                Tapa
+                              </button>
+                            </td>
+                          </tr>
+                        ))}
+                    </tbody>
+                  </table>
+                </TabPanel>
+                <TabPanel value={tabValue} index={1}>
+                  <table>
+                    <tbody>
+                      {players
+                        .filter((p) => p.state == "DEAD")
+                        .map((player) => (
+                          <tr key={player.id}>
+                            <td>
+                              <Link
+                                href={`/tournaments/users/${player.user.id}`}
+                              >
+                                <a>
+                                  {player.user.firstName} {player.user.lastName}
+                                </a>
+                              </Link>
+                            </td>
+                            <td>
+                              <button
+                                onClick={() =>
+                                  handlePlayerStatusChange("ACTIVE", player.id)
+                                }
+                              >
+                                Herätä henkiin
+                              </button>
+                            </td>
                             <td>
                               <button
                                 onClick={() =>
@@ -140,13 +225,42 @@ export default function Tournament({ tournament, playerList, rings }) {
                                 Etsiväksi
                               </button>
                             </td>
-                          )}
-                        </>
-                      )}
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
+                          </tr>
+                        ))}
+                    </tbody>
+                  </table>
+                </TabPanel>
+                <TabPanel value={tabValue} index={2}>
+                  <table>
+                    <tbody>
+                      {players
+                        .filter((p) => p.state == "DETECTIVE")
+                        .map((player) => (
+                          <tr key={player.id}>
+                            <td>
+                              <Link
+                                href={`/tournaments/users/${player.user.id}`}
+                              >
+                                <a>
+                                  {player.user.firstName} {player.user.lastName}
+                                </a>
+                              </Link>
+                            </td>
+                            <td>
+                              <button
+                                onClick={() =>
+                                  handlePlayerStatusChange("ACTIVE", player.id)
+                                }
+                              >
+                                Herätä henkiin
+                              </button>
+                            </td>
+                          </tr>
+                        ))}
+                    </tbody>
+                  </table>
+                </TabPanel>
+              </Box>
             </div>
           </Grid>
           <Grid item xs={12} md={6}>
