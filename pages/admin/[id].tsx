@@ -148,7 +148,7 @@ export default function Tournament({ tournament, playerList, rings }) {
                     value={tabValue}
                     onChange={handleTabChange}
                     sx={{
-                      "& .MuiTabs-indicator": { backgroundColor: "white" },
+                      "& .MuiTabs-indicator": { backgroundColor: "red" },
                       "& .MuiTab-root": { color: "white" },
                       "& .Mui-selected": { color: "white" }
                     }}

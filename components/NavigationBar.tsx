@@ -19,7 +19,7 @@ import Image from "next/image";
 import logo from "/public/images/surma_logo.svg";
 import Link from "next/link";
 
-const NavigationBar = ({ targets, userId, tournamentId }) => {
+const NavigationBar = ({ targets, userId, tournamentId, umpire }) => {
   const [anchorElNav, setAnchorElNav] = React.useState(null);
 
   const [anchorElTarget, setAnchorElTarget] = React.useState(null);
@@ -131,6 +131,11 @@ const NavigationBar = ({ targets, userId, tournamentId }) => {
                 <ListItemButton>
                   <Link href={`/tournaments/users/${userId}`}>Oma sivu</Link>
                 </ListItemButton>
+                {umpire && (
+                  <ListItemButton>
+                    <Link href={`/admin/${tournamentId}`}>Admin</Link>
+                  </ListItemButton>
+                )}
               </List>
             </Menu>
           </Box>
@@ -193,6 +198,13 @@ const NavigationBar = ({ targets, userId, tournamentId }) => {
             >
               <Link href={`/tournaments/users/${userId}`}>Oma sivu</Link>
             </Button>
+            {umpire && (
+              <Button
+                sx={{ minWidth: 100, my: 2, color: "white", display: "block" }}
+              >
+                <Link href={`/admin/${tournamentId}`}>Admin</Link>
+              </Button>
+            )}
           </Box>
         </Toolbar>
       </Container>

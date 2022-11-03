@@ -66,6 +66,7 @@ export const getServerSideProps: GetServerSideProps = async ({
       phone: true,
       email: true,
       tournamentId: true,
+      umpire: true,
       player: {
         select: {
           id: true,
@@ -275,6 +276,7 @@ export default function UserInfo({
           targets={targetUsers}
           userId={user.id}
           tournamentId={user.tournamentId}
+          umpire={user.umpire || undefined}
         />
         <Grid container>
           <Grid item xs={12} md={5}>

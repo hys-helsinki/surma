@@ -226,6 +226,7 @@ export default function Target({
           targets={targetUsers}
           userId={currentUser.id}
           tournamentId={tournament.id}
+          umpire={currentUser.umpire || undefined}
         />
         <Grid container>
           <Grid item xs={12} md={5}>
