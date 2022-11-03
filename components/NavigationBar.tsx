@@ -46,7 +46,7 @@ const NavigationBar = ({ targets, userId, tournamentId, umpire }) => {
   };
 
   return (
-    <AppBar position="static">
+    <AppBar position="fixed">
       <Container maxWidth="xl" sx={{ backgroundColor: "#424242" }}>
         <Toolbar disableGutters>
           <Image src={logo} alt="testi" width={45} height={45} />

@@ -228,7 +228,7 @@ export default function Target({
           tournamentId={tournament.id}
           umpire={currentUser.umpire || undefined}
         />
-        <Grid container>
+        <Grid container padding={5} marginTop={5}>
           <Grid item xs={12} md={5}>
             <div
               style={{
