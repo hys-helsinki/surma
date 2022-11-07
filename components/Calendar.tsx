@@ -1,9 +1,6 @@
 import { useState } from "react";
 
 export const Calendar = ({ player, handleSubmit }): JSX.Element => {
-  const [slideNumber, setSlideNumber] = useState(0);
-  const [isUpdated, setIsUpdated] = useState(true);
-
   const cal = [];
   for (const x in player.calendar) {
     cal.push([x, player.calendar[x]]);
@@ -16,6 +13,37 @@ export const Calendar = ({ player, handleSubmit }): JSX.Element => {
     const chunk = cal.slice(i, i + chunkSize);
     chunks.push(chunk);
   }
+
+  const dates = cal.map(
+    (c) =>
+      new Date(
+        new Date().getFullYear(),
+        parseInt(c[0].split(".")[1]) - 1,
+        parseInt(c[0].split(".")[0])
+      )
+  );
+
+  let dateIndex = 0;
+  const now = new Date();
+  for (let i = 0; i < dates.length; i++) {
+    console.log(dates[i].getDate(), dates[i].getMonth() + 1);
+    if (
+      now.getDate() == dates[i].getDate() &&
+      now.getMonth() == dates[i].getMonth()
+    ) {
+      dateIndex = i;
+    }
+  }
+  const getInitialSlideNumber = (index) => {
+    const i = index % 7;
+    return (index - i) / 7;
+  };
+
+  const initialSlideNumber = getInitialSlideNumber(dateIndex);
+
+  const [slideNumber, setSlideNumber] = useState(initialSlideNumber);
+  const [isUpdated, setIsUpdated] = useState(true);
+
   const handleSlideShow = (event) => {
     if (slideNumber == chunks.length - 1) {
       setSlideNumber(0);
