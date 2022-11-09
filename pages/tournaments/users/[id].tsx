@@ -145,7 +145,7 @@ export default function UserInfo({
   user,
   tournament,
   imageUrl,
-  targets,
+  targets = [],
   currentUserIsUmpire
 }): JSX.Element {
   const [isUpdated, setIsUpdated] = useState(true);
@@ -263,7 +263,7 @@ export default function UserInfo({
     }
   };
   let targetUsers = [];
-  if (targets) {
+  if (targets.length > 0) {
     targetUsers = user.player.targets.map(
       (assignment) => assignment.target.user
     );
@@ -340,7 +340,7 @@ export default function UserInfo({
                   {isUpdated ? "muokkaa tietoja" : "peruuta"}
                 </button>
               </div>
-              {currentUserIsUmpire && (
+              {user.player && currentUserIsUmpire && (
                 <div>
                   <p>Käyttäjän viime käynti:</p>
                   <p>{new Date(user.player.lastVisit).toString()}</p>

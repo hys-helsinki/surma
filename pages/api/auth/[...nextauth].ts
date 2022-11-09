@@ -2,6 +2,7 @@ import NextAuth, { DefaultSession } from "next-auth";
 import EmailProvider from "next-auth/providers/email";
 import { PrismaAdapter } from "@next-auth/prisma-adapter";
 import prisma from "../../../lib/prisma";
+import { Prisma } from "@prisma/client";
 
 export const authConfig = {
   adapter: PrismaAdapter(prisma),
@@ -21,10 +22,31 @@ export const authConfig = {
   ],
   callbacks: {
     async session({ session, token, user }) {
-      await prisma.player.update({
-        where: { userId: user.id },
-        data: { lastVisit: new Date() }
-      });
+      try {
+        await prisma.player.update({
+          where: { userId: user.id },
+          data: { lastVisit: new Date() }
+        });
+      } catch (error) {
+        if (error instanceof Prisma.PrismaClientKnownRequestError) {
+          if (error.code == "P2025") {
+            console.log(
+              "Unable to log lastVisit for ",
+              user.id,
+              ", user has no player entry"
+            );
+          } else {
+            console.log(
+              "Unable to log lastVisit for ",
+              user.id,
+              ", error: ",
+              error.code,
+              " : ",
+              error.message
+            );
+          }
+        }
+      }
       return {
         ...session,
         user: { id: user.id, ...session.user }
