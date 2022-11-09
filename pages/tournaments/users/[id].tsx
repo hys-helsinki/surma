@@ -161,7 +161,7 @@ export default function UserInfo({
   let dates: Array<any> = [];
   dates.push(`${start.getDate()}.${start.getMonth() + 1}.`);
   let loopDay = start;
-  while (loopDay < end) {
+  while (loopDay.getDate() < end.getUTCDate()) {
     loopDay.setDate(loopDay.getDate() + 1);
     dates.push(`${loopDay.getDate()}.${loopDay.getMonth() + 1}.`);
   }
