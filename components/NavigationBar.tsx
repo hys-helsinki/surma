@@ -18,6 +18,7 @@ import ExpandMore from "@mui/icons-material/ExpandMore";
 import Image from "next/image";
 import logo from "/public/images/surma_logo.svg";
 import Link from "next/link";
+import LaunchIcon from "@mui/icons-material/Launch";
 
 const NavigationBar = ({ targets, userId, tournamentId }) => {
   const [anchorElNav, setAnchorElNav] = React.useState(null);
@@ -51,7 +52,7 @@ const NavigationBar = ({ targets, userId, tournamentId }) => {
         <Toolbar disableGutters>
           <Image src={logo} alt="testi" width={45} height={45} />
           <Typography
-            variant="h6"
+            variant="body2"
             noWrap
             sx={{
               mr: 2,
@@ -69,8 +70,6 @@ const NavigationBar = ({ targets, userId, tournamentId }) => {
           <Box sx={{ flexGrow: 1, display: { xs: "flex", md: "none" } }}>
             <IconButton
               size="large"
-              aria-label="account of current user"
-              aria-controls="menu-appbar"
               aria-haspopup="true"
               onClick={handleOpenNavMenu}
               color="inherit"
@@ -112,16 +111,16 @@ const NavigationBar = ({ targets, userId, tournamentId }) => {
                 <Collapse in={open} timeout="auto" unmountOnExit>
                   <List component="div" disablePadding>
                     {targets.length == 0 ? (
-                      <ListItemText>Ei kohteita</ListItemText>
+                      <ListItemText primary="Ei kohteita" sx={{ pl: 4 }} />
                     ) : (
                       targets.map((target, i) => (
                         <ListItemButton key={i} sx={{ pl: 4 }}>
                           <Link
                             href={`/tournaments/${tournamentId}/targets/${target.id}`}
                           >
-                            <a>
+                            <ListItemText>
                               {target.firstName} {target.lastName}
-                            </a>
+                            </ListItemText>
                           </Link>
                         </ListItemButton>
                       ))
@@ -129,7 +128,13 @@ const NavigationBar = ({ targets, userId, tournamentId }) => {
                   </List>
                 </Collapse>
                 <ListItemButton>
-                  <Link href={`/tournaments/users/${userId}`}>Oma sivu</Link>
+                  <Link href={`/tournaments/users/${userId}`}>
+                    <ListItemText>Oma sivu</ListItemText>
+                  </Link>
+                </ListItemButton>
+                <ListItemButton>
+                  <ListItemText>Salamurhaajat.net</ListItemText>
+                  <LaunchIcon />
                 </ListItemButton>
               </List>
             </Menu>
@@ -153,7 +158,7 @@ const NavigationBar = ({ targets, userId, tournamentId }) => {
           <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }}>
             <Button
               onClick={handleOpenTargetMenu}
-              sx={{ minWidth: 100, my: 2, color: "white", display: "block" }}
+              sx={{ minWidth: 100, color: "white", display: "block" }}
             >
               Kohteet
             </Button>
@@ -189,9 +194,20 @@ const NavigationBar = ({ targets, userId, tournamentId }) => {
               )}
             </Menu>
             <Button
-              sx={{ minWidth: 100, my: 2, color: "white", display: "block" }}
+              sx={{
+                minWidth: 100,
+                color: "white",
+                display: "block"
+              }}
             >
               <Link href={`/tournaments/users/${userId}`}>Oma sivu</Link>
+            </Button>
+            <Box sx={{ flexGrow: 1 }} />
+            <Button
+              sx={{ minWidth: 100, color: "white" }}
+              endIcon={<LaunchIcon />}
+            >
+              Salamurhaajat.net
             </Button>
           </Box>
         </Toolbar>
