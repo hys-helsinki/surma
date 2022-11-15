@@ -59,6 +59,7 @@ const NavigationBar = ({ targets, userId, tournamentId }) => {
               display: { xs: "none", md: "flex" },
               fontFamily: "monospace",
               fontWeight: 700,
+              fontSize: 18,
               letterSpacing: ".4rem",
               color: "inherit",
               textDecoration: "none"
@@ -148,7 +149,7 @@ const NavigationBar = ({ targets, userId, tournamentId }) => {
               flexGrow: 1,
               fontFamily: "monospace",
               fontWeight: 700,
-              letterSpacing: ".4rem",
+              letterSpacing: ".5rem",
               color: "inherit",
               textDecoration: "none"
             }}

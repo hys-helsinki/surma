@@ -75,6 +75,7 @@ export const getServerSideProps: GetServerSideProps = async ({
 
 export default function Tournament({ tournament, playerList, rings }) {
   const [players, setPlayers] = useState(playerList);
+  const [url, setUrl] = useState("");
   const handlePlayerStatusChange = (playerState, id) => {
     const data = { state: playerState };
     fetch(`/api/player/${id}/state`, {
@@ -87,10 +88,21 @@ export default function Tournament({ tournament, playerList, rings }) {
       players.map((player) => (player.id !== id ? player : updatedPlayer))
     );
   };
+
+  const addUrl = (event) => {
+    event.preventDefault();
+    console.log("ready url: ", url);
+  };
+
   return (
     <AuthenticationRequired>
       <div>
         <h2 style={{ width: "100%" }}>{tournament.name}</h2>
+        <form onSubmit={addUrl} style={{ width: "30%" }}>
+          <label>Turnaussivun url</label>
+          <input type="text" onChange={(e) => setUrl(e.target.value)} />
+          <button type="submit">Lisää</button>
+        </form>
         <Grid container>
           <Grid item xs={12} md={6}>
             <div style={{ paddingLeft: "10px" }}>
