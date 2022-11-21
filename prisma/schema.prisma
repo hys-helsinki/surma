@@ -36,7 +36,7 @@ model Player {
   createdAt           DateTime     @default(now()) @db.Timestamptz(3)
   modifiedAt          DateTime     @default(now()) @db.Timestamptz(3)
   lastVisit           DateTime?    @db.Timestamptz(3)
-  lastModified        DateTime?    @db.Timestamptz(3)
+  detailsLastModified DateTime?    @db.Timestamptz(3)
   userId              String       @unique
   user                User         @relation(fields: [userId], references: [id])
   tournament          Tournament   @relation(fields: [tournamentId], references: [id])
