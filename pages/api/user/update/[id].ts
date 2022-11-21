@@ -45,7 +45,7 @@ export default async function update(
 
     const result = await prisma.player.update({
       where: { userId: playerId },
-      data: filteredUpdateData
+      data: { detailsLastModified: new Date(), ...filteredUpdateData }
     });
     res.status(204).end();
   }
