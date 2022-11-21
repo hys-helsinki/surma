@@ -1,26 +1,28 @@
 import { GetServerSideProps } from "next";
-import { PlayerDetails } from "../../../components/PlayerDetails";
-import { PlayerContactInfo } from "../../../components/PlayerContactInfo";
-import prisma from "../../../lib/prisma";
+import { PlayerDetails } from "../../../../components/PlayerDetails";
+import { PlayerContactInfo } from "../../../../components/PlayerContactInfo";
+import prisma from "../../../../lib/prisma";
 import React, { MouseEventHandler } from "react";
 import { useState } from "react";
-import { UpdateForm } from "../../../components/UpdateForm";
+import { UpdateForm } from "../../../../components/UpdateForm";
 import { useRouter } from "next/router";
-import NavigationBar from "../../../components/NavigationBar";
-import { Calendar } from "../../../components/Calendar";
+import NavigationBar from "../../../../components/NavigationBar";
+import { Calendar } from "../../../../components/Calendar";
 import Image from "next/image";
 import { Grid } from "@mui/material";
-import { AuthenticationRequired } from "../../../components/AuthenticationRequired";
+import { AuthenticationRequired } from "../../../../components/AuthenticationRequired";
 import { unstable_getServerSession } from "next-auth";
-import { authConfig } from "../../api/auth/[...nextauth]";
+import { authConfig } from "../../../api/auth/[...nextauth]";
 import { v2 as cloudinary } from "cloudinary";
 
-const isCurrentUserAuthorized = async (currentUser, userId) => {
+const isCurrentUserAuthorized = async (currentUser, userId, tournamentId) => {
   if (currentUser.id == userId) {
     return true;
   } else {
-    // TODO check that current user is umpire for viewed user's tournament
-    return currentUser.umpire != null;
+    return (
+      currentUser.umpire != null &&
+      currentUser.umpire.tournamentId == tournamentId
+    );
   }
 };
 
@@ -44,7 +46,13 @@ export const getServerSideProps: GetServerSideProps = async ({
     }
   });
 
-  if (!(await isCurrentUserAuthorized(currentUser, params.id)))
+  if (
+    !(await isCurrentUserAuthorized(
+      currentUser,
+      params.id,
+      params.tournamentId
+    ))
+  )
     return { redirect: { destination: "/personal", permanent: false } };
 
   let imageUrl = "";
