@@ -101,7 +101,7 @@ export default function Registration({ tournament }) {
       new Date(tournament.registrationEndTime).getTime() ? (
         <div className="registration-form">
           <div style={{ float: "left", width: "10%" }}>
-            <Image src={logo} width={60} height={60} alt="logo"/>
+            <Image src={logo} width={60} height={60} alt="logo" />
           </div>
           <h1 className="registration-form-title">Ilmoittautuminen</h1>
           <p>
@@ -111,50 +111,54 @@ export default function Registration({ tournament }) {
             {new Date(tournament.registrationEndTime).getHours()}:
             {new Date(tournament.registrationEndTime).getMinutes()} asti
           </p>
-          <p>
-            Tervetuloa ilmoittatumaan turnaukseen &quot;{tournament.name}&quot;.
-            Nimi, puhelinnumero, sähköpostiosoite sekä peitenimi ovat pakollisia
-            kenttiä, muut kentät voi täyttää ilmoittautumisen jälkeenkin mutta
-            mieluusti ennen turnauksen alkua. Lisääthän myös kuvan itsestäsi
-            ilmoittautumisen yhteydessä!
-          </p>
-          <p>
-            Kalenterin tiedot tulee pitää ajan tasalla sekä riittävän selkeinä
-            ja yksityiskohtaisina. Jokaista sekuntia siihen ei tarvitse
-            kirjoittaa, mutta pelistä tulee hauskempaa itsellesi sekä
-            jahtaajillesi jos tarjoat heille riittävästi tilaisuuksia.
-            Kalenterin tietoja pystyy muokkaamaan turnauksen aikana.
-          </p>
-          <p>
-            Puhelinnumero, sähköpostiosoite ja peitenimesi ovat ainoastaan
-            tuomariston tiedossa. Pelaajat, jotka saavat sinut kohteekseen,
-            näkevät muut tiedot.
-          </p>
-          <h3>Huom!</h3>
-          <p>
-            Turnausjärjestelmä Surma on ensimmäistä kertaa käytössä vuoden 2022
-            syysturnauksessa. Jos ilmoittautumisessa tai myöhemmin sovelluksen
-            käytössä ilmenee minkäänlaisia ongelmia, ilmoitathan viasta
-            tuomaristolle sähköpostitse tuomaristo@salamurhaajat.net. Myös
-            kaikenlainen palaute on erittäin tervetullutta!
-          </p>
-          <p>
-            Otathan myös huomioon, että jos painat enteriä kalenterikenttien
-            ulkopuolella, lomake lähetetään automaattisesti.
-          </p>
-          <form>
-            <label>Valitse kuva itsestäsi (näkyy jahtaajillesi)</label>
-            <input
-              type="file"
-              name="image"
-              accept="image/*"
-              onChange={handleFileInputChange}
-              value={fileInputState}
-            />
-          </form>
-          {selectedFileName ? (
-            <p>Valittu tiedosto: {selectedFileName}</p>
-          ) : null}
+          <div style={{ paddingBottom: "20px" }}>
+            <p>
+              Tervetuloa ilmoittatumaan turnaukseen &quot;{tournament.name}
+              &quot;. Nimi, puhelinnumero, sähköpostiosoite sekä peitenimi ovat
+              pakollisia kenttiä, muut kentät voi täyttää ilmoittautumisen
+              jälkeenkin mutta mieluusti ennen turnauksen alkua. Lisääthän myös
+              kuvan itsestäsi ilmoittautumisen yhteydessä!
+            </p>
+            <p>
+              Kalenterin tiedot tulee pitää ajan tasalla sekä riittävän selkeinä
+              ja yksityiskohtaisina. Jokaista sekuntia siihen ei tarvitse
+              kirjoittaa, mutta pelistä tulee hauskempaa itsellesi sekä
+              jahtaajillesi jos tarjoat heille riittävästi tilaisuuksia.
+              Kalenterin tietoja pystyy muokkaamaan turnauksen aikana.
+            </p>
+            <p>
+              Puhelinnumero, sähköpostiosoite ja peitenimesi ovat ainoastaan
+              tuomariston tiedossa. Pelaajat, jotka saavat sinut kohteekseen,
+              näkevät muut tiedot.
+            </p>
+            <h3>Huom!</h3>
+            <p>
+              Turnausjärjestelmä Surma on ensimmäistä kertaa käytössä vuoden
+              2022 syysturnauksessa. Jos ilmoittautumisessa tai myöhemmin
+              sovelluksen käytössä ilmenee minkäänlaisia ongelmia, ilmoitathan
+              viasta tuomaristolle sähköpostitse tuomaristo@salamurhaajat.net.
+              Myös kaikenlainen palaute on erittäin tervetullutta!
+            </p>
+            <p>
+              Otathan myös huomioon, että jos painat enteriä kalenterikenttien
+              ulkopuolella, lomake lähetetään automaattisesti.
+            </p>
+            <form>
+              <label>
+                Valitse kuva itsestäsi (näkyy jahtaajillesi). Maksimikoko 10MB
+              </label>
+              <input
+                type="file"
+                name="image"
+                accept="image/*"
+                onChange={handleFileInputChange}
+                value={fileInputState}
+              />
+            </form>
+            {selectedFileName ? (
+              <p>Valittu tiedosto: {selectedFileName}</p>
+            ) : null}
+          </div>
           <Formik
             enableReinitialize={true}
             initialValues={{
@@ -206,32 +210,44 @@ export default function Registration({ tournament }) {
             }}
           >
             <Form>
-              <TextInput label="Etunimi" name="firstName" type="text" />
+              <div style={{ float: "left", width: "10%" }}>
+                <label>Titteli</label>
+                <Field as="select" name="titteli">
+                  <option value="">--</option>
+                  <option value="KK">KK</option>
+                  <option value="MM">MM</option>
+                  <option value="LL">LL</option>
+                </Field>
+              </div>
+              <div style={{ float: "left", width: "25%" }}>
+                <TextInput label="Etunimi" name="firstName" type="text" />
+              </div>
+              <div style={{ float: "right", width: "60%" }}>
+                <TextInput label="Sukunimi" name="lastName" type="text" />
+              </div>
+              <div>
+                <TextInput label="Peitenimi" name="alias" type="text" />
 
-              <TextInput label="Sukunimi" name="lastName" type="text" />
+                <TextInput label="Email" name="email" type="email" />
 
-              <TextInput label="Peitenimi" name="alias" type="text" />
+                <TextInput label="Puhelinnumero" name="phone" type="text" />
 
-              <TextInput label="Email" name="email" type="email" />
+                <TextInput label="Osoite" name="address" type="text" />
 
-              <TextInput label="Puhelinnumero" name="phone" type="text" />
+                <TextInput
+                  label="Oppilaitos"
+                  name="learningInstitution"
+                  type="text"
+                />
 
-              <TextInput label="Osoite" name="address" type="text" />
+                <TextInput label="Silmät" name="eyeColor" type="text" />
 
-              <TextInput
-                label="Oppilaitos"
-                name="learningInstitution"
-                type="text"
-              />
+                <TextInput label="Hiukset" name="hair" type="text" />
 
-              <TextInput label="Silmät" name="eyeColor" type="text" />
+                <TextInput label="Pituus" name="height" type="number" />
 
-              <TextInput label="Hiukset" name="hair" type="text" />
-
-              <TextInput label="Pituus" name="height" type="number" />
-
-              <TextInput label="Muu" name="other" type="text" />
-
+                <TextInput label="Muu" name="other" type="text" />
+              </div>
               <h3>Kalenteritiedot</h3>
               {dates.map((d: string, i) => (
                 <div key={i}>
