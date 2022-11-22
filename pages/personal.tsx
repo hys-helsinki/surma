@@ -1,5 +1,6 @@
 import { unstable_getServerSession } from "next-auth";
 import { authConfig } from "./api/auth/[...nextauth]";
+import prisma from "../lib/prisma";
 import { AuthenticationRequired } from "../components/AuthenticationRequired";
 
 export async function getServerSideProps(context) {
@@ -10,7 +11,7 @@ export async function getServerSideProps(context) {
   );
   return {
     redirect: {
-      destination: "/tournaments/users/".concat(session.user.id),
+      destination: `/tournaments/${session.user.tournamentId}/users/${session.user.id}`,
       permanent: false
     }
   };
