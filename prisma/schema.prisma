@@ -43,6 +43,7 @@ model Player {
   umpire              Umpire?      @relation(fields: [umpireId], references: [id])
   umpireId            String?
   alias               String
+  title               String?
   address             String
   learningInstitution String?
   eyeColor            String?

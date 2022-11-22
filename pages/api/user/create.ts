@@ -19,6 +19,7 @@ export default async function create(
           create: {
             tournament: { connect: { id: playerData.tournamentId } },
             alias: playerData.alias,
+            title: playerData.title,
             address: playerData.address,
             learningInstitution: playerData.learningInstitution,
             eyeColor: playerData.eyeColor,

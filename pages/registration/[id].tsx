@@ -174,7 +174,8 @@ export default function Registration({ tournament }) {
               hair: "",
               height: 0,
               glasses: "",
-              other: ""
+              other: "",
+              title: ""
             }}
             validationSchema={Yup.object({
               firstName: Yup.string().required("Pakollinen"),
@@ -195,6 +196,7 @@ export default function Registration({ tournament }) {
               var data = { ...values, calendar: undefined, tournament };
               data["calendar"] = cal;
               data["tournamentId"] = tournament.id;
+              console.log(data);
               fetch("/api/user/create", {
                 method: "POST",
                 body: JSON.stringify(data)
@@ -212,7 +214,7 @@ export default function Registration({ tournament }) {
             <Form>
               <div style={{ float: "left", width: "10%" }}>
                 <label>Titteli</label>
-                <Field as="select" name="titteli">
+                <Field as="select" name="title">
                   <option value="">--</option>
                   <option value="KK">KK</option>
                   <option value="MM">MM</option>
