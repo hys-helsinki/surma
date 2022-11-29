@@ -111,6 +111,13 @@ export default function Registration({ tournament }) {
     }
   };
 
+  const addZero = (i) => {
+    if (i < 10) {
+      return "0" + i;
+    }
+    return i;
+  };
+
   return (
     <div>
       {new Date().getTime() <
@@ -124,8 +131,9 @@ export default function Registration({ tournament }) {
             Ilmoittatuminen auki&nbsp;
             {new Date(tournament.registrationEndTime).getDate()}.
             {new Date(tournament.registrationEndTime).getMonth() + 1}. klo&nbsp;
-            {new Date(tournament.registrationEndTime).getHours()}:
-            {new Date(tournament.registrationEndTime).getMinutes()} asti
+            {addZero(new Date(tournament.registrationEndTime).getHours())}:
+            {addZero(new Date(tournament.registrationEndTime).getMinutes())}
+            &nbsp;asti
           </p>
           <div style={{ paddingBottom: "20px" }}>
             <p>
