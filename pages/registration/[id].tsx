@@ -8,6 +8,8 @@ import Link from "next/link";
 import GdprModal from "../../components/GdprModal";
 import logo from "/public/images/surma_logo.svg";
 import Image from "next/image";
+import HelpOutlineIcon from "@mui/icons-material/HelpOutline";
+import { Box, IconButton, Modal, Typography } from "@mui/material";
 
 export const getStaticProps: GetStaticProps = async ({ params }) => {
   let tournament = await prisma.tournament.findUnique({
@@ -43,10 +45,24 @@ const TextInput = ({ label, ...props }) => {
   );
 };
 
+const modalStyle = {
+  position: "absolute" as "absolute",
+  top: "50%",
+  left: "50%",
+  transform: "translate(-50%, -50%)",
+  width: "70%",
+  bgcolor: "background.paper",
+  p: 4
+};
+
 export default function Registration({ tournament }) {
   const [fileInputState, setFileInputState] = useState("");
   const [selectedFile, setSelectedFile] = useState();
   const [selectedFileName, setSelectedFileName] = useState("");
+
+  const [modalOpen, setModalOpen] = useState(false);
+  const handleModalOpen = () => setModalOpen(true);
+  const handleModalClose = () => setModalOpen(false);
 
   const start = new Date(tournament.startTime);
   const end = new Date(tournament.endTime);
@@ -212,19 +228,40 @@ export default function Registration({ tournament }) {
             }}
           >
             <Form>
-              <div style={{ float: "left", width: "10%" }}>
-                <label>Titteli</label>
+              <div>
+                <label style={{ paddingRight: "5px" }}>Titteli</label>
                 <Field as="select" name="title">
                   <option value="">--</option>
                   <option value="KK">KK</option>
                   <option value="MM">MM</option>
                   <option value="LL">LL</option>
                 </Field>
+                <IconButton color="inherit" onClick={handleModalOpen}>
+                  <HelpOutlineIcon fontSize="medium" sx={{ width: "20px" }} />
+                </IconButton>
+                <Modal
+                  open={modalOpen}
+                  onClose={handleModalClose}
+                  aria-labelledby="modal-modal-title"
+                  aria-describedby="modal-modal-description"
+                >
+                  <Box sx={modalStyle}>
+                    <Typography color={"black"}>
+                      Titteleitä myönnetään ansioituneille salamurhaajille
+                      Uhrijuhlassa, lisätietoja löydät{" "}
+                      <a href="https://salamurhaajat.net/mika-salamurhapeli/ammattilaissaannot">
+                        <u>täältä</u>
+                      </a>
+                      . Jätä kenttä tyhjäksi, jos olet ensikertalainen tai
+                      sinulle ei ole titteliä myönnetty.
+                    </Typography>
+                  </Box>
+                </Modal>
               </div>
-              <div style={{ float: "left", width: "25%" }}>
+              <div style={{ float: "left", width: "40%" }}>
                 <TextInput label="Etunimi" name="firstName" type="text" />
               </div>
-              <div style={{ float: "right", width: "60%" }}>
+              <div style={{ float: "right", width: "55%" }}>
                 <TextInput label="Sukunimi" name="lastName" type="text" />
               </div>
               <div>
