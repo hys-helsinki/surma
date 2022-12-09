@@ -8,14 +8,14 @@ import { TailSpin } from "react-loader-spinner";
 
 export default function Home() {
   const [sessionChecker, setSessionChecker] = useState(true);
+  const router = useRouter();
+  const { data: session } = useSession();
 
   useEffect(() => {
     setTimeout(() => setSessionChecker(false), 5000);
   }, []);
 
-  const { data: session } = useSession();
   if (session) {
-    const router = useRouter();
     router.push("/personal");
   }
   return (
