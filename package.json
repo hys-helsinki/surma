@@ -28,6 +28,7 @@
     "nodemailer": "^6.7.8",
     "react": "18.2.0",
     "react-dom": "18.2.0",
+    "react-loader-spinner": "^5.3.4",
     "sharp": "^0.31.1",
     "yup": "^0.32.11"
   },
