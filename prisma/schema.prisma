@@ -37,7 +37,7 @@ model Player {
   modifiedAt          DateTime     @default(now()) @db.Timestamptz(3)
   lastVisit           DateTime?    @db.Timestamptz(3)
   userId              String       @unique
-  user                User         @relation(fields: [userId], references: [id])
+  user                User         @relation(fields: [userId], references: [id], onDelete: Cascade)
   tournament          Tournament   @relation(fields: [tournamentId], references: [id])
   tournamentId        String
   umpire              Umpire?      @relation(fields: [umpireId], references: [id])
@@ -68,7 +68,7 @@ model Umpire {
   createdAt    DateTime   @default(now())
   modifiedAt   DateTime   @default(now())
   userId       String     @unique
-  user         User       @relation(fields: [userId], references: [id])
+  user         User       @relation(fields: [userId], references: [id], onDelete: Cascade)
   tournament   Tournament @relation(fields: [tournamentId], references: [id])
   tournamentId String
   players      Player[]
@@ -93,11 +93,11 @@ model Assignment {
   id         String         @id @default(uuid())
   createdAt  DateTime       @default(now()) @db.Timestamptz(3)
   modifiedAt DateTime       @default(now()) @db.Timestamptz(3)
-  ring       AssignmentRing @relation(fields: [ringId], references: [id])
+  ring       AssignmentRing @relation(fields: [ringId], references: [id], onDelete: Cascade)
   ringId     String
-  hunter     Player         @relation(name: "PlayerHasTarget", fields: [hunterId], references: [id])
+  hunter     Player         @relation(name: "PlayerHasTarget", fields: [hunterId], references: [id], onDelete: Cascade)
   hunterId   String
-  target     Player         @relation(name: "PlayerIsHunted", fields: [targetId], references: [id])
+  target     Player         @relation(name: "PlayerIsHunted", fields: [targetId], references: [id], onDelete: Cascade)
   targetId   String
 }
 

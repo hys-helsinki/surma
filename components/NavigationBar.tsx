@@ -129,8 +129,8 @@ const NavigationBar = ({ targets, userId, tournamentId }) => {
                   </List>
                 </Collapse>
                 <ListItemButton>
-                  <Link href={`/tournaments/users/${userId}`}>
-                    <ListItemText>Oma sivu</ListItemText>
+                  <Link href={`/tournaments/${tournamentId}/users/${userId}`}>
+                    Oma sivu
                   </Link>
                 </ListItemButton>
                 <ListItemButton>
@@ -201,7 +201,16 @@ const NavigationBar = ({ targets, userId, tournamentId }) => {
                 display: "block"
               }}
             >
-              <Link href={`/tournaments/users/${userId}`}>Oma sivu</Link>
+              <Link href={`/tournaments/${tournamentId}/users/${userId}`}>
+                Oma sivu
+              </Link>
+            </Button>
+            <Box sx={{ flexGrow: 1 }} />
+            <Button
+              sx={{ minWidth: 100, color: "white" }}
+              endIcon={<LaunchIcon />}
+            >
+              Salamurhaajat.net
             </Button>
             <Box sx={{ flexGrow: 1 }} />
             <Button

@@ -31,6 +31,15 @@ export const TournamentRings = ({
     setShowForm(false);
     setRings(rings.concat(readyRing));
   };
+
+  const deleteRing = async (id) => {
+    fetch("/api/tournament/rings", {
+      method: "DELETE",
+      body: JSON.stringify({ ringId: id, tournamentId: tournament.id })
+    });
+    setRings(allRings.filter((ring) => ring.id !== id));
+  };
+
   const handleRingChange = (id, event) => {
     const assignment = newRing.find((assignment) => assignment.hunterId === id);
     if (event.target.value === "--") {
@@ -122,6 +131,7 @@ export const TournamentRings = ({
           </a>
           {shownRingId == ring.id && (
             <div>
+              <button onClick={() => deleteRing(ring.id)}>Poista</button>
               {ring.assignments.map((a) => (
                 <div key={a.id}>
                   <p>Metsästäjä {getPlayerName(a.hunterId)}</p>
