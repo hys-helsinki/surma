@@ -1,5 +1,7 @@
 # Surma
 
+(This app is also "Full stack open 2022" course project. You can access the time keeping file [here](https://helsinkifi-my.sharepoint.com/:x:/g/personal/ojaerika_ad_helsinki_fi/ERPWDOW8yHVAsgzaBzjkk6EBDZSPJ36IimR3GOQUNpq1xA?e=Xouabf). The password has been sent to those who need to have access to the file)
+
 Surma (also known as _Murhamaster 3.0_) is an updated and upgraded version of the assassination tournament control app of Helsingin yliopiston salamurhaajat ry. You can read more about the association and the assassination tournaments on our [website](https://salamurhaajat.net).
 
 Surma is created with Next.js/Typescript with a PostgreSQL database.
