@@ -48,6 +48,7 @@ jobs:
         run: npx prisma generate && npx prisma db push
         env:
           DATABASE_URL: postgres://postgres:postgres@postgres:5432
+          PRISMA_ENGINES_CHECKSUM_IGNORE_MISSING: 1
       - run: npm run build --if-present
         env:
           DATABASE_URL: postgres://postgres:postgres@postgres:5432
