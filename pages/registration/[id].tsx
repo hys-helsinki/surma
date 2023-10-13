@@ -106,10 +106,17 @@ export default function Registration({ tournament }) {
           <h1 className="registration-form-title">Ilmoittautuminen</h1>
           <p>
             Ilmoittautuminen auki&nbsp;
-            {new Date(tournament.registrationEndTime).getDate()}.
-            {new Date(tournament.registrationEndTime).getMonth() + 1}. klo&nbsp;
-            {new Date(tournament.registrationEndTime).getHours()}:
-            {new Date(tournament.registrationEndTime).getMinutes()} asti
+            {new Date(tournament.registrationEndTime).toLocaleDateString(
+              "fi-FI",
+              {
+                year: "numeric",
+                month: "numeric",
+                day: "numeric",
+                hour: "numeric",
+                minute: "numeric"
+              }
+            )}
+            &nbsp;asti
           </p>
           <p>
             Tervetuloa ilmoittatumaan turnaukseen &quot;{tournament.name}&quot;.
