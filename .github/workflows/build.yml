@@ -44,6 +44,8 @@ jobs:
           cache: "npm"
       - name: Install dependencies
         run: npm ci
+      - name: Install Playwright Browsers
+        run: npx playwright install --with-deps
       - name: initialize database
         run: npx prisma generate && npx prisma db push
         env:
@@ -52,4 +54,4 @@ jobs:
       - run: npm run build --if-present
         env:
           POSTGRES_URL: postgres://postgres:postgres@postgres:5432
-#    - run: npm test
+      - run: npm run test
