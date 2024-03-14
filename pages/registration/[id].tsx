@@ -101,15 +101,22 @@ export default function Registration({ tournament }) {
       new Date(tournament.registrationEndTime).getTime() ? (
         <div className="registration-form">
           <div style={{ float: "left", width: "10%" }}>
-            <Image src={logo} width={60} height={60} alt="logo"/>
+            <Image src={logo} width={60} height={60} alt="logo" />
           </div>
           <h1 className="registration-form-title">Ilmoittautuminen</h1>
           <p>
-            Ilmoittatuminen auki&nbsp;
-            {new Date(tournament.registrationEndTime).getDate()}.
-            {new Date(tournament.registrationEndTime).getMonth() + 1}. klo&nbsp;
-            {new Date(tournament.registrationEndTime).getHours()}:
-            {new Date(tournament.registrationEndTime).getMinutes()} asti
+            Ilmoittautuminen auki&nbsp;
+            {new Date(tournament.registrationEndTime).toLocaleDateString(
+              "fi-FI",
+              {
+                year: "numeric",
+                month: "numeric",
+                day: "numeric",
+                hour: "numeric",
+                minute: "numeric"
+              }
+            )}
+            &nbsp;asti
           </p>
           <p>
             Tervetuloa ilmoittatumaan turnaukseen &quot;{tournament.name}&quot;.
@@ -265,7 +272,7 @@ export default function Registration({ tournament }) {
           </div>
         </div>
       ) : (
-        <p>Ilmoittatuminen ei ole auki</p>
+        <p>Ilmoittautuminen ei ole auki</p>
       )}
     </div>
   );

@@ -100,7 +100,9 @@ export default function Tournament({ tournament, playerList, rings }) {
                   {players.map((player) => (
                     <tr key={player.id}>
                       <td>
-                        <Link href={`/tournaments/users/${player.user.id}`}>
+                        <Link
+                          href={`/tournaments/${tournament.id}/users/${player.user.id}`}
+                        >
                           <a>
                             {player.user.firstName} {player.user.lastName}
                           </a>

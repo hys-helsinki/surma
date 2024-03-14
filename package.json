@@ -8,8 +8,9 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "start": "next start -p $PORT",
-    "lint": "next lint"
+    "start": "next start",
+    "lint": "next lint",
+    "test": "npx playwright test"
   },
   "dependencies": {
     "@aws-sdk/client-ses": "^3.145.0",
@@ -20,7 +21,7 @@
     "@mui/icons-material": "^5.10.3",
     "@mui/material": "^5.10.3",
     "@next-auth/prisma-adapter": "^1.0.4",
-    "@prisma/client": "^4.16.2",
+    "@prisma/client": "^5.10.1",
     "cloudinary": "^1.30.1",
     "dotenv": "^16.0.1",
     "formik": "^2.2.9",
@@ -35,12 +36,13 @@
     "yup": "^0.32.11"
   },
   "devDependencies": {
+    "@playwright/test": "^1.41.2",
     "@types/node": "^18.0.5",
     "@types/react": "^18.0.15",
     "eslint": "8.18.0",
     "eslint-config-next": "12.2.0",
     "prettier": "2.7.1",
-    "prisma": "^4.0.0",
+    "prisma": "^5.10.1",
     "ts-node": "^10.9.2"
   }
 }

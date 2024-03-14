@@ -13,7 +13,7 @@ jobs:
   container-job:
     runs-on: ubuntu-latest
     # Docker Hub image that `container-job` executes in
-    container: node:16-alpine
+    container: node:18-alpine3.18
     # Service containers to run with `container-job`
     services:
       # Label used to access the service container
@@ -29,10 +29,9 @@ jobs:
           --health-interval 10s
           --health-timeout 5s
           --health-retries 5
-
     strategy:
       matrix:
-        node-version: [16.x]
+        node-version: [18.x]
         # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
 
     steps:
@@ -47,8 +46,9 @@ jobs:
       - name: initialize database
         run: npx prisma generate && npx prisma db push
         env:
-          DATABASE_URL: postgres://postgres:postgres@postgres:5432
+          POSTGRES_URL: postgres://postgres:postgres@postgres:5432
+          PRISMA_ENGINES_CHECKSUM_IGNORE_MISSING: 1
       - run: npm run build --if-present
         env:
-          DATABASE_URL: postgres://postgres:postgres@postgres:5432
+          POSTGRES_URL: postgres://postgres:postgres@postgres:5432
 #    - run: npm test
