@@ -1,22 +1,42 @@
 # Surma
 
-Surma (also known as _Murhamaster 3.0_) is an updated and upgraded version of the assassination tournament control app of Helsingin yliopiston salamurhaajat ry. You can read more about the association and the assassination tournaments on our [website](https://salamurhaajat.net).
-
-Surma is created with Next.js/Typescript with a PostgreSQL database.
+Surma (also known as _Murhamaster 3.0_) is an updated and upgraded version of the assassination tournament control app of Helsingin yliopiston salamurhapelaajat ry. You can read more about the association and the assassination tournaments on our [website](https://salamurhaajat.net).
 
 The app is running [here](https://surma.salamurhaajat.net).
 
-## Registration
+## Running Surma locally
+
+This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app). The app is deployed on Vercel and uses a Postgresql database and Prisma ORM.
+
+### Requirements
+
+- [Node.js](https://nodejs.org/en/download) 
+- [npm](https://www.npmjs.com/) (included in Node installation)
+- [Postgresql](https://www.postgresql.org/download/) (to use a local database)
+
+### Getting Started
+
+1. Run ```npm i``` to install all dependencies
+2. Start the local database
+3. Create an .env file (someone from the team can give you the correct values)
+4. You can run ```npx prisma db seed``` to seed the database with test data or create data yourself
+5. Start the development server with ```npm run dev```
+
+Open [http://localhost:3000](http://localhost:3000) with your browser to see the app.
+
+## Features
+
+### Registration
 
 To use the app, one needs to register to a tournament first, which is done at `/registration`. Click the name of the tournament you want to register in.
 
-## Logging in and using the user page
+### Logging in and using the user page
 
 After the registration the user needs to log in with the email they have given at the registration phase. The login form is at the root page i.e. at `https://surma.salamurhaajat.net`. Write the email address there and then the login link will be sent to the email. After clicking the link the user is redirected to their user page.
 
 At the user page the user can edit their information (the calendar and other information) that is given to their hunters. From the navigation bar the user finds their targets if the tournament is running.
 
-## Using the admin page
+### Using the admin page
 
 The admin page is at `/admin`
 
@@ -26,41 +46,4 @@ There is also a list of players. Every player has three states: ALIVE, DEAD and 
 
 By clicking the name of the player, you get to the player's user page where the umpire sees the player's data and also when they have last visited their profile.
 
-# Running the Project locally
 
-_Follow the instructions given by **Next.js**:_
-
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
-
-## Getting Started
-
-First, run the development server:
-
-```bash
-npm run dev
-# or
-yarn dev
-```
-
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
-
-You can start editing the page by modifying `pages/index.js`. The page auto-updates as you edit the file.
-
-[API routes](https://nextjs.org/docs/api-routes/introduction) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.js`.
-
-The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/api-routes/introduction) instead of React pages.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
