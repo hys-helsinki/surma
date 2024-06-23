@@ -14,6 +14,7 @@ import { AuthenticationRequired } from "../../../../components/AuthenticationReq
 import { unstable_getServerSession } from "next-auth";
 import { authConfig } from "../../../api/auth/[...nextauth]";
 import { v2 as cloudinary } from "cloudinary";
+import PlayerForm from "../../../../components/PlayerForm";
 
 const isCurrentUserAuthorized = async (currentUser, userId, tournamentId) => {
   if (currentUser.id == userId) {
@@ -160,9 +161,14 @@ export default function UserInfo({
   const [fileInputState, setFileInputState] = useState("");
   const [selectedFile, setSelectedFile] = useState();
   const [selectedFileName, setSelectedFileName] = useState("");
+  const [showPlayerData, setShowPlayerData] = useState(Boolean(user.player))
 
   const router = useRouter();
   const { id } = router.query;
+
+  if (!showPlayerData) {
+    return <PlayerForm tournament={user.tournament} />
+  }
 
   const start = new Date(tournament.startTime);
   const end = new Date(tournament.endTime);
