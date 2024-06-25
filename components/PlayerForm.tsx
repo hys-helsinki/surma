@@ -23,14 +23,37 @@ const TextInput = ({ label, ...props }) => {
   );
 };
 
+const BottomText = () => {
+  return (
+    <div style={{ marginBottom: "20px" }}>
+      Ilmoittautuessasi turnaukseeen hyväksyt Helsingin yliopiston salamurhaajien&nbsp; 
+      <Link
+        href={
+          "https://salamurhaajat.net/mika-salamurhapeli/turnaussaannot"
+        }
+        passHref
+      >
+        <a style={{ color: "red" }}>turnaus</a>
+      </Link>
+      - ja&nbsp;
+      <Link
+        href={"https://salamurhaajat.net/mika-salamurhapeli/asesaannot"}
+        passHref
+      >
+        <a style={{ color: "red" }}>asesäännöt</a>
+      </Link>
+      &nbsp;sekä&nbsp;
+      <GdprModal />
+    </div>
+  )
+}
+
 export default function PlayerForm({ tournament }) {
   const { data, status } = useSession()
   const [fileInputState, setFileInputState] = useState("")
   const [selectedFile, setSelectedFile] = useState()
   const [selectedFileName, setSelectedFileName] = useState("")
   const router = useRouter()
-
-  console.log(data, status)
 
   const { tournamentId } = router.query;
 
@@ -212,27 +235,7 @@ export default function PlayerForm({ tournament }) {
               <button type="submit">Ilmoittaudu</button>
             </Form>
           </Formik>
-          <div style={{ marginBottom: "20px" }}>
-            Ilmoittautuessasi turnaukseeen hyväksyt Helsingin yliopiston
-            salamurhaajien&nbsp;
-            <Link
-              href={
-                "https://salamurhaajat.net/mika-salamurhapeli/turnaussaannot"
-              }
-              passHref
-            >
-              <a style={{ color: "red" }}>turnaus</a>
-            </Link>
-            - ja
-            <Link
-              href={"https://salamurhaajat.net/mika-salamurhapeli/asesaannot"}
-              passHref
-            >
-              <a style={{ color: "red" }}>asesäännöt</a>
-            </Link>
-            &nbsp;sekä&nbsp;
-            <GdprModal />
-          </div>
+          <BottomText />
         </div>
       ) : (
         <p>Ilmoittautuminen ei ole auki</p>
