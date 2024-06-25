@@ -61,17 +61,46 @@ export default function PlayerForm({ tournament }) {
     }
   };
 
+  const uploadImage = async (id: string) => {
+    if (!selectedFile) return;
+    try {
+      const reader = new FileReader();
+      reader.readAsDataURL(selectedFile);
+      reader.onloadend = async () => {
+        await fetch("/api/upload", {
+          method: "POST",
+          body: JSON.stringify({
+            url: reader.result,
+            publicId: id
+          })
+        });
+      };
+      setFileInputState("");
+      setSelectedFileName("");
+      setSelectedFile(null);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   const handleSubmit = async (values) => {
     const userId = data.user.id
     const playerData = {tournamentId, userId, ...values}
     console.log(playerData)
-    const response = await fetch("/api/player/create", {
-      method: "POST",
-      body: JSON.stringify(playerData)
-    })
-    const createdPlayer = await response.json()
-    console.log(createdPlayer)
-    router.reload()
+    try {
+      const response = await fetch("/api/player/create", {
+        method: "POST",
+        body: JSON.stringify(playerData)
+      })
+      const createdPlayer = await response.json()
+      console.log(createdPlayer)
+      await uploadImage(createdPlayer.id)
+      router.reload()
+
+    } catch (error) {
+      console.log(error)
+    }
+
   }
 
   return (
