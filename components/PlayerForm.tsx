@@ -13,13 +13,13 @@ import { useSession } from "next-auth/react";
 const TextInput = ({ label, ...props }) => {
   const [field, meta] = useField(props.name);
   return (
-    <>
+    <div style={{marginBottom: "7px"}}>
       <label htmlFor={props.name}>{label}</label>
       {meta.touched && meta.error ? (
         <div className="registration-error">{meta.error}</div>
       ) : null}
       <input {...field} {...props} />
-    </>
+    </div>
   );
 };
 
@@ -120,6 +120,7 @@ export default function PlayerForm({ tournament }) {
             initialValues={{
               calendar: [...new Array(dates.length).fill("")],
               alias: "",
+              title: "noValue",
               phone: "",
               address: "",
               learningInstitution: "",
@@ -127,7 +128,7 @@ export default function PlayerForm({ tournament }) {
               hair: "",
               height: 0,
               glasses: "",
-              other: ""
+              other: "",
             }}
             validationSchema={Yup.object({
               alias: Yup.string().required("Pakollinen"),
@@ -142,9 +143,19 @@ export default function PlayerForm({ tournament }) {
           >
             <Form>
 
+              <TextInput label="Puhelinnumero" name="phone" type="text" />
+
               <TextInput label="Peitenimi" name="alias" type="text" />
 
-              <TextInput label="Puhelinnumero" name="phone" type="text" />
+              <div style={{marginBottom: "8px"}}>
+                <div style={{width: "100%"}}><label>Ammattilaistitteli</label></div>
+                <Field name="title" as="select">
+                  <option value="noValue">Ei titteliä</option>
+                  <option value="KK">KK</option>
+                  <option value="MM">MM</option>
+                  <option value="TT">TT</option>
+                </Field>
+              </div>
 
               <TextInput label="Osoite" name="address" type="text" />
 
