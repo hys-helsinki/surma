@@ -6,6 +6,8 @@ import logo from "/public/images/surma_logo.svg";
 import Image from "next/image";
 import { Box } from "@mui/material";
 import { signIn } from "next-auth/react";
+import { useState } from "react";
+import { LoadingButton } from "@mui/lab";
 
 export const getStaticProps: GetStaticProps = async ({ params }) => {
   let tournament = await prisma.tournament.findUnique({
@@ -43,6 +45,8 @@ const TextInput = ({ label, ...props }) => {
 
 export default function Registration({ tournament }) {
 
+  const [isLoading, setIsLoading] = useState(false)
+
   const start = new Date(tournament.startTime);
   const end = new Date(tournament.endTime);
   let dates: Array<any> = [];
@@ -54,6 +58,7 @@ export default function Registration({ tournament }) {
   }
 
   const submitForm = async (values) => {
+    setIsLoading(true)
     const formdata = {tournamentId: tournament.id, ...values}
     console.log(formdata.email)
     const response = await fetch("/api/user/create", {
@@ -106,7 +111,9 @@ export default function Registration({ tournament }) {
 
                 <TextInput label="Puhelinnumero" name="phone" type="text" />
                 
-                <button type="submit">Ilmoittaudu</button>
+                <LoadingButton loading={isLoading} type="submit">
+                  Ilmoittaudu
+                </LoadingButton>
               </Form>
             </Formik>
           </Box>

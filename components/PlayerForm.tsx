@@ -9,6 +9,7 @@ import GdprModal from "./GdprModal";
 import logo from "/public/images/surma_logo.svg";
 import Image from "next/image";
 import { useSession } from "next-auth/react";
+import { LoadingButton } from "@mui/lab";
 
 const TextInput = ({ label, ...props }) => {
   const [field, meta] = useField(props.name);
@@ -53,6 +54,7 @@ export default function PlayerForm({ tournament }) {
   const [fileInputState, setFileInputState] = useState("")
   const [selectedFile, setSelectedFile] = useState()
   const [selectedFileName, setSelectedFileName] = useState("")
+  const [isLoading, setIsLoading] = useState(false)
   const router = useRouter()
 
   const { tournamentId } = router.query;
@@ -107,6 +109,7 @@ export default function PlayerForm({ tournament }) {
   };
 
   const handleSubmit = async (values) => {
+    setIsLoading(true)
     const userId = data.user.id
     const playerData = {tournamentId, userId, ...values}
     console.log(playerData)
@@ -127,7 +130,7 @@ export default function PlayerForm({ tournament }) {
   }
 
   return (
-    <div>
+    <div style={{padding: 5}}>
       {new Date().getTime() <
       new Date(tournament.registrationEndTime).getTime() ? (
         <div className="registration-form">
@@ -226,10 +229,12 @@ export default function PlayerForm({ tournament }) {
                   <Field name={`calendar[${i}]`} as="textarea" />
                 </div>
               ))}
-              <button type="submit">Ilmoittaudu</button>
+              <BottomText />
+              <LoadingButton loading={isLoading} type="submit">
+                Ilmoittaudu
+              </LoadingButton>
             </Form>
           </Formik>
-          <BottomText />
         </div>
       ) : (
         <p>Ilmoittautuminen ei ole auki</p>
