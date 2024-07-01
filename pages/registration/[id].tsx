@@ -88,6 +88,10 @@ export default function Registration({ tournament }) {
                 email: Yup.string()
                   .email("Epäkelpo sähköpostiosoite")
                   .required("Pakollinen"),
+                phone: Yup.number()
+                .required("Pakollinen")
+                .positive("Puhelinnumero ei voi sisältää negatiivisia lukuja")
+                .integer("Syötä vain numeroita"),
               })}
               onSubmit={(values) => {
                   submitForm(values)
@@ -98,7 +102,10 @@ export default function Registration({ tournament }) {
 
                 <TextInput label="Sukunimi" name="lastName" type="text" />
 
-                <TextInput label="Email" name="email" type="email" />
+                <TextInput label="Sähköpostiosoite" name="email" type="email" />
+
+                <TextInput label="Puhelinnumero" name="phone" type="text" />
+                
                 <button type="submit">Ilmoittaudu</button>
               </Form>
             </Formik>

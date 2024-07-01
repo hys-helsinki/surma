@@ -174,7 +174,6 @@ export default function PlayerForm({ tournament }) {
               calendar: [...new Array(dates.length).fill("")],
               alias: "",
               title: "noTitle",
-              phone: "",
               address: "",
               learningInstitution: "",
               eyeColor: "",
@@ -185,18 +184,12 @@ export default function PlayerForm({ tournament }) {
             }}
             validationSchema={Yup.object({
               alias: Yup.string().required("Pakollinen"),
-              phone: Yup.number()
-                .required("Pakollinen")
-                .positive("Puhelinnumero ei voi sisältää negatiivisia lukuja")
-                .integer("Syötä vain numeroita"),
             })}
             onSubmit={(values) => {
               handleSubmit(values)
           }}
           >
             <Form>
-
-              <TextInput label="Puhelinnumero" name="phone" type="text" />
 
               <TextInput label="Peitenimi" name="alias" type="text" />
 

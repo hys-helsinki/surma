@@ -12,6 +12,7 @@ export default async function create(
         firstName: playerData.firstName,
         lastName: playerData.lastName,
         email: playerData.email,
+        phone: playerData.phone,
         tournament: { connect: { id: playerData.tournamentId } },
       }
     });
