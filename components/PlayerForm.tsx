@@ -134,6 +134,7 @@ export default function PlayerForm({ tournament }) {
           <div style={{ float: "left", width: "10%" }}>
             <Image src={logo} width={60} height={60} alt="logo" />
           </div>
+          {/* TODO: Tekstejä voisi päivittää */}
           <h1 className="registration-form-title">Ilmoittautuminen</h1>
           <p>
             Tervetuloa ilmoittatumaan turnaukseen &quot;{tournament.name}&quot;.
@@ -172,7 +173,7 @@ export default function PlayerForm({ tournament }) {
             initialValues={{
               calendar: [...new Array(dates.length).fill("")],
               alias: "",
-              title: "noValue",
+              title: "noTitle",
               phone: "",
               address: "",
               learningInstitution: "",
@@ -202,7 +203,7 @@ export default function PlayerForm({ tournament }) {
               <div style={{marginBottom: "8px"}}>
                 <div style={{width: "100%"}}><label>Ammattilaistitteli</label></div>
                 <Field name="title" as="select">
-                  <option value="noValue">Ei titteliä</option>
+                  <option value="noTitle">Ei titteliä</option>
                   <option value="KK">KK</option>
                   <option value="MM">MM</option>
                   <option value="TT">TT</option>

@@ -13,6 +13,7 @@ type PlayerFormData = {
     glasses?: string
     other?: string
     calendar?: object
+    title: "noTitle" | "KK" | "MM" | "TT"
 }
 
 export default async function create(
@@ -32,7 +33,8 @@ export default async function create(
             height: parseInt(playerData.height),
             glasses: playerData.glasses,
             other: playerData.other,
-            calendar: playerData.calendar
+            calendar: playerData.calendar,
+            title: playerData.title
         }
       });
       res.status(201).send(result);

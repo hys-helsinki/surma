@@ -88,6 +88,7 @@ export const getServerSideProps: GetServerSideProps = async ({
           other: true,
           calendar: true,
           lastVisit: true,
+          title: true,
           targets: {
             select: {
               target: {
@@ -299,7 +300,7 @@ export default function UserInfo({
               }}
             >
               <h1>
-                {user.firstName} {user.lastName}
+                {user.player.title !== "noTitle" && user.player.title} {user.firstName} {user.lastName}
               </h1>
               {imageUrl !== "" ? (
                 <div>
