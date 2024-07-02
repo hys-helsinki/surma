@@ -14,6 +14,7 @@ import { AuthenticationRequired } from "../../../../components/AuthenticationReq
 import { unstable_getServerSession } from "next-auth";
 import { authConfig } from "../../../api/auth/[...nextauth]";
 import { v2 as cloudinary } from "cloudinary";
+import PlayerForm from "../../../../components/PlayerForm";
 
 const isCurrentUserAuthorized = async (currentUser, userId, tournamentId) => {
   if (currentUser.id == userId) {
@@ -87,6 +88,7 @@ export const getServerSideProps: GetServerSideProps = async ({
           other: true,
           calendar: true,
           lastVisit: true,
+          title: true,
           targets: {
             select: {
               target: {
@@ -160,9 +162,14 @@ export default function UserInfo({
   const [fileInputState, setFileInputState] = useState("");
   const [selectedFile, setSelectedFile] = useState();
   const [selectedFileName, setSelectedFileName] = useState("");
+  const [showPlayerData, setShowPlayerData] = useState(Boolean(user.player))
 
   const router = useRouter();
   const { id } = router.query;
+
+  if (!showPlayerData) {
+    return <PlayerForm tournament={user.tournament} />
+  }
 
   const start = new Date(tournament.startTime);
   const end = new Date(tournament.endTime);
@@ -293,7 +300,7 @@ export default function UserInfo({
               }}
             >
               <h1>
-                {user.firstName} {user.lastName}
+                {user.player.title !== "noTitle" && user.player.title} {user.firstName} {user.lastName}
               </h1>
               {imageUrl !== "" ? (
                 <div>
