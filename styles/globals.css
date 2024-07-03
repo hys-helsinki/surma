@@ -2,7 +2,7 @@ html,
 body {
   color: white;
   background-color: rgb(34, 23, 23);
-  padding: 0;
+  padding: 20px;
   margin: 0;
   font-family: monospace;
   font-size: large;
@@ -68,31 +68,35 @@ textarea {
 
 .registration-error {
   padding: 10px;
-  color: red;
+  color: #A50000;
 }
 button {
-  background-color: red;
-  color: white;
+  background-color: white;
+  color: black;
   padding: 14px 20px;
-  margin: 8px 0;
+  margin: 20px 0;
   border: none;
   border-radius: 4px;
   cursor: pointer;
+  font-weight: bold;
 }
 
 button[type=submit] {
   width: 100%;
-  background-color: red;
-  color: white;
+  background-color: white;
+  color: black;
   padding: 14px 20px;
-  margin: 8px 0;
+  margin: 20px 0;
   border: none;
   border-radius: 4px;
+  font-weight: bold;
   cursor: pointer;
 }
 
 button:hover {
-  background-color: #e94a4a;
+  background-color: #A50000;
+  color: white;
+  font-weight: bold;
 }
 
 .updateform {
@@ -106,6 +110,13 @@ button:hover {
   border-width: 2px;
   width: 100%;
   padding: 10px;
+}
+
+/* unvisited link */
+a {
+  color: hotpink;
+  text-decoration: underline;
+  display: inline;
 }
 
 
