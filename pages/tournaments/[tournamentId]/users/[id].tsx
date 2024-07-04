@@ -9,7 +9,7 @@ import { useRouter } from "next/router";
 import NavigationBar from "../../../../components/NavigationBar";
 import { Calendar } from "../../../../components/Calendar";
 import Image from "next/image";
-import { Grid } from "@mui/material";
+import { Grid, Alert } from "@mui/material";
 import { AuthenticationRequired } from "../../../../components/AuthenticationRequired";
 import { unstable_getServerSession } from "next-auth";
 import { authConfig } from "../../../api/auth/[...nextauth]";
@@ -89,6 +89,7 @@ export const getServerSideProps: GetServerSideProps = async ({
           calendar: true,
           lastVisit: true,
           title: true,
+          confirmed: true,
           targets: {
             select: {
               target: {
@@ -291,6 +292,9 @@ export default function UserInfo({
           userId={user.id}
           tournamentId={user.tournamentId}
         />
+        {
+          !user.player.confirmed && <Alert severity="warning">Tuomaristo ei ole vielä hyväksynyt ilmoittautumistasi</Alert>
+        }
         <Grid container>
           <Grid item xs={12} md={5}>
             <div
