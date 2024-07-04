@@ -53,6 +53,7 @@ model Player {
   calendar            Json?
   title               PlayerTitle  @default(noTitle)
   state               PlayerState  @default(ACTIVE)
+  confirmed           Boolean      @default(false)
   targets             Assignment[] @relation(name: "PlayerHasTarget")
   hunters             Assignment[] @relation(name: "PlayerIsHunted")
 }
