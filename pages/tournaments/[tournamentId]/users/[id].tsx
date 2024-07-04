@@ -9,7 +9,7 @@ import { useRouter } from "next/router";
 import NavigationBar from "../../../../components/NavigationBar";
 import { Calendar } from "../../../../components/Calendar";
 import Image from "next/image";
-import { Grid, Alert } from "@mui/material";
+import { Grid, Alert, Button } from "@mui/material";
 import { AuthenticationRequired } from "../../../../components/AuthenticationRequired";
 import { unstable_getServerSession } from "next-auth";
 import { authConfig } from "../../../api/auth/[...nextauth]";
@@ -164,6 +164,7 @@ export default function UserInfo({
   const [selectedFile, setSelectedFile] = useState();
   const [selectedFileName, setSelectedFileName] = useState("");
   const [showPlayerData, setShowPlayerData] = useState(Boolean(user.player))
+  const [confirmed, setConfirmed] = useState(user.player.confirmed)
 
   const router = useRouter();
   const { id } = router.query;
@@ -284,6 +285,18 @@ export default function UserInfo({
     );
   }
 
+  const handleConfirm = async () => {
+
+    const id = user.player.id
+    const data = { confirmed: true };
+    await fetch(`/api/player/${id}/confirm`, {
+      method: "PATCH",
+      body: JSON.stringify(data)
+    });
+    setConfirmed(true)
+
+  }
+
   return (
     <AuthenticationRequired>
       <div>
@@ -293,7 +306,13 @@ export default function UserInfo({
           tournamentId={user.tournamentId}
         />
         {
-          !user.player.confirmed && <Alert severity="warning">Tuomaristo ei ole vielä hyväksynyt ilmoittautumistasi</Alert>
+          !user.player.confirmed && 
+            <Alert severity="warning" sx={{minHeight: "50px",   
+              display: "flex",
+              alignItems: "center"}}>
+              Tuomaristo ei ole vielä hyväksynyt ilmoittautumista
+              {currentUserIsUmpire && <Button onClick={() => handleConfirm()} variant="outlined" color="error" sx={{ml: 1}} disabled={confirmed}>Hyväksy</Button>}
+            </Alert>
         }
         <Grid container>
           <Grid item xs={12} md={5}>
