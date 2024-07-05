@@ -1,28 +1,16 @@
 import { Field, Form, Formik, useField } from "formik";
 import { GetStaticPaths, GetStaticProps } from "next";
 import { useRouter } from "next/router";
-import prisma from "../lib/prisma";
+import prisma from "../../lib/prisma";
 import * as Yup from "yup";
 import { useState } from "react";
 import Link from "next/link";
-import GdprModal from "./GdprModal";
+import GdprModal from "../GdprModal";
 import logo from "/public/images/surma_logo.svg";
 import Image from "next/image";
 import { useSession } from "next-auth/react";
 import { LoadingButton } from "@mui/lab";
-
-const TextInput = ({ label, ...props }) => {
-  const [field, meta] = useField(props.name);
-  return (
-    <div style={{marginBottom: "7px"}}>
-      <label htmlFor={props.name}>{label}</label>
-      {meta.touched && meta.error ? (
-        <div className="registration-error">{meta.error}</div>
-      ) : null}
-      <input {...field} {...props} />
-    </div>
-  );
-};
+import TextInput from "./TextInput";
 
 const BottomText = () => {
   return (

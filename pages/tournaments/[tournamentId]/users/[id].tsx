@@ -14,7 +14,7 @@ import { AuthenticationRequired } from "../../../../components/AuthenticationReq
 import { unstable_getServerSession } from "next-auth";
 import { authConfig } from "../../../api/auth/[...nextauth]";
 import { v2 as cloudinary } from "cloudinary";
-import PlayerForm from "../../../../components/PlayerForm";
+import PlayerForm from "../../../../components/Registration/PlayerForm";
 
 const isCurrentUserAuthorized = async (currentUser, userId, tournamentId) => {
   if (currentUser.id == userId) {
