@@ -1,4 +1,4 @@
-import { Box } from "@mui/material"
+import { Box, Container } from "@mui/material"
 import { Form, Formik } from "formik"
 import * as Yup from "yup";
 import Image from "next/image";
@@ -27,7 +27,7 @@ const UserForm = ({tournament}: {tournament: Tournament}) => {
       }
 
     return (
-      <div className="registration-form">
+      <Container maxWidth="md">
         <div style={{ float: "left", width: "10%" }}>
           <Image src={logo} width={60} height={60} alt="logo" />
         </div>
@@ -67,7 +67,7 @@ const UserForm = ({tournament}: {tournament: Tournament}) => {
             </Form>
           </Formik>
         </Box>
-      </div>
+      </Container>
 
     )
     

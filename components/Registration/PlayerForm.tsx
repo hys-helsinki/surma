@@ -11,6 +11,7 @@ import Image from "next/image";
 import { useSession } from "next-auth/react";
 import { LoadingButton } from "@mui/lab";
 import TextInput from "./TextInput";
+import { Container } from "@mui/material";
 
 const BottomText = () => {
   return (
@@ -118,10 +119,10 @@ export default function PlayerForm({ tournament }) {
   }
 
   return (
-    <div style={{padding: 5}}>
+    <div>
       {new Date().getTime() <
       new Date(tournament.registrationEndTime).getTime() ? (
-        <div className="registration-form">
+        <Container maxWidth="md">
           <div style={{ float: "left", width: "10%" }}>
             <Image src={logo} width={60} height={60} alt="logo" />
           </div>
@@ -223,7 +224,7 @@ export default function PlayerForm({ tournament }) {
               </LoadingButton>
             </Form>
           </Formik>
-        </div>
+        </Container>
       ) : (
         <p>Ilmoittautuminen ei ole auki</p>
       )}
