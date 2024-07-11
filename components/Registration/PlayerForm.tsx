@@ -11,11 +11,11 @@ import Image from "next/image";
 import { useSession } from "next-auth/react";
 import { LoadingButton } from "@mui/lab";
 import TextInput from "./TextInput";
-import { Container } from "@mui/material";
+import { Box, Container } from "@mui/material";
 
 const BottomText = () => {
   return (
-    <div style={{ marginBottom: "20px" }}>
+    <Box sx={{ my: 3 }}>
       Ilmoittautuessasi turnaukseeen hyväksyt Helsingin yliopiston salamurhaajien&nbsp; 
       <Link
         href={
@@ -34,7 +34,7 @@ const BottomText = () => {
       </Link>
       &nbsp;sekä&nbsp;
       <GdprModal />
-    </div>
+    </Box>
   )
 }
 
@@ -119,36 +119,30 @@ export default function PlayerForm({ tournament }) {
   }
 
   return (
-    <div>
+    <Container maxWidth="md">
       {new Date().getTime() <
       new Date(tournament.registrationEndTime).getTime() ? (
-        <Container maxWidth="md">
-          <div style={{ float: "left", width: "10%" }}>
+        <>
+          <Box sx={{display: "flex"}}>
             <Image src={logo} width={60} height={60} alt="logo" />
-          </div>
-          {/* TODO: Tekstejä voisi päivittää */}
-          <h1 className="registration-form-title">Ilmoittautuminen</h1>
-          <p>
-            Tervetuloa ilmoittatumaan turnaukseen &quot;{tournament.name}&quot;.
-            Nimi, puhelinnumero, sähköpostiosoite sekä peitenimi ovat pakollisia
-            kenttiä, muut kentät voi täyttää ilmoittautumisen jälkeenkin mutta
-            mieluusti ennen turnauksen alkua. Lisääthän myös kuvan itsestäsi
-            ilmoittautumisen yhteydessä!
-          </p>
-          <p>
-            Kalenterin tiedot tulee pitää ajan tasalla sekä riittävän selkeinä
-            ja yksityiskohtaisina. Jokaista sekuntia siihen ei tarvitse
-            kirjoittaa, mutta pelistä tulee hauskempaa itsellesi sekä
-            jahtaajillesi jos tarjoat heille riittävästi tilaisuuksia.
-            Kalenterin tietoja pystyy muokkaamaan turnauksen aikana.
-          </p>
-          <p>
-            Puhelinnumero, sähköpostiosoite ja peitenimesi ovat ainoastaan
-            tuomariston tiedossa. Pelaajat, jotka saavat sinut kohteekseen,
-            näkevät muut tiedot.
-          </p>
+            <h1 style={{marginLeft: "10px"}}>Ilmoittautuminen</h1>
+          </Box>
+          <Box sx={{my: 4}}>
+            <p>
+              Tässä lomakkeessa kysytään turnauksen kannalta olennaisia tietoja, jotka näkyvät jahtaajillesi. Lomakkeen täyttämisen jälkeen tuomaristo vahvistaa vielä ilmoittautumisesi.
+            </p>
+            <p>
+              Ainoastaan peitenimi on tässä vaiheessa pakollinen - muut kentät voi täyttää myöhemminkin ja niitä voi muokata turnauksen aikana.
+            </p>
+            <p>
+              Kalenterin tiedot tulee pitää ajan tasalla sekä riittävän selkeinä
+              ja yksityiskohtaisina. Jokaista sekuntia siihen ei tarvitse
+              kirjoittaa, mutta pelistä tulee hauskempaa itsellesi sekä
+              jahtaajillesi jos tarjoat heille riittävästi tilaisuuksia salamurhaamiseen. 
+            </p>
+          </Box>
           <form>
-            <label>Valitse kuva itsestäsi (näkyy jahtaajillesi)</label>
+            <label>Valitse kuva itsestäsi</label>
             <input
               type="file"
               name="image"
@@ -182,9 +176,7 @@ export default function PlayerForm({ tournament }) {
           }}
           >
             <Form>
-
               <TextInput label="Peitenimi" name="alias" type="text" />
-
               <div style={{marginBottom: "8px"}}>
                 <div style={{width: "100%"}}><label>Ammattilaistitteli</label></div>
                 <Field name="title" as="select">
@@ -194,23 +186,16 @@ export default function PlayerForm({ tournament }) {
                   <option value="TT">TT</option>
                 </Field>
               </div>
-
               <TextInput label="Osoite" name="address" type="text" />
-
               <TextInput
                 label="Oppilaitos"
                 name="learningInstitution"
                 type="text"
               />
-
               <TextInput label="Silmät" name="eyeColor" type="text" />
-
               <TextInput label="Hiukset" name="hair" type="text" />
-
               <TextInput label="Pituus" name="height" type="text" />
-
               <TextInput label="Muu" name="other" type="text" />
-
               <h3>Kalenteritiedot</h3>
               {dates.map((d: string, i) => (
                 <div key={i}>
@@ -224,10 +209,10 @@ export default function PlayerForm({ tournament }) {
               </LoadingButton>
             </Form>
           </Formik>
-        </Container>
+        </>
       ) : (
         <p>Ilmoittautuminen ei ole auki</p>
       )}
-    </div>
+    </Container>
   );
 }

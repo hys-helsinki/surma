@@ -28,10 +28,20 @@ const UserForm = ({tournament}: {tournament: Tournament}) => {
 
     return (
       <Container maxWidth="md">
-        <div style={{ float: "left", width: "10%" }}>
+        <Box sx={{display: "flex"}}>
           <Image src={logo} width={60} height={60} alt="logo" />
-        </div>
-        <h1 className="registration-form-title">Ilmoittautuminen</h1>
+          <h1 style={{marginLeft: "10px"}}>Ilmoittautuminen</h1>
+        </Box>
+        <Box sx={{my: 4}}>
+          <p>
+            Tervetuloa ilmoittatumaan HYSin salamurhaturnaukseen &quot;{tournament.name}&quot;!
+          </p>
+          <p>
+            Ilmoittautuminen on kaksivaiheinen.
+            Ensimmäiseksi tarvitsemme sinulta nimen, sähköpostiosoitteen ja puhelinnumeron. Näitä tietoja tarvitaan Surman käyttäjän tekemiseen ja jotta tuomaristo voi ottaa sinuun yhteyttä turnaukseen liittyvissä asioissa. 
+            Sähköpostin vahvistamisen jälkeen pääset syöttämään loput turnauksessa vaadittavat tiedot.
+          </p>
+        </Box>
         <Box sx={{my: 5}}>
           <Formik
             enableReinitialize={true}
@@ -45,11 +55,9 @@ const UserForm = ({tournament}: {tournament: Tournament}) => {
               firstName: Yup.string().required("Pakollinen"),
               lastName: Yup.string().required("Pakollinen"),
               email: Yup.string()
-                .email("Epäkelpo sähköpostiosoite")
                 .required("Pakollinen"),
               phone: Yup.number()
               .required("Pakollinen")
-              .positive("Puhelinnumero ei voi sisältää negatiivisia lukuja")
               .integer("Syötä vain numeroita"),
             })}
             onSubmit={(values) => {
@@ -61,8 +69,8 @@ const UserForm = ({tournament}: {tournament: Tournament}) => {
               <TextInput label="Sukunimi" name="lastName" type="text" />
               <TextInput label="Sähköpostiosoite" name="email" type="email" />
               <TextInput label="Puhelinnumero" name="phone" type="text" />
-              <LoadingButton loading={isLoading} type="submit">
-                Ilmoittaudu
+              <LoadingButton loading={isLoading} type="submit" sx={{width: "50%"}}>
+                Luo käyttäjä
               </LoadingButton>
             </Form>
           </Formik>

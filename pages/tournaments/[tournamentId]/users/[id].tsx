@@ -164,7 +164,7 @@ export default function UserInfo({
   const [selectedFile, setSelectedFile] = useState();
   const [selectedFileName, setSelectedFileName] = useState("");
   const [showPlayerData, setShowPlayerData] = useState(Boolean(user.player))
-  const [confirmed, setConfirmed] = useState(user.player.confirmed)
+  const [confirmed, setConfirmed] = useState(user.player ? user.player.confirmed : false)
 
   const router = useRouter();
   const { id } = router.query;
