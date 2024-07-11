@@ -22,7 +22,6 @@ const UserForm = ({tournament}: {tournament: Tournament}) => {
           body: JSON.stringify(formdata)
         })
         const createdUser = await response.json()
-        console.log(createdUser)
         signIn("email", { callbackUrl: `/personal`, email: createdUser.email})
       }
 

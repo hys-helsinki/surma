@@ -1,7 +1,5 @@
-import { Field, Form, Formik, useField } from "formik";
-import { GetStaticPaths, GetStaticProps } from "next";
+import { Field, Form, Formik, FormikValues, useField } from "formik";
 import { useRouter } from "next/router";
-import prisma from "../../lib/prisma";
 import * as Yup from "yup";
 import { useState } from "react";
 import Link from "next/link";
@@ -46,7 +44,7 @@ export default function PlayerForm({ tournament }) {
   const [isLoading, setIsLoading] = useState(false)
   const router = useRouter()
 
-  const { tournamentId } = router.query;
+  const tournamentId = tournament.id
 
   if (status === "unauthenticated") {
     return (<h2>User not found</h2>)
@@ -54,7 +52,8 @@ export default function PlayerForm({ tournament }) {
 
   const start = new Date(tournament.startTime);
   const end = new Date(tournament.endTime);
-  let dates: Array<any> = [];
+
+  const dates: Array<string> = [];
   dates.push(`${start.getDate()}.${start.getMonth() + 1}.`);
   let loopDay = start;
   while (loopDay < end) {
@@ -101,17 +100,14 @@ export default function PlayerForm({ tournament }) {
     setIsLoading(true)
     const userId = data.user.id
     const playerData = {tournamentId, userId, ...values}
-    console.log(playerData)
     try {
       const response = await fetch("/api/player/create", {
         method: "POST",
         body: JSON.stringify(playerData)
       })
       const createdPlayer = await response.json()
-      console.log(createdPlayer)
       await uploadImage(createdPlayer.id)
       router.reload()
-
     } catch (error) {
       console.log(error)
     }
@@ -152,7 +148,7 @@ export default function PlayerForm({ tournament }) {
             />
           </form>
           {selectedFileName ? (
-            <p>Valittu tiedosto: {selectedFileName}</p>
+            <p><i>Valittu tiedosto: {selectedFileName}</i></p>
           ) : null}
           <Formik
             enableReinitialize={true}
@@ -177,15 +173,17 @@ export default function PlayerForm({ tournament }) {
           >
             <Form>
               <TextInput label="Peitenimi" name="alias" type="text" />
-              <div style={{marginBottom: "8px"}}>
-                <div style={{width: "100%"}}><label>Ammattilaistitteli</label></div>
+              <Box sx={{marginBottom: "8px"}}>
+                <div style={{width: "100%"}}>
+                  <label>Ammattilaistitteli</label>
+                </div>
                 <Field name="title" as="select">
                   <option value="noTitle">Ei titteliä</option>
                   <option value="KK">KK</option>
                   <option value="MM">MM</option>
                   <option value="TT">TT</option>
                 </Field>
-              </div>
+              </Box>
               <TextInput label="Osoite" name="address" type="text" />
               <TextInput
                 label="Oppilaitos"
@@ -195,7 +193,8 @@ export default function PlayerForm({ tournament }) {
               <TextInput label="Silmät" name="eyeColor" type="text" />
               <TextInput label="Hiukset" name="hair" type="text" />
               <TextInput label="Pituus" name="height" type="text" />
-              <TextInput label="Muu" name="other" type="text" />
+              <label>Muut tiedot</label>
+              <Field name="other" as="textarea" />
               <h3>Kalenteritiedot</h3>
               {dates.map((d: string, i) => (
                 <div key={i}>

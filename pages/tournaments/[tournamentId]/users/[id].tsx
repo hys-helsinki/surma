@@ -56,14 +56,6 @@ export const getServerSideProps: GetServerSideProps = async ({
   )
     return { redirect: { destination: "/personal", permanent: false } };
 
-  let imageUrl = "";
-  try {
-    const result = await cloudinary.api.resource(params.id as string);
-    imageUrl = result.url;
-  } catch (error) {
-    console.log(error);
-  }
-
   let user = await prisma.user.findUnique({
     where: {
       id: params.id as string
@@ -121,6 +113,7 @@ export const getServerSideProps: GetServerSideProps = async ({
       },
       tournament: {
         select: {
+          id: true,
           name: true,
           startTime: true,
           endTime: true,
@@ -130,6 +123,14 @@ export const getServerSideProps: GetServerSideProps = async ({
       }
     }
   });
+
+  let imageUrl = "";
+  try {
+    const result = await cloudinary.api.resource(user.player.id as string);
+    imageUrl = result.url;
+  } catch (error) {
+    console.log(error);
+  }
 
   user = JSON.parse(JSON.stringify(user));
   const tournament = user.tournament;
@@ -347,7 +348,7 @@ export default function UserInfo({
                 <div>
                   <p>Ei kuvaa</p>
                   <form
-                    onSubmit={(e) => uploadImage(e, user.id)}
+                    onSubmit={(e) => uploadImage(e, user.player.id)}
                     style={{ width: "50%" }}
                   >
                     <label>Valitse kuva itsestäsi</label>
