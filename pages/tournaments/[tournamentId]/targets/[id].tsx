@@ -139,7 +139,6 @@ export const getServerSideProps: GetServerSideProps = async ({
       eyeColor: true,
       hair: true,
       height: true,
-      glasses: true,
       other: true,
       title: true,
       calendar: true,

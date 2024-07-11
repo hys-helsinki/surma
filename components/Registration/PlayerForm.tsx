@@ -193,8 +193,14 @@ export default function PlayerForm({ tournament }) {
               <TextInput label="Silmät" name="eyeColor" type="text" />
               <TextInput label="Hiukset" name="hair" type="text" />
               <TextInput label="Pituus" name="height" type="text" />
-              <label>Muut tiedot</label>
-              <Field name="other" as="textarea" />
+              <div style={{marginBottom: "7px"}}>
+                <label>Turvallisuushuomiot (esim. pelin ulkopuolelle rajatut ajat ja paikat)</label>
+                <Field name="security" as="textarea" />
+              </div>
+              <div style={{marginBottom: "7px"}}>
+                <label>Muut tiedot, kulkuneuvot yms.</label>
+                <Field name="other" as="textarea" />
+              </div>
               <h3>Kalenteritiedot</h3>
               {dates.map((d: string, i) => (
                 <div key={i}>

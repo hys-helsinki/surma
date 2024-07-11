@@ -76,7 +76,6 @@ export const getServerSideProps: GetServerSideProps = async ({
           eyeColor: true,
           hair: true,
           height: true,
-          glasses: true,
           other: true,
           calendar: true,
           lastVisit: true,
@@ -197,7 +196,6 @@ export default function UserInfo({
     eyeColor: string;
     hair: string;
     height: number;
-    glasses: string;
     other: string;
   };
   const handleDetailsSubmit = async (
@@ -210,7 +208,6 @@ export default function UserInfo({
       eyeColor: event.currentTarget.eyeColor.value,
       hair: event.currentTarget.hair.value,
       height: parseInt(event.currentTarget.height.value),
-      glasses: event.currentTarget.glasses.value,
       other: event.currentTarget.other.value
     };
 

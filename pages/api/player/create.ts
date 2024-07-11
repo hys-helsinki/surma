@@ -10,8 +10,8 @@ type PlayerFormData = {
     eyeColor?: string
     hair?: string
     height?: string
-    glasses?: string
     other?: string
+    security?: string
     calendar?: object
     title: "noTitle" | "KK" | "MM" | "TT"
 }
@@ -31,8 +31,8 @@ export default async function create(
             eyeColor: playerData.eyeColor,
             hair: playerData.hair,
             height: parseInt(playerData.height),
-            glasses: playerData.glasses,
             other: playerData.other,
+            security: playerData.security,
             calendar: playerData.calendar,
             title: playerData.title
         }

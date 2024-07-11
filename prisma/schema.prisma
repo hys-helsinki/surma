@@ -48,7 +48,7 @@ model Player {
   eyeColor            String?
   hair                String?
   height              Int?
-  glasses             String?
+  security            String?
   other               String?
   calendar            Json?
   title               PlayerTitle  @default(noTitle)
