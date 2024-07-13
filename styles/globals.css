@@ -70,6 +70,7 @@ textarea {
   padding: 10px;
   color: #A50000;
 }
+
 button {
   background-color: white;
   color: black;
@@ -112,7 +113,7 @@ button:hover {
   padding: 10px;
 }
 
-/* unvisited link */
+
 a {
   color: hotpink;
   text-decoration: underline;

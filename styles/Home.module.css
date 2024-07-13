@@ -12,6 +12,15 @@
   align-items: center;
 }
 
+.center {
+  display: flex;
+  flex: 1;
+  display: inline-block;
+  text-align: center;
+  justify-content: center;
+  align-items: center;
+}
+
 .footer {
   display: flex;
   flex: 1;
