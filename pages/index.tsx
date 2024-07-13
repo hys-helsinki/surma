@@ -43,7 +43,7 @@ export default function Home({ tournaments }) {
       <p className={styles.center}> Surma on leikkisten salamurhaturnausten ylläpitämiseen tarkoitettu ohjelma, jota ylläpitää ja kehittää Helsingin yliopiston salamurhapelaajat ry:n aktiivit eli GitHubin <a href="https://github.com/hys-helsinki">hys-helsinki -organisaatio.</a> Surmaa käytetään salamurhaturnauksien ylläpitämiseen: pelaajat jakavat tietoja toisilleen Surman kautta turnauksen ajan. </p>
 
       <h2> Mikä on salamurhaturnaus? </h2>
-      <p className={styles.center}> Salamurhaturnauksessa pelaajat elävät arkista elämäänsa samalla kun he pyrkivät hankkiutumaan muiden ihmisten huomaamatta olosuhteisiin, joissa voivat soveltaa toisiin pelaajiin sääntöjen sallimaa kirjoa leikkimielisiä aseenkorvikkeita. 
+      <p className={styles.center}> Salamurhaturnauksessa pelaajat elävät arkista elämäänsä samalla kun he pyrkivät hankkiutumaan muiden ihmisten huomaamatta olosuhteisiin, joissa voivat soveltaa toisiin pelaajiin sääntöjen sallimaa kirjoa leikkimielisiä aseenkorvikkeita. 
         Turnauksessa peliä pelataan osallistujien kesken murharingeittäin: pelaaja A:n tavoite on salamurhata kohde eli pelaaja B, pelaaja B saalistaa pelaaja C:tä ja niin edelleen aina pelaajaan N asti, joka väijyy pelaajaa A. 
         Mikäli A onnistuu murhaamaan B:n sääntöjen sallimalla tavalla, A ja B ottavat yhteyttä tuomaristoon ja raportoivat tapahtumien kulusta pisteytystä varten. Nyt B putoaa pelistä, jolloin A alkaakin väijyä C:tä uutena kohteenaan. 
         Peliä pelataan näin kellon ympäri ennalta määrättyyn aikarajaan asti, jolloin pelin voittaja päätetään pisteillä. Pelin helpottamiseksi pelaajat jakavat muun muuassa kalentereitaan ja kotiosoitteitaan toisilleen Surmassa.</p>
