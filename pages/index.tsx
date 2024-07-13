@@ -5,6 +5,7 @@ import { GetStaticProps } from "next";
 import prisma from "../lib/prisma";
 import Link from "next/link";
 import logo from "/public/images/surma_logo.svg";
+import { text } from "stream/consumers";
 
 export const getStaticProps: GetStaticProps = async ({ params }) => {
   let tournaments = await prisma.tournament.findMany({
@@ -21,7 +22,7 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
 
 export default function Home({ tournaments }) {
   const { data: session } = useSession();
-  if (session) {
+    if (session) {
     return (
       <div className={styles.container}>
         <h1>Surma (Murhamaster 3.0)</h1>
@@ -29,9 +30,14 @@ export default function Home({ tournaments }) {
       </div>
     );
   }
-  return (
-      <div className={styles.main}>
-      <h1>Surma (Murhamaster 3.0)</h1>
+  return ( 
+  <div>
+      <div>
+        <button onClick={() => signIn("email", { callbackUrl: "/personal" })} style={{ float: "right", display: "inline"}}>Kirjaudu sisään</button>
+      </div>
+    <div className={styles.center}>
+      <h1 style={{ textAlign: "center", justifyContent: "center", display: "inline"}}>Surma (Murhamaster 3.0)</h1>
+    <div className={styles.main}>
       <Image src={logo} alt="logo" width={200} height={200} />
       <h2> Mikä on Surma? </h2>
       <p className={styles.center}> Surma on leikkisten salamurhaturnausten ylläpitämiseen tarkoitettu ohjelma, jota ylläpitää ja kehittää Helsingin yliopiston salamurhapelaajat ry:n aktiivit eli GitHubin <a href="https://github.com/hys-helsinki">hys-helsinki -organisaatio.</a> Surmaa käytetään salamurhaturnauksien ylläpitämiseen: pelaajat jakavat tietoja toisilleen Surman kautta turnauksen ajan. </p>
@@ -56,11 +62,8 @@ export default function Home({ tournaments }) {
           </Link>
         </div>
       ))}
-
-      <p>Et ole kirjautunut sisään.</p>
-      <button onClick={() => signIn("email", { callbackUrl: "/personal" })}>
-        Kirjaudu sisään
-      </button>
+      </div>
     </div>
+  </div>
   );
 }
