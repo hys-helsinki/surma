@@ -309,7 +309,7 @@ export default function UserInfo({
               display: "flex",
               alignItems: "center"}}>
               Tuomaristo ei ole vielä hyväksynyt ilmoittautumista
-              {currentUserIsUmpire && <Button onClick={() => handleConfirm()} variant="outlined" color="error" sx={{ml: 1}} disabled={confirmed}>Hyväksy</Button>}
+              {currentUserIsUmpire && <Button onClick={() => handleConfirm()} variant="outlined" color="error" sx={{ml: 1}} disabled={confirmed}>Hyväksy ilmoittautuminen</Button>}
             </Alert>
         }
         <Grid container>

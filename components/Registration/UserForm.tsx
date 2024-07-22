@@ -37,8 +37,8 @@ const UserForm = ({tournament}: {tournament: Tournament}) => {
           </p>
           <p>
             Ilmoittautuminen on kaksivaiheinen.
-            Ensimmäiseksi tarvitsemme sinulta nimen, sähköpostiosoitteen ja puhelinnumeron. Näitä tietoja tarvitaan Surman käyttäjän tekemiseen ja jotta tuomaristo voi ottaa sinuun yhteyttä turnaukseen liittyvissä asioissa. 
-            Sähköpostin vahvistamisen jälkeen pääset syöttämään loput turnauksessa vaadittavat tiedot.
+            Ensimmäiseksi tarvitsemme sinulta nimen, sähköpostiosoitteen ja puhelinnumeron. Näitä tietoja tarvitaan Surmaan kirjautumiseen ja jotta tuomaristo voi ottaa sinuun yhteyttä turnaukseen liittyvissä asioissa. 
+            Sähköpostiosoitteen vahvistamisen jälkeen pääset syöttämään loput turnauksessa vaadittavat tiedot.
           </p>
         </Box>
         <Box sx={{my: 5}}>
