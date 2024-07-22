@@ -51,7 +51,7 @@ model Player {
   security            String?
   other               String?
   calendar            Json?
-  title               PlayerTitle  @default(noTitle)
+  title               PlayerTitle?
   state               PlayerState  @default(ACTIVE)
   confirmed           Boolean      @default(false)
   targets             Assignment[] @relation(name: "PlayerHasTarget")
@@ -66,9 +66,9 @@ enum PlayerState {
 }
 
 enum PlayerTitle {
-  noTitle
   KK
   MM
+  LL
   TT
 }
 

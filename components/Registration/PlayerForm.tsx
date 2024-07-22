@@ -155,7 +155,7 @@ export default function PlayerForm({ tournament }) {
             initialValues={{
               calendar: [...new Array(dates.length).fill("")],
               alias: "",
-              title: "noTitle",
+              title: "",
               address: "",
               learningInstitution: "",
               eyeColor: "",
@@ -178,9 +178,10 @@ export default function PlayerForm({ tournament }) {
                   <label>Ammattilaistitteli</label>
                 </div>
                 <Field name="title" as="select">
-                  <option value="noTitle">Ei titteliä</option>
+                  <option value="">Ei titteliä</option>
                   <option value="KK">KK</option>
                   <option value="MM">MM</option>
+                  <option value="LL">LL</option>
                   <option value="TT">TT</option>
                 </Field>
               </Box>
@@ -201,6 +202,7 @@ export default function PlayerForm({ tournament }) {
                 <label>Muut tiedot, kulkuneuvot yms.</label>
                 <Field name="other" as="textarea" />
               </div>
+
               <h3>Kalenteritiedot</h3>
               {dates.map((d: string, i) => (
                 <div key={i}>
@@ -208,6 +210,7 @@ export default function PlayerForm({ tournament }) {
                   <Field name={`calendar[${i}]`} as="textarea" />
                 </div>
               ))}
+
               <BottomText />
               <LoadingButton loading={isLoading} type="submit">
                 Ilmoittaudu
