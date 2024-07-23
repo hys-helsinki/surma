@@ -6,6 +6,8 @@ import Link from "next/link";
 import TextInput from "../TextInput"
 import GdprModal from "../../GdprModal";
 
+import { KK, MM, LL, TT } from '../../../constants'
+
 const BottomText = () => {
     return (
       <Box sx={{ my: 3 }}>
@@ -55,10 +57,10 @@ const PlayerDetailsForm = ({dates, handleSubmit, isLoading}: {dates: string[], h
           </div>
           <Field name="title" as="select">
             <option>Ei titteliä</option>
-            <option value="KK">KK</option>
-            <option value="MM">MM</option>
-            <option value="LL">LL</option>
-            <option value="TT">TT</option>
+            <option value={KK}>{KK}</option>
+            <option value={MM}>{MM}</option>
+            <option value={LL}>{KK}</option>
+            <option value={TT}>{TT}</option>
           </Field>
         </Box>
         <TextInput label="Osoite" name="address" type="text" />
