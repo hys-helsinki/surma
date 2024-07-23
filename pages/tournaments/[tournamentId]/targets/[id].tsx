@@ -236,7 +236,7 @@ export default function Target({
               }}
             >
               <h1>
-                {player.title !== "noTitle" && player.title} {player.user.firstName} {player.user.lastName}
+                {player.title} {player.user.firstName} {player.user.lastName}
               </h1>
               {imageUrl !== "" ? (
                 <div>

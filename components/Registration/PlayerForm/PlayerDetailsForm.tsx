@@ -16,7 +16,7 @@ const BottomText = () => {
           }
           passHref
         >
-          <a style={{ color: "red" }}>turnaussäännöt</a>
+          <a><u>turnaussäännöt</u></a>
         </Link>
         &nbsp;sekä&nbsp;
         <GdprModal />
@@ -31,7 +31,7 @@ const PlayerDetailsForm = ({dates, handleSubmit, isLoading}: {dates: string[], h
         initialValues={{
           calendar: [...new Array(dates.length).fill("")],
           alias: "",
-          title: "",
+          title: undefined,
           address: "",
           learningInstitution: "",
           eyeColor: "",
@@ -54,7 +54,7 @@ const PlayerDetailsForm = ({dates, handleSubmit, isLoading}: {dates: string[], h
             <label>Ammattilaistitteli</label>
           </div>
           <Field name="title" as="select">
-            <option value="">Ei titteliä</option>
+            <option>Ei titteliä</option>
             <option value="KK">KK</option>
             <option value="MM">MM</option>
             <option value="LL">LL</option>

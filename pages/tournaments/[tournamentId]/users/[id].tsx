@@ -321,7 +321,7 @@ export default function UserInfo({
               }}
             >
               <h1>
-                {user.player.title !== "noTitle" && user.player.title} {user.firstName} {user.lastName}
+                {user.player.title} {user.firstName} {user.lastName}
               </h1>
               {imageUrl !== "" ? (
                 <div>

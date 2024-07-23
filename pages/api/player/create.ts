@@ -13,7 +13,7 @@ type PlayerFormData = {
     other?: string
     security?: string
     calendar?: object
-    title: "noTitle" | "KK" | "MM" | "TT"
+    title?: "LL" | "KK" | "MM" | "TT"
 }
 
 export default async function create(
