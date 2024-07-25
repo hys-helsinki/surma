@@ -9,11 +9,12 @@ import { useRouter } from "next/router";
 import NavigationBar from "../../../../components/NavigationBar";
 import { Calendar } from "../../../../components/Calendar";
 import Image from "next/image";
-import { Grid } from "@mui/material";
+import { Grid, Alert, Button } from "@mui/material";
 import { AuthenticationRequired } from "../../../../components/AuthenticationRequired";
 import { unstable_getServerSession } from "next-auth";
 import { authConfig } from "../../../api/auth/[...nextauth]";
 import { v2 as cloudinary } from "cloudinary";
+import PlayerForm from "../../../../components/Registration/PlayerForm";
 
 const isCurrentUserAuthorized = async (currentUser, userId, tournamentId) => {
   if (currentUser.id == userId) {
@@ -55,14 +56,6 @@ export const getServerSideProps: GetServerSideProps = async ({
   )
     return { redirect: { destination: "/personal", permanent: false } };
 
-  let imageUrl = "";
-  try {
-    const result = await cloudinary.api.resource(params.id as string);
-    imageUrl = result.url;
-  } catch (error) {
-    console.log(error);
-  }
-
   let user = await prisma.user.findUnique({
     where: {
       id: params.id as string
@@ -83,10 +76,11 @@ export const getServerSideProps: GetServerSideProps = async ({
           eyeColor: true,
           hair: true,
           height: true,
-          glasses: true,
           other: true,
           calendar: true,
           lastVisit: true,
+          title: true,
+          confirmed: true,
           targets: {
             select: {
               target: {
@@ -118,6 +112,7 @@ export const getServerSideProps: GetServerSideProps = async ({
       },
       tournament: {
         select: {
+          id: true,
           name: true,
           startTime: true,
           endTime: true,
@@ -127,6 +122,14 @@ export const getServerSideProps: GetServerSideProps = async ({
       }
     }
   });
+
+  let imageUrl = "";
+  try {
+    const result = await cloudinary.api.resource(user.player.id as string);
+    imageUrl = result.url;
+  } catch (error) {
+    console.log(error);
+  }
 
   user = JSON.parse(JSON.stringify(user));
   const tournament = user.tournament;
@@ -160,9 +163,15 @@ export default function UserInfo({
   const [fileInputState, setFileInputState] = useState("");
   const [selectedFile, setSelectedFile] = useState();
   const [selectedFileName, setSelectedFileName] = useState("");
+  const [showPlayerData, setShowPlayerData] = useState(Boolean(user.player))
+  const [confirmed, setConfirmed] = useState(user.player ? user.player.confirmed : false)
 
   const router = useRouter();
   const { id } = router.query;
+
+  if (!showPlayerData) {
+    return <PlayerForm tournament={user.tournament} />
+  }
 
   const start = new Date(tournament.startTime);
   const end = new Date(tournament.endTime);
@@ -187,7 +196,6 @@ export default function UserInfo({
     eyeColor: string;
     hair: string;
     height: number;
-    glasses: string;
     other: string;
   };
   const handleDetailsSubmit = async (
@@ -200,7 +208,6 @@ export default function UserInfo({
       eyeColor: event.currentTarget.eyeColor.value,
       hair: event.currentTarget.hair.value,
       height: parseInt(event.currentTarget.height.value),
-      glasses: event.currentTarget.glasses.value,
       other: event.currentTarget.other.value
     };
 
@@ -276,6 +283,18 @@ export default function UserInfo({
     );
   }
 
+  const handleConfirm = async () => {
+
+    const id = user.player.id
+    const data = { confirmed: true };
+    await fetch(`/api/player/${id}/confirm`, {
+      method: "PATCH",
+      body: JSON.stringify(data)
+    });
+    setConfirmed(true)
+
+  }
+
   return (
     <AuthenticationRequired>
       <div>
@@ -284,6 +303,15 @@ export default function UserInfo({
           userId={user.id}
           tournamentId={user.tournamentId}
         />
+        {
+          !user.player.confirmed && 
+            <Alert severity="warning" sx={{minHeight: "50px",   
+              display: "flex",
+              alignItems: "center"}}>
+              Tuomaristo ei ole vielä hyväksynyt ilmoittautumista
+              {currentUserIsUmpire && <Button onClick={() => handleConfirm()} variant="outlined" color="error" sx={{ml: 1}} disabled={confirmed}>Hyväksy ilmoittautuminen</Button>}
+            </Alert>
+        }
         <Grid container>
           <Grid item xs={12} md={5}>
             <div
@@ -293,7 +321,7 @@ export default function UserInfo({
               }}
             >
               <h1>
-                {user.firstName} {user.lastName}
+                {user.player.title} {user.firstName} {user.lastName}
               </h1>
               {imageUrl !== "" ? (
                 <div>
@@ -317,7 +345,7 @@ export default function UserInfo({
                 <div>
                   <p>Ei kuvaa</p>
                   <form
-                    onSubmit={(e) => uploadImage(e, user.id)}
+                    onSubmit={(e) => uploadImage(e, user.player.id)}
                     style={{ width: "50%" }}
                   >
                     <label>Valitse kuva itsestäsi</label>
