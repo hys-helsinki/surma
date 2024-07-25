@@ -9,7 +9,7 @@ import { useRouter } from "next/router";
 import NavigationBar from "../../../../components/NavigationBar";
 import { Calendar } from "../../../../components/Calendar";
 import Image from "next/image";
-import { Grid, Alert, Button } from "@mui/material";
+import { Grid, Alert, Button, Container } from "@mui/material";
 import { AuthenticationRequired } from "../../../../components/AuthenticationRequired";
 import { unstable_getServerSession } from "next-auth";
 import { authConfig } from "../../../api/auth/[...nextauth]";
@@ -312,116 +312,118 @@ export default function UserInfo({
               {currentUserIsUmpire && <Button onClick={() => handleConfirm()} variant="outlined" color="error" sx={{ml: 1}} disabled={confirmed}>Hyväksy ilmoittautuminen</Button>}
             </Alert>
         }
-        <Grid container>
-          <Grid item xs={12} md={5}>
-            <div
-              style={{
-                paddingLeft: "10px",
-                display: "inline-block"
-              }}
-            >
-              <h1>
-                {user.player.title} {user.firstName} {user.lastName}
-              </h1>
-              {imageUrl !== "" ? (
+        <Container>
+          <Grid container>
+            <Grid item xs={12} md={5}>
+              <div
+                style={{
+                  paddingLeft: "10px",
+                  display: "inline-block"
+                }}
+              >
+                <h1>
+                  {user.player.title} {user.firstName} {user.lastName}
+                </h1>
+                {imageUrl !== "" ? (
+                  <div>
+                    {showPicture ? (
+                      <div>
+                        <Image
+                          src={imageUrl}
+                          width="100%"
+                          height="100%"
+                          layout="responsive"
+                          objectFit="contain"
+                          alt="profile picture"
+                        ></Image>
+                      </div>
+                    ) : null}
+                    <button onClick={togglePicture}>
+                      {showPicture ? "piilota" : "näytä kuva"}
+                    </button>
+                  </div>
+                ) : (
+                  <div>
+                    <p>Ei kuvaa</p>
+                    <form
+                      onSubmit={(e) => uploadImage(e, user.player.id)}
+                      style={{ width: "50%" }}
+                    >
+                      <label>Valitse kuva itsestäsi</label>
+                      <input
+                        type="file"
+                        name="image"
+                        accept="image/*"
+                        onChange={handleFileInputChange}
+                        value={fileInputState}
+                      />
+                      <button type="submit">Lähetä kuva</button>
+                    </form>
+                    {selectedFileName ? (
+                      <p>Valittu tiedosto: {selectedFileName}</p>
+                    ) : null}
+                    <p>
+                      Päivitä sivu kuvan lähettämisen jälkeen. Kuvalla saattaa
+                      kestää jonkin aikaa latautua, mutta jos se ei hetken päästä
+                      näy, ota yhteyttä tuomaristoon.
+                    </p>
+                  </div>
+                )}
+
                 <div>
-                  {showPicture ? (
-                    <div>
-                      <Image
-                        src={imageUrl}
-                        width="100%"
-                        height="100%"
-                        layout="responsive"
-                        objectFit="contain"
-                        alt="profile picture"
-                      ></Image>
-                    </div>
-                  ) : null}
-                  <button onClick={togglePicture}>
-                    {showPicture ? "piilota" : "näytä kuva"}
+                  <button onClick={handleUpdateStatusClick}>
+                    {isUpdated ? "muokkaa tietoja" : "peruuta"}
                   </button>
                 </div>
-              ) : (
-                <div>
-                  <p>Ei kuvaa</p>
-                  <form
-                    onSubmit={(e) => uploadImage(e, user.player.id)}
-                    style={{ width: "50%" }}
-                  >
-                    <label>Valitse kuva itsestäsi</label>
-                    <input
-                      type="file"
-                      name="image"
-                      accept="image/*"
-                      onChange={handleFileInputChange}
-                      value={fileInputState}
-                    />
-                    <button type="submit">Lähetä kuva</button>
-                  </form>
-                  {selectedFileName ? (
-                    <p>Valittu tiedosto: {selectedFileName}</p>
-                  ) : null}
-                  <p>
-                    Päivitä sivu kuvan lähettämisen jälkeen. Kuvalla saattaa
-                    kestää jonkin aikaa latautua, mutta jos se ei hetken päästä
-                    näy, ota yhteyttä tuomaristoon.
-                  </p>
-                </div>
-              )}
-
-              <div>
-                <button onClick={handleUpdateStatusClick}>
-                  {isUpdated ? "muokkaa tietoja" : "peruuta"}
-                </button>
-              </div>
-              {user.player && currentUserIsUmpire && (
-                <div>
-                  <p>Käyttäjän viime käynti:</p>
-                  <p>{new Date(user.player.lastVisit).toString()}</p>
-                </div>
-              )}
-              {user.player && user.player.umpire ? (
-                <div>
-                  <h3>Pelaajan tuomari</h3>
-                  <p>
-                    {user.player.umpire.user.firstName}{" "}
-                    {user.player.umpire.user.lastName}
-                  </p>
-                  <p>{user.player.umpire.user.phone}</p>
-                  <p>{user.player.umpire.user.email}</p>
-                </div>
-              ) : (
-                ""
-              )}
-              {isUpdated ? (
-                <div>
-                  <div className="userdetails">
-                    <PlayerContactInfo user={user} />
-                    {user.player && <PlayerDetails player={user.player} />}
+                {user.player && currentUserIsUmpire && (
+                  <div>
+                    <p>Käyttäjän viime käynti:</p>
+                    <p>{new Date(user.player.lastVisit).toString()}</p>
                   </div>
-                </div>
-              ) : (
-                <div>
-                  <PlayerContactInfo user={user} />
-                  {user.player && (
-                    <UpdateForm
-                      data={user.player}
-                      handleSubmit={handleDetailsSubmit}
-                    />
-                  )}
-                </div>
+                )}
+                {user.player && user.player.umpire ? (
+                  <div>
+                    <h3>Pelaajan tuomari</h3>
+                    <p>
+                      {user.player.umpire.user.firstName}{" "}
+                      {user.player.umpire.user.lastName}
+                    </p>
+                    <p>{user.player.umpire.user.phone}</p>
+                    <p>{user.player.umpire.user.email}</p>
+                  </div>
+                ) : (
+                  ""
+                )}
+                {isUpdated ? (
+                  <div>
+                    <div className="userdetails">
+                      <PlayerContactInfo user={user} />
+                      {user.player && <PlayerDetails player={user.player} />}
+                    </div>
+                  </div>
+                ) : (
+                  <div>
+                    <PlayerContactInfo user={user} />
+                    {user.player && (
+                      <UpdateForm
+                        data={user.player}
+                        handleSubmit={handleDetailsSubmit}
+                      />
+                    )}
+                  </div>
+                )}
+              </div>
+            </Grid>
+            <Grid item xs={12} md={7}>
+              {user.player && (
+                <Calendar
+                  player={user.player}
+                  handleSubmit={handleCalendarSubmit}
+                />
               )}
-            </div>
+            </Grid>
           </Grid>
-          <Grid item xs={12} md={7}>
-            {user.player && (
-              <Calendar
-                player={user.player}
-                handleSubmit={handleCalendarSubmit}
-              />
-            )}
-          </Grid>
-        </Grid>
+        </Container>
       </div>
     </AuthenticationRequired>
   );
