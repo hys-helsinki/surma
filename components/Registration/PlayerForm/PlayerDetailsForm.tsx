@@ -59,7 +59,7 @@ const PlayerDetailsForm = ({dates, handleSubmit, isLoading}: {dates: string[], h
             <option>Ei titteliä</option>
             <option value={KK}>{KK}</option>
             <option value={MM}>{MM}</option>
-            <option value={LL}>{KK}</option>
+            <option value={LL}>{LL}</option>
             <option value={TT}>{TT}</option>
           </Field>
         </Box>
