@@ -107,6 +107,7 @@ export const getServerSideProps: GetServerSideProps = async ({
           },
           umpire: {
             select: {
+              id: true,
               user: {
                 select: {
                   firstName: true,
@@ -131,6 +132,22 @@ export const getServerSideProps: GetServerSideProps = async ({
       }
     }
   });
+
+  const umpires = await prisma.umpire.findMany({
+    select: {
+      id: true,
+      responsibility: true, 
+      user: {
+        select: {
+          firstName: true,
+          lastName: true,
+          phone: true,
+          email: true
+        }
+      }
+    }
+
+  })
 
   let imageUrl = "";
   try {
@@ -157,7 +174,8 @@ export const getServerSideProps: GetServerSideProps = async ({
       tournament,
       imageUrl,
       targets,
-      currentUserIsUmpire: currentUser.umpire != null
+      currentUserIsUmpire: currentUser.umpire != null,
+      umpires
     }
   };
 };
@@ -167,7 +185,8 @@ export default function UserInfo({
   tournament,
   imageUrl,
   targets = [],
-  currentUserIsUmpire
+  currentUserIsUmpire,
+  umpires
 }): JSX.Element {
   const [isUpdated, setIsUpdated] = useState(true);
   const [fileInputState, setFileInputState] = useState("");
@@ -279,6 +298,8 @@ export default function UserInfo({
 
   }
 
+  console.log(umpires)
+
   return (
     <AuthenticationRequired>
       <div>
@@ -317,7 +338,7 @@ export default function UserInfo({
                     {selectedFile && <button onClick={(e) => uploadImage(e)}>Lisää kuva</button>}
                   </>
                 )}
-                <PlayerInfo user={user} currentUserIsUmpire={currentUserIsUmpire}/>
+                <PlayerInfo user={user} currentUserIsUmpire={currentUserIsUmpire} umpires={umpires}/>
                 {isUpdated ? (             
                    <PlayerDetails player={user.player} />
                 ) : (       
