@@ -1,6 +1,6 @@
 import { GetServerSideProps } from "next";
-import { PlayerDetails } from "../../../../components/PlayerDetails";
-import { PlayerContactInfo } from "../../../../components/PlayerContactInfo";
+import { PlayerDetails } from "../../../../components/PlayerPage/PlayerDetails";
+import { PlayerContactInfo } from "../../../../components/PlayerPage/PlayerContactInfo";
 import prisma from "../../../../lib/prisma";
 import React, { MouseEventHandler } from "react";
 import { useState } from "react";

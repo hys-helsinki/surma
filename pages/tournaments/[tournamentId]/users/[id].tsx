@@ -1,9 +1,9 @@
 import { GetServerSideProps } from "next";
-import { PlayerDetails } from "../../../../components/PlayerDetails";
-import { PlayerContactInfo } from "../../../../components/PlayerContactInfo";
+import { PlayerDetails } from "../../../../components/PlayerPage/PlayerDetails";
+import { PlayerContactInfo } from "../../../../components/PlayerPage/PlayerContactInfo";
 import prisma from "../../../../lib/prisma";
 import { useState } from "react";
-import { UpdateForm } from "../../../../components/UpdateForm";
+import { UpdateForm } from "../../../../components/PlayerPage/UpdateForm";
 import { useRouter } from "next/router";
 import NavigationBar from "../../../../components/NavigationBar";
 import { Calendar } from "../../../../components/Calendar";
