@@ -81,6 +81,7 @@ model Umpire {
   tournament   Tournament @relation(fields: [tournamentId], references: [id])
   tournamentId String
   players      Player[]
+  responsibility String?
 }
 
 model Tournament {
