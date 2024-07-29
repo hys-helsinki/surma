@@ -1,6 +1,6 @@
 import { GetServerSideProps } from "next";
-import { PlayerDetails } from "../../../../components/PlayerPage/PlayerDetails";
-import { PlayerContactInfo } from "../../../../components/PlayerPage/PlayerContactInfo";
+import PlayerDetails from "../../../../components/PlayerPage/PlayerDetails";
+import PlayerInfo from "../../../../components/PlayerPage/PlayerInfo";
 import prisma from "../../../../lib/prisma";
 import { useState } from "react";
 import { UpdateForm } from "../../../../components/PlayerPage/UpdateForm";
@@ -13,7 +13,6 @@ import { unstable_getServerSession } from "next-auth";
 import { authConfig } from "../../../api/auth/[...nextauth]";
 import { v2 as cloudinary } from "cloudinary";
 import PlayerForm from "../../../../components/Registration/PlayerForm";
-import InfoBox from "../../../../components/PlayerPage/InfoBox";
 import ImageUploadForm from "../../../../components/Registration/PlayerForm/ImageUploadForm";
 import ImageComponent from "../../../../components/PlayerPage/ImageComponent";
 
@@ -309,6 +308,7 @@ export default function UserInfo({
                 <h1>
                   {user.player.title} {user.firstName} {user.lastName}
                 </h1>
+                {user.player && <h2>Peitenimi: {user.player.alias}</h2>}
                 {imageUrl == "" ? (
                   <ImageComponent imageUrl={imageUrl} />
                 ) : (
@@ -317,8 +317,7 @@ export default function UserInfo({
                     {selectedFile && <button onClick={(e) => uploadImage(e)}>Lisää kuva</button>}
                   </>
                 )}
-                <InfoBox user={user} currentUserIsUmpire={currentUserIsUmpire}/>
-                <PlayerContactInfo user={user} />
+                <PlayerInfo user={user} currentUserIsUmpire={currentUserIsUmpire}/>
                 {isUpdated ? (             
                    <PlayerDetails player={user.player} />
                 ) : (       

@@ -1,30 +1,29 @@
-export const PlayerDetails = ({ player }): JSX.Element => {
+import { Box } from "@mui/material";
+
+const PlayerDetails = ({ player }) => {
   return (
-    <div>
-      <div>
-        <p>
-          <b>osoite:</b> {player.address}
-        </p>
-        <p>
-          <b>opinahjo:</b> {player.learningInstitution}
-        </p>
-        <h3>Kuvaus</h3>
-        <p>
-          <b>silmät:</b> {player.eyeColor}
-        </p>
-        <p>
-          <b>hiukset:</b> {player.hair}
-        </p>
-        <p>
-          <b>pituus:</b> {player.height}
-        </p>
-        <p>
-          <b>silmälasit:</b> {player.glasses}
-        </p>
-        <p>
-          <b>ulkonäkö, kulkuvälineet ja muut lisätiedot:</b> {player.other}
-        </p>
-      </div>
-    </div>
+    <Box sx={{mt: 4}}>
+      <h3>Kuvaus</h3>
+      <p>
+        <b>Osoite:</b> {player.address}
+      </p>
+      <p>
+        <b>Opinahjo:</b> {player.learningInstitution}
+      </p>
+      <p>
+        <b>Silmät:</b> {player.eyeColor}
+      </p>
+      <p>
+        <b>Hiukset:</b> {player.hair}
+      </p>
+      <p>
+        <b>Pituus:</b> {player.height}
+      </p>
+      <p>
+        <b>Ulkonäkö, kulkuvälineet ja muut lisätiedot:</b> {player.other}
+      </p>
+    </Box>
   );
 };
+
+export default PlayerDetails
