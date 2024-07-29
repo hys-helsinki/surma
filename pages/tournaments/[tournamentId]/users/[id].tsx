@@ -2,19 +2,29 @@ import { GetServerSideProps } from "next";
 import { PlayerDetails } from "../../../../components/PlayerDetails";
 import { PlayerContactInfo } from "../../../../components/PlayerContactInfo";
 import prisma from "../../../../lib/prisma";
-import React, { MouseEventHandler } from "react";
 import { useState } from "react";
 import { UpdateForm } from "../../../../components/UpdateForm";
 import { useRouter } from "next/router";
 import NavigationBar from "../../../../components/NavigationBar";
 import { Calendar } from "../../../../components/Calendar";
-import Image from "next/image";
 import { Grid, Alert, Button, Container } from "@mui/material";
 import { AuthenticationRequired } from "../../../../components/AuthenticationRequired";
 import { unstable_getServerSession } from "next-auth";
 import { authConfig } from "../../../api/auth/[...nextauth]";
 import { v2 as cloudinary } from "cloudinary";
 import PlayerForm from "../../../../components/Registration/PlayerForm";
+import InfoBox from "../../../../components/PlayerPage/InfoBox";
+import ImageUploadForm from "../../../../components/Registration/PlayerForm/ImageUploadForm";
+import ImageComponent from "../../../../components/PlayerPage/ImageComponent";
+
+type FormData = {
+  address: string;
+  learningInstitution: string;
+  eyeColor: string;
+  hair: string;
+  height: number;
+  other: string;
+};
 
 const isCurrentUserAuthorized = async (currentUser, userId, tournamentId) => {
   if (currentUser.id == userId) {
@@ -134,12 +144,14 @@ export const getServerSideProps: GetServerSideProps = async ({
   user = JSON.parse(JSON.stringify(user));
   const tournament = user.tournament;
   let targets = [];
+
   if (
     user.player &&
     new Date().getTime() > new Date(tournament.startTime).getTime()
   ) {
     targets = user.player.targets;
   }
+  
   return {
     props: {
       user,
@@ -159,17 +171,15 @@ export default function UserInfo({
   currentUserIsUmpire
 }): JSX.Element {
   const [isUpdated, setIsUpdated] = useState(true);
-  const [showPicture, setShowPicture] = useState(false);
   const [fileInputState, setFileInputState] = useState("");
   const [selectedFile, setSelectedFile] = useState();
   const [selectedFileName, setSelectedFileName] = useState("");
-  const [showPlayerData, setShowPlayerData] = useState(Boolean(user.player))
   const [confirmed, setConfirmed] = useState(user.player ? user.player.confirmed : false)
 
   const router = useRouter();
   const { id } = router.query;
 
-  if (!showPlayerData) {
+  if (!Boolean(user.player)) {
     return <PlayerForm tournament={user.tournament} />
   }
 
@@ -183,26 +193,12 @@ export default function UserInfo({
     dates.push(`${loopDay.getDate()}.${loopDay.getMonth() + 1}.`);
   }
 
-  const handleUpdateStatusClick: MouseEventHandler<HTMLButtonElement> = () => {
-    if (isUpdated === true) {
-      setIsUpdated(false);
-    } else {
-      setIsUpdated(true);
-    }
-  };
-  type formData = {
-    address: string;
-    learningInstitution: string;
-    eyeColor: string;
-    hair: string;
-    height: number;
-    other: string;
-  };
   const handleDetailsSubmit = async (
     event: React.FormEvent<HTMLFormElement>
   ) => {
     event.preventDefault();
-    const data: formData = {
+
+    const data: FormData = {
       address: event.currentTarget.address.value,
       learningInstitution: event.currentTarget.learningInstitution.value,
       eyeColor: event.currentTarget.eyeColor.value,
@@ -210,11 +206,15 @@ export default function UserInfo({
       height: parseInt(event.currentTarget.height.value),
       other: event.currentTarget.other.value
     };
-
-    fetch(`/api/user/update/${id}`, {
-      method: "PUT",
-      body: JSON.stringify(data)
-    }).then((response) => router.reload());
+    try {
+      await fetch(`/api/user/update/${id}`, {
+        method: "PUT",
+        body: JSON.stringify(data)
+      })
+      router.reload()
+    } catch (error) {
+      console.log(error)
+    }
   };
 
   const handleCalendarSubmit = async (
@@ -226,14 +226,19 @@ export default function UserInfo({
     const data = {
       calendar: cal
     };
-
-    fetch(`/api/user/update/${id}`, {
+    
+    try {
+      await fetch(`/api/user/update/${id}`, {
       method: "PUT",
       body: JSON.stringify(data)
-    }).then((response) => router.reload());
+    })
+    router.reload()
+    } catch (error) {
+      console.log(error)
+    }
   };
 
-  const uploadImage = async (event, id: string) => {
+  const uploadImage = async (event) => {
     event.preventDefault();
     if (!selectedFile) return;
     try {
@@ -244,7 +249,7 @@ export default function UserInfo({
           method: "POST",
           body: JSON.stringify({
             url: reader.result,
-            publicId: id
+            publicId: user.player.id
           })
         });
       };
@@ -256,26 +261,6 @@ export default function UserInfo({
     }
   };
 
-  const handleFileInputChange = (event) => {
-    const file = event.target.files[0];
-    if (file == undefined) {
-      setFileInputState("");
-      setSelectedFile(null);
-      setSelectedFileName("");
-    } else {
-      setSelectedFile(file);
-      setSelectedFileName(file.name);
-      setFileInputState(event.target.value);
-    }
-  };
-
-  const togglePicture: MouseEventHandler = () => {
-    if (showPicture === true) {
-      setShowPicture(false);
-    } else {
-      setShowPicture(true);
-    }
-  };
   let targetUsers = [];
   if (targets.length > 0) {
     targetUsers = user.player.targets.map(
@@ -314,7 +299,7 @@ export default function UserInfo({
         }
         <Container>
           <Grid container>
-            <Grid item xs={12} md={5}>
+            <Grid item xs={12} md={6}>
               <div
                 style={{
                   paddingLeft: "10px",
@@ -324,97 +309,30 @@ export default function UserInfo({
                 <h1>
                   {user.player.title} {user.firstName} {user.lastName}
                 </h1>
-                {imageUrl !== "" ? (
-                  <div>
-                    {showPicture ? (
-                      <div>
-                        <Image
-                          src={imageUrl}
-                          width="100%"
-                          height="100%"
-                          layout="responsive"
-                          objectFit="contain"
-                          alt="profile picture"
-                        ></Image>
-                      </div>
-                    ) : null}
-                    <button onClick={togglePicture}>
-                      {showPicture ? "piilota" : "näytä kuva"}
-                    </button>
-                  </div>
+                {imageUrl == "" ? (
+                  <ImageComponent imageUrl={imageUrl} />
                 ) : (
-                  <div>
-                    <p>Ei kuvaa</p>
-                    <form
-                      onSubmit={(e) => uploadImage(e, user.player.id)}
-                      style={{ width: "50%" }}
-                    >
-                      <label>Valitse kuva itsestäsi</label>
-                      <input
-                        type="file"
-                        name="image"
-                        accept="image/*"
-                        onChange={handleFileInputChange}
-                        value={fileInputState}
-                      />
-                      <button type="submit">Lähetä kuva</button>
-                    </form>
-                    {selectedFileName ? (
-                      <p>Valittu tiedosto: {selectedFileName}</p>
-                    ) : null}
-                    <p>
-                      Päivitä sivu kuvan lähettämisen jälkeen. Kuvalla saattaa
-                      kestää jonkin aikaa latautua, mutta jos se ei hetken päästä
-                      näy, ota yhteyttä tuomaristoon.
-                    </p>
-                  </div>
+                  <>
+                    <ImageUploadForm setSelectedFile={setSelectedFile} setSelectedFileName={setSelectedFileName} setFileInputState={setFileInputState} selectedFileName={selectedFileName} fileInputState={fileInputState} />
+                    {selectedFile && <button onClick={(e) => uploadImage(e)}>Lisää kuva</button>}
+                  </>
                 )}
-
-                <div>
-                  <button onClick={handleUpdateStatusClick}>
-                    {isUpdated ? "muokkaa tietoja" : "peruuta"}
-                  </button>
-                </div>
-                {user.player && currentUserIsUmpire && (
-                  <div>
-                    <p>Käyttäjän viime käynti:</p>
-                    <p>{new Date(user.player.lastVisit).toString()}</p>
-                  </div>
+                <InfoBox user={user} currentUserIsUmpire={currentUserIsUmpire}/>
+                <PlayerContactInfo user={user} />
+                {isUpdated ? (             
+                   <PlayerDetails player={user.player} />
+                ) : (       
+                  <UpdateForm
+                    data={user.player}
+                    handleSubmit={handleDetailsSubmit}
+                  />
                 )}
-                {user.player && user.player.umpire ? (
-                  <div>
-                    <h3>Pelaajan tuomari</h3>
-                    <p>
-                      {user.player.umpire.user.firstName}{" "}
-                      {user.player.umpire.user.lastName}
-                    </p>
-                    <p>{user.player.umpire.user.phone}</p>
-                    <p>{user.player.umpire.user.email}</p>
-                  </div>
-                ) : (
-                  ""
-                )}
-                {isUpdated ? (
-                  <div>
-                    <div className="userdetails">
-                      <PlayerContactInfo user={user} />
-                      {user.player && <PlayerDetails player={user.player} />}
-                    </div>
-                  </div>
-                ) : (
-                  <div>
-                    <PlayerContactInfo user={user} />
-                    {user.player && (
-                      <UpdateForm
-                        data={user.player}
-                        handleSubmit={handleDetailsSubmit}
-                      />
-                    )}
-                  </div>
-                )}
+                <button onClick={() => setIsUpdated(!isUpdated)}>
+                  {isUpdated ? "Muokkaa tietoja" : "Peruuta"}
+                </button>
               </div>
             </Grid>
-            <Grid item xs={12} md={7}>
+            <Grid item xs={12} md={6}>
               {user.player && (
                 <Calendar
                   player={user.player}
