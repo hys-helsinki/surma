@@ -52,7 +52,7 @@ export default function Home({ tournaments }) {
       
       <h2> Avoimet salamurhaturnaukset </h2>
       <p> Salamurhaturnaukseen osallistuminen aloitetaan ilmoittautumalla peliin Surman kautta, jonka jälkeen Surma lähettää lisäohjeita sähköpostilla. </p>
-      <p> Alla on lista turnauksista, joihin on ilmoittautuminen auki. </p>
+      <p> Alla on lista turnauksista, joihin on ilmoittautuminen auki tällä hetkellä. Jos alla ei näy mitään, ilmoittautumisia ei ole auki juuri nyt, joten palaathan myöhemmin takaisin. Tietoa tulevista turnauksista voi saada myös <a href="https://salamurhaajat.net/tulevat-tapahtumat">HYSin nettisivuilta.</a></p>
       {tournaments.map((tournament) => (
         <div key={tournament.id}>
           <Link href={`/registration/${tournament.id}`}>
