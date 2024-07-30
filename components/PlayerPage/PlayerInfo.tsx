@@ -36,7 +36,7 @@ const PlayerInfo = ({ user, currentUserIsUmpire, umpires }: {user: any, currentU
             showOtherUmpires ? (
             <div>
             {umpires.map(umpire => (
-            <><p>{umpire.user.firstName} {umpire.user.lastName}</p><p>{umpire.user.email}</p><p>{umpire.user.phone}</p></>
+            <div key={umpire.id}><p>{umpire.user.firstName} {umpire.user.lastName}</p><p>{umpire.user.email}</p><p>{umpire.user.phone}</p></div>
           ))}</div>
             ) : null
           }

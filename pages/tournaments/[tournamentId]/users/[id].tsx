@@ -25,6 +25,13 @@ type FormData = {
   other: string;
 };
 
+const states = {
+  "ACTIVE": "Elossa",
+  "DEAD": "Kuollut",
+  "DETECTIVE": "Etsivä",
+  "EXTRA": "Lisäkohde"
+}
+
 const isCurrentUserAuthorized = async (currentUser, userId, tournamentId) => {
   if (currentUser.id == userId) {
     return true;
@@ -90,6 +97,8 @@ export const getServerSideProps: GetServerSideProps = async ({
           lastVisit: true,
           title: true,
           confirmed: true,
+          state: true,
+          security: true,
           targets: {
             select: {
               target: {
@@ -298,8 +307,6 @@ export default function UserInfo({
 
   }
 
-  console.log(umpires)
-
   return (
     <AuthenticationRequired>
       <div>
@@ -329,7 +336,10 @@ export default function UserInfo({
                 <h1>
                   {user.player.title} {user.firstName} {user.lastName}
                 </h1>
-                {user.player && <h2>Peitenimi: {user.player.alias}</h2>}
+                <h2>Peitenimi: {user.player.alias}</h2>
+
+                {/* Show this when the tournament is on */}
+                <h3>Status: {states[user.player.state]}</h3>
                 {imageUrl == "" ? (
                   <ImageComponent imageUrl={imageUrl} />
                 ) : (
@@ -353,12 +363,10 @@ export default function UserInfo({
               </div>
             </Grid>
             <Grid item xs={12} md={6}>
-              {user.player && (
-                <Calendar
-                  player={user.player}
-                  handleSubmit={handleCalendarSubmit}
-                />
-              )}
+              <Calendar
+                player={user.player}
+                handleSubmit={handleCalendarSubmit}
+              />
             </Grid>
           </Grid>
         </Container>
