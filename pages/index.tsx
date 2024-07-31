@@ -50,7 +50,7 @@ export default function Home({ tournaments }) {
       {tournaments.map((tournament) => (
         <div key={tournament.id}>
           <Link href={`/registration/${tournament.id}`}>
-          <table aria-label="tournament-table" style={{marginTop: "15px"}}>
+          <table aria-label="tournament-table" style={{borderSpacing: "15px", marginBottom: "30px"}}>
           <tr>
             <th style={{width:"15%", padding: "15px"}}>Nimi</th>
             <th style={{width:"25%", padding: "15px"}}>Aika</th>
