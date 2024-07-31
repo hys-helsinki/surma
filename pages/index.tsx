@@ -5,7 +5,6 @@ import { GetStaticProps } from "next";
 import prisma from "../lib/prisma";
 import Link from "next/link";
 import logo from "/public/images/surma_logo.svg";
-import { text } from "stream/consumers";
 
 export const getStaticProps: GetStaticProps = async ({ params }) => {
   let tournaments = await prisma.tournament.findMany({
@@ -22,13 +21,13 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
 
 export default function Home({ tournaments }) {
   const { data: session } = useSession();
-    if (session) {
-    return (
-      <div className={styles.container}>
-        <h1>Surma (Murhamaster 3.0)</h1>
-        <button onClick={() => signOut()}>Kirjaudu ulos</button>
-      </div>
-    );
+  if (session) {
+    return {
+      redirect: {
+        destination: `/personal`,
+        permanent: false
+      }
+    };
   }
   return ( 
   <div>
