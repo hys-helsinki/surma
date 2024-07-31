@@ -92,7 +92,7 @@ export default function Home({ tournaments }) {
         <AccordionDetails sx={{
           backgroundColor: "rgb(34, 23, 23)",
           color: "white"}}>
-          Surma on leikkisten salamurhaturnausten ylläpitämiseen tarkoitettu ohjelma, jota ylläpitää ja kehittää Helsingin yliopiston salamurhapelaajat ry:n aktiivit eli <a href="https://github.com/hys-helsinki">GitHubin hys-helsinki -organisaatio.</a> Surmaa käytetään salamurhaturnauksien ylläpitämiseen: pelaajat jakavat tietoja toisilleen Surman kautta turnauksen ajan.
+          Surma on leikkisten salamurhaturnausten järjestämiseen tarkoitettu ohjelma, jota ylläpitää ja kehittää Helsingin yliopiston salamurhapelaajat ry:n aktiivit eli <a href="https://github.com/hys-helsinki">GitHubin hys-helsinki -organisaatio.</a> Surmaa käytetään salamurhaturnauksien ylläpitämiseen: pelaajat jakavat tietoja toisilleen Surman kautta turnauksen ajan.
         </AccordionDetails>
         </Accordion>
 
