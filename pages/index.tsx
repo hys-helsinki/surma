@@ -81,7 +81,7 @@ export default function Home({ tournaments }) {
         </div>
       ))}
 
-        <Accordion variant="outlined">
+        <Accordion variant="outlined" style={{width: "96%"}}>
         <AccordionSummary
           expandIcon={<ArrowDropDownIcon style={{ color: 'white' }}/>}
           aria-controls="info-from-Slaughter"
@@ -102,7 +102,7 @@ export default function Home({ tournaments }) {
         </AccordionDetails>
         </Accordion>
 
-        <Accordion variant="outlined">
+        <Accordion variant="outlined" style={{width: "96%"}}>
         <AccordionSummary
           expandIcon={<ArrowDropDownIcon style={{ color: 'white' }}/>}
           aria-controls="info-from-assassination-tournaments"
