@@ -18,6 +18,7 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
       name: true,
       startTime: true,
       endTime: true,
+      registrationStartTime: true,
       registrationEndTime: true
     }
   });
@@ -26,6 +27,12 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
     props: { tournaments }
   };
 };
+
+const modifyDate = (s) => {
+  const date = new Date(s);
+  const formattedDate = `${date.getUTCDate()}.${date.getUTCMonth()+1}.${date.getUTCFullYear()} klo ${date.getHours()}.${date.getUTCMinutes()}`
+  return formattedDate
+}   
 
 export default function Home({ tournaments }) {
   const { data: session } = useSession();
@@ -38,7 +45,7 @@ export default function Home({ tournaments }) {
       }
     };
   }
-  return ( 
+  return (
   <div>
       <div>
         <button onClick={() => signIn("email", { callbackUrl: "/personal" })} style={{ float: "right", display: "inline"}}>Kirjaudu sisään</button>
@@ -55,20 +62,18 @@ export default function Home({ tournaments }) {
           <table aria-label="tournament-table" style={{borderSpacing: "15px", marginBottom: "30px"}}>
           <tr>
             <th style={{width:"15%", padding: "15px"}}>Nimi</th>
-            <th style={{width:"25%", padding: "15px"}}>Aika</th>
-            <th style={{width:"25%", padding: "15px"}}>Ilmoittautuminen päättyy</th>
-            <th style={{width:"25%", padding: "15px"}}></th>
+            <th style={{width:"10%", padding: "15px"}}>Aika</th>
+            <th style={{width:"10%", padding: "15px"}}>Ilmoittautuminen käynnissä</th>
+            <th style={{width:"15%", padding: "15px"}}></th>
           </tr>
           <tr>
             <td>{tournament.name}</td>
-            <td>&nbsp;
-            {tournament.startTime}
-            &nbsp;-&nbsp;
-            {tournament.endTime}
-            &nbsp;</td>
-            <td>&nbsp;
-            {tournament.registrationEndTime}
-            &nbsp;</td>
+            <td>
+            {modifyDate(tournament.startTime)}&nbsp;-&nbsp;{modifyDate(tournament.endTime)}
+            </td>
+            <td>
+            {modifyDate(tournament.registrationStartTime)}&nbsp;-&nbsp;{modifyDate(tournament.registrationEndTime)}
+            </td>
             <td><a>Ilmoittautumislomake</a></td>
           </tr>
         </table>
