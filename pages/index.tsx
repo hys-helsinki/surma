@@ -1,16 +1,21 @@
 import Image from "next/image";
 import styles from "../styles/Home.module.css";
 import { useSession, signIn, signOut } from "next-auth/react";
+import { useState, useEffect } from 'react';
 import { GetStaticProps } from "next";
 import prisma from "../lib/prisma";
 import Link from "next/link";
 import logo from "/public/images/surma_logo.svg";
+import { NoSsr } from "@mui/material";
 
 export const getStaticProps: GetStaticProps = async ({ params }) => {
   let tournaments = await prisma.tournament.findMany({
     select: {
       id: true,
-      name: true
+      name: true,
+      startTime: true,
+      endTime: true,
+      registrationEndTime: true
     }
   });
   tournaments = JSON.parse(JSON.stringify(tournaments));
@@ -21,6 +26,7 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
 
 export default function Home({ tournaments }) {
   const { data: session } = useSession();
+   
   if (session) {
     return {
       redirect: {
@@ -38,6 +44,35 @@ export default function Home({ tournaments }) {
       <h1 style={{ textAlign: "center", justifyContent: "center", display: "inline"}}>Surma (Murhamaster 3.0)</h1>
     <div className={styles.main}>
       <Image src={logo} alt="logo" width={200} height={200} />
+      <h2> Avoimet salamurhaturnaukset </h2>
+      <p> Salamurhaturnaukseen osallistuminen aloitetaan ilmoittautumalla peliin Surman kautta, jonka jälkeen Surma lähettää lisäohjeita sähköpostilla. </p>
+      <p> Alla on lista turnauksista, joihin on ilmoittautuminen auki tällä hetkellä. Jos alla ei näy mitään, ilmoittautumisia ei ole auki juuri nyt, joten palaathan myöhemmin takaisin. Tietoa tulevista turnauksista voi saada myös <a href="https://salamurhaajat.net/tulevat-tapahtumat">HYSin nettisivuilta.</a></p>
+      {tournaments.map((tournament) => (
+        <div key={tournament.id}>
+          <Link href={`/registration/${tournament.id}`}>
+          <table aria-label="tournament-table" style={{marginTop: "15px"}}>
+          <tr>
+            <th style={{width:"15%", padding: "15px"}}>Nimi</th>
+            <th style={{width:"25%", padding: "15px"}}>Aika</th>
+            <th style={{width:"25%", padding: "15px"}}>Ilmoittautuminen päättyy</th>
+            <th style={{width:"25%", padding: "15px"}}></th>
+          </tr>
+          <tr>
+            <td>{tournament.name}</td>
+            <td>&nbsp;
+            {tournament.startTime}
+            &nbsp;-&nbsp;
+            {tournament.endTime}
+            &nbsp;</td>
+            <td>&nbsp;
+            {tournament.registrationEndTime}
+            &nbsp;</td>
+            <td><a>Ilmoittautumislomake</a></td>
+          </tr>
+        </table>
+          </Link>
+        </div>
+      ))}
       <h2> Mikä on Surma? </h2>
       <p> Surma on leikkisten salamurhaturnausten ylläpitämiseen tarkoitettu ohjelma, jota ylläpitää ja kehittää Helsingin yliopiston salamurhapelaajat ry:n aktiivit eli GitHubin <a href="https://github.com/hys-helsinki">hys-helsinki -organisaatio.</a> Surmaa käytetään salamurhaturnauksien ylläpitämiseen: pelaajat jakavat tietoja toisilleen Surman kautta turnauksen ajan. </p>
 
@@ -49,18 +84,6 @@ export default function Home({ tournaments }) {
       <p> Lue lisää pelaajatiedoista ja niiden käsittelystä Surman tietosuojaselosteesta.</p> 
       <p> Lisätietoja salamurhaturnauksesta ja sen säännöistä saa taas <a href="https://salamurhaajat.net/mika-salamurhapeli">Helsingin yliopiston salamurhapelaajien alias HYSin nettisivuilta.</a></p>
       
-      <h2> Avoimet salamurhaturnaukset </h2>
-      <p> Salamurhaturnaukseen osallistuminen aloitetaan ilmoittautumalla peliin Surman kautta, jonka jälkeen Surma lähettää lisäohjeita sähköpostilla. </p>
-      <p> Alla on lista turnauksista, joihin on ilmoittautuminen auki tällä hetkellä. Jos alla ei näy mitään, ilmoittautumisia ei ole auki juuri nyt, joten palaathan myöhemmin takaisin. Tietoa tulevista turnauksista voi saada myös <a href="https://salamurhaajat.net/tulevat-tapahtumat">HYSin nettisivuilta.</a></p>
-      {tournaments.map((tournament) => (
-        <div key={tournament.id}>
-          <Link href={`/registration/${tournament.id}`}>
-            <ul>
-              <li> <a>{tournament.name}</a> </li>
-            </ul>
-          </Link>
-        </div>
-      ))}
       </div>
     </div>
   </div>
