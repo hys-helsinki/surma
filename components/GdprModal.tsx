@@ -37,7 +37,7 @@ export default function GDPRModal({ text }) {
         aria-describedby="privacy-policy-in-a-nutshell"
       >
         <Box sx={style}>
-          <Typography id="privacy-policy" variant="h6">
+          <Typography id="short-privacy-policy" variant="h6">
             <h3>Tietosuojailmoitus</h3>
           </Typography>
           <GdprText />
