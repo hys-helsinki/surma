@@ -1,4 +1,4 @@
-import { Box, Typography, Button } from "@mui/material/";
+import { Box, Typography } from "@mui/material/";
 import Modal from "@mui/material/Modal";
 import { useState } from "react";
 import styles from "../styles/Home.module.css";
