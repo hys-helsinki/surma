@@ -63,7 +63,7 @@ const PlayerDetailsForm = ({dates, handleSubmit, isLoading}: {dates: string[], h
             <option value={TT}>{TT}</option>
           </Field>
         </Box>
-        <TextInput label="Osoite" name="address" type="text" />
+        <TextInput label="Osoite" name="home" type="text" />
         <TextInput
           label="Oppilaitos"
           name="learningInstitution"
