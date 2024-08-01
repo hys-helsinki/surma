@@ -33,7 +33,7 @@ const UserForm = ({tournament}: {tournament: Tournament}) => {
         </Box>
         <Box sx={{my: 4}}>
           <p>
-            Tervetuloa ilmoittatumaan HYSin salamurhaturnaukseen &quot;{tournament.name}&quot;!
+            Tervetuloa ilmoittautumaan HYSin salamurhaturnaukseen &quot;{tournament.name}&quot;!
           </p>
           <p>
             Ilmoittautuminen on kaksivaiheinen.
