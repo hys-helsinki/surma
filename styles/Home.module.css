@@ -17,9 +17,11 @@
   flex: 1;
   text-align: center;
   justify-content: center;
+  flex-direction: row;
   align-items: center;
-  margin: auto;
   padding: 4rem 0;
+  width: 99%;
+  max-width: calc(var(--content-width) * .75)
 }
 
 .footer {
@@ -125,18 +127,24 @@
   }
 }
 
-.tournament_table { 
+.tournamentTable { 
   table-layout: fixed;
   border-spacing: 5px;
-  margin-bottom: 30px;
+  margin-top: 30px;
+  margin-bottom: 50px;
   overflow-x: auto;
   display: block;
 }
 
-.tournament_td { 
+.tournamentTable td, 
+.tournamentTable th { 
   overflow: hidden; 
   text-overflow: ellipsis; 
   word-wrap: break-word;
-  width: 10%;
+  width: 20%;
   padding: 15px
+}
+
+.accordionText {
+  flex: 1;
 }
