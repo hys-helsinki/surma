@@ -10,6 +10,7 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  word-wrap: break-word;
 }
 
 .center {
@@ -21,7 +22,10 @@
   align-items: center;
   padding: 4rem 0;
   width: 99%;
-  max-width: calc(var(--content-width) * .75)
+  max-width: calc(var(--content-width) * .75);
+  overflow-x: auto;
+  word-wrap: break-word
+
 }
 
 .footer {
@@ -147,4 +151,5 @@
 
 .accordionText {
   flex: 1;
+  word-wrap: break-word;
 }
