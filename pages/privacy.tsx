@@ -2,7 +2,7 @@ import Image from "next/image";
 import logo from "/public/images/surma_logo.svg";
 import { Box, Container } from "@mui/material";
 
-export default function Home() {
+export default function Privacy() {
   return (
     <Container maxWidth="md">
     <Box>
