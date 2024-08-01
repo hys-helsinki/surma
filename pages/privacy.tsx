@@ -90,7 +90,7 @@ export default function Home() {
   <h2>Käyttäjän oikeudet</h2>
     <h3>Oikeus tietää, mitä tietoja on kerätty ja siirtää tiedot muualle</h3>
     <p>Kaikki kerätyt tiedot käyttäjästä ovat saatavilla tarvittaessa JSON- ja CSV-muodoissa käyttäjän pyynnöstä. 
-      Voit kysyä tietojasi rekisterin käsittelijöiltä. Kuvailethan tarkasti tietopyynnössä, haluatko vain Surman tiedot vai myös palveluntarjoajiemme tiedot. 
+      Käyttäjä voi kysyä tietoja rekisterin käsittelijöiltä. Käyttäjän toivotaan kuvailevan tarkasti, koskeeko pyyntö vain Surman tietoja vai myös palveluntarjoajiemme tietoja. 
       Toimitamme tiedot mahdollisimman nopeasti. Ilmoitamme arvioidun toimitusajan pyynnön laajuuden perusteella. 
       Käyttäjä voi välittää saamansa tiedot toiselle rekisterinpitäjälle.</p>
     <h3>Oikeus oikaista tietoja</h3>
