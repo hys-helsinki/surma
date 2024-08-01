@@ -78,8 +78,8 @@ export default function PlayerForm({ tournament }) {
       {isRegistrationOpen ? (
         <Box>
           <Box sx={{display: "flex", paddingTop: "20px"}}>
-            <Image src={logo} width={100} height={100} alt="Slaughter logo" style={{paddingTop: "10px", paddingLeft: "5px", paddingRight: "10px"}}/>
-            <h1 style={{marginLeft: "10px", paddingTop: "10px"}}>Ilmoittautuminen</h1>
+            <Image src={logo} width={75} height={75} alt="Slaughter logo" style={{paddingTop: "10px", paddingLeft: "5px", paddingRight: "10px"}}/>
+            <h1 style={{marginLeft: "10px"}}>Ilmoittautuminen</h1>
           </Box>
           <Box sx={{ my: 4 }}>
             <p>
