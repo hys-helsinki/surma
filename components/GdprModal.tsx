@@ -37,10 +37,9 @@ export default function GDPRModal({ text }) {
       >
         <Box sx={style}>
           <Typography id="short-privacy-policy" variant="h6">
-            <h3>Lyhyt tietosuojailmoitus</h3>
+            <h3>Tietosuojakäytäntömme lyhyesti</h3>
           </Typography>
           <div>
-            <b>TL, DR;</b>
             <ul>
               <li>Me emme tee analytiikkaa tiedoillasi. Käytämme tietojasi vain Surman ylläpitoon ja salamurhaturnauksen järjestämiseen.</li>
               <li>Tuhoamme tietosi Surmasta turnauksen jälkeen.</li>
@@ -49,7 +48,7 @@ export default function GDPRModal({ text }) {
           </div>
           <div className={styles.center}>
           <button onClick={handleClose} style={{marginBottom: "50px"}}>Kiitos, tämä riittää minulle!</button>
-          <button onClick={() => router.push({pathname: `/privacy`})}>Eikun koko ilmoitus, kiitos!</button>
+          <button onClick={() => router.push({pathname: `/privacy`})}>Eikun koko käytäntö, kiitos!</button>
           </div>
         </Box>
       </Modal>
