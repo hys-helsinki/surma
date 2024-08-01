@@ -4,9 +4,12 @@ import logo from "/public/images/surma_logo.svg";
 
 export default function Home() {
   return (
-    <div className={`${styles.main}`}>
-      <Image src={logo} width={100} height={100} alt="Slaughter logo" style={{paddingTop: "10px"}}/>
-      <h1>Tietosuojailmoitus</h1>
+    <div style={{paddingLeft: "2em", paddingRight: "2em"}}>
+    <div style={{paddingTop: "20px", display: "flex"}}>
+    <Image src={logo} width={100} height={100} alt="Slaughter logo" style={{paddingTop: "10px", paddingLeft: "5px", paddingRight: "10px"}}/>
+    <h1>Tietosuojailmoitus</h1>
+    </div>
+    <div style={{paddingTop: "5px"}}>
       <h2>Mikä Surma?</h2>
       <p>Surma on sovellus, jolla voi luoda, hallita ja ylläpitää salamurhaturnauksia. 
         Salamurhaturnauksissa pelaajat yrittävät leikkisästi ”salamurhata” toisensa erinäisten tietojen avulla ja Helsingin yliopiston salamurhapelaajat ry:n nettisivulla julkaistujen turnaussääntöjen puitteissa. 
@@ -142,6 +145,7 @@ export default function Home() {
   </ul>
   <p>Jos henkilötietojesi käsittelyssä on mielestäsi rikottu tietosuojalainsäädäntöä, sinulla on oikeus tehdä valitus valvontaviranomaiselle rekisterinpitäjän toteuttamasta henkilötietojen käsittelystä. 
     Valitus tehdään toimivaltaiselle valvontaviranomaiselle, Suomessa tietosuojavaltuutetulle tämän antamien ohjeiden mukaisesti. Lisätietoja löydät <a href="https://tietosuoja.fi/etusivu">tietosuojavaltuutetun verkkosivuilta</a>.</p>
+  </div>
   </div>
   );
 }
