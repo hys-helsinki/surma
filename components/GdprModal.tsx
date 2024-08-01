@@ -1,7 +1,9 @@
-import { Box, Typography } from "@mui/material/";
+import { Box, Typography, Button } from "@mui/material/";
 import Modal from "@mui/material/Modal";
 import { useState } from "react";
 import GdprText from "./GdprText";
+import styles from "../styles/Home.module.css";
+import { useRouter } from 'next/router';
 
 const style = {
   position: "absolute" as "absolute",
@@ -21,6 +23,7 @@ export default function GDPRModal({ text }) {
   const [open, setOpen] = useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
+  const router = useRouter();
 
   return (
     <span>
@@ -30,15 +33,18 @@ export default function GDPRModal({ text }) {
       <Modal
         open={open}
         onClose={handleClose}
-        aria-labelledby="modal-modal-title"
-        aria-describedby="modal-modal-description"
+        aria-labelledby="privacy-policy-modal"
+        aria-describedby="privacy-policy-in-a-nutshell"
       >
         <Box sx={style}>
-          <Typography id="modal-modal-title" variant="h6" component="h2">
-            Tietosuojaseloste
+          <Typography id="privacy-policy" variant="h6">
+            <h3>Tietosuojailmoitus</h3>
           </Typography>
-
           <GdprText />
+          <div className={styles.center}>
+          <button onClick={handleClose} style={{marginBottom: "50px"}}>Kiitos, tämä riittää minulle!</button>
+          <button onClick={() => router.push({pathname: `/pages/privacy`})}>Eikun koko ilmoitus, kiitos!</button>
+          </div>
         </Box>
       </Modal>
     </span>
