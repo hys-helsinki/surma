@@ -11,7 +11,7 @@ import { KK, MM, LL, TT } from '../../../constants'
 const BottomText = () => {
     return (
       <Box sx={{ my: 3, wordWrap: "break-word"}}>
-        Ilmoittautuessasi turnaukseeen hyväksyt Helsingin yliopiston salamurhaajien&nbsp; 
+        Ilmoittautuessasi turnaukseen hyväksyt Helsingin yliopiston salamurhaajien&nbsp; 
         <Link
           href={
             "https://salamurhaajat.net/mika-salamurhapeli/turnaussaannot"
