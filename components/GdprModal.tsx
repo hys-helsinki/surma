@@ -17,7 +17,7 @@ const style = {
   overflow: "scroll"
 };
 
-export default function GDPRModal() {
+export default function GDPRModal({ text }) {
   const [open, setOpen] = useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
@@ -25,7 +25,7 @@ export default function GDPRModal() {
   return (
     <span>
       <a onClick={handleOpen}>
-        <u>tietosuojaselosteen</u>
+        <u>{text}</u>
       </a>
       <Modal
         open={open}
