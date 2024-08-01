@@ -37,7 +37,7 @@ export default function GDPRModal({ text }) {
       >
         <Box sx={style}>
           <Typography id="short-privacy-policy" variant="h6">
-            <h3>Tietosuojailmoitus</h3>
+            <h3>Lyhyt tietosuojailmoitus</h3>
           </Typography>
           <div>
             <b>TL, DR;</b>
