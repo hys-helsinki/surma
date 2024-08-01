@@ -106,7 +106,7 @@ export default function Home() {
       Henkilötietojen käsittelyn rajoittaminen tai vastustaminen johtaa käyttäjän turnausosallistumisen peruuntumiseen ja tietojen säilyttämiseen turnauksen loppumiseen asti.</p>
   <h2>Kolmannet tahot</h2>
   <p><a href="https://eur-lex.europa.eu/legal-content/FI/TXT/?uri=CELEX%3A32016R0679">Euroopan unionin tietosuoja-asetus</a> takaa käyttäjälle useita oikeuksia, joiden avulla käyttäjä voi itse usein määrätä tietojensa käsittelystä kolmansilla tahoilla. 
-  Alla on lisätietoa Surman tietojen käsittely kolmansilla tahoilla.</p>
+  Alla on lisätietoa Surman tietojen käsittelystä kolmansilla tahoilla.</p>
   <p>Surmassa kerätyt tiedot siirtyvät käytettyjen palveluntarjoajien kautta EU:n ulkopuolelle kolmansille tahoille.
     Tietoja siirretään palveluntarjoajille vain siinä laajuudessa, kuin he tarvitsevat voidakseen tarjota palveluitaan tämän tietosuojailmoituksen määrittelemissä tarkoituksissa.
     Palveluntarjoajat on valittu huolellisesti ja heidän vastuullisuutensa tietosuojan suhteen huomioiden.</p>
