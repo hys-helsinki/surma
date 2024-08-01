@@ -121,7 +121,7 @@ export default function Home() {
   <p>Turnauksen tapahtumasivu on osana HYSin kotisivuja julkaistu ilmaiseksi WordPress.orgilla, joka on avoimen lähdekoodin ohjelmisto. 
     WordPressin palvelinta ylläpidetään suomalaisomisteisen Suncometin kautta. WordPress Foundation, joka on voittoa tavoittelematon organisaatio Yhdysvalloissa, omistaa WordPressin ja varmistaa ohjelmiston avoimen saatavuuden.</p>
     <p><a href="https://wordpress.org/about/privacy/">WordPressin, kotisivujen editointiohjelmiston tarjoajan, tietosuojailmoitus englanniksi</a>.</p> 
-    <p><a href="(https://salamurhaajat.net/tietosuojakaytanto">Kotisivujen tietosuojailmoitus suomeksi</a>.</p>
+    <p><a href="https://salamurhaajat.net/tietosuojakaytanto">Kotisivujen tietosuojailmoitus suomeksi</a>.</p>
   <p>Käyttäjän tietoja ei luovuteta muille kolmansille osapuolille muista kuin oikeudellisista syistä:</p>
   <ul>
   <li>soveltuvan lainsäädännön ja/tai oikeuden määräyksen täyttämiseksi;</li>
