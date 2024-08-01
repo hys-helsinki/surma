@@ -10,7 +10,7 @@ import { KK, MM, LL, TT } from '../../../constants'
 
 const BottomText = () => {
     return (
-      <Box sx={{ my: 3 }}>
+      <Box sx={{ my: 3, wordWrap: "break-word"}}>
         Ilmoittautuessasi turnaukseeen hyväksyt Helsingin yliopiston salamurhaajien&nbsp; 
         <Link
           href={
@@ -21,7 +21,7 @@ const BottomText = () => {
           <a><u>turnaussäännöt</u></a>
         </Link>
         &nbsp;sekä&nbsp;
-        <GdprModal />
+        <GdprModal text="tietosuojailmoituksen"/>.
       </Box>
     )
   }
@@ -38,7 +38,7 @@ const PlayerDetailsForm = ({dates, handleSubmit, isLoading}: {dates: string[], h
           learningInstitution: "",
           eyeColor: "",
           hair: "",
-          height: 0,
+          height: "",
           glasses: "",
           other: "",
         }}
