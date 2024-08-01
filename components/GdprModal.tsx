@@ -43,7 +43,7 @@ export default function GDPRModal({ text }) {
           <GdprText />
           <div className={styles.center}>
           <button onClick={handleClose} style={{marginBottom: "50px"}}>Kiitos, tämä riittää minulle!</button>
-          <button onClick={() => router.push({pathname: `/pages/privacy`})}>Eikun koko ilmoitus, kiitos!</button>
+          <button onClick={() => router.push({pathname: `/privacy`})}>Eikun koko ilmoitus, kiitos!</button>
           </div>
         </Box>
       </Modal>
