@@ -21,7 +21,7 @@ const BottomText = () => {
           <a><u>turnaussäännöt</u></a>
         </Link>
         &nbsp;sekä&nbsp;
-        <GdprModal text="tietosuojailmoituksen"/>.
+        <GdprModal text="tietosuojakäytännön"/>.
       </Box>
     )
   }
