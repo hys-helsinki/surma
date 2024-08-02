@@ -121,9 +121,9 @@ export default function Home({ tournaments }) {
         Turnausta pelataan osallistujien kesken murharingeittäin: pelaaja A:n tavoite on salamurhata kohde eli pelaaja B, pelaaja B saalistaa pelaaja C:tä ja niin edelleen aina pelaajaan N asti, joka väijyy pelaajaa A. 
         Mikäli A onnistuu murhaamaan B:n sääntöjen sallimalla tavalla, A ja B ottavat yhteyttä tuomaristoon ja raportoivat tapahtumien kulusta pisteytystä varten. Nyt B putoaa pelistä, jolloin A alkaakin väijyä C:tä uutena kohteenaan. 
         Peliä pelataan näin kellon ympäri ennalta määrättyyn aikarajaan asti, jolloin pelin voittaja päätetään pisteillä. Pelin helpottamiseksi pelaajat jakavat muun muuassa kalentereitaan ja kotiosoitteitaan toisilleen Surmassa.</p>
-        <p>Salamurhaturnaukseen osallistuminen aloitetaan ilmoittautumalla peliin Surman kautta, jonka jälkeen Surma lähettää lisäohjeita sähköpostilla. </p>
+        <p>Salamurhaturnaukseen osallistuminen aloitetaan ilmoittautumalla peliin Surman kautta, jonka jälkeen Surma ja turnaukset tuomaristo lähettävät lisäohjeita sähköpostilla. </p>
         <p>Lue lisää pelaajatiedoista ja niiden käsittelystä <Link href="/privacy"><a>Surman tietosuojakäytännöstä</a></Link>.</p> 
-        <p>Lisätietoja salamurhaturnauksesta ja sen säännöistä saa taas <a href="https://salamurhaajat.net/mika-salamurhapeli">HYSin nettisivuilta</a>.</p>
+        <p>Lue lisää salamurhaturnauksesta ja sen säännöistä <a href="https://salamurhaajat.net/mika-salamurhapeli">HYSin nettisivuilta</a>.</p>
         </AccordionDetails>
     </Accordion>
   </div>
