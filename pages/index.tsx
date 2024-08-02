@@ -62,7 +62,7 @@ export default function Home({ tournaments }) {
       <h1 className={styles.container} style={{ padding: "1em" }}>
         Surma (Murhamaster 3.0)
       </h1>
-      <Image src={logo} alt="logo" width={200} height={200} />
+      <Image src={logo} alt="logo" width={200} height={200} priority={true} />
       <h2 className={styles.container} style={{ padding: "1em" }}>
         {" "}
         Avoimet salamurhaturnaukset{" "}
@@ -104,7 +104,9 @@ export default function Home({ tournaments }) {
                   <td>
                     <NoSsr>
                       {modifyDate(tournament.registrationStartTime)}
-                      &nbsp;-&nbsp;{modifyDate(tournament.registrationEndTime)}{" "}
+                      &nbsp;-&nbsp;{modifyDate(
+                        tournament.registrationEndTime
+                      )}{" "}
                       ({Intl.DateTimeFormat().resolvedOptions().timeZone})
                     </NoSsr>
                   </td>
