@@ -39,7 +39,7 @@ const UserForm = ({tournament}: {tournament: Tournament}) => {
           <p>
             Ilmoittautuminen on kaksivaiheinen.
             Ensimmäiseksi pyydämme sinulta nimen, sähköpostiosoitteen ja puhelinnumeron. Näitä tietoja tarvitaan Surmaan kirjautumiseen ja jotta tuomaristo voi ottaa sinuun yhteyttä turnaukseen liittyvissä asioissa. 
-            Sähköpostiosoitteen vahvistamisen jälkeen pääset syöttämään loput turnauksessa vaadittavat tiedot. Ilmoittautuessasi turnaukseen hyväksyt Helsingin yliopiston salamurhaajien&nbsp; <GdprModal text="tietosuojakäytännön"/>.
+            Sähköpostiosoitteen vahvistamisen jälkeen pääset syöttämään loput turnauksessa vaadittavat tiedot. Ilmoittautuessasi turnaukseen hyväksyt Helsingin yliopiston salamurhaajien&nbsp;<GdprModal text="tietosuojakäytännön"/>.
           </p>
         </Box>
         <Box sx={{my: 5}}>
