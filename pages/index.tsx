@@ -60,7 +60,6 @@ export default function Home({ tournaments }) {
     {tournaments.map((tournament) => (
       <div key={tournament.id}>
         <Link href={`/registration/${tournament.id}`}>
-        <NoSsr>
         <table aria-label="tournament-table" className={styles.tournamentTable}>
         <thead>
         <tr>
@@ -74,16 +73,19 @@ export default function Home({ tournaments }) {
         <tr>
           <td>{tournament.name}</td>
           <td>
+          <NoSsr>
           {modifyDate(tournament.startTime)}&nbsp;-&nbsp;{modifyDate(tournament.endTime)} ({Intl.DateTimeFormat().resolvedOptions().timeZone})
+          </NoSsr>
           </td>
           <td>
+          <NoSsr>
           {modifyDate(tournament.registrationStartTime)}&nbsp;-&nbsp;{modifyDate(tournament.registrationEndTime)} ({Intl.DateTimeFormat().resolvedOptions().timeZone})
+          </NoSsr>
           </td>
           <td><a>Ilmoittautumislomake</a></td>
         </tr>
         </tbody>
       </table>
-      </NoSsr>
       </Link>
       </div>
     ))}
