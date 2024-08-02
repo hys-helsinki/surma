@@ -62,12 +62,15 @@ export default function Home({ tournaments }) {
         <Link href={`/registration/${tournament.id}`}>
         <NoSsr>
         <table aria-label="tournament-table" className={styles.tournamentTable}>
+        <thead>
         <tr>
           <th>Nimi</th>
           <th>Turnaus käynnissä</th>
           <th>Ilmoittautuminen käynnissä</th>
           <th></th>
         </tr>
+        </thead>
+        <tbody>
         <tr>
           <td>{tournament.name}</td>
           <td>
@@ -78,9 +81,10 @@ export default function Home({ tournaments }) {
           </td>
           <td><a>Ilmoittautumislomake</a></td>
         </tr>
+        </tbody>
       </table>
       </NoSsr>
-        </Link>
+      </Link>
       </div>
     ))}
     <Accordion variant="outlined">
