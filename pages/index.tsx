@@ -1,7 +1,6 @@
 import Image from "next/image";
 import styles from "../styles/Home.module.css";
-import { useSession, signIn, signOut } from "next-auth/react";
-import { useState, useEffect } from 'react';
+import { useSession, signIn} from "next-auth/react";
 import { GetStaticProps } from "next";
 import prisma from "../lib/prisma";
 import Link from "next/link";
@@ -26,20 +25,19 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
   return {
     props: { tournaments }
   };
-};
-
-const modifyDate = (s) => {
-  const addZero = (i) => {
-    if (i < 10) {i = "0" + i}
-    return i;
-  }
-  const date = new Date(s);
-  const formattedDate = `${date.getUTCDate()}.${date.getUTCMonth()+1}.${date.getUTCFullYear()} klo ${addZero(date.getHours())}.${addZero(date.getUTCMinutes())}`
-  return formattedDate
-}   
+}; 
 
 export default function Home({ tournaments }) {
   const { data: session } = useSession();
+  const modifyDate = (s) => {
+    const addZero = (i) => {
+      if (i < 10) {i = "0" + i}
+      return i;
+    }
+  const date = new Date(s);
+  const formattedDate = `${date.getUTCDate()}.${date.getUTCMonth()+1}.${date.getUTCFullYear()} klo ${addZero(date.getHours())}.${addZero(date.getUTCMinutes())}`
+  return formattedDate
+  }  
    
   if (session) {
     return {
