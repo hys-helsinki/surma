@@ -30,12 +30,14 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
 export default function Home({ tournaments }) {
   const { data: session } = useSession();
   const modifyDate = (s) => {
-    const addZero = (i) => {
-      if (i < 10) {i = "0" + i}
-      return i;
-    }
   const date = new Date(s);
-  const formattedDate = `${date.getUTCDate()}.${date.getUTCMonth()+1}.${date.getUTCFullYear()} klo ${addZero(date.getHours())}.${addZero(date.getUTCMinutes())}`
+  const formattedDate = `${date.toLocaleTimeString("fi-FI", {
+    hour: "2-digit",
+    minute: "2-digit",
+    year: "numeric",
+    day: "numeric",
+    month: "numeric",
+    timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone})}`
   return formattedDate
   }  
    
