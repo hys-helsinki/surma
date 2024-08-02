@@ -10,6 +10,22 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  word-wrap: break-word;
+}
+
+.center {
+  display: inline-block;
+  flex: 1;
+  text-align: center;
+  justify-content: center;
+  flex-direction: row;
+  align-items: center;
+  padding: 4rem 0;
+  width: 99%;
+  max-width: calc(var(--content-width) * .75);
+  overflow-x: auto;
+  word-wrap: break-word
+
 }
 
 .footer {
@@ -113,4 +129,27 @@
     width: 100%;
     flex-direction: column;
   }
+}
+
+.tournamentTable { 
+  table-layout: fixed;
+  border-spacing: 5px;
+  margin-top: 30px;
+  margin-bottom: 50px;
+  overflow-x: auto;
+  display: block;
+}
+
+.tournamentTable td, 
+.tournamentTable th { 
+  overflow: hidden; 
+  text-overflow: ellipsis; 
+  word-wrap: break-word;
+  width: 20%;
+  padding: 15px
+}
+
+.accordionText {
+  flex: 1;
+  word-wrap: break-word;
 }
