@@ -69,10 +69,10 @@ export default function Home({ tournaments }) {
         <tr>
           <td>{tournament.name}</td>
           <td>
-          {modifyDate(tournament.startTime)}&nbsp;-&nbsp;{modifyDate(tournament.endTime)}
+          {modifyDate(tournament.startTime)}&nbsp;-&nbsp;{modifyDate(tournament.endTime)} ({Intl.DateTimeFormat().resolvedOptions().timeZone})
           </td>
           <td>
-          {modifyDate(tournament.registrationStartTime)}&nbsp;-&nbsp;{modifyDate(tournament.registrationEndTime)}
+          {modifyDate(tournament.registrationStartTime)}&nbsp;-&nbsp;{modifyDate(tournament.registrationEndTime)} ({Intl.DateTimeFormat().resolvedOptions().timeZone})
           </td>
           <td><a>Ilmoittautumislomake</a></td>
         </tr>
