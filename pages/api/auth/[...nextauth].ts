@@ -20,6 +20,9 @@ export const authConfig = {
       from: "Surma authorization <no-reply.surma@salamurhaajat.net>"
     })
   ],
+  pages: {
+    signIn: "/auth/signin"
+  },
   callbacks: {
     async session({ session, token, user }) {
       try {
