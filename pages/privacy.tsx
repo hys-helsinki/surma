@@ -13,7 +13,7 @@ export default function Privacy() {
     <Box sx={{paddingTop: "5px"}}>
       <h2>Mikä Surma?</h2>
       <p>Surma on sovellus, jolla voi luoda, hallita ja ylläpitää salamurhaturnauksia. 
-        Salamurhaturnauksissa pelaajat yrittävät leikkisästi ”salamurhata” toisensa erinäisten tietojen avulla ja Helsingin yliopiston salamurhapelaajat ry:n nettisivulla julkaistujen turnaussääntöjen puitteissa. 
+        Salamurhaturnauksissa pelaajat yrittävät leikkisästi ”salamurhata” toisensa erinäisten tietojen avulla ja <a href="https://salamurhaajat.net/mika-salamurhapeli/turnaussaannot">Helsingin yliopiston salamurhapelaajat ry:n turnaussääntöjen</a> puitteissa. 
         Ilmoittautuessaan ja osallistuessaan salamurhaturnaukseen Surmassa, käyttäjä hyväksyy tietojensa käytön Surmassa seuraavan tietosuojakäytännön, Suomen kansallisen lainsäädännön ja Euroopan unionin tietosuoja-asetuksen mukaisesti salamurhaturnauksen järjestämistä ja Surman ylläpitämistä varten.</p>
       <h2>Tietolähteet</h2>
       <p>Käyttäjän tiedot kerätään kahdella lomakkeella ja evästeillä. 
