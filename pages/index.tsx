@@ -9,6 +9,7 @@ import Accordion from '@mui/material/Accordion';
 import AccordionSummary from '@mui/material/AccordionSummary';
 import AccordionDetails from '@mui/material/AccordionDetails';
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
+import { NoSsr } from '@mui/base/NoSsr'
 
 export const getStaticProps: GetStaticProps = async ({ params }) => {
   let tournaments = await prisma.tournament.findMany({
@@ -59,6 +60,7 @@ export default function Home({ tournaments }) {
     {tournaments.map((tournament) => (
       <div key={tournament.id}>
         <Link href={`/registration/${tournament.id}`}>
+        <NoSsr>
         <table aria-label="tournament-table" className={styles.tournamentTable}>
         <tr>
           <th>Nimi</th>
@@ -77,6 +79,7 @@ export default function Home({ tournaments }) {
           <td><a>Ilmoittautumislomake</a></td>
         </tr>
       </table>
+      </NoSsr>
         </Link>
       </div>
     ))}
