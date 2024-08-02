@@ -29,8 +29,12 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
 };
 
 const modifyDate = (s) => {
+  const addZero = (i) => {
+    if (i < 10) {i = "0" + i}
+    return i;
+  }
   const date = new Date(s);
-  const formattedDate = `${date.getUTCDate()}.${date.getUTCMonth()+1}.${date.getUTCFullYear()} klo ${date.getHours()}.${date.getUTCMinutes()  < 10 ? + '0' : ''}`
+  const formattedDate = `${date.getUTCDate()}.${date.getUTCMonth()+1}.${date.getUTCFullYear()} klo ${addZero(date.getHours())}.${addZero(date.getUTCMinutes())}`
   return formattedDate
 }   
 
