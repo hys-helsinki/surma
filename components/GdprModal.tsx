@@ -1,5 +1,4 @@
-import Box from "@mui/material/Box";
-import Typography from "@mui/material/Typography";
+import { Box, Typography } from "@mui/material/";
 import Modal from "@mui/material/Modal";
 import { useState } from "react";
 import GdprText from "./GdprText";

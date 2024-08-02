@@ -48,10 +48,12 @@ model Player {
   eyeColor            String?
   hair                String?
   height              Int?
-  glasses             String?
+  security            String?
   other               String?
   calendar            Json?
+  title               PlayerTitle?
   state               PlayerState  @default(ACTIVE)
+  confirmed           Boolean      @default(false)
   targets             Assignment[] @relation(name: "PlayerHasTarget")
   hunters             Assignment[] @relation(name: "PlayerIsHunted")
 }
@@ -61,6 +63,13 @@ enum PlayerState {
   DEAD
   DETECTIVE
   EXTRA
+}
+
+enum PlayerTitle {
+  KK
+  MM
+  LL
+  TT
 }
 
 model Umpire {
