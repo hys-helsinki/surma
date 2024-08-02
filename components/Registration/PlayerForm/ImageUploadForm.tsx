@@ -18,10 +18,11 @@ const ImageUploadForm = ({setSelectedFile, setSelectedFileName, setFileInputStat
     return (
     <Box sx={{mb: 2}}>
       <form>
-        <label>Valitse kuva itsestäsi</label>
+        <label htmlFor="image">Valitse kuva itsestäsi</label>
         <input
             type="file"
             name="image"
+            id="image"
             accept="image/*"
             onChange={handleFileInputChange}
             value={fileInputState} />

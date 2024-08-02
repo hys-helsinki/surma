@@ -50,12 +50,12 @@ const PlayerDetailsForm = ({dates, handleSubmit, isLoading}: {dates: string[], h
         }}
       >
       <Form>
-        <TextInput label="Peitenimi" name="alias" type="text" />
+        <TextInput label="Peitenimi" id="alias" name="alias" type="text" />
         <Box sx={{marginBottom: "8px"}}>
           <div style={{width: "100%"}}>
-            <label>Ammattilaistitteli</label>
+            <label htmlFor="title">Ammattilaistitteli</label>
           </div>
-          <Field name="title" as="select">
+          <Field name="title" id="title" as="select">
             <option>Ei titteliä</option>
             <option value={KK}>{KK}</option>
             <option value={MM}>{MM}</option>
@@ -63,29 +63,30 @@ const PlayerDetailsForm = ({dates, handleSubmit, isLoading}: {dates: string[], h
             <option value={TT}>{TT}</option>
           </Field>
         </Box>
-        <TextInput label="Osoite" name="home" type="text" />
+        <TextInput label="Osoite" id="home" name="home" type="text" />
         <TextInput
           label="Oppilaitos"
+          id="learningInstitution"
           name="learningInstitution"
           type="text"
         />
-        <TextInput label="Silmät" name="eyeColor" type="text" />
-        <TextInput label="Hiukset" name="hair" type="text" />
-        <TextInput label="Pituus" name="height" type="text" />
+        <TextInput label="Silmät" id="eyeColor" name="eyeColor" type="text" />
+        <TextInput label="Hiukset" id="hair" name="hair" type="text" />
+        <TextInput label="Pituus" id="height" name="height" type="text" />
         <div style={{marginBottom: "7px"}}>
-          <label>Turvallisuushuomiot (esim. pelin ulkopuolelle rajatut ajat ja paikat)</label>
-          <Field name="security" as="textarea" />
+          <label htmlFor="security">Turvallisuushuomiot (esim. pelin ulkopuolelle rajatut ajat ja paikat)</label>
+          <Field name="security" id="security" as="textarea" />
         </div>
         <div style={{marginBottom: "7px"}}>
-          <label>Muut tiedot, kulkuneuvot yms.</label>
-          <Field name="other" as="textarea" />
+          <label htmlFor="other">Muut tiedot, kulkuneuvot yms.</label>
+          <Field name="other" id="other" as="textarea" />
         </div>
   
         <h3>Kalenteritiedot</h3>
         {dates.map((d: string, i) => (
           <div key={i}>
-            <label>{d}</label>
-            <Field name={`calendar[${i}]`} as="textarea" />
+            <label htmlFor={`calendar[${i}]`}>{d}</label>
+            <Field name={`calendar[${i}]`} id={`calendar[${i}]`} as="textarea" />
           </div>
         ))}
   

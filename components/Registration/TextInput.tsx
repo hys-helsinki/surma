@@ -4,7 +4,7 @@ const TextInput = ({ label, ...props }) => {
     const [field, meta] = useField(props.name);
     return (
       <div style={{marginBottom: "7px"}}>
-        <label htmlFor={props.name}>{label}</label>
+        <label htmlFor={props.id}>{label}</label>
         {meta.touched && meta.error ? (
           <div className="registration-error">{meta.error}</div>
         ) : null}
