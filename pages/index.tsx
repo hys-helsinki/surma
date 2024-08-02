@@ -53,7 +53,7 @@ export default function Home({ tournaments }) {
     <h1 className={styles.container} style = {{padding: "1em"}}>Surma (Murhamaster 3.0)</h1>
     <Image src={logo} alt="logo" width={200} height={200}/>
     <h2 className={styles.container} style = {{padding: "1em"}}> Avoimet salamurhaturnaukset </h2>
-    <p> Alla on lista tulevista turnauksista. Jos alla ei näy mitään, tulevia turnauksia ei ole juuri nyt tiedossa, joten palaathan myöhemmin takaisin. Tietoa tulevista turnauksista voi saada myös <a href="https://salamurhaajat.net/tulevat-tapahtumat">HYSin nettisivuilta.</a></p>
+    <p> Alla on lista tulevista turnauksista. Jos alla ei näy mitään, tulevia turnauksia ei ole juuri nyt tiedossa, joten palaathan myöhemmin takaisin. Tietoa tulevista turnauksista voi saada myös <a href="https://salamurhaajat.net/tulevat-tapahtumat">Helsingin yliopiston salamurhapelaajien eli HYSin nettisivuilta.</a></p>
     {tournaments.map((tournament) => (
       <div key={tournament.id}>
         <Link href={`/registration/${tournament.id}`}>
@@ -123,7 +123,7 @@ export default function Home({ tournaments }) {
         Peliä pelataan näin kellon ympäri ennalta määrättyyn aikarajaan asti, jolloin pelin voittaja päätetään pisteillä. Pelin helpottamiseksi pelaajat jakavat muun muuassa kalentereitaan ja kotiosoitteitaan toisilleen Surmassa.</p>
         <p>Salamurhaturnaukseen osallistuminen aloitetaan ilmoittautumalla peliin Surman kautta, jonka jälkeen Surma lähettää lisäohjeita sähköpostilla. </p>
         <p>Lue lisää pelaajatiedoista ja niiden käsittelystä <Link href="/privacy"><a>Surman tietosuojakäytännöstä</a></Link>.</p> 
-        <p>Lisätietoja salamurhaturnauksesta ja sen säännöistä saa taas <a href="https://salamurhaajat.net/mika-salamurhapeli">Helsingin yliopiston salamurhapelaajien alias HYSin nettisivuilta.</a></p>
+        <p>Lisätietoja salamurhaturnauksesta ja sen säännöistä saa taas <a href="https://salamurhaajat.net/mika-salamurhapeli">HYSin nettisivuilta</a>.</p>
         </AccordionDetails>
     </Accordion>
   </div>
