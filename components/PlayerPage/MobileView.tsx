@@ -6,6 +6,7 @@ import PlayerDetails from "./PlayerDetails";
 import PlayerInfo from "./PlayerInfo";
 import { useState } from "react";
 import PlayerForm from "../Registration/PlayerForm";
+import { styled } from "@mui/material/styles";
 
 const states = {
   ACTIVE: "Elossa",
@@ -20,8 +21,8 @@ interface TabPanelProps {
   value: number;
 }
 
-const CustomTabPanel = (props: TabPanelProps) => {
-  const { children, value, index, ...other } = props;
+const TabPanel = (props: TabPanelProps) => {
+  const { children, value, index } = props;
 
   return (
     <div
@@ -29,19 +30,11 @@ const CustomTabPanel = (props: TabPanelProps) => {
       hidden={value !== index}
       id={`simple-tabpanel-${index}`}
       aria-labelledby={`simple-tab-${index}`}
-      {...other}
     >
-      {value === index && <Box sx={{ p: 3 }}>{children}</Box>}
+      {value === index && <Box padding={2}>{children}</Box>}
     </div>
   );
 };
-
-function a11yProps(index: number) {
-  return {
-    id: `simple-tab-${index}`,
-    "aria-controls": `simple-tabpanel-${index}`
-  };
-}
 
 const MobileView = ({
   user,
@@ -56,7 +49,7 @@ const MobileView = ({
 
   const [value, setValue] = useState(0);
 
-  const handleChange = (event: React.SyntheticEvent, newValue: number) => {
+  const handleTabChange = (event: React.SyntheticEvent, newValue: number) => {
     setValue(newValue);
   };
 
@@ -123,17 +116,23 @@ const MobileView = ({
       <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
         <Tabs
           value={value}
-          onChange={handleChange}
-          aria-label="basic tabs example"
+          onChange={handleTabChange}
+          variant="fullWidth"
+          textColor="inherit"
+          TabIndicatorProps={{
+            style: {
+              backgroundColor: "#f72a2a"
+            }
+          }}
         >
-          <Tab label="Kalenteri" {...a11yProps(0)} />
-          <Tab label="Tiedot" {...a11yProps(1)} />
+          <Tab label="Kalenteri" />
+          <Tab label="Tiedot" />
         </Tabs>
       </Box>
-      <CustomTabPanel value={value} index={0}>
+      <TabPanel value={value} index={0}>
         <Calendar player={user.player} tournament={tournament} />
-      </CustomTabPanel>
-      <CustomTabPanel value={value} index={1}>
+      </TabPanel>
+      <TabPanel value={value} index={1}>
         <Box>
           <PlayerInfo
             user={user}
@@ -142,7 +141,7 @@ const MobileView = ({
           />
           <PlayerDetails user={user} />
         </Box>
-      </CustomTabPanel>
+      </TabPanel>
     </Box>
   );
 };
