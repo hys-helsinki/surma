@@ -1,36 +1,13 @@
 import { GetServerSideProps } from "next";
-import PlayerDetails from "../../../../components/PlayerPage/PlayerDetails";
-import PlayerInfo from "../../../../components/PlayerPage/PlayerInfo";
 import prisma from "../../../../lib/prisma";
 import { useState } from "react";
-import { UpdateForm } from "../../../../components/PlayerPage/UpdateForm";
-import { useRouter } from "next/router";
 import NavigationBar from "../../../../components/NavigationBar";
-import { Calendar } from "../../../../components/Calendar";
 import { Grid, Alert, Button, Container } from "@mui/material";
 import { AuthenticationRequired } from "../../../../components/AuthenticationRequired";
 import { unstable_getServerSession } from "next-auth";
 import { authConfig } from "../../../api/auth/[...nextauth]";
 import { v2 as cloudinary } from "cloudinary";
-import PlayerForm from "../../../../components/Registration/PlayerForm";
-import ImageUploadForm from "../../../../components/Registration/PlayerForm/ImageUploadForm";
-import ImageComponent from "../../../../components/PlayerPage/ImageComponent";
-
-type FormData = {
-  address: string;
-  learningInstitution: string;
-  eyeColor: string;
-  hair: string;
-  height: number;
-  other: string;
-};
-
-const states = {
-  "ACTIVE": "Elossa",
-  "DEAD": "Kuollut",
-  "DETECTIVE": "Etsivä",
-  "EXTRA": "Lisäkohde"
-}
+import PlayerPage from "../../../../components/PlayerPage";
 
 const isCurrentUserAuthorized = async (currentUser, userId, tournamentId) => {
   if (currentUser.id == userId) {
@@ -189,7 +166,7 @@ export const getServerSideProps: GetServerSideProps = async ({
   };
 };
 
-export default function UserInfo({
+export default function User({
   user,
   tournament,
   imageUrl,
@@ -197,105 +174,18 @@ export default function UserInfo({
   currentUserIsUmpire,
   umpires
 }): JSX.Element {
-  const [isUpdated, setIsUpdated] = useState(true);
-  const [fileInputState, setFileInputState] = useState("");
-  const [selectedFile, setSelectedFile] = useState();
-  const [selectedFileName, setSelectedFileName] = useState("");
+
   const [confirmed, setConfirmed] = useState(user.player ? user.player.confirmed : false)
 
-  const router = useRouter();
-  const { id } = router.query;
-
-  if (!Boolean(user.player)) {
-    return <PlayerForm tournament={user.tournament} />
-  }
-
-  const start = new Date(tournament.startTime);
-  const end = new Date(tournament.endTime);
-  let dates: Array<any> = [];
-  dates.push(`${start.getDate()}.${start.getMonth() + 1}.`);
-  let loopDay = start;
-  while (loopDay < end) {
-    loopDay.setDate(loopDay.getDate() + 1);
-    dates.push(`${loopDay.getDate()}.${loopDay.getMonth() + 1}.`);
-  }
-
-  const handleDetailsSubmit = async (
-    event: React.FormEvent<HTMLFormElement>
-  ) => {
-    event.preventDefault();
-
-    const data: FormData = {
-      address: event.currentTarget.address.value,
-      learningInstitution: event.currentTarget.learningInstitution.value,
-      eyeColor: event.currentTarget.eyeColor.value,
-      hair: event.currentTarget.hair.value,
-      height: parseInt(event.currentTarget.height.value),
-      other: event.currentTarget.other.value
-    };
-    try {
-      await fetch(`/api/user/update/${id}`, {
-        method: "PUT",
-        body: JSON.stringify(data)
-      })
-      router.reload()
-    } catch (error) {
-      console.log(error)
-    }
-  };
-
-  const handleCalendarSubmit = async (
-    event: React.FormEvent<HTMLFormElement>
-  ) => {
-    const cal = {};
-    dates.forEach((x, i) => (cal[x] = event.currentTarget.dates[i].value));
-    event.preventDefault();
-    const data = {
-      calendar: cal
-    };
-    
-    try {
-      await fetch(`/api/user/update/${id}`, {
-      method: "PUT",
-      body: JSON.stringify(data)
-    })
-    router.reload()
-    } catch (error) {
-      console.log(error)
-    }
-  };
-
-  const uploadImage = async (event) => {
-    event.preventDefault();
-    if (!selectedFile) return;
-    try {
-      const reader = new FileReader();
-      reader.readAsDataURL(selectedFile);
-      reader.onloadend = async () => {
-        await fetch("/api/upload", {
-          method: "POST",
-          body: JSON.stringify({
-            url: reader.result,
-            publicId: user.player.id
-          })
-        });
-      };
-      setFileInputState("");
-      setSelectedFileName("");
-      setSelectedFile(null);
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
   let targetUsers = [];
+
   if (targets.length > 0) {
     targetUsers = user.player.targets.map(
       (assignment) => assignment.target.user
     );
   }
 
-  const handleConfirm = async () => {
+  const handleConfirmRegistration = async () => {
 
     const id = user.player.id
     const data = { confirmed: true };
@@ -321,55 +211,10 @@ export default function UserInfo({
               display: "flex",
               alignItems: "center"}}>
               Tuomaristo ei ole vielä hyväksynyt ilmoittautumista
-              {currentUserIsUmpire && <Button onClick={() => handleConfirm()} variant="outlined" color="error" sx={{ml: 1}} disabled={confirmed}>Hyväksy ilmoittautuminen</Button>}
+              {currentUserIsUmpire && <Button onClick={() => handleConfirmRegistration()} variant="outlined" color="error" sx={{ml: 1}} disabled={confirmed}>Hyväksy ilmoittautuminen</Button>}
             </Alert>
         }
-        <Container>
-          <Grid container>
-            <Grid item xs={12} md={6}>
-              <div
-                style={{
-                  paddingLeft: "10px",
-                  display: "inline-block"
-                }}
-              >
-                <h1>
-                  {user.player.title} {user.firstName} {user.lastName}
-                </h1>
-                <h2>Peitenimi: {user.player.alias}</h2>
-
-                {/* Show this when the tournament is on */}
-                <h3>Status: {states[user.player.state]}</h3>
-                {imageUrl == "" ? (
-                  <ImageComponent imageUrl={imageUrl} />
-                ) : (
-                  <>
-                    <ImageUploadForm setSelectedFile={setSelectedFile} setSelectedFileName={setSelectedFileName} setFileInputState={setFileInputState} selectedFileName={selectedFileName} fileInputState={fileInputState} />
-                    {selectedFile && <button onClick={(e) => uploadImage(e)}>Lisää kuva</button>}
-                  </>
-                )}
-                <PlayerInfo user={user} currentUserIsUmpire={currentUserIsUmpire} umpires={umpires}/>
-                {isUpdated ? (             
-                   <PlayerDetails player={user.player} />
-                ) : (       
-                  <UpdateForm
-                    data={user.player}
-                    handleSubmit={handleDetailsSubmit}
-                  />
-                )}
-                <button onClick={() => setIsUpdated(!isUpdated)}>
-                  {isUpdated ? "Muokkaa tietoja" : "Peruuta"}
-                </button>
-              </div>
-            </Grid>
-            <Grid item xs={12} md={6}>
-              <Calendar
-                player={user.player}
-                handleSubmit={handleCalendarSubmit}
-              />
-            </Grid>
-          </Grid>
-        </Container>
+        <PlayerPage user={user} tournament={tournament} imageUrl={imageUrl} currentUserIsUmpire={currentUserIsUmpire} umpires={umpires} />
       </div>
     </AuthenticationRequired>
   );

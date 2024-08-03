@@ -24,7 +24,6 @@ export const UpdateForm = ({ data, handleSubmit }): JSX.Element => {
             />
           </label>
         </div>
-        <h3>Kuvaus</h3>
         <div>
           <label htmlFor="eyeColor">
             Silmät:
@@ -54,15 +53,6 @@ export const UpdateForm = ({ data, handleSubmit }): JSX.Element => {
           </label>
         </div>
         <div>
-          <label htmlFor="glasses">
-            Silmälasit:
-            <input
-              type="text"
-              id="glasses"
-              name="glasses"
-              defaultValue={data.glasses}
-            />
-          </label>
         </div>
         <div>
           <label htmlFor="other">
