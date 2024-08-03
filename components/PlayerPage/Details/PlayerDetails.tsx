@@ -12,9 +12,7 @@ type FormData = {
   other: string;
 };
 
-const PlayerDetails = ({ user }) => {
-  const [isUpdated, setIsUpdated] = useState(true);
-
+const PlayerDetails = ({ user, isUpdated }) => {
   const router = useRouter();
   const { id } = router.query;
 
@@ -71,9 +69,6 @@ const PlayerDetails = ({ user }) => {
       ) : (
         <UpdateForm data={user.player} handleSubmit={handleDetailsSubmit} />
       )}
-      <button onClick={() => setIsUpdated(!isUpdated)}>
-        {isUpdated ? "Muokkaa tietoja" : "Peruuta"}
-      </button>
     </Box>
   );
 };

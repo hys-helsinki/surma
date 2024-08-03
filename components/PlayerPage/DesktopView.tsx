@@ -1,11 +1,11 @@
 import { Container, Grid } from "@mui/material";
 import ImageUploadForm from "../Registration/PlayerForm/ImageUploadForm";
 import { Calendar } from "./Calendar";
-import ImageComponent from "./ImageComponent";
-import PlayerDetails from "./PlayerDetails";
-import PlayerInfo from "./PlayerInfo";
+import ImageComponent from "./Info/ImageComponent";
 import { useState } from "react";
 import PlayerForm from "../Registration/PlayerForm";
+import Details from "./Details";
+import Info from "./Info";
 
 const states = {
   ACTIVE: "Elossa",
@@ -56,42 +56,12 @@ const DesktopView = ({
     <Container>
       <Grid container>
         <Grid item xs={12} md={6}>
-          <div
-            style={{
-              paddingLeft: "10px",
-              display: "inline-block"
-            }}
-          >
-            <h1>
-              {user.player.title} {user.firstName} {user.lastName}
-            </h1>
-            <h2>Peitenimi: {user.player.alias}</h2>
-
-            {/* Show this when the tournament is on */}
-            <h3>Status: {states[user.player.state]}</h3>
-            {imageUrl == "" ? (
-              <ImageComponent imageUrl={imageUrl} />
-            ) : (
-              <>
-                <ImageUploadForm
-                  setSelectedFile={setSelectedFile}
-                  setSelectedFileName={setSelectedFileName}
-                  setFileInputState={setFileInputState}
-                  selectedFileName={selectedFileName}
-                  fileInputState={fileInputState}
-                />
-                {selectedFile && (
-                  <button onClick={(e) => uploadImage(e)}>Lisää kuva</button>
-                )}
-              </>
-            )}
-            <PlayerInfo
-              user={user}
-              currentUserIsUmpire={currentUserIsUmpire}
-              umpires={umpires}
-            />
-            <PlayerDetails user={user} />
-          </div>
+          <Info user={user} imageUrl={imageUrl} />
+          <Details
+            user={user}
+            umpires={umpires}
+            currentUserIsUmpire={currentUserIsUmpire}
+          />
         </Grid>
         <Grid item xs={12} md={6}>
           <Calendar player={user.player} tournament={tournament} />
