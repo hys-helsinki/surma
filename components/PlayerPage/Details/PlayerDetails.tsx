@@ -46,7 +46,7 @@ const PlayerDetails = ({ user, isUpdated }) => {
     <Box>
       {isUpdated ? (
         <Box sx={{ mt: 4 }}>
-          <h3>Kuvaus</h3>
+          <h2>Kuvaus</h2>
           <p>
             <b>Osoite:</b> {player.address}
           </p>

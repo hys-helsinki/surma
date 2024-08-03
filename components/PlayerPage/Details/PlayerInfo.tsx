@@ -1,49 +1,86 @@
 import { Box, Button, IconButton } from "@mui/material";
 import { useState } from "react";
-import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
-import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
+import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
+import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
 
-const PlayerInfo = ({ user, currentUserIsUmpire, umpires }: {user: any, currentUserIsUmpire: boolean, umpires: any[]}): JSX.Element => {
+const PlayerInfo = ({
+  user,
+  currentUserIsUmpire,
+  umpires
+}: {
+  user: any;
+  currentUserIsUmpire: boolean;
+  umpires: any[];
+}): JSX.Element => {
+  const playerUmpire = user.player.umpire;
 
-  // const playerUmpire = user.player.umpire
+  const otherUmpires = umpires.filter(
+    (umpire) => umpire.id !== playerUmpire.id
+  );
 
-  const [showOtherUmpires, setShowOtherUmpires] = useState(false)
-
-  const testUmpire = {user: {firstName: "test", lastName: "test", phone: "1111", email: "test@test"}}
+  const [showOtherUmpires, setShowOtherUmpires] = useState(false);
 
   //testidataaa
   return (
-    <Box sx={{mt: 4}}>
-      <h2>Yhteystiedot</h2>
-      <p>puhelinnumero: {user.phone}</p>
-      <p>email: {user.email}</p>
+    <Box>
+      {playerUmpire && (
+        <Box sx={{ mt: 4 }}>
+          <h2>Pelaajan tuomari</h2>
+          <p>
+            {playerUmpire.user.firstName} {playerUmpire.user.lastName} (
+            {playerUmpire.responsibility})
+          </p>
+          <p>
+            {playerUmpire.user.email} {playerUmpire.user.phone}
+          </p>
+        </Box>
+      )}
 
-      {currentUserIsUmpire &&
-      <><h3>Käyttäjän viime käynti</h3><p>20434390242</p></>}
-
-      <Box sx={{mt: 4}}>
-        <p></p>
-        <h3>Pelaajan tuomari</h3>
-        <p>{testUmpire.user.firstName} {testUmpire.user.lastName}</p>
-        <p>{testUmpire.user.email}</p>
-        <p>{testUmpire.user.phone}</p>
-      </Box>
-
-      {umpires && umpires.length !== 0 && (
+      {otherUmpires.length !== 0 && (
         <div>
-          <h4 style={{display: "inline"}}>Muut tuomarit</h4><Button onClick={() => setShowOtherUmpires(!showOtherUmpires)} sx={{color: "white"}}>{showOtherUmpires ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}</Button>
-          {
-            showOtherUmpires ? (
+          <h3 style={{ display: "inline" }}>Muut tuomarit</h3>
+          <Button
+            onClick={() => setShowOtherUmpires(!showOtherUmpires)}
+            sx={{ color: "white" }}
+          >
+            {showOtherUmpires ? (
+              <KeyboardArrowUpIcon />
+            ) : (
+              <KeyboardArrowRightIcon />
+            )}
+          </Button>
+          {showOtherUmpires ? (
             <div>
-            {umpires.map(umpire => (
-            <div key={umpire.id}><p>{umpire.user.firstName} {umpire.user.lastName}</p><p>{umpire.user.email}</p><p>{umpire.user.phone}</p></div>
-          ))}</div>
-            ) : null
-          }
-          
-        </div>)}
+              {otherUmpires.map((umpire) => (
+                <div key={umpire.id}>
+                  <p>
+                    {umpire.user.firstName} {umpire.user.lastName} (
+                    {umpire.responsibility})
+                  </p>
+                  <p>
+                    {umpire.user.email} {umpire.user.phone}
+                  </p>
+                </div>
+              ))}
+            </div>
+          ) : null}
+        </div>
+      )}
+
+      <Box sx={{ mt: 4 }}>
+        <h2>Yhteystiedot</h2>
+        <p>puhelinnumero: {user.phone}</p>
+        <p>email: {user.email}</p>
+
+        {currentUserIsUmpire && (
+          <>
+            <h3>Käyttäjän viime käynti</h3>
+            <p>20434390242</p>
+          </>
+        )}
+      </Box>
     </Box>
   );
 };
 
-export default PlayerInfo
+export default PlayerInfo;

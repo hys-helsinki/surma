@@ -2,14 +2,7 @@ import { GetServerSideProps } from "next";
 import prisma from "../../../../lib/prisma";
 import { useState } from "react";
 import NavigationBar from "../../../../components/NavigationBar";
-import {
-  Grid,
-  Alert,
-  Button,
-  Container,
-  useMediaQuery,
-  useTheme
-} from "@mui/material";
+import { Alert, Button, useMediaQuery, useTheme } from "@mui/material";
 import { AuthenticationRequired } from "../../../../components/AuthenticationRequired";
 import { unstable_getServerSession } from "next-auth";
 import { authConfig } from "../../../api/auth/[...nextauth]";
@@ -102,6 +95,7 @@ export const getServerSideProps: GetServerSideProps = async ({
           umpire: {
             select: {
               id: true,
+              responsibility: true,
               user: {
                 select: {
                   firstName: true,
