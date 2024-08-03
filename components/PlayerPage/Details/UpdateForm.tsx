@@ -1,83 +1,43 @@
-export const UpdateForm = ({ data, handleSubmit }): JSX.Element => {
+import { Box, Button } from "@mui/material";
+import { Field, Form, Formik } from "formik";
+import TextInput from "../../Registration/TextInput";
+
+export const UpdateForm = ({ player, handleSubmit }): JSX.Element => {
   return (
-    <div className="updateform">
-      <form onSubmit={handleSubmit}>
-        <div>
-          <label htmlFor="security">
+    <Formik
+      enableReinitialize={true}
+      initialValues={{
+        address: player.address,
+        learningInstitution: player.learningInstitution,
+        eyeColor: player.eyeColor,
+        hair: player.hair,
+        height: player.height,
+        other: player.other,
+        security: player.security
+      }}
+      onSubmit={(values) => {
+        handleSubmit(values);
+      }}
+    >
+      <Form>
+        <div style={{ marginBottom: "7px" }}>
+          <label>
             Turvallisuushuomiot (esim. pelin ulkopuolelle rajatut ajat ja
             paikat)
-            <input
-              type="text"
-              id="security"
-              name="security"
-              defaultValue={data.security}
-            />
           </label>
+          <Field name="security" as="textarea" />
         </div>
-        <div>
-          <label htmlFor="address">
-            Kotiosoite:
-            <input
-              type="text"
-              id="address"
-              name="address"
-              defaultValue={data.address}
-            />
-          </label>
+        <TextInput label="Osoite" name="address" type="text" />
+        <TextInput label="Opinahjo" name="learningInstitution" type="text" />
+        <TextInput label="Silmät" name="eyeColor" type="text" />
+        <TextInput label="Hiukset" name="hair" type="text" />
+        <TextInput label="Pituus" name="height" type="text" />
+        <div style={{ marginBottom: "7px" }}>
+          <label>Ulkonäkö, kulkuvälineet ja muut lisätiedot:</label>
+          <Field name="other" as="textarea" />
         </div>
-        <div>
-          <label htmlFor="learningInstitution">
-            Oppilaitos:
-            <input
-              type="text"
-              id="learningInstitution"
-              name="learningInstitution"
-              defaultValue={data.learningInstitution}
-            />
-          </label>
-        </div>
-        <div>
-          <label htmlFor="eyeColor">
-            Silmät:
-            <input
-              type="text"
-              id="eyeColor"
-              name="eyeColor"
-              defaultValue={data.eyeColor}
-            />
-          </label>
-        </div>
-        <div>
-          <label htmlFor="hair">
-            Hiukset:
-            <input type="text" id="hair" name="hair" defaultValue={data.hair} />
-          </label>
-        </div>
-        <div>
-          <label htmlFor="height">
-            Pituus:
-            <input
-              type="text"
-              id="height"
-              name="height"
-              defaultValue={data.height}
-            />
-          </label>
-        </div>
-        <div>
-          <label htmlFor="other">
-            Ulkonäkö, kulkuvälineet ja muut lisätiedot
-            <input
-              type="text"
-              id="other"
-              name="other"
-              defaultValue={data.other}
-            />
-          </label>
-        </div>
-
-        <button type="submit">Tallenna muokkaukset</button>
-      </form>
-    </div>
+        <Button type="submit">Tallenna tiedot</Button>
+      </Form>
+    </Formik>
   );
 };

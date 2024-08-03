@@ -46,39 +46,45 @@ const PlayerDetails = ({ user, isUpdated }) => {
 
   return (
     <Box>
-      {isUpdated ? (
-        <Box sx={{ mt: 4 }}>
-          <h2>Kuvaus</h2>
-          <p>
-            <PriorityHighIcon color="warning" fontSize="small" sx={{ mr: 1 }} />
-            <b>
-              Turvallisuushuomiot (esim. pelin ulkopuolelle rajatut ajat ja
-              paikat):{" "}
-            </b>
-            {player.security}
-          </p>
-          <p>
-            <b>Osoite:</b> {player.address}
-          </p>
-          <p>
-            <b>Opinahjo:</b> {player.learningInstitution}
-          </p>
-          <p>
-            <b>Silmät:</b> {player.eyeColor}
-          </p>
-          <p>
-            <b>Hiukset:</b> {player.hair}
-          </p>
-          <p>
-            <b>Pituus:</b> {player.height}
-          </p>
-          <p>
-            <b>Ulkonäkö, kulkuvälineet ja muut lisätiedot:</b> {player.other}
-          </p>
-        </Box>
-      ) : (
-        <UpdateForm data={user.player} handleSubmit={handleDetailsSubmit} />
-      )}
+      <Box sx={{ mt: 4 }}>
+        <h2>Kuvaus</h2>
+        {isUpdated ? (
+          <>
+            <p>
+              <PriorityHighIcon
+                color="warning"
+                fontSize="small"
+                sx={{ mr: 1 }}
+              />
+              <b>
+                Turvallisuushuomiot (esim. pelin ulkopuolelle rajatut ajat ja
+                paikat):{" "}
+              </b>
+              {player.security}
+            </p>
+            <p>
+              <b>Osoite:</b> {player.address}
+            </p>
+            <p>
+              <b>Opinahjo:</b> {player.learningInstitution}
+            </p>
+            <p>
+              <b>Silmät:</b> {player.eyeColor}
+            </p>
+            <p>
+              <b>Hiukset:</b> {player.hair}
+            </p>
+            <p>
+              <b>Pituus:</b> {player.height}
+            </p>
+            <p>
+              <b>Ulkonäkö, kulkuvälineet ja muut lisätiedot:</b> {player.other}
+            </p>
+          </>
+        ) : (
+          <UpdateForm player={user.player} handleSubmit={handleDetailsSubmit} />
+        )}
+      </Box>
     </Box>
   );
 };
