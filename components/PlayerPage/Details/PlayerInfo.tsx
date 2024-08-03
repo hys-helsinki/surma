@@ -12,15 +12,14 @@ const PlayerInfo = ({
   currentUserIsUmpire: boolean;
   umpires: any[];
 }): JSX.Element => {
+  const [showOtherUmpires, setShowOtherUmpires] = useState(false);
+
   const playerUmpire = user.player.umpire;
 
   const otherUmpires = umpires.filter(
     (umpire) => umpire.id !== playerUmpire.id
   );
 
-  const [showOtherUmpires, setShowOtherUmpires] = useState(false);
-
-  //testidataaa
   return (
     <Box>
       {playerUmpire && (

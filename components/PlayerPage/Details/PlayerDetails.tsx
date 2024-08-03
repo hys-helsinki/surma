@@ -1,7 +1,7 @@
 import { Box } from "@mui/material";
 import { UpdateForm } from "./UpdateForm";
-import { useState } from "react";
 import { useRouter } from "next/router";
+import PriorityHighIcon from "@mui/icons-material/PriorityHigh";
 
 type FormData = {
   address: string;
@@ -10,6 +10,7 @@ type FormData = {
   hair: string;
   height: number;
   other: string;
+  security: string;
 };
 
 const PlayerDetails = ({ user, isUpdated }) => {
@@ -29,7 +30,8 @@ const PlayerDetails = ({ user, isUpdated }) => {
       eyeColor: event.currentTarget.eyeColor.value,
       hair: event.currentTarget.hair.value,
       height: parseInt(event.currentTarget.height.value),
-      other: event.currentTarget.other.value
+      other: event.currentTarget.other.value,
+      security: event.currentTarget.security.value
     };
     try {
       await fetch(`/api/user/update/${id}`, {
@@ -47,6 +49,14 @@ const PlayerDetails = ({ user, isUpdated }) => {
       {isUpdated ? (
         <Box sx={{ mt: 4 }}>
           <h2>Kuvaus</h2>
+          <p>
+            <PriorityHighIcon color="warning" fontSize="small" sx={{ mr: 1 }} />
+            <b>
+              Turvallisuushuomiot (esim. pelin ulkopuolelle rajatut ajat ja
+              paikat):{" "}
+            </b>
+            {player.security}
+          </p>
           <p>
             <b>Osoite:</b> {player.address}
           </p>

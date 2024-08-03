@@ -3,6 +3,18 @@ export const UpdateForm = ({ data, handleSubmit }): JSX.Element => {
     <div className="updateform">
       <form onSubmit={handleSubmit}>
         <div>
+          <label htmlFor="security">
+            Turvallisuushuomiot (esim. pelin ulkopuolelle rajatut ajat ja
+            paikat)
+            <input
+              type="text"
+              id="security"
+              name="security"
+              defaultValue={data.security}
+            />
+          </label>
+        </div>
+        <div>
           <label htmlFor="address">
             Kotiosoite:
             <input
@@ -51,8 +63,6 @@ export const UpdateForm = ({ data, handleSubmit }): JSX.Element => {
               defaultValue={data.height}
             />
           </label>
-        </div>
-        <div>
         </div>
         <div>
           <label htmlFor="other">
