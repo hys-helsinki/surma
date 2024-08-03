@@ -1,18 +1,8 @@
 import { Container, Grid } from "@mui/material";
-import ImageUploadForm from "../Registration/PlayerForm/ImageUploadForm";
 import { Calendar } from "./Calendar";
-import ImageComponent from "./Info/ImageComponent";
-import { useState } from "react";
 import PlayerForm from "../Registration/PlayerForm";
 import Details from "./Details";
 import Info from "./Info";
-
-const states = {
-  ACTIVE: "Elossa",
-  DEAD: "Kuollut",
-  DETECTIVE: "Etsivä",
-  EXTRA: "Lisäkohde"
-};
 
 const DesktopView = ({
   user,
@@ -21,36 +11,9 @@ const DesktopView = ({
   currentUserIsUmpire,
   umpires
 }) => {
-  const [fileInputState, setFileInputState] = useState("");
-  const [selectedFile, setSelectedFile] = useState();
-  const [selectedFileName, setSelectedFileName] = useState("");
-
   if (!Boolean(user.player)) {
     return <PlayerForm tournament={user.tournament} />;
   }
-
-  const uploadImage = async (event) => {
-    event.preventDefault();
-    if (!selectedFile) return;
-    try {
-      const reader = new FileReader();
-      reader.readAsDataURL(selectedFile);
-      reader.onloadend = async () => {
-        await fetch("/api/upload", {
-          method: "POST",
-          body: JSON.stringify({
-            url: reader.result,
-            publicId: user.player.id
-          })
-        });
-      };
-      setFileInputState("");
-      setSelectedFileName("");
-      setSelectedFile(null);
-    } catch (error) {
-      console.log(error);
-    }
-  };
 
   return (
     <Container>
