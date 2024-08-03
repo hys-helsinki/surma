@@ -276,7 +276,7 @@ export default function Target({
                   {currentUser.player.state == "DETECTIVE" && (
                     <h3>Pelaajan alias: {player.alias}</h3>
                   )}
-                  <PlayerDetails player={player} />
+                  {/* <PlayerDetails player={player} /> */}
                 </div>
               </div>
             </div>
