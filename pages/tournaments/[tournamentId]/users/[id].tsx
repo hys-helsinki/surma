@@ -2,12 +2,20 @@ import { GetServerSideProps } from "next";
 import prisma from "../../../../lib/prisma";
 import { useState } from "react";
 import NavigationBar from "../../../../components/NavigationBar";
-import { Grid, Alert, Button, Container } from "@mui/material";
+import {
+  Grid,
+  Alert,
+  Button,
+  Container,
+  useMediaQuery,
+  useTheme
+} from "@mui/material";
 import { AuthenticationRequired } from "../../../../components/AuthenticationRequired";
 import { unstable_getServerSession } from "next-auth";
 import { authConfig } from "../../../api/auth/[...nextauth]";
 import { v2 as cloudinary } from "cloudinary";
-import PlayerPage from "../../../../components/PlayerPage";
+import DesktopView from "../../../../components/PlayerPage/DesktopView";
+import MobileView from "../../../../components/PlayerPage/MobileView";
 
 const isCurrentUserAuthorized = async (currentUser, userId, tournamentId) => {
   if (currentUser.id == userId) {
@@ -122,7 +130,7 @@ export const getServerSideProps: GetServerSideProps = async ({
   const umpires = await prisma.umpire.findMany({
     select: {
       id: true,
-      responsibility: true, 
+      responsibility: true,
       user: {
         select: {
           firstName: true,
@@ -132,8 +140,7 @@ export const getServerSideProps: GetServerSideProps = async ({
         }
       }
     }
-
-  })
+  });
 
   let imageUrl = "";
   try {
@@ -153,7 +160,7 @@ export const getServerSideProps: GetServerSideProps = async ({
   ) {
     targets = user.player.targets;
   }
-  
+
   return {
     props: {
       user,
@@ -174,8 +181,11 @@ export default function User({
   currentUserIsUmpire,
   umpires
 }): JSX.Element {
-
-  const [confirmed, setConfirmed] = useState(user.player ? user.player.confirmed : false)
+  const [confirmed, setConfirmed] = useState(
+    user.player ? user.player.confirmed : false
+  );
+  const theme = useTheme();
+  const matches = useMediaQuery(theme.breakpoints.down("md"));
 
   let targetUsers = [];
 
@@ -186,16 +196,14 @@ export default function User({
   }
 
   const handleConfirmRegistration = async () => {
-
-    const id = user.player.id
+    const id = user.player.id;
     const data = { confirmed: true };
     await fetch(`/api/player/${id}/confirm`, {
       method: "PATCH",
       body: JSON.stringify(data)
     });
-    setConfirmed(true)
-
-  }
+    setConfirmed(true);
+  };
 
   return (
     <AuthenticationRequired>
@@ -205,16 +213,42 @@ export default function User({
           userId={user.id}
           tournamentId={user.tournamentId}
         />
-        {
-          !user.player.confirmed && 
-            <Alert severity="warning" sx={{minHeight: "50px",   
-              display: "flex",
-              alignItems: "center"}}>
-              Tuomaristo ei ole vielä hyväksynyt ilmoittautumista
-              {currentUserIsUmpire && <Button onClick={() => handleConfirmRegistration()} variant="outlined" color="error" sx={{ml: 1}} disabled={confirmed}>Hyväksy ilmoittautuminen</Button>}
-            </Alert>
-        }
-        <PlayerPage user={user} tournament={tournament} imageUrl={imageUrl} currentUserIsUmpire={currentUserIsUmpire} umpires={umpires} />
+        {!user.player.confirmed && (
+          <Alert
+            severity="warning"
+            sx={{ minHeight: "50px", display: "flex", alignItems: "center" }}
+          >
+            Tuomaristo ei ole vielä hyväksynyt ilmoittautumista
+            {currentUserIsUmpire && (
+              <Button
+                onClick={() => handleConfirmRegistration()}
+                variant="outlined"
+                color="error"
+                sx={{ ml: 1 }}
+                disabled={confirmed}
+              >
+                Hyväksy ilmoittautuminen
+              </Button>
+            )}
+          </Alert>
+        )}
+        {matches ? (
+          <MobileView
+            user={user}
+            tournament={tournament}
+            imageUrl={imageUrl}
+            currentUserIsUmpire={currentUserIsUmpire}
+            umpires={umpires}
+          />
+        ) : (
+          <DesktopView
+            user={user}
+            tournament={tournament}
+            imageUrl={imageUrl}
+            currentUserIsUmpire={currentUserIsUmpire}
+            umpires={umpires}
+          />
+        )}
       </div>
     </AuthenticationRequired>
   );

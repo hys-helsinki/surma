@@ -14,7 +14,7 @@ const states = {
   EXTRA: "Lisäkohde"
 };
 
-const PlayerPage = ({
+const DesktopView = ({
   user,
   tournament,
   imageUrl,
@@ -101,4 +101,4 @@ const PlayerPage = ({
   );
 };
 
-export default PlayerPage;
+export default DesktopView;
