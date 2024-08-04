@@ -2,6 +2,7 @@ import { Box } from "@mui/material";
 import { UpdateForm } from "./UpdateForm";
 import { useRouter } from "next/router";
 import PriorityHighIcon from "@mui/icons-material/PriorityHigh";
+import { useState } from "react";
 
 type FormData = {
   address: string;
@@ -14,25 +15,15 @@ type FormData = {
 };
 
 const PlayerDetails = ({ user, isUpdated }) => {
+  const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
   const { id } = router.query;
 
   const player = user.player;
 
-  const handleDetailsSubmit = async (
-    event: React.FormEvent<HTMLFormElement>
-  ) => {
-    event.preventDefault();
-
-    const data: FormData = {
-      address: event.currentTarget.address.value,
-      learningInstitution: event.currentTarget.learningInstitution.value,
-      eyeColor: event.currentTarget.eyeColor.value,
-      hair: event.currentTarget.hair.value,
-      height: parseInt(event.currentTarget.height.value),
-      other: event.currentTarget.other.value,
-      security: event.currentTarget.security.value
-    };
+  const handleDetailsSubmit = async (values) => {
+    setIsLoading(true);
+    const data: FormData = values;
     try {
       await fetch(`/api/user/update/${id}`, {
         method: "PUT",
@@ -82,7 +73,11 @@ const PlayerDetails = ({ user, isUpdated }) => {
             </p>
           </>
         ) : (
-          <UpdateForm player={user.player} handleSubmit={handleDetailsSubmit} />
+          <UpdateForm
+            player={user.player}
+            handleSubmit={handleDetailsSubmit}
+            isLoading={isLoading}
+          />
         )}
       </Box>
     </Box>

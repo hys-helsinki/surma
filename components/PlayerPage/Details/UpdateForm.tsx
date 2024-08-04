@@ -1,8 +1,12 @@
-import { Box, Button } from "@mui/material";
 import { Field, Form, Formik } from "formik";
 import TextInput from "../../Registration/TextInput";
+import LoadingButton from "@mui/lab/LoadingButton";
 
-export const UpdateForm = ({ player, handleSubmit }): JSX.Element => {
+export const UpdateForm = ({
+  player,
+  handleSubmit,
+  isLoading
+}): JSX.Element => {
   return (
     <Formik
       enableReinitialize={true}
@@ -36,7 +40,9 @@ export const UpdateForm = ({ player, handleSubmit }): JSX.Element => {
           <label>Ulkonäkö, kulkuvälineet ja muut lisätiedot:</label>
           <Field name="other" as="textarea" />
         </div>
-        <Button type="submit">Tallenna tiedot</Button>
+        <LoadingButton loading={isLoading} type="submit">
+          Tallenna
+        </LoadingButton>
       </Form>
     </Formik>
   );
