@@ -1,7 +1,13 @@
 import Image from "next/image";
 import { useState } from "react";
 
-const ImageComponent = ({ imageUrl }: { imageUrl: string }) => {
+const ImageComponent = ({
+  imageUrl,
+  setUpdateImage
+}: {
+  imageUrl: string;
+  setUpdateImage: any;
+}) => {
   const [showPicture, setShowPicture] = useState(false);
 
   return (
@@ -18,8 +24,14 @@ const ImageComponent = ({ imageUrl }: { imageUrl: string }) => {
           ></Image>
         </div>
       ) : null}
-      <button onClick={() => setShowPicture(!showPicture)}>
+      <button
+        onClick={() => setShowPicture(!showPicture)}
+        style={{ marginRight: "10px" }}
+      >
         {showPicture ? "Piilota" : "Näytä kuva"}
+      </button>
+      <button onClick={() => setUpdateImage((prevState) => !prevState)}>
+        Vaihda kuva
       </button>
     </div>
   );

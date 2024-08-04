@@ -23,7 +23,7 @@ const PlayerInfo = ({
   return (
     <Box>
       {playerUmpire && (
-        <Box sx={{ mt: 4 }}>
+        <Box>
           <h2>Pelaajan tuomari</h2>
           <p>
             {playerUmpire.user.firstName} {playerUmpire.user.lastName} (

@@ -44,8 +44,8 @@ const Info = ({ user, imageUrl }) => {
   return (
     <div
       style={{
-        paddingLeft: "10px",
-        display: "inline-block"
+        display: "inline-block",
+        marginBottom: "20px"
       }}
     >
       <h1>
@@ -55,12 +55,7 @@ const Info = ({ user, imageUrl }) => {
 
       <h3>Status: {states[user.player.state]}</h3>
       {imageUrl && !updateImage ? (
-        <>
-          <ImageComponent imageUrl={imageUrl} />
-          <button onClick={() => setUpdateImage(!updateImage)}>
-            Vaihda kuva
-          </button>
-        </>
+        <ImageComponent imageUrl={imageUrl} setUpdateImage={setUpdateImage} />
       ) : (
         <>
           <ImageUploadForm
