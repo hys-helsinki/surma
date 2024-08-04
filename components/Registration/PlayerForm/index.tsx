@@ -8,23 +8,24 @@ import PlayerDetailsForm from "./PlayerDetailsForm";
 import ImageUploadForm from "./ImageUploadForm";
 
 export default function PlayerForm({ tournament }) {
-  const { data, status } = useSession()
-  const [fileInputState, setFileInputState] = useState("")
-  const [selectedFile, setSelectedFile] = useState()
-  const [selectedFileName, setSelectedFileName] = useState("")
-  const [isLoading, setIsLoading] = useState(false)
-  const router = useRouter()
+  const { data, status } = useSession();
+  const [fileInputState, setFileInputState] = useState("");
+  const [selectedFile, setSelectedFile] = useState();
+  const [selectedFileName, setSelectedFileName] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+  const router = useRouter();
 
-  const tournamentId = tournament.id
+  const tournamentId = tournament.id;
 
   if (status === "unauthenticated") {
-    return (<h2>User not found</h2>)
+    return <h2>User not found</h2>;
   }
 
   const start = new Date(tournament.startTime);
   const end = new Date(tournament.endTime);
 
-  const isRegistrationOpen = new Date().getTime() < new Date(tournament.registrationEndTime).getTime()
+  const isRegistrationOpen =
+    new Date().getTime() < new Date(tournament.registrationEndTime).getTime();
 
   const dates: Array<string> = [];
   dates.push(`${start.getDate()}.${start.getMonth() + 1}.`);
@@ -57,52 +58,70 @@ export default function PlayerForm({ tournament }) {
   };
 
   const handleSubmit = async (values) => {
-    setIsLoading(true)
-    const userId = data.user.id
-    const playerData = {tournamentId, userId, ...values}
+    setIsLoading(true);
+    const userId = data.user.id;
+    const playerData = { tournamentId, userId, ...values };
     try {
       const response = await fetch("/api/player/create", {
         method: "POST",
         body: JSON.stringify(playerData)
-      })
-      const createdPlayer = await response.json()
-      await uploadImage(createdPlayer.id)
-      router.reload()
+      });
+      const createdPlayer = await response.json();
+      await uploadImage(createdPlayer.id);
+      router.reload();
     } catch (error) {
-      console.log(error)
+      console.log(error);
     }
-  }
+  };
 
   return (
     <Container maxWidth="md">
       {isRegistrationOpen ? (
         <Box>
-          <Box sx={{display: "flex"}}>
-            <Image src={logo} width={60} height={60} alt="logo" />
-            <h1 style={{marginLeft: "10px"}}>Ilmoittautuminen</h1>
+          <Box sx={{ display: "flex", paddingTop: "20px" }}>
+            <Image
+              src={logo}
+              width={75}
+              height={75}
+              alt="Slaughter logo"
+              style={{
+                paddingTop: "10px",
+                paddingLeft: "5px",
+                paddingRight: "10px"
+              }}
+            />
+            <h1 style={{ marginLeft: "10px" }}>Ilmoittautuminen</h1>
           </Box>
           <Box sx={{ my: 4 }}>
             <p>
-                Tässä lomakkeessa kysytään turnauksen kannalta olennaisia tietoja, jotka näkyvät jahtaajillesi. Lomakkeen täyttämisen jälkeen tuomaristo vahvistaa vielä ilmoittautumisesi.
+              Tässä lomakkeessa kysytään turnauksen kannalta olennaisia tietoja,
+              jotka näkyvät jahtaajillesi. Lomakkeen täyttämisen jälkeen
+              tuomaristo vahvistaa vielä ilmoittautumisesi.
             </p>
             <p>
-                Ainoastaan peitenimi on tässä vaiheessa pakollinen - muut kentät voi täyttää myöhemminkin ja niitä voi muokata turnauksen aikana.
+              Ainoastaan peitenimi on tässä vaiheessa pakollinen - muut kentät
+              voi täyttää myöhemminkin ja niitä voi muokata turnauksen aikana.
             </p>
             <p>
-                Kalenterin tiedot tulee pitää ajan tasalla sekä riittävän selkeinä
-                ja yksityiskohtaisina. Jokaista sekuntia siihen ei tarvitse
-                kirjoittaa, mutta pelistä tulee hauskempaa itsellesi sekä
-                jahtaajillesi jos tarjoat heille riittävästi tilaisuuksia salamurhaamiseen.
+              Kalenterin tiedot tulee pitää ajan tasalla sekä riittävän selkeinä
+              ja yksityiskohtaisina. Jokaista sekuntia siihen ei tarvitse
+              kirjoittaa, mutta pelistä tulee hauskempaa itsellesi sekä
+              jahtaajillesi jos tarjoat heille riittävästi tilaisuuksia
+              salamurhaamiseen.
             </p>
           </Box>
-          <ImageUploadForm 
+          <ImageUploadForm
             setSelectedFile={setSelectedFile}
             setSelectedFileName={setSelectedFileName}
             setFileInputState={setFileInputState}
             selectedFileName={selectedFileName}
             fileInputState={fileInputState}
           />
-          <PlayerDetailsForm dates={dates} handleSubmit={handleSubmit} isLoading={isLoading} />
+          <PlayerDetailsForm
+            dates={dates}
+            handleSubmit={handleSubmit}
+            isLoading={isLoading}
+          />
         </Box>
       ) : (
         <p>Ilmoittautuminen ei ole auki</p>
