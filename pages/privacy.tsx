@@ -95,7 +95,7 @@ export default function Privacy() {
           <h2>Perusteet ja käyttötarkoitukset</h2>
           <p>
             Ylläpitäjät käyttävät seuraavia tietoja Euroopan tietosuoja-asetusta
-            varten (yleinen etu):
+            varten (suostumus):
           </p>
           <ul>
             <li>etu- ja sukunimi</li>
@@ -108,7 +108,7 @@ export default function Privacy() {
           </ul>
           <p>
             Ylläpitäjät ja tuomaristo käyttävät seuraavia tietoja Surman ja
-            salamurhaturnauksen ylläpitämiseen (oikeutettu etu):
+            salamurhaturnauksen ylläpitämiseen (suostumus):
           </p>
           <ul>
             <li>aikaleima käyttäjän edellisestä kirjautumisesta Surmaan ja</li>
@@ -119,7 +119,7 @@ export default function Privacy() {
           </ul>
           <p>
             Tuomaristo käyttää seuraavia tietoja salamurhaturnauksen sisäiseen
-            ja käyttäjäkohtaiseen viestintään (oikeutettu etu):
+            ja käyttäjäkohtaiseen viestintään (suostumus):
           </p>
           <ul>
             <li>etu- ja sukunimi</li>
@@ -128,7 +128,7 @@ export default function Privacy() {
           </ul>
           <p>
             Tuomaristo käyttää seuraavia tietoja salamurhaturnauksen avoimeen ja
-            julkiseen viestintään turnauksen tapahtumasivulla (oikeutettu etu):
+            julkiseen viestintään turnauksen tapahtumasivulla (suostumus):
           </p>
           <ul>
             <li>turnauskohtainen anonyymi peitenimi.</li>
@@ -136,7 +136,7 @@ export default function Privacy() {
           <p>
             Tuomaristo ja muut pelaajat käyttävät seuraavia tietoja käyttäjän
             tunnistamiseen turnauksessa sekä turnauksen pelaamista ja
-            ylläpitämistä varten (oikeutettu etu):
+            ylläpitämistä varten (suostumus):
           </p>
           <ul>
             <li>etu- ja sukunimi</li>
