@@ -1,6 +1,7 @@
 import { useState } from "react";
 import ImageUploadForm from "../../Registration/PlayerForm/ImageUploadForm";
 import ImageComponent from "./ImageComponent";
+import { useRouter } from "next/router";
 
 const states = {
   ACTIVE: "Elossa",
@@ -13,6 +14,8 @@ const Info = ({ user, imageUrl }) => {
   const [fileInputState, setFileInputState] = useState("");
   const [selectedFile, setSelectedFile] = useState();
   const [selectedFileName, setSelectedFileName] = useState("");
+  const [updateImage, setUpdateImage] = useState(false);
+  const router = useRouter();
 
   const uploadImage = async (event) => {
     event.preventDefault();
@@ -28,10 +31,11 @@ const Info = ({ user, imageUrl }) => {
             publicId: user.player.id
           })
         });
+        setFileInputState("");
+        setSelectedFileName("");
+        setSelectedFile(null);
+        router.reload();
       };
-      setFileInputState("");
-      setSelectedFileName("");
-      setSelectedFile(null);
     } catch (error) {
       console.log(error);
     }
@@ -49,10 +53,14 @@ const Info = ({ user, imageUrl }) => {
       </h1>
       <h2>Peitenimi: {user.player.alias}</h2>
 
-      {/* Show this when the tournament is on */}
       <h3>Status: {states[user.player.state]}</h3>
-      {imageUrl == "" ? (
-        <ImageComponent imageUrl={imageUrl} />
+      {imageUrl && !updateImage ? (
+        <>
+          <ImageComponent imageUrl={imageUrl} />
+          <button onClick={() => setUpdateImage(!updateImage)}>
+            Vaihda kuva
+          </button>
+        </>
       ) : (
         <>
           <ImageUploadForm
@@ -63,7 +71,17 @@ const Info = ({ user, imageUrl }) => {
             fileInputState={fileInputState}
           />
           {selectedFile && (
-            <button onClick={(e) => uploadImage(e)}>Lisää kuva</button>
+            <button
+              onClick={async (e) => await uploadImage(e)}
+              style={{ marginRight: "10px" }}
+            >
+              Lisää kuva
+            </button>
+          )}
+          {updateImage && (
+            <button onClick={() => setUpdateImage(!updateImage)}>
+              Peruuta
+            </button>
           )}
         </>
       )}

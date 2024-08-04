@@ -19,7 +19,7 @@ export default async function upload(
       const uploadedResponse = await cloudinary.uploader.upload(imageData.url, {
         public_id: imageData.publicId
       });
-      res.json({ msg: "jee toimii!" });
+      res.status(200).send(uploadedResponse);
     } catch (error) {
       console.log("Error on Cloudinary upload:", error);
       res.status(500).json({ error: "something went wrong" });
