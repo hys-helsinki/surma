@@ -2,7 +2,7 @@ import { Box, Typography } from "@mui/material/";
 import Modal from "@mui/material/Modal";
 import { useState } from "react";
 import styles from "../styles/Home.module.css";
-import { useRouter } from 'next/router';
+import { useRouter } from "next/router";
 
 const style = {
   position: "absolute" as "absolute",
@@ -41,14 +41,26 @@ export default function GDPRModal({ text }) {
           </Typography>
           <div>
             <ul>
-              <li>Me emme tee analytiikkaa tiedoillasi. Käytämme tietojasi vain Surman ylläpitoon ja salamurhaturnauksen järjestämiseen.</li>
+              <li>
+                Me emme tee analytiikkaa tiedoillasi. Käytämme tietojasi vain
+                Surman ylläpitoon ja salamurhaturnauksen järjestämiseen.
+              </li>
               <li>Tuhoamme tietosi Surmasta turnauksen jälkeen.</li>
-              <li>Annamme luotettaville palveluntarjoajillemme tietoja vain sen verran, mitä tarvitaan palveluiden saamiseksi, ja annamme pelaajille tietoja vain sen verran, mitä tarvitaan turnaukseen osallistumiseen.</li>
+              <li>
+                Annamme luotettaville palveluntarjoajillemme tietoja vain sen
+                verran, mitä tarvitaan palveluiden saamiseksi, ja annamme
+                pelaajille tietoja vain sen verran, mitä tarvitaan turnaukseen
+                osallistumiseen.
+              </li>
             </ul>
           </div>
           <div className={styles.center}>
-          <button onClick={handleClose} style={{marginBottom: "50px"}}>Kiitos, tämä riittää minulle!</button>
-          <button onClick={() => router.push({pathname: `/privacy`})}>Eikun koko käytäntö, kiitos!</button>
+            <button onClick={handleClose} style={{ marginBottom: "50px" }}>
+              Kiitos, tämä riittää minulle!
+            </button>
+            <button onClick={() => router.push({ pathname: `/privacy` })}>
+              Eikun koko käytäntö, kiitos!
+            </button>
           </div>
         </Box>
       </Modal>
