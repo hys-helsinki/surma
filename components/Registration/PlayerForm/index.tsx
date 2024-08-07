@@ -26,6 +26,8 @@ export default function PlayerForm({ tournament }) {
   const end = new Date(tournament.endTime);
 
   const isRegistrationOpen =
+    new Date().getTime() >
+      new Date(tournament.registrationStartTime).getTime() &&
     new Date().getTime() < new Date(tournament.registrationEndTime).getTime();
 
   const dates = getTournamentDates(start, end);
