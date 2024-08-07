@@ -24,15 +24,24 @@ const ImageComponent = ({
           ></Image>
         </div>
       ) : null}
-      <button
-        onClick={() => setShowPicture(!showPicture)}
-        style={{ marginRight: "10px" }}
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "row",
+          justifyContent: "center",
+          alignItems: "center"
+        }}
       >
-        {showPicture ? "Piilota" : "Näytä kuva"}
-      </button>
-      <button onClick={() => setUpdateImage((prevState) => !prevState)}>
-        Vaihda kuva
-      </button>
+        <button
+          onClick={() => setShowPicture(!showPicture)}
+          style={{ marginRight: "10px" }}
+        >
+          {showPicture ? "Piilota" : "Näytä kuva"}
+        </button>
+        <button onClick={() => setUpdateImage((prevState) => !prevState)}>
+          Vaihda kuva
+        </button>
+      </div>
     </div>
   );
 };

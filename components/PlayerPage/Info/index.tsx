@@ -2,6 +2,7 @@ import { useState } from "react";
 import ImageUploadForm from "../../Registration/PlayerForm/ImageUploadForm";
 import ImageComponent from "./ImageComponent";
 import { useRouter } from "next/router";
+import { Box } from "@mui/material";
 
 const states = {
   ACTIVE: "Elossa",
@@ -42,18 +43,25 @@ const Info = ({ user, imageUrl }) => {
   };
 
   return (
-    <div
-      style={{
-        display: "inline-block",
-        marginBottom: "20px"
-      }}
-    >
-      <h1>
-        {user.player.title} {user.firstName} {user.lastName}
-      </h1>
-      <h2>Peitenimi: {user.player.alias}</h2>
-
-      <h3>Status: {states[user.player.state]}</h3>
+    <Box>
+      <Box
+        sx={{
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "center",
+          alignItems: "center"
+        }}
+      >
+        <h1>
+          {user.player.title} {user.firstName} {user.lastName}
+        </h1>
+        <h3 style={{ marginTop: "5px", marginBottom: "5px" }}>
+          Peitenimi: {user.player.alias}
+        </h3>
+        <h3 style={{ marginTop: "5px", marginBottom: "10px" }}>
+          Status: {states[user.player.state]}
+        </h3>
+      </Box>
       {imageUrl && !updateImage ? (
         <ImageComponent imageUrl={imageUrl} setUpdateImage={setUpdateImage} />
       ) : (
@@ -80,7 +88,7 @@ const Info = ({ user, imageUrl }) => {
           )}
         </>
       )}
-    </div>
+    </Box>
   );
 };
 
