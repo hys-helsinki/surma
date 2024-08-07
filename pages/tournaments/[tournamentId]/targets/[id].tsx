@@ -93,6 +93,7 @@ export const getServerSideProps: GetServerSideProps = async ({
     select: {
       id: true,
       tournamentId: true,
+      umpire: true,
       tournament: {
         select: {
           startTime: true,
@@ -171,7 +172,14 @@ export const getServerSideProps: GetServerSideProps = async ({
   }
 
   return {
-    props: { player, imageUrl, currentUser, tournament, targets }
+    props: {
+      player,
+      imageUrl,
+      currentUser,
+      tournament,
+      targets,
+      currentUserIsUmpire: currentUser.umpire != null
+    }
   };
 };
 
@@ -180,7 +188,8 @@ export default function Target({
   imageUrl,
   currentUser,
   tournament,
-  targets
+  targets,
+  currentUserIsUmpire
 }): JSX.Element {
   const [showPicture, setShowPicture] = useState(false);
   const [slideNumber, setSlideNumber] = useState(0);
@@ -225,6 +234,7 @@ export default function Target({
           targets={targetUsers}
           userId={currentUser.id}
           tournamentId={tournament.id}
+          currentUserIsUmpire={currentUserIsUmpire}
         />
         <Grid container>
           <Grid item xs={12} md={5}>

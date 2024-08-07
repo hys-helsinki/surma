@@ -206,6 +206,7 @@ export default function User({
           targets={targetUsers}
           userId={user.id}
           tournamentId={user.tournamentId}
+          currentUserIsUmpire={currentUserIsUmpire}
         />
         {!user.player.confirmed && (
           <Alert
