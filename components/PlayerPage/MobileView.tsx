@@ -1,7 +1,6 @@
 import { Box, Tab, Tabs } from "@mui/material";
 import { Calendar } from "./Calendar";
 import { useState } from "react";
-import PlayerForm from "../Registration/PlayerForm";
 import Info from "./Info";
 import Details from "./Details";
 
@@ -38,10 +37,6 @@ const MobileView = ({
   const handleTabChange = (event: React.SyntheticEvent, newValue: number) => {
     setValue(newValue);
   };
-
-  if (!Boolean(user.player)) {
-    return <PlayerForm tournament={user.tournament} />;
-  }
 
   return (
     <Box sx={{ width: "100%" }}>

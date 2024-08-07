@@ -1,6 +1,5 @@
 import { Container, Grid } from "@mui/material";
 import { Calendar } from "./Calendar";
-import PlayerForm from "../Registration/PlayerForm";
 import Details from "./Details";
 import Info from "./Info";
 
@@ -11,10 +10,6 @@ const DesktopView = ({
   currentUserIsUmpire,
   umpires
 }) => {
-  if (!Boolean(user.player)) {
-    return <PlayerForm tournament={user.tournament} />;
-  }
-
   return (
     <Container>
       <Grid container>

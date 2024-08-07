@@ -9,6 +9,7 @@ import { authConfig } from "../../../api/auth/[...nextauth]";
 import { v2 as cloudinary } from "cloudinary";
 import DesktopView from "../../../../components/PlayerPage/DesktopView";
 import MobileView from "../../../../components/PlayerPage/MobileView";
+import PlayerForm from "../../../../components/Registration/PlayerForm";
 
 const isCurrentUserAuthorized = async (currentUser, userId, tournamentId) => {
   if (currentUser.id == userId) {
@@ -180,6 +181,10 @@ export default function User({
   );
   const theme = useTheme();
   const matches = useMediaQuery(theme.breakpoints.down("md"));
+
+  if (!Boolean(user.player)) {
+    return <PlayerForm tournament={user.tournament} />;
+  }
 
   let targetUsers = [];
 

@@ -16,9 +16,9 @@ const PlayerInfo = ({
 
   const playerUmpire = user.player.umpire;
 
-  const otherUmpires = umpires.filter(
-    (umpire) => umpire.id !== playerUmpire.id
-  );
+  const otherUmpires = playerUmpire
+    ? umpires.filter((umpire) => umpire.id !== playerUmpire.id)
+    : umpires;
 
   return (
     <Box>
