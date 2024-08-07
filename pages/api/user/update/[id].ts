@@ -39,7 +39,8 @@ export default async function update(
       "height",
       "glasses",
       "other",
-      "calendar"
+      "calendar",
+      "security"
     ];
     const filteredUpdateData = _.pick(JSON.parse(req.body), allowedFields);
 
