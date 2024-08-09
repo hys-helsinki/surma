@@ -56,8 +56,41 @@ export default function PlayerForm({ tournament }) {
 
   const handleSubmit = async (values) => {
     setIsLoading(true);
+
+    const calendar = dates.map((date, index) => [
+      date,
+      values[`calendar${index}`]
+    ]);
+
+    const {
+      address,
+      alias,
+      eyeColor,
+      hair,
+      height,
+      learningInstitution,
+      other,
+      security,
+      title
+    } = values;
+
     const userId = data.user.id;
-    const playerData = { tournamentId, userId, ...values };
+
+    const playerData = {
+      tournamentId,
+      userId,
+      address,
+      alias,
+      eyeColor,
+      hair,
+      height,
+      learningInstitution,
+      other,
+      security,
+      title,
+      calendar
+    };
+
     try {
       const response = await fetch("/api/player/create", {
         method: "POST",
