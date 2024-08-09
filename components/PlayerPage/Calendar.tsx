@@ -1,6 +1,7 @@
 import { useRouter } from "next/router";
 import { useState } from "react";
 import { getTournamentDates, splitCalendar } from "../utils";
+import { Formik, Form, Field } from "formik";
 
 export const Calendar = ({ player, tournament }): JSX.Element => {
   const [weekNumber, setSlideNumber] = useState(0);
@@ -24,14 +25,14 @@ export const Calendar = ({ player, tournament }): JSX.Element => {
     }
   };
 
-  const handleCalendarSubmit = async (
-    event: React.FormEvent<HTMLFormElement>
-  ) => {
-    const cal = {};
-    dates.forEach((x, i) => (cal[x] = event.currentTarget.dates[i].value));
-    event.preventDefault();
+  const handleCalendarSubmit = async (values) => {
+    const calendar: string[][] = dates.map((date, index) => [
+      date,
+      values[`calendar${index}`]
+    ]);
+
     const data = {
-      calendar: cal
+      calendar
     };
 
     try {
@@ -44,6 +45,10 @@ export const Calendar = ({ player, tournament }): JSX.Element => {
       console.log(error);
     }
   };
+
+  const calendarInitials = player.calendar.map((date, index) => ({
+    [`calendar${index}`]: date[1]
+  }));
 
   return (
     <div className="calendar">
@@ -71,20 +76,24 @@ export const Calendar = ({ player, tournament }): JSX.Element => {
           </button>
         </div>
       ) : (
-        <div>
-          {/* <form onSubmit={handleCalendarSubmit}>
+        <Formik
+          enableReinitialize={true}
+          initialValues={Object.assign({}, ...calendarInitials)}
+          onSubmit={async (values) => {
+            await handleCalendarSubmit(values);
+          }}
+        >
+          <Form>
             <button type="submit">Tallenna muokkaukset</button>
-            {cal.map((c, i) => (
-              <div key={i}>
-                <label htmlFor={c[0]}>
-                  {c[0]}
-                  <textarea id={c[0]} name="dates" defaultValue={c[1]} />
-                </label>
+            {dates.map((date: string, index) => (
+              <div key={index}>
+                <label>{date}</label>
+                <Field name={`calendar${index}`} as="textarea" />
               </div>
             ))}
-          </form> */}
-          lol
-        </div>
+            <button type="submit">Tallenna muokkaukset</button>
+          </Form>
+        </Formik>
       )}
     </div>
   );
