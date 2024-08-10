@@ -30,8 +30,8 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
 
 export default function Home({ tournaments }) {
   const { data: session } = useSession();
-  const modifyDate = (s) => {
-    const date = new Date(s);
+  const modifyDate = (dateString) => {
+    const date = new Date(dateString);
     const formattedDate = `${date.toLocaleTimeString("fi-FI", {
       hour: "2-digit",
       minute: "2-digit",
