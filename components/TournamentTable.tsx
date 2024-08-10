@@ -15,6 +15,20 @@ const TournamentTable = ({ tournaments }) => {
     })}`;
     return formattedDate;
   };
+  const registration = (tournament) => {
+    const now = new Date().getTime();
+    const isRegistrationOpen =
+      now < new Date(tournament.registrationEndTime).getTime() &&
+      now > new Date(tournament.registrationStartTime).getTime();
+    const registrationLink = isRegistrationOpen ? (
+      <Link href={`/registration/${tournament.id}`}>
+        <a>Ilmoittautumislomake</a>
+      </Link>
+    ) : (
+      <p>Ilmoittautuminen ei ole vielä auki</p>
+    );
+    return registrationLink;
+  };
   return (
     <table aria-label="tournament-table" className={styles.tournamentTable}>
       <thead>
@@ -43,11 +57,7 @@ const TournamentTable = ({ tournaments }) => {
                 {Intl.DateTimeFormat().resolvedOptions().timeZone})
               </NoSsr>
             </td>
-            <td>
-              <Link href={`/registration/${tournament.id}`}>
-                <a>Ilmoittautumislomake</a>
-              </Link>
-            </td>
+            <td>{registration(tournament)}</td>
           </tr>
         ))}
       </tbody>
