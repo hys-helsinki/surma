@@ -1,6 +1,6 @@
 import { useRouter } from "next/router";
-import { useState } from "react";
-import { getTournamentDates, splitCalendar } from "../utils";
+import { useEffect, useState } from "react";
+import { getCurrentWeek, getTournamentDates, splitCalendar } from "../utils";
 import { Formik, Form, Field } from "formik";
 
 export const Calendar = ({ player, tournament }): JSX.Element => {
@@ -10,14 +10,21 @@ export const Calendar = ({ player, tournament }): JSX.Element => {
 
   const { id: userId } = router.query;
 
-  const dates = getTournamentDates(
+  const dates: string[] = getTournamentDates(
     new Date(tournament.startTime),
     new Date(tournament.endTime)
   );
 
   const weeks = splitCalendar(player.calendar);
 
-  const handleSlideShow = (event) => {
+  useEffect(() => {
+    const currentWeek = getCurrentWeek(dates);
+    if (currentWeek <= weeks.length - 1) {
+      setSlideNumber(currentWeek);
+    }
+  }, []);
+
+  const handleSlideShow = () => {
     if (weekNumber == weeks.length - 1) {
       setSlideNumber(0);
     } else {
@@ -68,7 +75,7 @@ export const Calendar = ({ player, tournament }): JSX.Element => {
               </li>
             ))}
           </ul>
-          <button onClick={handleSlideShow} style={{ left: "40%" }}>
+          <button onClick={() => handleSlideShow()} style={{ left: "40%" }}>
             Seuraava
           </button>
         </div>

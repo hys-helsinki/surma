@@ -19,3 +19,24 @@ export const splitCalendar = (calendar: string[][]) => {
 
   return weeks;
 };
+
+export const getCurrentWeek = (dates: string[]) => {
+  const currentDate = new Date();
+
+  const currentDateString = `${currentDate.getDate()}.${
+    currentDate.getMonth() + 1
+  }.${currentDate.getFullYear()}`;
+
+  const weekLength = 7;
+  let currentWeek = 0;
+
+  for (let i = 0; i < dates.length; i += weekLength) {
+    const chunk = dates.slice(i, i + weekLength);
+    if (chunk.includes(currentDateString)) {
+      break;
+    }
+    currentWeek += 1;
+  }
+
+  return currentWeek;
+};
