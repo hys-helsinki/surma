@@ -17,16 +17,18 @@ a {
   box-sizing: border-box;
 }
 
-input, label {
+input,
+label {
   display: block;
 }
 
-textarea, label {
+textarea,
+label {
   display: block;
 }
 
 select {
-  margin: 7px
+  margin: 7px;
 }
 label {
   display: inline;
@@ -80,7 +82,7 @@ button {
   cursor: pointer;
 }
 
-button[type=submit] {
+button[type="submit"] {
   width: 100%;
   background-color: red;
   color: white;
@@ -102,10 +104,6 @@ button:hover {
 .calendar {
   display: inline-block;
   vertical-align: top;
-  border-style: solid;
-  border-width: 2px;
   width: 100%;
   padding: 10px;
 }
-
-

@@ -55,9 +55,6 @@ export const Calendar = ({ player, tournament }): JSX.Element => {
       <button onClick={() => setIsUpdated(!isUpdated)}>
         {isUpdated ? "Muokkaa kalenteria" : "Peruuta"}
       </button>
-      <h3 style={{ width: "40%", margin: "auto", padding: "10px" }}>
-        Kalenteri
-      </h3>
 
       {isUpdated ? (
         <div>
