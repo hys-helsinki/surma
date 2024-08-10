@@ -4,7 +4,9 @@ import { getCurrentWeek, getTournamentDates, splitCalendar } from "../utils";
 import { Formik, Form, Field } from "formik";
 
 export const Calendar = ({ player, tournament }): JSX.Element => {
+  const [calendar, setCalendar] = useState(player.calendar);
   const [weekNumber, setSlideNumber] = useState(0);
+  const [weeks, setWeeks] = useState([]);
   const [isUpdated, setIsUpdated] = useState(true);
   const router = useRouter();
 
@@ -15,14 +17,17 @@ export const Calendar = ({ player, tournament }): JSX.Element => {
     new Date(tournament.endTime)
   );
 
-  const weeks = splitCalendar(player.calendar);
-
   useEffect(() => {
+    const weeks = splitCalendar(calendar);
+    setWeeks(weeks);
     const currentWeek = getCurrentWeek(dates);
     if (currentWeek <= weeks.length - 1) {
       setSlideNumber(currentWeek);
     }
-  }, []);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [calendar]);
+
+  if (weeks.length === 0) return null;
 
   const handleSlideShow = () => {
     if (weekNumber == weeks.length - 1) {
@@ -33,13 +38,13 @@ export const Calendar = ({ player, tournament }): JSX.Element => {
   };
 
   const handleCalendarSubmit = async (values) => {
-    const calendar: string[][] = dates.map((date, index) => [
+    const updatedCalendar: string[][] = dates.map((date, index) => [
       date,
       values[`calendar${index}`]
     ]);
 
     const data = {
-      calendar
+      calendar: updatedCalendar
     };
 
     try {
@@ -47,7 +52,8 @@ export const Calendar = ({ player, tournament }): JSX.Element => {
         method: "PUT",
         body: JSON.stringify(data)
       });
-      router.reload();
+      setCalendar(updatedCalendar);
+      setIsUpdated(true);
     } catch (error) {
       console.log(error);
     }
