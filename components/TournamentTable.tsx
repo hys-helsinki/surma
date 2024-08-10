@@ -36,7 +36,7 @@ const TournamentTable = ({ tournaments }) => {
           <th>Nimi</th>
           <th>Turnaus käynnissä</th>
           <th>Ilmoittautuminen käynnissä</th>
-          <th></th>
+          <th>Ilmoittautumislomake</th>
         </tr>
       </thead>
       <tbody>
