@@ -2,12 +2,15 @@ import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { getCurrentWeek, getTournamentDates, splitCalendar } from "../utils";
 import { Formik, Form, Field } from "formik";
+import Markdown from "../Common/Markdown";
+import { LoadingButton } from "@mui/lab";
 
 export const Calendar = ({ player, tournament }): JSX.Element => {
   const [calendar, setCalendar] = useState(player.calendar);
   const [weekNumber, setSlideNumber] = useState(0);
   const [weeks, setWeeks] = useState([]);
   const [isUpdated, setIsUpdated] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
 
   const { id: userId } = router.query;
@@ -38,6 +41,7 @@ export const Calendar = ({ player, tournament }): JSX.Element => {
   };
 
   const handleCalendarSubmit = async (values) => {
+    setIsLoading(true);
     const updatedCalendar: string[][] = dates.map((date, index) => [
       date,
       values[`calendar${index}`]
@@ -54,12 +58,13 @@ export const Calendar = ({ player, tournament }): JSX.Element => {
       });
       setCalendar(updatedCalendar);
       setIsUpdated(true);
+      setIsLoading(false);
     } catch (error) {
       console.log(error);
     }
   };
 
-  const calendarInitials = player.calendar.map((date, index) => ({
+  const calendarInitials = calendar.map((date, index) => ({
     [`calendar${index}`]: date[1]
   }));
 
@@ -77,7 +82,8 @@ export const Calendar = ({ player, tournament }): JSX.Element => {
                 key={index}
                 style={{ paddingBottom: "20px", whiteSpace: "pre-line" }}
               >
-                {calendarElement[0]}: {calendarElement[1]}
+                <p>{calendarElement[0]}</p>
+                <Markdown>{calendarElement[1]}</Markdown>
               </li>
             ))}
           </ul>
@@ -94,14 +100,22 @@ export const Calendar = ({ player, tournament }): JSX.Element => {
           }}
         >
           <Form>
-            <button type="submit">Tallenna muokkaukset</button>
+            <Markdown>
+              Kalenteri tukee
+              [Markdown-syntaksia](https://www.markdownguide.org/basic-syntax/)
+            </Markdown>
+            <LoadingButton loading={isLoading} type="submit">
+              Tallenna muokkaukset
+            </LoadingButton>
             {dates.map((date: string, index) => (
               <div key={index}>
                 <label>{date}</label>
                 <Field name={`calendar${index}`} as="textarea" />
               </div>
             ))}
-            <button type="submit">Tallenna muokkaukset</button>
+            <LoadingButton loading={isLoading} type="submit">
+              Tallenna muokkaukset
+            </LoadingButton>
           </Form>
         </Formik>
       )}
