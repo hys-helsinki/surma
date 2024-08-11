@@ -1,25 +1,66 @@
-import Head from "next/head";
 import Image from "next/image";
 import styles from "../styles/Home.module.css";
-import { useSession, signIn, signOut } from "next-auth/react";
+import { useSession, signIn } from "next-auth/react";
+import logo from "/public/images/surma_logo.svg";
+import InfoAccordion from "../components/InfoAccordion";
+import TournamentTable from "../components/TournamentTable";
+import { GetStaticProps } from "next";
+import prisma from "../lib/prisma";
 
-export default function Home() {
+export const getStaticProps: GetStaticProps = async ({ params }) => {
+  let tournaments = await prisma.tournament.findMany({
+    select: {
+      id: true,
+      name: true,
+      startTime: true,
+      endTime: true,
+      registrationStartTime: true,
+      registrationEndTime: true
+    }
+  });
+  tournaments = JSON.parse(JSON.stringify(tournaments));
+  return {
+    props: { tournaments }
+  };
+};
+
+export default function Home({ tournaments }) {
   const { data: session } = useSession();
   if (session) {
-    return (
-      <div className={styles.container}>
-        <h1>Surma (Murhamaster 3.0)</h1>
-        <button onClick={() => signOut()}>Kirjaudu ulos</button>
-      </div>
-    );
+    return {
+      redirect: {
+        destination: `/personal`,
+        permanent: false
+      }
+    };
   }
   return (
-    <>
-      Et ole kirjautunut sisään.
-      <br />
-      <button onClick={() => signIn("email", { callbackUrl: "/personal" })}>
+    <div className={`${styles.center} ${styles.main}`}>
+      <button
+        onClick={() => signIn("email", { callbackUrl: "/personal" })}
+        style={{ margin: "1em" }}
+      >
         Kirjaudu sisään
       </button>
-    </>
+      <h1 className={styles.container} style={{ padding: "1em" }}>
+        Surma (Murhamaster 3.0)
+      </h1>
+      <Image src={logo} alt="logo" width={200} height={200} priority={true} />
+      <h2 className={styles.container} style={{ padding: "1em" }}>
+        {" "}
+        Avoimet salamurhaturnaukset{" "}
+      </h2>
+      <p>
+        {" "}
+        Alla on lista tulevista turnauksista. Jos alla ei näy mitään, tulevia
+        turnauksia ei ole juuri nyt tiedossa, joten palaathan myöhemmin
+        takaisin. Tietoa tulevista turnauksista voi saada myös{" "}
+        <a href="https://salamurhaajat.net/tulevat-tapahtumat">
+          Helsingin yliopiston salamurhapelaajien eli HYSin nettisivuilta.
+        </a>
+      </p>
+      <TournamentTable tournaments={tournaments}></TournamentTable>
+      <InfoAccordion></InfoAccordion>
+    </div>
   );
 }
