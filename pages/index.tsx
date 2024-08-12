@@ -35,7 +35,10 @@ export default function Home({ tournaments }) {
     };
   }
   return (
-    <div className={`${styles.center} ${styles.main}`}>
+    <div
+      className={`${styles.center} ${styles.main}`}
+      style={{ padding: "20px" }}
+    >
       <button
         onClick={() => signIn("email", { callbackUrl: "/personal" })}
         style={{ margin: "1em" }}
