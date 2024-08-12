@@ -108,8 +108,18 @@ export default function PlayerForm({ tournament }) {
     <Container maxWidth="md">
       {isRegistrationOpen ? (
         <Box>
-          <Box sx={{ display: "flex" }}>
-            <Image src={logo} width={60} height={60} alt="logo" />
+          <Box sx={{ display: "flex", paddingTop: "20px" }}>
+            <Image
+              src={logo}
+              width={75}
+              height={75}
+              alt="Slaughter logo"
+              style={{
+                paddingTop: "10px",
+                paddingLeft: "5px",
+                paddingRight: "10px"
+              }}
+            />
             <h1 style={{ marginLeft: "10px" }}>Ilmoittautuminen</h1>
           </Box>
           <Box sx={{ my: 4 }}>
