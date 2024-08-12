@@ -50,15 +50,6 @@ export default function Home({ tournaments }) {
         {" "}
         Avoimet salamurhaturnaukset{" "}
       </h2>
-      <p>
-        {" "}
-        Alla on lista tulevista turnauksista. Jos alla ei näy mitään, tulevia
-        turnauksia ei ole juuri nyt tiedossa, joten palaathan myöhemmin
-        takaisin. Tietoa tulevista turnauksista voi saada myös{" "}
-        <a href="https://salamurhaajat.net/tulevat-tapahtumat">
-          Helsingin yliopiston salamurhapelaajien eli HYSin nettisivuilta.
-        </a>
-      </p>
       <TournamentTable tournaments={tournaments}></TournamentTable>
       <InfoAccordion></InfoAccordion>
     </div>

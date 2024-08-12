@@ -29,39 +29,52 @@ const TournamentTable = ({ tournaments }) => {
     );
     return registrationLink;
   };
-  return (
-    <table aria-label="tournament-table" className={styles.tournamentTable}>
-      <thead>
-        <tr>
-          <th>Nimi</th>
-          <th>Turnaus käynnissä</th>
-          <th>Ilmoittautuminen käynnissä</th>
-          <th>Ilmoittautumislomake</th>
-        </tr>
-      </thead>
-      <tbody>
-        {tournaments.map((tournament) => (
-          <tr key={tournament.id}>
-            <td>{tournament.name}</td>
-            <td>
-              <NoSsr>
-                {modifyDate(tournament.startTime)}&nbsp;-&nbsp;
-                {modifyDate(tournament.endTime)} (
-                {Intl.DateTimeFormat().resolvedOptions().timeZone})
-              </NoSsr>
-            </td>
-            <td>
-              <NoSsr>
-                {modifyDate(tournament.registrationStartTime)}
-                &nbsp;-&nbsp;{modifyDate(tournament.registrationEndTime)} (
-                {Intl.DateTimeFormat().resolvedOptions().timeZone})
-              </NoSsr>
-            </td>
-            <td>{registration(tournament)}</td>
+  const tournamentsAvailable = tournaments.length > 0;
+  if (tournamentsAvailable) {
+    return (
+      <table aria-label="tournament-table" className={styles.tournamentTable}>
+        <thead>
+          <tr>
+            <th>Nimi</th>
+            <th>Turnaus käynnissä</th>
+            <th>Ilmoittautuminen käynnissä</th>
+            <th>Ilmoittautumislomake</th>
           </tr>
-        ))}
-      </tbody>
-    </table>
+        </thead>
+        <tbody>
+          {tournaments.map((tournament) => (
+            <tr key={tournament.id}>
+              <td>{tournament.name}</td>
+              <td>
+                <NoSsr>
+                  {modifyDate(tournament.startTime)}&nbsp;-&nbsp;
+                  {modifyDate(tournament.endTime)} (
+                  {Intl.DateTimeFormat().resolvedOptions().timeZone})
+                </NoSsr>
+              </td>
+              <td>
+                <NoSsr>
+                  {modifyDate(tournament.registrationStartTime)}
+                  &nbsp;-&nbsp;{modifyDate(tournament.registrationEndTime)} (
+                  {Intl.DateTimeFormat().resolvedOptions().timeZone})
+                </NoSsr>
+              </td>
+              <td>{registration(tournament)}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    );
+  }
+  return (
+    <p>
+      {" "}
+      Tulevia turnauksia ei ole juuri nyt tiedossa, joten palaathan myöhemmin
+      takaisin. Tietoa tulevista turnauksista voi saada myös{" "}
+      <a href="https://salamurhaajat.net/tulevat-tapahtumat">
+        Helsingin yliopiston salamurhapelaajien eli HYSin nettisivuilta.
+      </a>
+    </p>
   );
 };
 export default TournamentTable;
