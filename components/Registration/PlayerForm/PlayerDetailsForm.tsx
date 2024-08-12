@@ -7,6 +7,7 @@ import TextInput from "../TextInput";
 import GdprModal from "../../GdprModal";
 
 import { KK, MM, LL, TT } from "../../../constants";
+import Markdown from "../../Common/Markdown";
 
 const BottomText = () => {
   return (
@@ -94,6 +95,12 @@ const PlayerDetailsForm = ({
         </div>
 
         <h3>Kalenteritiedot</h3>
+        <Box sx={{ mb: 2 }}>
+          <Markdown>
+            *Kalenteri tukee
+            [Markdown-syntaksia](https://www.markdownguide.org/basic-syntax/)*
+          </Markdown>
+        </Box>
         {dates.map((date: string, index) => (
           <div key={index}>
             <label>{date}</label>
