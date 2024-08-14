@@ -48,6 +48,6 @@ export default async function update(
       where: { userId: playerId },
       data: filteredUpdateData
     });
-    res.status(204).end();
+    res.json(result);
   }
 }

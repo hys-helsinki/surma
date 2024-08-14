@@ -52,11 +52,12 @@ export const Calendar = ({ player, tournament }): JSX.Element => {
     };
 
     try {
-      await fetch(`/api/user/update/${userId}`, {
+      const res = await fetch(`/api/user/update/${userId}`, {
         method: "PUT",
         body: JSON.stringify(data)
       });
-      setCalendar(updatedCalendar);
+      const updatedPlayer = await res.json();
+      setCalendar(updatedPlayer.calendar);
       setIsUpdated(true);
       setIsLoading(false);
     } catch (error) {
