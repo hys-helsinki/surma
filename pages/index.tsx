@@ -1,13 +1,47 @@
 import Image from "next/image";
 import styles from "../styles/Home.module.css";
-import { useSession, signIn } from "next-auth/react";
+import { signIn } from "next-auth/react";
 import logo from "/public/images/surma_logo.svg";
 import InfoAccordion from "../components/InfoAccordion";
 import TournamentTable from "../components/TournamentTable";
-import { GetStaticProps } from "next";
+import { authConfig } from "./api/auth/[...nextauth]";
 import prisma from "../lib/prisma";
+import { unstable_getServerSession } from "next-auth/next";
 
-export const getStaticProps: GetStaticProps = async ({ params }) => {
+export async function getServerSideProps(context) {
+  const session = await unstable_getServerSession(
+    context.req,
+    context.res,
+    authConfig
+  );
+
+  if (session) {
+    const user = await prisma.user.findUnique({
+      where: {
+        id: session.user.id
+      },
+      select: {
+        id: true,
+        umpire: true,
+        tournamentId: true
+      }
+    });
+    if (user.umpire) {
+      return {
+        redirect: {
+          destination: `/admin/${user.tournamentId}`,
+          permanent: false
+        }
+      };
+    }
+    return {
+      redirect: {
+        destination: `/tournaments/${user.tournamentId}/users/${user.id}`,
+        permanent: false
+      }
+    };
+  }
+
   let tournaments = await prisma.tournament.findMany({
     select: {
       id: true,
@@ -22,18 +56,9 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
   return {
     props: { tournaments }
   };
-};
+}
 
 export default function Home({ tournaments }) {
-  const { data: session } = useSession();
-  if (session) {
-    return {
-      redirect: {
-        destination: `/personal`,
-        permanent: false
-      }
-    };
-  }
   return (
     <div className={`${styles.center} ${styles.main}`}>
       <button
