@@ -65,7 +65,7 @@ const Info = ({ user, imageUrl }) => {
       {imageUrl && !updateImage ? (
         <ImageComponent imageUrl={imageUrl} setUpdateImage={setUpdateImage} />
       ) : (
-        <>
+        <div style={{ margin: "10px" }}>
           <ImageUploadForm
             setSelectedFile={setSelectedFile}
             setSelectedFileName={setSelectedFileName}
@@ -86,7 +86,7 @@ const Info = ({ user, imageUrl }) => {
               Peruuta
             </button>
           )}
-        </>
+        </div>
       )}
     </Box>
   );
