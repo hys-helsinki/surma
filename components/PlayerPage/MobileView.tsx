@@ -30,7 +30,15 @@ const MobileView = ({
   tournament,
   imageUrl,
   currentUserIsUmpire,
+  currentUserIsHunter = false,
   umpires
+}: {
+  user;
+  tournament;
+  imageUrl;
+  currentUserIsUmpire: boolean;
+  currentUserIsHunter?: boolean;
+  umpires;
 }) => {
   const [value, setValue] = useState(0);
 
@@ -40,7 +48,11 @@ const MobileView = ({
 
   return (
     <Box sx={{ width: "100%" }}>
-      <Info user={user} imageUrl={imageUrl} />
+      <Info
+        user={user}
+        imageUrl={imageUrl}
+        currentUserIsHunter={currentUserIsHunter}
+      />
 
       <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
         <Tabs
@@ -59,13 +71,18 @@ const MobileView = ({
         </Tabs>
       </Box>
       <TabPanel value={value} index={0}>
-        <Calendar player={user.player} tournament={tournament} />
+        <Calendar
+          player={user.player}
+          tournament={tournament}
+          currentUserIsHunter={currentUserIsHunter}
+        />
       </TabPanel>
       <TabPanel value={value} index={1}>
         <Details
           user={user}
           umpires={umpires}
           currentUserIsUmpire={currentUserIsUmpire}
+          currentUserIsHunter={currentUserIsHunter}
         />
       </TabPanel>
     </Box>

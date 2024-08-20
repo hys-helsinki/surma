@@ -5,7 +5,11 @@ import { Formik, Form, Field } from "formik";
 import Markdown from "../Common/Markdown";
 import { LoadingButton } from "@mui/lab";
 
-export const Calendar = ({ player, tournament }): JSX.Element => {
+export const Calendar = ({
+  player,
+  tournament,
+  currentUserIsHunter
+}): JSX.Element => {
   const [calendar, setCalendar] = useState(player.calendar);
   const [weekNumber, setSlideNumber] = useState(0);
   const [weeks, setWeeks] = useState([]);
@@ -71,9 +75,11 @@ export const Calendar = ({ player, tournament }): JSX.Element => {
 
   return (
     <div className="calendar">
-      <button onClick={() => setIsUpdated(!isUpdated)}>
-        {isUpdated ? "Muokkaa kalenteria" : "Peruuta"}
-      </button>
+      {!currentUserIsHunter && (
+        <button onClick={() => setIsUpdated(!isUpdated)}>
+          {isUpdated ? "Muokkaa kalenteria" : "Peruuta"}
+        </button>
+      )}
 
       {isUpdated ? (
         <div>
