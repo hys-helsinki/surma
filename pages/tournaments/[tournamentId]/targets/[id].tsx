@@ -1,43 +1,33 @@
 import { GetServerSideProps } from "next";
 import prisma from "../../../../lib/prisma";
-import React, { MouseEventHandler } from "react";
-import { useState } from "react";
+import React from "react";
 import { useMediaQuery, useTheme } from "@mui/material";
 import { AuthenticationRequired } from "../../../../components/AuthenticationRequired";
-import { unstable_getServerSession } from "next-auth";
+import { Session, unstable_getServerSession } from "next-auth";
 import { authConfig } from "../../../api/auth/[...nextauth]";
 import { v2 as cloudinary } from "cloudinary";
 import NavigationBar from "../../../../components/NavigationBar";
 import DesktopView from "../../../../components/PlayerPage/DesktopView";
 import MobileView from "../../../../components/PlayerPage/MobileView";
+import { Tournament } from "@prisma/client";
 
 const isCurrentUserAuthorized = async (
-  tournamentId,
-  targetId,
-  context,
-  session
+  tournament: Tournament,
+  targetId: string,
+  session: Session
 ) => {
   const isUmpire = await prisma.umpire.findFirst({
     where: {
       userId: session.user.id,
-      tournamentId: tournamentId
+      tournamentId: tournament.id
     }
   });
 
-  const tournament = await prisma.tournament.findUnique({
-    select: {
-      startTime: true,
-      endTime: true
-    },
-    where: {
-      id: tournamentId
-    }
-  });
+  const currentTime = new Date();
 
-  // const currentTime = new Date();
-  // const isTournamentRunning =
-  //   tournament.startTime.getTime() < currentTime.getTime() &&
-  //   currentTime.getTime() < tournament.endTime.getTime();
+  const isTournamentRunning =
+    tournament.startTime.getTime() < currentTime.getTime() &&
+    currentTime.getTime() < tournament.endTime.getTime();
 
   const isHunter = await prisma.assignment.findFirst({
     where: {
@@ -54,7 +44,7 @@ const isCurrentUserAuthorized = async (
     }
   });
 
-  return isUmpire || isHunter;
+  return isUmpire || (isTournamentRunning && isHunter);
 };
 
 export const getServerSideProps: GetServerSideProps = async ({
@@ -67,23 +57,16 @@ export const getServerSideProps: GetServerSideProps = async ({
     authConfig
   );
 
-  if (
-    !(await isCurrentUserAuthorized(
-      params.tournamentId,
-      params.id,
-      context,
-      session
-    ))
-  ) {
-    return { redirect: { destination: "/personal", permanent: false } };
-  }
+  const { id: userId, tournamentId } = params;
 
-  let imageUrl = "";
-  try {
-    const result = await cloudinary.api.resource(params.id as string);
-    imageUrl = result.url;
-  } catch (error) {
-    console.log(error);
+  const tournament = await prisma.tournament.findUnique({
+    where: {
+      id: tournamentId as string
+    }
+  });
+
+  if (!(await isCurrentUserAuthorized(tournament, userId as string, session))) {
+    return { redirect: { destination: "/personal", permanent: false } };
   }
 
   let currentUser = await prisma.user.findUnique({
@@ -93,13 +76,6 @@ export const getServerSideProps: GetServerSideProps = async ({
     select: {
       id: true,
       umpire: true,
-      tournament: {
-        select: {
-          startTime: true,
-          endTime: true,
-          id: true
-        }
-      },
       player: {
         select: {
           state: true,
@@ -122,45 +98,6 @@ export const getServerSideProps: GetServerSideProps = async ({
       }
     }
   });
-
-  currentUser = JSON.parse(JSON.stringify(currentUser));
-
-  let tournament = currentUser.tournament;
-
-  // const player = await prisma.player.findUnique({
-  //   where: {
-  //     userId: params.id as string
-  //   },
-  //   select: {
-  //     alias: true,
-  //     address: true,
-  //     learningInstitution: true,
-  //     eyeColor: true,
-  //     hair: true,
-  //     height: true,
-  //     other: true,
-  //     title: true,
-  //     calendar: true,
-  //     user: {
-  //       select: {
-  //         firstName: true,
-  //         lastName: true
-  //       }
-  //     },
-  //     umpire: {
-  //       select: {
-  //         user: {
-  //           select: {
-  //             firstName: true,
-  //             lastName: true,
-  //             phone: true,
-  //             email: true
-  //           }
-  //         }
-  //       }
-  //     }
-  //   }
-  // });
 
   let user = await prisma.user.findUnique({
     where: {
@@ -204,14 +141,6 @@ export const getServerSideProps: GetServerSideProps = async ({
     }
   });
 
-  let targets = [];
-  if (
-    currentUser.player &&
-    new Date().getTime() > new Date(tournament.startTime).getTime()
-  ) {
-    targets = currentUser.player.targets;
-  }
-
   const umpires = await prisma.umpire.findMany({
     select: {
       id: true,
@@ -226,6 +155,22 @@ export const getServerSideProps: GetServerSideProps = async ({
       }
     }
   });
+
+  let imageUrl = "";
+  try {
+    const result = await cloudinary.api.resource(params.id as string);
+    imageUrl = result.url;
+  } catch (error) {
+    console.log(error);
+  }
+
+  let targets = [];
+  if (
+    currentUser.player &&
+    new Date().getTime() > new Date(tournament.startTime).getTime()
+  ) {
+    targets = currentUser.player.targets;
+  }
 
   return {
     props: {
