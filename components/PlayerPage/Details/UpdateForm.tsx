@@ -17,7 +17,7 @@ export const UpdateForm = ({
         hair: player.hair,
         height: player.height,
         other: player.other,
-        security: player.security
+        safetyNotes: player.safetyNotes
       }}
       onSubmit={(values) => {
         handleSubmit(values);
@@ -29,7 +29,7 @@ export const UpdateForm = ({
             Turvallisuushuomiot (esim. pelin ulkopuolelle rajatut ajat ja
             paikat)
           </label>
-          <Field name="security" as="textarea" />
+          <Field name="safetyNotes" as="textarea" />
         </div>
         <TextInput label="Osoite" name="address" type="text" />
         <TextInput label="Opinahjo" name="learningInstitution" type="text" />

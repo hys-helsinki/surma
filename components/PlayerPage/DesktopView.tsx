@@ -1,4 +1,4 @@
-import { Box, Container, Grid } from "@mui/material";
+import { Container, Grid } from "@mui/material";
 import { Calendar } from "./Calendar";
 import Details from "./Details";
 import Info from "./Info";
@@ -21,10 +21,8 @@ const DesktopView = ({
             currentUserIsUmpire={currentUserIsUmpire}
           />
         </Grid>
-        <Grid item xs={12} md={6} padding={2}>
-          <Box sx={{ borderStyle: "solid", borderWidth: "2px" }}>
-            <Calendar player={user.player} tournament={tournament} />
-          </Box>
+        <Grid item xs={12} md={6}>
+          <Calendar player={user.player} tournament={tournament} />
         </Grid>
       </Grid>
     </Container>

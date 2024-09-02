@@ -11,10 +11,10 @@ type FormData = {
   hair: string;
   height: number;
   other: string;
-  security: string;
+  safetyNotes: string;
 };
 
-const PlayerDetails = ({ user, isUpdated }) => {
+const PlayerDetails = ({ user, isUpdating }) => {
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
   const { id } = router.query;
@@ -39,7 +39,7 @@ const PlayerDetails = ({ user, isUpdated }) => {
     <Box>
       <Box sx={{ mt: 4 }}>
         <h2>Kuvaus</h2>
-        {isUpdated ? (
+        {!isUpdating ? (
           <>
             <p>
               <PriorityHighIcon
@@ -51,7 +51,7 @@ const PlayerDetails = ({ user, isUpdated }) => {
                 Turvallisuushuomiot (esim. pelin ulkopuolelle rajatut ajat ja
                 paikat):{" "}
               </b>
-              {player.security}
+              {player.safetyNotes}
             </p>
             <p>
               <b>Osoite:</b> {player.address}
