@@ -3,7 +3,7 @@ import { useState } from "react";
 
 export const Calendar = ({ player, tournament }): JSX.Element => {
   const [weekNumber, setSlideNumber] = useState(0);
-  const [isUpdated, setIsUpdated] = useState(true);
+  const [isUpdating, setIsUpdating] = useState(false);
   const router = useRouter();
 
   const { id } = router.query;
@@ -77,11 +77,11 @@ export const Calendar = ({ player, tournament }): JSX.Element => {
       <h3 style={{ width: "40%", margin: "auto", padding: "10px" }}>
         Kalenteri
       </h3>
-      <button onClick={() => setIsUpdated(!isUpdated)}>
-        {isUpdated ? "Muokkaa kalenteria" : "Peruuta"}
+      <button onClick={() => setIsUpdating(!isUpdating)}>
+        {!isUpdating ? "Muokkaa kalenteria" : "Peruuta"}
       </button>
 
-      {isUpdated ? (
+      {!isUpdating ? (
         <div>
           <ul>
             {chunks[weekNumber].map((c, index) => (
