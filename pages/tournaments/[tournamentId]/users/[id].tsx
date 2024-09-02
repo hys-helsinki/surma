@@ -1,19 +1,14 @@
 import { GetServerSideProps } from "next";
-import { PlayerDetails } from "../../../../components/PlayerDetails";
-import { PlayerContactInfo } from "../../../../components/PlayerContactInfo";
 import prisma from "../../../../lib/prisma";
-import React, { MouseEventHandler } from "react";
 import { useState } from "react";
-import { UpdateForm } from "../../../../components/UpdateForm";
-import { useRouter } from "next/router";
 import NavigationBar from "../../../../components/NavigationBar";
-import { Calendar } from "../../../../components/Calendar";
-import Image from "next/image";
-import { Grid, Alert, Button } from "@mui/material";
+import { Alert, Button, useMediaQuery, useTheme } from "@mui/material";
 import { AuthenticationRequired } from "../../../../components/AuthenticationRequired";
 import { unstable_getServerSession } from "next-auth";
 import { authConfig } from "../../../api/auth/[...nextauth]";
 import { v2 as cloudinary } from "cloudinary";
+import DesktopView from "../../../../components/PlayerPage/DesktopView";
+import MobileView from "../../../../components/PlayerPage/MobileView";
 import PlayerForm from "../../../../components/Registration/PlayerForm";
 
 const isCurrentUserAuthorized = async (currentUser, userId, tournamentId) => {
@@ -81,6 +76,8 @@ export const getServerSideProps: GetServerSideProps = async ({
           lastVisit: true,
           title: true,
           confirmed: true,
+          state: true,
+          safetyNotes: true,
           targets: {
             select: {
               target: {
@@ -98,6 +95,8 @@ export const getServerSideProps: GetServerSideProps = async ({
           },
           umpire: {
             select: {
+              id: true,
+              responsibility: true,
               user: {
                 select: {
                   firstName: true,
@@ -123,6 +122,21 @@ export const getServerSideProps: GetServerSideProps = async ({
     }
   });
 
+  const umpires = await prisma.umpire.findMany({
+    select: {
+      id: true,
+      responsibility: true,
+      user: {
+        select: {
+          firstName: true,
+          lastName: true,
+          phone: true,
+          email: true
+        }
+      }
+    }
+  });
+
   let imageUrl = "";
   try {
     const result = await cloudinary.api.resource(user.player.id as string);
@@ -134,166 +148,61 @@ export const getServerSideProps: GetServerSideProps = async ({
   user = JSON.parse(JSON.stringify(user));
   const tournament = user.tournament;
   let targets = [];
+
   if (
     user.player &&
     new Date().getTime() > new Date(tournament.startTime).getTime()
   ) {
     targets = user.player.targets;
   }
+
   return {
     props: {
       user,
       tournament,
       imageUrl,
       targets,
-      currentUserIsUmpire: currentUser.umpire != null
+      currentUserIsUmpire: currentUser.umpire != null,
+      umpires
     }
   };
 };
 
-export default function UserInfo({
+export default function User({
   user,
   tournament,
   imageUrl,
   targets = [],
-  currentUserIsUmpire
+  currentUserIsUmpire,
+  umpires
 }): JSX.Element {
-  const [isUpdated, setIsUpdated] = useState(true);
-  const [showPicture, setShowPicture] = useState(false);
-  const [fileInputState, setFileInputState] = useState("");
-  const [selectedFile, setSelectedFile] = useState();
-  const [selectedFileName, setSelectedFileName] = useState("");
-  const [showPlayerData, setShowPlayerData] = useState(Boolean(user.player))
-  const [confirmed, setConfirmed] = useState(user.player ? user.player.confirmed : false)
+  const [confirmed, setConfirmed] = useState(
+    user.player ? user.player.confirmed : false
+  );
+  const theme = useTheme();
+  const isMobileView = useMediaQuery(theme.breakpoints.down("md"));
 
-  const router = useRouter();
-  const { id } = router.query;
-
-  if (!showPlayerData) {
-    return <PlayerForm tournament={user.tournament} />
+  if (!Boolean(user.player)) {
+    return <PlayerForm tournament={user.tournament} />;
   }
 
-  const start = new Date(tournament.startTime);
-  const end = new Date(tournament.endTime);
-  let dates: Array<any> = [];
-  dates.push(`${start.getDate()}.${start.getMonth() + 1}.`);
-  let loopDay = start;
-  while (loopDay < end) {
-    loopDay.setDate(loopDay.getDate() + 1);
-    dates.push(`${loopDay.getDate()}.${loopDay.getMonth() + 1}.`);
-  }
-
-  const handleUpdateStatusClick: MouseEventHandler<HTMLButtonElement> = () => {
-    if (isUpdated === true) {
-      setIsUpdated(false);
-    } else {
-      setIsUpdated(true);
-    }
-  };
-  type formData = {
-    address: string;
-    learningInstitution: string;
-    eyeColor: string;
-    hair: string;
-    height: number;
-    other: string;
-  };
-  const handleDetailsSubmit = async (
-    event: React.FormEvent<HTMLFormElement>
-  ) => {
-    event.preventDefault();
-    const data: formData = {
-      address: event.currentTarget.address.value,
-      learningInstitution: event.currentTarget.learningInstitution.value,
-      eyeColor: event.currentTarget.eyeColor.value,
-      hair: event.currentTarget.hair.value,
-      height: parseInt(event.currentTarget.height.value),
-      other: event.currentTarget.other.value
-    };
-
-    fetch(`/api/user/update/${id}`, {
-      method: "PUT",
-      body: JSON.stringify(data)
-    }).then((response) => router.reload());
-  };
-
-  const handleCalendarSubmit = async (
-    event: React.FormEvent<HTMLFormElement>
-  ) => {
-    const cal = {};
-    dates.forEach((x, i) => (cal[x] = event.currentTarget.dates[i].value));
-    event.preventDefault();
-    const data = {
-      calendar: cal
-    };
-
-    fetch(`/api/user/update/${id}`, {
-      method: "PUT",
-      body: JSON.stringify(data)
-    }).then((response) => router.reload());
-  };
-
-  const uploadImage = async (event, id: string) => {
-    event.preventDefault();
-    if (!selectedFile) return;
-    try {
-      const reader = new FileReader();
-      reader.readAsDataURL(selectedFile);
-      reader.onloadend = async () => {
-        await fetch("/api/upload", {
-          method: "POST",
-          body: JSON.stringify({
-            url: reader.result,
-            publicId: id
-          })
-        });
-      };
-      setFileInputState("");
-      setSelectedFileName("");
-      setSelectedFile(null);
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
-  const handleFileInputChange = (event) => {
-    const file = event.target.files[0];
-    if (file == undefined) {
-      setFileInputState("");
-      setSelectedFile(null);
-      setSelectedFileName("");
-    } else {
-      setSelectedFile(file);
-      setSelectedFileName(file.name);
-      setFileInputState(event.target.value);
-    }
-  };
-
-  const togglePicture: MouseEventHandler = () => {
-    if (showPicture === true) {
-      setShowPicture(false);
-    } else {
-      setShowPicture(true);
-    }
-  };
   let targetUsers = [];
+
   if (targets.length > 0) {
     targetUsers = user.player.targets.map(
       (assignment) => assignment.target.user
     );
   }
 
-  const handleConfirm = async () => {
-
-    const id = user.player.id
+  const handleConfirmRegistration = async () => {
+    const id = user.player.id;
     const data = { confirmed: true };
     await fetch(`/api/player/${id}/confirm`, {
       method: "PATCH",
       body: JSON.stringify(data)
     });
-    setConfirmed(true)
-
-  }
+    setConfirmed(true);
+  };
 
   return (
     <AuthenticationRequired>
@@ -302,126 +211,44 @@ export default function UserInfo({
           targets={targetUsers}
           userId={user.id}
           tournamentId={user.tournamentId}
+          currentUserIsUmpire={currentUserIsUmpire}
         />
-        {
-          !user.player.confirmed && 
-            <Alert severity="warning" sx={{minHeight: "50px",   
-              display: "flex",
-              alignItems: "center"}}>
-              Tuomaristo ei ole vielä hyväksynyt ilmoittautumista
-              {currentUserIsUmpire && <Button onClick={() => handleConfirm()} variant="outlined" color="error" sx={{ml: 1}} disabled={confirmed}>Hyväksy ilmoittautuminen</Button>}
-            </Alert>
-        }
-        <Grid container>
-          <Grid item xs={12} md={5}>
-            <div
-              style={{
-                paddingLeft: "10px",
-                display: "inline-block"
-              }}
-            >
-              <h1>
-                {user.player.title} {user.firstName} {user.lastName}
-              </h1>
-              {imageUrl !== "" ? (
-                <div>
-                  {showPicture ? (
-                    <div>
-                      <Image
-                        src={imageUrl}
-                        width="100%"
-                        height="100%"
-                        layout="responsive"
-                        objectFit="contain"
-                        alt="profile picture"
-                      ></Image>
-                    </div>
-                  ) : null}
-                  <button onClick={togglePicture}>
-                    {showPicture ? "piilota" : "näytä kuva"}
-                  </button>
-                </div>
-              ) : (
-                <div>
-                  <p>Ei kuvaa</p>
-                  <form
-                    onSubmit={(e) => uploadImage(e, user.player.id)}
-                    style={{ width: "50%" }}
-                  >
-                    <label>Valitse kuva itsestäsi</label>
-                    <input
-                      type="file"
-                      name="image"
-                      accept="image/*"
-                      onChange={handleFileInputChange}
-                      value={fileInputState}
-                    />
-                    <button type="submit">Lähetä kuva</button>
-                  </form>
-                  {selectedFileName ? (
-                    <p>Valittu tiedosto: {selectedFileName}</p>
-                  ) : null}
-                  <p>
-                    Päivitä sivu kuvan lähettämisen jälkeen. Kuvalla saattaa
-                    kestää jonkin aikaa latautua, mutta jos se ei hetken päästä
-                    näy, ota yhteyttä tuomaristoon.
-                  </p>
-                </div>
-              )}
-
-              <div>
-                <button onClick={handleUpdateStatusClick}>
-                  {isUpdated ? "muokkaa tietoja" : "peruuta"}
-                </button>
-              </div>
-              {user.player && currentUserIsUmpire && (
-                <div>
-                  <p>Käyttäjän viime käynti:</p>
-                  <p>{new Date(user.player.lastVisit).toString()}</p>
-                </div>
-              )}
-              {user.player && user.player.umpire ? (
-                <div>
-                  <h3>Pelaajan tuomari</h3>
-                  <p>
-                    {user.player.umpire.user.firstName}{" "}
-                    {user.player.umpire.user.lastName}
-                  </p>
-                  <p>{user.player.umpire.user.phone}</p>
-                  <p>{user.player.umpire.user.email}</p>
-                </div>
-              ) : (
-                ""
-              )}
-              {isUpdated ? (
-                <div>
-                  <div className="userdetails">
-                    <PlayerContactInfo user={user} />
-                    {user.player && <PlayerDetails player={user.player} />}
-                  </div>
-                </div>
-              ) : (
-                <div>
-                  <PlayerContactInfo user={user} />
-                  {user.player && (
-                    <UpdateForm
-                      data={user.player}
-                      handleSubmit={handleDetailsSubmit}
-                    />
-                  )}
-                </div>
-              )}
-            </div>
-          </Grid>
-          <Grid item xs={12} md={7}>
-            {user.player && (
-              <Calendar
-                player={user.player}
-                handleSubmit={handleCalendarSubmit}
-              />
+        {!user.player.confirmed && (
+          <Alert
+            severity="warning"
+            sx={{ minHeight: "50px", display: "flex", alignItems: "center" }}
+          >
+            Tuomaristo ei ole vielä hyväksynyt ilmoittautumista
+            {currentUserIsUmpire && (
+              <Button
+                onClick={() => handleConfirmRegistration()}
+                variant="outlined"
+                color="error"
+                sx={{ ml: 1 }}
+                disabled={confirmed}
+              >
+                Hyväksy ilmoittautuminen
+              </Button>
             )}
-          </Grid>
-        </Grid>
+          </Alert>
+        )}
+        {isMobileView ? (
+          <MobileView
+            user={user}
+            tournament={tournament}
+            imageUrl={imageUrl}
+            currentUserIsUmpire={currentUserIsUmpire}
+            umpires={umpires}
+          />
+        ) : (
+          <DesktopView
+            user={user}
+            tournament={tournament}
+            imageUrl={imageUrl}
+            currentUserIsUmpire={currentUserIsUmpire}
+            umpires={umpires}
+          />
+        )}
       </div>
     </AuthenticationRequired>
   );

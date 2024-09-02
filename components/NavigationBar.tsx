@@ -17,12 +17,18 @@ import ExpandMore from "@mui/icons-material/ExpandMore";
 import Image from "next/image";
 import logo from "/public/images/surma_logo.svg";
 import Link from "next/link";
+import OpenInNewIcon from "@mui/icons-material/OpenInNew";
+import { useSession } from "next-auth/react";
 
-const NavigationBar = ({ targets, userId, tournamentId }) => {
+const NavigationBar = ({
+  targets,
+  userId,
+  tournamentId,
+  currentUserIsUmpire
+}) => {
+  const { data } = useSession();
   const [anchorElNav, setAnchorElNav] = React.useState(null);
-
   const [anchorElTarget, setAnchorElTarget] = React.useState(null);
-
   const [open, setOpen] = React.useState(false);
 
   const handleClick = () => {
@@ -105,13 +111,15 @@ const NavigationBar = ({ targets, userId, tournamentId }) => {
                 aria-labelledby="nested-list-subheader"
               >
                 <ListItemButton onClick={handleClick}>
-                  <ListItemText primary="Kohteet" />
+                  Kohteet
                   {open ? <ExpandLess /> : <ExpandMore />}
                 </ListItemButton>
                 <Collapse in={open} timeout="auto" unmountOnExit>
                   <List component="div" disablePadding>
                     {targets.length == 0 ? (
-                      <ListItemText>Ei kohteita</ListItemText>
+                      <ListItemText sx={{ marginLeft: 2 }}>
+                        Ei kohteita
+                      </ListItemText>
                     ) : (
                       targets.map((target, i) => (
                         <ListItemButton key={i} sx={{ pl: 4 }}>
@@ -132,6 +140,17 @@ const NavigationBar = ({ targets, userId, tournamentId }) => {
                     Oma sivu
                   </Link>
                 </ListItemButton>
+                <ListItemButton>
+                  <Link href="https://salamurhaajat.net/mika-salamurhapeli/turnaussaannot">
+                    Turnaussäännöt
+                  </Link>
+                  <OpenInNewIcon />
+                </ListItemButton>
+                {currentUserIsUmpire && (
+                  <ListItemButton>
+                    <Link href={`/admin/${tournamentId}`}>Ylläpito</Link>
+                  </ListItemButton>
+                )}
               </List>
             </Menu>
           </Box>
@@ -196,6 +215,19 @@ const NavigationBar = ({ targets, userId, tournamentId }) => {
                 Oma sivu
               </Link>
             </Button>
+            <Button sx={{ minWidth: 100, my: 2, color: "white" }}>
+              <Link href="https://salamurhaajat.net/mika-salamurhapeli/turnaussaannot">
+                Turnaussäännöt
+              </Link>
+              <OpenInNewIcon />
+            </Button>
+            {currentUserIsUmpire && (
+              <Button
+                sx={{ minWidth: 100, my: 2, color: "white", display: "block" }}
+              >
+                <Link href={`/admin/${tournamentId}`}>Ylläpito</Link>
+              </Button>
+            )}
           </Box>
         </Toolbar>
       </Container>
