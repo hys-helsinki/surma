@@ -48,7 +48,7 @@ model Player {
   eyeColor            String?
   hair                String?
   height              Int?
-  security            String?
+  safetyNotes         String?
   other               String?
   calendar            Json?
   title               PlayerTitle?

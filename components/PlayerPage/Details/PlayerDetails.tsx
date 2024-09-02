@@ -11,7 +11,7 @@ type FormData = {
   hair: string;
   height: number;
   other: string;
-  security: string;
+  safetyNotes: string;
 };
 
 const PlayerDetails = ({ user, isUpdated }) => {
@@ -51,7 +51,7 @@ const PlayerDetails = ({ user, isUpdated }) => {
                 Turvallisuushuomiot (esim. pelin ulkopuolelle rajatut ajat ja
                 paikat):{" "}
               </b>
-              {player.security}
+              {player.safetyNotes}
             </p>
             <p>
               <b>Osoite:</b> {player.address}

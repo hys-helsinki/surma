@@ -11,7 +11,7 @@ type PlayerFormData = {
     hair?: string
     height?: string
     other?: string
-    security?: string
+    safetyNotes?: string
     calendar?: object
     title?: "LL" | "KK" | "MM" | "TT"
 }
@@ -32,7 +32,7 @@ export default async function create(
             hair: playerData.hair,
             height: parseInt(playerData.height),
             other: playerData.other,
-            security: playerData.security,
+            safetyNotes: playerData.safetyNotes,
             calendar: playerData.calendar,
             title: playerData.title
         }

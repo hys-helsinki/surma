@@ -89,11 +89,11 @@ const PlayerDetailsForm = ({
         <TextInput label="Hiukset" id="hair" name="hair" type="text" />
         <TextInput label="Pituus" id="height" name="height" type="text" />
         <div style={{ marginBottom: "7px" }}>
-          <label htmlFor="security">
+          <label htmlFor="safetyNotes">
             Turvallisuushuomiot (esim. pelin ulkopuolelle rajatut ajat ja
             paikat)
           </label>
-          <Field name="security" id="security" as="textarea" />
+          <Field name="safetyNotes" id="safetyNotes" as="textarea" />
         </div>
         <div style={{ marginBottom: "7px" }}>
           <label htmlFor="other">Muut tiedot, kulkuneuvot yms.</label>
