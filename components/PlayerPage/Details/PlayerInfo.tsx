@@ -76,7 +76,7 @@ const PlayerInfo = ({
           {currentUserIsUmpire && (
             <>
               <h3>Käyttäjän viime käynti</h3>
-              <p>20434390242</p>
+              <p>{user.player.lastVisit}</p>
             </>
           )}
         </Box>
