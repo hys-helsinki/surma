@@ -182,6 +182,19 @@ export default function User({
   const theme = useTheme();
   const isMobileView = useMediaQuery(theme.breakpoints.down("md"));
 
+  if (!Boolean(user.player) && currentUserIsUmpire) {
+    return (
+      <div style={{ margin: 2 }}>
+        <h3>Pelaaja ei ole vielä täyttänyt ilmoittaumislomaketta loppuun</h3>
+        <p>
+          Nimi: {user.firstName} {user.lastName}
+        </p>
+        <p>Sähköpostiosoite: {user.email}</p>
+        <p>Puhelinnumero: {user.phone}</p>
+      </div>
+    );
+  }
+
   if (!Boolean(user.player)) {
     return <PlayerForm tournament={user.tournament} />;
   }
