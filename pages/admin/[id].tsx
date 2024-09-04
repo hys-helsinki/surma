@@ -1,12 +1,12 @@
 import { Grid } from "@mui/material";
 import { GetServerSideProps } from "next";
 import { unstable_getServerSession } from "next-auth";
-import Link from "next/link";
 import { useState } from "react";
 import { AuthenticationRequired } from "../../components/AuthenticationRequired";
-import { TournamentRings } from "../../components/TournamentRings";
+import { TournamentRings } from "../../components/Admin/TournamentRings";
 import prisma from "../../lib/prisma";
 import { authConfig } from "../api/auth/[...nextauth]";
+import PlayerTable from "../../components/Admin/PlayerTable";
 
 const isCurrentUserAuthorized = async (tournamentId, context) => {
   const session = await unstable_getServerSession(
@@ -76,6 +76,7 @@ export const getServerSideProps: GetServerSideProps = async ({
 
 export default function Tournament({ tournament, playerList, rings }) {
   const [players, setPlayers] = useState(playerList);
+
   const handlePlayerStatusChange = (playerState, id) => {
     const data = { state: playerState };
     fetch(`/api/player/${id}/state`, {
@@ -88,79 +89,25 @@ export default function Tournament({ tournament, playerList, rings }) {
       players.map((player) => (player.id !== id ? player : updatedPlayer))
     );
   };
+
   return (
     <AuthenticationRequired>
       <div>
         <h2 style={{ width: "100%" }}>{tournament.name}</h2>
         <Grid container>
           <Grid item xs={12} md={6}>
-            <div style={{ paddingLeft: "10px" }}>
-              <h2>Pelaajat</h2>
-              <table>
-                <tbody>
-                  {players.map((player) => (
-                    <tr key={player.id}>
-                      <td>
-                        <Link
-                          href={`/tournaments/${tournament.id}/users/${player.user.id}`}
-                        >
-                          <a>
-                            {player.user.firstName} {player.user.lastName} (
-                            {player.alias})
-                          </a>
-                        </Link>
-                      </td>
-                      {player.state == "ACTIVE" ? (
-                        <td>
-                          <button
-                            onClick={() =>
-                              handlePlayerStatusChange("DEAD", player.id)
-                            }
-                          >
-                            Tapa
-                          </button>
-                        </td>
-                      ) : (
-                        <>
-                          <td>
-                            <button
-                              onClick={() =>
-                                handlePlayerStatusChange("ACTIVE", player.id)
-                              }
-                            >
-                              Herätä henkiin
-                            </button>
-                          </td>
-                          {player.state != "DETECTIVE" && (
-                            <td>
-                              <button
-                                onClick={() =>
-                                  handlePlayerStatusChange(
-                                    "DETECTIVE",
-                                    player.id
-                                  )
-                                }
-                              >
-                                Etsiväksi
-                              </button>
-                            </td>
-                          )}
-                        </>
-                      )}
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
+            <PlayerTable
+              players={players}
+              tournament={tournament}
+              handlePlayerStatusChange={handlePlayerStatusChange}
+            />
           </Grid>
           <Grid item xs={12} md={6}>
-            <div>
-              <TournamentRings
-                tournament={tournament}
-                players={players}
-                rings={rings}
-              />
-            </div>
+            <TournamentRings
+              tournament={tournament}
+              players={players}
+              rings={rings}
+            />
           </Grid>
         </Grid>
       </div>
