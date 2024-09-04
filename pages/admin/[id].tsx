@@ -52,7 +52,8 @@ export const getServerSideProps: GetServerSideProps = async ({
       id: true,
       targets: true,
       hunters: true,
-      state: true
+      state: true,
+      alias: true
     }
   });
   let rings = await prisma.assignmentRing.findMany({
@@ -104,7 +105,8 @@ export default function Tournament({ tournament, playerList, rings }) {
                           href={`/tournaments/${tournament.id}/users/${player.user.id}`}
                         >
                           <a>
-                            {player.user.firstName} {player.user.lastName}
+                            {player.user.firstName} {player.user.lastName} (
+                            {player.alias})
                           </a>
                         </Link>
                       </td>
