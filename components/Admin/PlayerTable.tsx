@@ -1,6 +1,12 @@
 import Link from "next/link";
 
 const PlayerTable = ({ players, tournament, handlePlayerStatusChange }) => {
+  const handleMakeWanted = (id) => {
+    fetch(`/api/player/${id}/wanted`, {
+      method: "POST"
+    });
+  };
+
   return (
     <div style={{ paddingLeft: "10px" }}>
       <h2>Pelaajat</h2>
@@ -19,13 +25,22 @@ const PlayerTable = ({ players, tournament, handlePlayerStatusChange }) => {
                 </Link>
               </td>
               {player.state == "ACTIVE" ? (
-                <td>
-                  <button
-                    onClick={() => handlePlayerStatusChange("DEAD", player.id)}
-                  >
-                    Tapa
-                  </button>
-                </td>
+                <>
+                  <td>
+                    <button
+                      onClick={() =>
+                        handlePlayerStatusChange("DEAD", player.id)
+                      }
+                    >
+                      Tapa
+                    </button>
+                  </td>
+                  <td>
+                    <button onClick={() => handleMakeWanted(player.id)}>
+                      Etsintäkuuluta
+                    </button>
+                  </td>
+                </>
               ) : (
                 <>
                   <td>
