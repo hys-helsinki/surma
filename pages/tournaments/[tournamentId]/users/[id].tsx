@@ -10,6 +10,7 @@ import { v2 as cloudinary } from "cloudinary";
 import DesktopView from "../../../../components/PlayerPage/DesktopView";
 import MobileView from "../../../../components/PlayerPage/MobileView";
 import PlayerForm from "../../../../components/Registration/PlayerForm";
+import { useSession } from "next-auth/react";
 
 const isCurrentUserAuthorized = async (currentUser, userId, tournamentId) => {
   if (currentUser.id == userId) {
@@ -179,10 +180,11 @@ export default function User({
   const [confirmed, setConfirmed] = useState(
     user.player ? user.player.confirmed : false
   );
+  const { data } = useSession();
   const theme = useTheme();
   const isMobileView = useMediaQuery(theme.breakpoints.down("md"));
 
-  if (!Boolean(user.player) && currentUserIsUmpire) {
+  if (!Boolean(user.player) && user.id !== data.user.id) {
     return (
       <div style={{ margin: 2 }}>
         <h3>Pelaaja ei ole vielä täyttänyt ilmoittaumislomaketta loppuun</h3>
