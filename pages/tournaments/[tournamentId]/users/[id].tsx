@@ -77,7 +77,7 @@ export const getServerSideProps: GetServerSideProps = async ({
           title: true,
           confirmed: true,
           state: true,
-          security: true,
+          safetyNotes: true,
           targets: {
             select: {
               target: {
@@ -180,7 +180,7 @@ export default function User({
     user.player ? user.player.confirmed : false
   );
   const theme = useTheme();
-  const matches = useMediaQuery(theme.breakpoints.down("md"));
+  const isMobileView = useMediaQuery(theme.breakpoints.down("md"));
 
   if (!Boolean(user.player)) {
     return <PlayerForm tournament={user.tournament} />;
@@ -232,7 +232,7 @@ export default function User({
             )}
           </Alert>
         )}
-        {matches ? (
+        {isMobileView ? (
           <MobileView
             user={user}
             tournament={tournament}

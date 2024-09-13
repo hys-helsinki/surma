@@ -9,13 +9,13 @@ const Details = ({
   currentUserIsUmpire,
   currentUserIsHunter
 }) => {
-  const [isUpdated, setIsUpdated] = useState(true);
+  const [isUpdating, setIsUpdating] = useState(false);
 
   return (
     <Box>
       {!currentUserIsHunter && (
-        <button onClick={() => setIsUpdated(!isUpdated)}>
-          {isUpdated ? "Muokkaa tietoja" : "Peruuta"}
+        <button onClick={() => setIsUpdating(!isUpdating)}>
+          {!isUpdating ? "Muokkaa tietoja" : "Peruuta"}
         </button>
       )}
       <PlayerInfo
@@ -24,7 +24,7 @@ const Details = ({
         umpires={umpires}
         currentUserIsHunter={currentUserIsHunter}
       />
-      <PlayerDetails user={user} isUpdated={isUpdated} />
+      <PlayerDetails user={user} isUpdating={isUpdating} />
     </Box>
   );
 };

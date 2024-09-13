@@ -121,7 +121,7 @@ export const getServerSideProps: GetServerSideProps = async ({
           lastVisit: true,
           title: true,
           state: true,
-          security: true,
+          safetyNotes: true,
           umpire: {
             select: {
               id: true,
