@@ -70,8 +70,8 @@ const PlayerInfo = ({
       {showContactDetails && (
         <Box sx={{ mt: 4 }}>
           <h2>Yhteystiedot</h2>
-          <p>puhelinnumero: {user.phone}</p>
-          <p>email: {user.email}</p>
+          <p>Puhelinnumero: {user.phone}</p>
+          <p>Sähköpostiosoite: {user.email}</p>
 
           {showLastVisit && (
             <>
