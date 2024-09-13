@@ -13,16 +13,16 @@ const Details = ({
 
   return (
     <Box>
-      {!currentUserIsHunter && (
+      {!currentUserIsHunter && !currentUserIsUmpire && (
         <button onClick={() => setIsUpdating(!isUpdating)}>
           {!isUpdating ? "Muokkaa tietoja" : "Peruuta"}
         </button>
       )}
       <PlayerInfo
         user={user}
-        currentUserIsUmpire={currentUserIsUmpire}
+        showContactDetails={!currentUserIsHunter}
         umpires={umpires}
-        currentUserIsHunter={currentUserIsHunter}
+        showLastVisit={currentUserIsUmpire}
       />
       <PlayerDetails user={user} isUpdating={isUpdating} />
     </Box>

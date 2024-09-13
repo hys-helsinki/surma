@@ -51,7 +51,8 @@ const MobileView = ({
       <Info
         user={user}
         imageUrl={imageUrl}
-        currentUserIsHunter={currentUserIsHunter}
+        statusAndAliasVisibile={!currentUserIsHunter}
+        imageFormVisible={!currentUserIsHunter && !currentUserIsUmpire}
       />
 
       <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
@@ -74,7 +75,7 @@ const MobileView = ({
         <Calendar
           player={user.player}
           tournament={tournament}
-          currentUserIsHunter={currentUserIsHunter}
+          editButtonVisible={!currentUserIsHunter && !currentUserIsUmpire}
         />
       </TabPanel>
       <TabPanel value={value} index={1}>

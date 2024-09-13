@@ -25,7 +25,8 @@ const DesktopView = ({
           <Info
             user={user}
             imageUrl={imageUrl}
-            currentUserIsHunter={currentUserIsHunter}
+            statusAndAliasVisibile={!currentUserIsHunter}
+            imageFormVisible={!currentUserIsHunter && !currentUserIsUmpire}
           />
           <Details
             user={user}
@@ -39,7 +40,7 @@ const DesktopView = ({
             <Calendar
               player={user.player}
               tournament={tournament}
-              currentUserIsHunter={currentUserIsHunter}
+              editButtonVisible={!currentUserIsHunter && !currentUserIsUmpire}
             />
           </Box>
         </Grid>

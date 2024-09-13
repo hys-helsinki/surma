@@ -199,7 +199,7 @@ export default function Target({
   umpires
 }): JSX.Element {
   const theme = useTheme();
-  const matches = useMediaQuery(theme.breakpoints.down("md"));
+  const isMobileView = useMediaQuery(theme.breakpoints.down("md"));
 
   let targetUsers = [];
 
@@ -218,7 +218,7 @@ export default function Target({
           tournamentId={user.tournamentId}
           currentUserIsUmpire={currentUserIsUmpire}
         />
-        {matches ? (
+        {isMobileView ? (
           <MobileView
             user={user}
             tournament={tournament}

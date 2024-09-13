@@ -8,7 +8,7 @@ import { LoadingButton } from "@mui/lab";
 export const Calendar = ({
   player,
   tournament,
-  currentUserIsHunter
+  editButtonVisible
 }): JSX.Element => {
   const [calendar, setCalendar] = useState(player.calendar);
   const [weekNumber, setSlideNumber] = useState(0);
@@ -75,7 +75,7 @@ export const Calendar = ({
 
   return (
     <div className="calendar">
-      {!currentUserIsHunter && (
+      {editButtonVisible && (
         <button onClick={() => setIsUpdated(!isUpdated)}>
           {isUpdated ? "Muokkaa kalenteria" : "Peruuta"}
         </button>

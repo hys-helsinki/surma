@@ -5,14 +5,14 @@ import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
 
 const PlayerInfo = ({
   user,
-  currentUserIsUmpire,
+  showContactDetails,
   umpires,
-  currentUserIsHunter
+  showLastVisit
 }: {
   user: any;
-  currentUserIsUmpire: boolean;
+  showContactDetails: boolean;
   umpires: any[];
-  currentUserIsHunter: boolean;
+  showLastVisit: boolean;
 }): JSX.Element => {
   const [showOtherUmpires, setShowOtherUmpires] = useState(false);
 
@@ -67,13 +67,13 @@ const PlayerInfo = ({
           ) : null}
         </div>
       )}
-      {!currentUserIsHunter && (
+      {showContactDetails && (
         <Box sx={{ mt: 4 }}>
           <h2>Yhteystiedot</h2>
           <p>puhelinnumero: {user.phone}</p>
           <p>email: {user.email}</p>
 
-          {currentUserIsUmpire && (
+          {showLastVisit && (
             <>
               <h3>Käyttäjän viime käynti</h3>
               <p>{user.player.lastVisit}</p>

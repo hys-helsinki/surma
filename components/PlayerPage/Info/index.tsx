@@ -11,7 +11,7 @@ const states = {
   EXTRA: "Lisäkohde"
 };
 
-const Info = ({ user, imageUrl, currentUserIsHunter }) => {
+const Info = ({ user, imageUrl, statusAndAliasVisibile, imageFormVisible }) => {
   const [fileInputState, setFileInputState] = useState("");
   const [selectedFile, setSelectedFile] = useState();
   const [selectedFileName, setSelectedFileName] = useState("");
@@ -55,7 +55,7 @@ const Info = ({ user, imageUrl, currentUserIsHunter }) => {
         <h1>
           {user.player.title} {user.firstName} {user.lastName}
         </h1>
-        {!currentUserIsHunter && (
+        {statusAndAliasVisibile && (
           <>
             <h3 style={{ marginTop: "5px", marginBottom: "5px" }}>
               Peitenimi: {user.player.alias}
@@ -68,7 +68,7 @@ const Info = ({ user, imageUrl, currentUserIsHunter }) => {
       </Box>
       {imageUrl && !updateImage ? (
         <ImageComponent imageUrl={imageUrl} setUpdateImage={setUpdateImage} />
-      ) : currentUserIsHunter ? (
+      ) : !imageFormVisible ? (
         <p>{"Ei kuvaa :("}</p>
       ) : (
         <div style={{ margin: "10px" }}>
