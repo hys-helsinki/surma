@@ -11,6 +11,14 @@ import DesktopView from "../../../../components/PlayerPage/DesktopView";
 import MobileView from "../../../../components/PlayerPage/MobileView";
 import { Tournament } from "@prisma/client";
 
+const isTournamentRunning = (startTime: Date, endTime: Date) => {
+  const currentTime = new Date();
+  return (
+    startTime.getTime() < currentTime.getTime() &&
+    currentTime.getTime() < endTime.getTime()
+  );
+};
+
 const isCurrentUserAuthorized = async (
   tournament: Tournament,
   targetId: string,
@@ -22,12 +30,6 @@ const isCurrentUserAuthorized = async (
       tournamentId: tournament.id
     }
   });
-
-  const currentTime = new Date();
-
-  const isTournamentRunning =
-    tournament.startTime.getTime() < currentTime.getTime() &&
-    currentTime.getTime() < tournament.endTime.getTime();
 
   const isHunter = await prisma.assignment.findFirst({
     where: {
@@ -44,7 +46,10 @@ const isCurrentUserAuthorized = async (
     }
   });
 
-  return isUmpire || (isTournamentRunning && isHunter);
+  return (
+    isUmpire ||
+    (isTournamentRunning(tournament.startTime, tournament.endTime) && isHunter)
+  );
 };
 
 export const getServerSideProps: GetServerSideProps = async ({
@@ -59,7 +64,7 @@ export const getServerSideProps: GetServerSideProps = async ({
 
   const { id: userId, tournamentId } = params;
 
-  const tournament = await prisma.tournament.findUnique({
+  let tournament = await prisma.tournament.findUnique({
     where: {
       id: tournamentId as string
     }
@@ -164,13 +169,7 @@ export const getServerSideProps: GetServerSideProps = async ({
     console.log(error);
   }
 
-  let targets = [];
-  if (
-    currentUser.player &&
-    new Date().getTime() > new Date(tournament.startTime).getTime()
-  ) {
-    targets = currentUser.player.targets;
-  }
+  tournament = JSON.parse(JSON.stringify(tournament));
 
   return {
     props: {
@@ -178,7 +177,12 @@ export const getServerSideProps: GetServerSideProps = async ({
       user,
       tournament,
       imageUrl,
-      targets,
+      targets: isTournamentRunning(
+        new Date(tournament.startTime),
+        new Date(tournament.endTime)
+      )
+        ? currentUser.player.targets
+        : [],
       currentUserIsUmpire: currentUser.umpire != null,
       umpires
     }
