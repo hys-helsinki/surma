@@ -52,8 +52,8 @@ export default async function create(
   sendEmail(
     "surma@salamurhaajat.net",
     user.email,
-    "Kiitos ilmoittautumisestasi!",
-    `Tervetuloa mukaan Helsingin Yliopiston Salamurhaajien turnaukseen ${user.tournament.name}! Tuomaristo tarkistaa ilmoittautumisesi ja ottaa vielä yhteyttä ennen pelin alkua.\n\nTämä on automaattinen vahvistusviesti. Älä vastaa tähän viestiin, vaan lähetä viestisi osoitteeseen tuomaristo@salamurhaajat.net`
+    "Kiitos ilmoittautumisestasi salamurhaturnaukseen ${user.tournament.name}!",
+    `Ilmoittautumisesi on nyt valmis! Tuomaristo tarkistaa sen vielä ennen pelin alkua, ja saat sähköpostitse vahvistusviestin kun ilmoittautumisesi on hyväksytty. Tuomaristo ottaa erikseen yhteyttä, mikäli antamiasi tietoja pitää täydentää tai muokata.\n\nTämä on automaattinen vahvistusviesti. Älä vastaa tähän viestiin, vaan lähetä viestisi osoitteeseen tuomaristo@salamurhaajat.net`
   );
   res.status(201).send(result);
 }

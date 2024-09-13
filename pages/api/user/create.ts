@@ -29,7 +29,7 @@ export default async function create(
     sendEmail(
       "surma@salamurhaajat.net",
       "tuomaristo@salamurhaajat.net",
-      "Uusi ilmoittautuminen",
+      `${tournament.name}: Uusi ilmoittautuminen`,
       `${user.firstName} ${user.lastName} ilmoittautui mukaan turnaukseen ${tournament.name}.\n\n${playerUrl}`
     );
     res.status(201).send(user);
