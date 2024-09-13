@@ -1,3 +1,4 @@
+import { PlayerTitle } from "../../../lib/constants";
 import prisma from "../../../lib/prisma";
 import type { NextApiRequest, NextApiResponse } from "next";
 import sendEmail from "../../../lib/ses_mailer";
@@ -14,7 +15,7 @@ type PlayerFormData = {
   other?: string;
   safetyNotes?: string;
   calendar?: object;
-  title?: "LL" | "KK" | "MM" | "TT";
+  title?: PlayerTitle;
 };
 
 export default async function create(

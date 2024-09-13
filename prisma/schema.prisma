@@ -89,6 +89,7 @@ model Tournament {
   createdAt             DateTime         @default(now()) @db.Timestamptz(3)
   modifiedAt            DateTime         @default(now()) @db.Timestamptz(3)
   name                  String
+  theme                 String?
   startTime             DateTime         @db.Timestamptz(3)
   endTime               DateTime         @db.Timestamptz(3)
   registrationStartTime DateTime         @db.Timestamptz(3)

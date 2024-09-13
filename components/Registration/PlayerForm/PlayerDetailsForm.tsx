@@ -6,7 +6,8 @@ import Link from "next/link";
 import TextInput from "../TextInput";
 import GdprModal from "../../GdprModal";
 
-import { KK, MM, LL, TT } from "../../../constants";
+import { PlayerTitle } from "../../../lib/constants";
+import Markdown from "../../Common/Markdown";
 
 const BottomText = () => {
   return (
@@ -36,21 +37,25 @@ const PlayerDetailsForm = ({
   handleSubmit: (values: any) => Promise<void>;
   isLoading: boolean;
 }) => {
+  const calendarInitials = dates.map((_, index) => ({
+    [`calendar${index}`]: ""
+  }));
+  const initialFields = {
+    alias: "",
+    title: undefined,
+    address: "",
+    learningInstitution: "",
+    eyeColor: "",
+    hair: "",
+    height: 0,
+    other: "",
+    security: ""
+  };
+
   return (
     <Formik
       enableReinitialize={true}
-      initialValues={{
-        calendar: [...new Array(dates.length).fill("")],
-        alias: "",
-        title: undefined,
-        address: "",
-        learningInstitution: "",
-        eyeColor: "",
-        hair: "",
-        height: "",
-        glasses: "",
-        other: ""
-      }}
+      initialValues={Object.assign(initialFields, ...calendarInitials)}
       validationSchema={Yup.object({
         alias: Yup.string().required("Pakollinen")
       })}
@@ -66,10 +71,10 @@ const PlayerDetailsForm = ({
           </div>
           <Field name="title" id="title" as="select">
             <option>Ei titteliä</option>
-            <option value={KK}>{KK}</option>
-            <option value={MM}>{MM}</option>
-            <option value={LL}>{LL}</option>
-            <option value={TT}>{TT}</option>
+            <option value={PlayerTitle.KK}>{PlayerTitle.KK}</option>
+            <option value={PlayerTitle.MM}>{PlayerTitle.MM}</option>
+            <option value={PlayerTitle.LL}>{PlayerTitle.LL}</option>
+            <option value={PlayerTitle.TT}>{PlayerTitle.TT}</option>
           </Field>
         </Box>
         <TextInput
@@ -101,12 +106,18 @@ const PlayerDetailsForm = ({
         </div>
 
         <h3>Kalenteritiedot</h3>
-        {dates.map((d: string, i) => (
-          <div key={i}>
-            <label htmlFor={`calendar[${i}]`}>{d}</label>
+        <Box sx={{ mb: 2 }}>
+          <Markdown>
+            *Kalenteri tukee
+            [Markdown-syntaksia](https://www.markdownguide.org/basic-syntax/)*
+          </Markdown>
+        </Box>
+        {dates.map((date: string, index) => (
+          <div key={index}>
+            <label htmlFor={`calendar${index}`}>{date}</label>
             <Field
-              name={`calendar[${i}]`}
-              id={`calendar[${i}]`}
+              name={`calendar${index}`}
+              id={`calendar${index}`}
               as="textarea"
             />
           </div>
