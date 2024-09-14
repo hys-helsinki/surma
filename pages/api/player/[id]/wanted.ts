@@ -8,13 +8,13 @@ const isCurrentUserAuthorized = async (playerId, req, res) => {
 
   const updatedPlayer = await prisma.player.findFirst({
     where: {
-      id: playerId,
-      userId: session.user.id
+      id: playerId
     },
-    select: {
-      tournamentId: true
+    include: {
+      tournament: true
     }
   });
+
   const umpire = await prisma.umpire.findFirst({
     where: {
       userId: session.user.id,
@@ -37,7 +37,8 @@ export default async function handler(
     const player = await prisma.player.findUnique({
       where: { id: playerId },
       include: {
-        tournament: true
+        tournament: true,
+        user: true
       }
     });
 
@@ -51,23 +52,23 @@ export default async function handler(
       return res.send("No detectives found");
     }
 
-    const wantedRing = await prisma.assignmentRing.create({
-      data: {
-        name: "Etsintäkuulutus",
-        tournamentId: player.tournament.id
-      }
-    });
-
-    const assignments = detectives.map((detective) => ({
-      ringId: wantedRing.id,
+    const newAssignments = detectives.map((detective) => ({
       hunterId: detective.id,
       targetId: player.id
     }));
 
-    const savedAssigments = await prisma.assignment.createMany({
-      data: assignments
+    const wantedRing = await prisma.assignmentRing.create({
+      data: {
+        name: `Etsintäkuulutus ${player.user.lastName}`,
+        tournamentId: player.tournament.id,
+        assignments: {
+          createMany: {
+            data: newAssignments
+          }
+        }
+      }
     });
 
-    res.status(204).send(savedAssigments);
+    res.json(wantedRing);
   }
 }

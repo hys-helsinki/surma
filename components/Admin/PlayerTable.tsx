@@ -1,11 +1,12 @@
 import Link from "next/link";
 
-const PlayerTable = ({ players, tournament, handlePlayerStatusChange }) => {
-  const handleMakeWanted = (id) => {
-    fetch(`/api/player/${id}/wanted`, {
-      method: "POST"
-    });
-  };
+const PlayerTable = ({
+  players,
+  tournament,
+  handlePlayerStatusChange,
+  handleMakeWanted
+}) => {
+  if (players.length === 0) return <p>Ei pelaajia</p>;
 
   return (
     <div style={{ paddingLeft: "10px" }}>

@@ -1,9 +1,8 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 import KeyboardArrowRightRoundedIcon from "@mui/icons-material/KeyboardArrowRightRounded";
 import KeyboardArrowDownRoundedIcon from "@mui/icons-material/KeyboardArrowDownRounded";
 import IconButton from "@mui/material/IconButton";
-import Link from "next/link";
 
 export const TournamentRings = ({
   tournament,
@@ -16,6 +15,10 @@ export const TournamentRings = ({
   const [shownRingId, setShownRingId] = useState("");
   const [newHunter, setNewHunter] = useState("");
   const [newTarget, setNewTarget] = useState("");
+
+  useEffect(() => {
+    setRings(rings);
+  }, [rings]);
 
   const createRing = async (event) => {
     event.preventDefault();

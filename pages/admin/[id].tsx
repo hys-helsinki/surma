@@ -1,7 +1,7 @@
 import { Grid } from "@mui/material";
 import { GetServerSideProps } from "next";
 import { unstable_getServerSession } from "next-auth";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { AuthenticationRequired } from "../../components/AuthenticationRequired";
 import { TournamentRings } from "../../components/Admin/TournamentRings";
 import prisma from "../../lib/prisma";
@@ -56,7 +56,7 @@ export const getServerSideProps: GetServerSideProps = async ({
       alias: true
     }
   });
-  let rings = await prisma.assignmentRing.findMany({
+  let ringList = await prisma.assignmentRing.findMany({
     where: {
       tournamentId: params.id as string
     },
@@ -68,14 +68,15 @@ export const getServerSideProps: GetServerSideProps = async ({
   });
   tournament = JSON.parse(JSON.stringify(tournament));
   const playerList = JSON.parse(JSON.stringify(players));
-  rings = JSON.parse(JSON.stringify(rings));
+  ringList = JSON.parse(JSON.stringify(ringList));
   return {
-    props: { tournament, playerList, rings }
+    props: { tournament, playerList, ringList }
   };
 };
 
-export default function Tournament({ tournament, playerList, rings }) {
-  const [players, setPlayers] = useState(playerList);
+export default function Tournament({ tournament, playerList, ringList }) {
+  const [players, setPlayers] = useState<any[]>(playerList);
+  const [rings, setRings] = useState<any[]>(ringList);
 
   const handlePlayerStatusChange = (playerState, id) => {
     const data = { state: playerState };
@@ -90,6 +91,16 @@ export default function Tournament({ tournament, playerList, rings }) {
     );
   };
 
+  const handleMakeWanted = async (id) => {
+    const res = await fetch(`/api/player/${id}/wanted`, {
+      method: "POST"
+    });
+
+    const createdRing = await res.json();
+
+    setRings((prevRings) => prevRings.concat(createdRing));
+  };
+
   return (
     <AuthenticationRequired>
       <div>
@@ -100,6 +111,7 @@ export default function Tournament({ tournament, playerList, rings }) {
               players={players}
               tournament={tournament}
               handlePlayerStatusChange={handlePlayerStatusChange}
+              handleMakeWanted={handleMakeWanted}
             />
           </Grid>
           <Grid item xs={12} md={6}>
