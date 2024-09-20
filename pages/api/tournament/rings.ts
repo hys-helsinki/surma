@@ -43,10 +43,11 @@ export default async function rings(req: NextApiRequest, res: NextApiResponse) {
       res.status(403).end();
     }
 
-    const result = await prisma.assignmentRing.delete({
+    await prisma.assignmentRing.delete({
       where: {
         id: deletedRing.ringId
       }
     });
+    res.status(200).end();
   }
 }
