@@ -22,22 +22,24 @@ export const TournamentRings = ({ tournament, users, rings }): JSX.Element => {
     const readyRing = {
       assignments: Object.values(newRing),
       name: event.target.ringName.value,
-      tournament: tournament.id
+      tournamentId: tournament.id
     };
-    fetch("/api/tournament/rings", {
+    const res = await fetch("/api/tournament/rings", {
       method: "POST",
       body: JSON.stringify(readyRing)
     });
+    const createdRing = await res.json();
     setShowForm(false);
-    setRings(rings.concat(readyRing));
+    setRings(allRings.concat(createdRing));
   };
 
   const deleteRing = async (id) => {
-    fetch("/api/tournament/rings", {
+    const res = await fetch("/api/tournament/rings", {
       method: "DELETE",
       body: JSON.stringify({ ringId: id, tournamentId: tournament.id })
     });
-    setRings(allRings.filter((ring) => ring.id !== id));
+    const deletedRing = await res.json();
+    setRings(allRings.filter((ring) => ring.id !== deletedRing.id));
   };
 
   const handleRingChange = (id, event) => {
