@@ -3,6 +3,7 @@ import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 import KeyboardArrowRightRoundedIcon from "@mui/icons-material/KeyboardArrowRightRounded";
 import KeyboardArrowDownRoundedIcon from "@mui/icons-material/KeyboardArrowDownRounded";
 import IconButton from "@mui/material/IconButton";
+import { Button } from "@mui/material";
 
 export const TournamentRings = ({ tournament, users, rings }): JSX.Element => {
   const [allRings, setRings] = useState(rings);
@@ -112,33 +113,42 @@ export const TournamentRings = ({ tournament, users, rings }): JSX.Element => {
   };
 
   return (
-    <div style={{ padding: "10px" }}>
-      <h2>Ringit</h2>
+    <div>
+      <h3>Ringit</h3>
       {allRings.map((ring) => (
         <div key={ring.id}>
-          <a
+          <Button
             onClick={() => toggleShowRing(ring.id)}
-            style={{ marginTop: "5px" }}
+            startIcon={
+              shownRingId == ring.id ? (
+                <KeyboardArrowDownRoundedIcon />
+              ) : (
+                <KeyboardArrowRightRoundedIcon />
+              )
+            }
+            sx={{
+              fontFamily: "inherit",
+              fontSize: "inherit",
+              color: "inherit"
+            }}
           >
-            {shownRingId == ring.id ? (
-              <KeyboardArrowDownRoundedIcon />
-            ) : (
-              <KeyboardArrowRightRoundedIcon />
-            )}
             {ring.name}
-          </a>
+          </Button>
+          <IconButton onClick={() => deleteRing(ring.id)}>
+            <DeleteOutlineIcon htmlColor="#FFFFFF" />
+          </IconButton>
           {shownRingId == ring.id && (
-            <div>
-              <button onClick={() => deleteRing(ring.id)}>Poista</button>
+            <div style={{ paddingLeft: "35px" }}>
               {ring.assignments.map((a) => (
                 <div key={a.id}>
                   <p>Metsästäjä {getPlayerName(a.hunterId)}</p>
                   <p>Kohde {getPlayerName(a.targetId)}</p>
-                  <IconButton
+                  <button
                     onClick={(e) => deleteAssignment(e, a.id, ring.id)}
+                    style={{}}
                   >
-                    <DeleteOutlineIcon htmlColor="#eceff1" />
-                  </IconButton>
+                    Poista toimeksianto
+                  </button>
                 </div>
               ))}
 
@@ -171,7 +181,7 @@ export const TournamentRings = ({ tournament, users, rings }): JSX.Element => {
                     ))}
                   </select>
                 </label>
-                <button type="submit" style={{ width: "15%" }}>
+                <button type="submit" style={{ width: "20%" }}>
                   Luo uusi toimeksianto
                 </button>
               </form>

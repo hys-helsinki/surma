@@ -10,7 +10,7 @@ const PlayerTable = ({
 
   return (
     <div style={{ paddingLeft: "10px" }}>
-      <h2>Pelaajat</h2>
+      <h3>Pelaajat</h3>
       <table>
         <tbody>
           {users.map((user) => (

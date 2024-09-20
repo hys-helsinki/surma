@@ -94,11 +94,10 @@ export default function Tournament({ tournament, userList, ringList }) {
     setRings((prevRings) => prevRings.concat(createdRing));
   };
 
-  console.log(userList);
-
   const unfinishedRegistrations = users.filter(
     (user) => !user.player && !user.umpire
   );
+
   const finishedRegistrations = users.filter((user) => user.player);
 
   return (
@@ -107,16 +106,19 @@ export default function Tournament({ tournament, userList, ringList }) {
         <h2 style={{ width: "100%" }}>{tournament.name}</h2>
         <Grid container>
           <Grid item xs={12} md={6}>
-            <h3>Keskeneräiset ilmoittautumiset</h3>
-            {unfinishedRegistrations.map((user) => (
-              <div key={user.id}>
-                <Link href={`/tournaments/${tournament.id}/users/${user.id}`}>
+            <div style={{ paddingLeft: "10px", marginBottom: "30px" }}>
+              <h3>Keskeneräiset ilmoittautumiset</h3>
+              {unfinishedRegistrations.map((user) => (
+                <Link
+                  href={`/tournaments/${tournament.id}/users/${user.id}`}
+                  key={user.id}
+                >
                   <a>
                     {user.firstName} {user.lastName}
                   </a>
                 </Link>
-              </div>
-            ))}
+              ))}
+            </div>
             <PlayerTable
               users={finishedRegistrations}
               tournament={tournament}
