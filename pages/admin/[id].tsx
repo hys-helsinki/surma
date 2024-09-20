@@ -1,12 +1,13 @@
 import { Grid } from "@mui/material";
 import { GetServerSideProps } from "next";
 import { unstable_getServerSession } from "next-auth";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { AuthenticationRequired } from "../../components/AuthenticationRequired";
 import { TournamentRings } from "../../components/Admin/TournamentRings";
 import prisma from "../../lib/prisma";
 import { authConfig } from "../api/auth/[...nextauth]";
 import PlayerTable from "../../components/Admin/PlayerTable";
+import Link from "next/link";
 
 const isCurrentUserAuthorized = async (tournamentId, context) => {
   const session = await unstable_getServerSession(
@@ -37,25 +38,17 @@ export const getServerSideProps: GetServerSideProps = async ({
       id: params.id as string
     }
   });
-  let players = await prisma.player.findMany({
+
+  let users = await prisma.user.findMany({
     where: {
       tournamentId: params.id as string
     },
-    select: {
-      user: {
-        select: {
-          id: true,
-          firstName: true,
-          lastName: true
-        }
-      },
-      id: true,
-      targets: true,
-      hunters: true,
-      state: true,
-      alias: true
+    include: {
+      player: true,
+      umpire: true
     }
   });
+
   let ringList = await prisma.assignmentRing.findMany({
     where: {
       tournamentId: params.id as string
@@ -67,15 +60,15 @@ export const getServerSideProps: GetServerSideProps = async ({
     }
   });
   tournament = JSON.parse(JSON.stringify(tournament));
-  const playerList = JSON.parse(JSON.stringify(players));
+  const userList = JSON.parse(JSON.stringify(users));
   ringList = JSON.parse(JSON.stringify(ringList));
   return {
-    props: { tournament, playerList, ringList }
+    props: { tournament, userList, ringList }
   };
 };
 
-export default function Tournament({ tournament, playerList, ringList }) {
-  const [players, setPlayers] = useState<any[]>(playerList);
+export default function Tournament({ tournament, userList, ringList }) {
+  const [users, setUsers] = useState<any[]>(userList);
   const [rings, setRings] = useState<any[]>(ringList);
 
   const handlePlayerStatusChange = (playerState, id) => {
@@ -84,10 +77,10 @@ export default function Tournament({ tournament, playerList, ringList }) {
       method: "PATCH",
       body: JSON.stringify(data)
     });
-    const playerToBeUpdated = players.find((p) => p.id == id);
+    const playerToBeUpdated = users.find((p) => p.id == id);
     const updatedPlayer = { ...playerToBeUpdated, state: playerState };
-    setPlayers(
-      players.map((player) => (player.id !== id ? player : updatedPlayer))
+    setUsers(
+      users.map((player) => (player.id !== id ? player : updatedPlayer))
     );
   };
 
@@ -101,14 +94,31 @@ export default function Tournament({ tournament, playerList, ringList }) {
     setRings((prevRings) => prevRings.concat(createdRing));
   };
 
+  console.log(userList);
+
+  const unfinishedRegistrations = users.filter(
+    (user) => !user.player && !user.umpire
+  );
+  const finishedRegistrations = users.filter((user) => user.player);
+
   return (
     <AuthenticationRequired>
       <div>
         <h2 style={{ width: "100%" }}>{tournament.name}</h2>
         <Grid container>
           <Grid item xs={12} md={6}>
+            <h3>Keskeneräiset ilmoittautumiset</h3>
+            {unfinishedRegistrations.map((user) => (
+              <div key={user.id}>
+                <Link href={`/tournaments/${tournament.id}/users/${user.id}`}>
+                  <a>
+                    {user.firstName} {user.lastName}
+                  </a>
+                </Link>
+              </div>
+            ))}
             <PlayerTable
-              players={players}
+              users={finishedRegistrations}
               tournament={tournament}
               handlePlayerStatusChange={handlePlayerStatusChange}
               handleMakeWanted={handleMakeWanted}
@@ -117,7 +127,7 @@ export default function Tournament({ tournament, playerList, ringList }) {
           <Grid item xs={12} md={6}>
             <TournamentRings
               tournament={tournament}
-              players={players}
+              users={finishedRegistrations}
               rings={rings}
             />
           </Grid>

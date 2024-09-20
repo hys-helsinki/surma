@@ -1,43 +1,40 @@
 import Link from "next/link";
 
 const PlayerTable = ({
-  players,
+  users,
   tournament,
   handlePlayerStatusChange,
   handleMakeWanted
 }) => {
-  if (players.length === 0) return <p>Ei pelaajia</p>;
+  if (users.length === 0) return <p>Ei pelaajia</p>;
 
   return (
     <div style={{ paddingLeft: "10px" }}>
       <h2>Pelaajat</h2>
       <table>
         <tbody>
-          {players.map((player) => (
-            <tr key={player.id}>
+          {users.map((user) => (
+            <tr key={user.id}>
               <td>
-                <Link
-                  href={`/tournaments/${tournament.id}/users/${player.user.id}`}
-                >
+                <Link href={`/tournaments/${tournament.id}/users/${user.id}`}>
                   <a>
-                    {player.user.firstName} {player.user.lastName} (
-                    {player.alias})
+                    {user.firstName} {user.lastName} ({user.player.alias})
                   </a>
                 </Link>
               </td>
-              {player.state == "ACTIVE" ? (
+              {user.state == "ACTIVE" ? (
                 <>
                   <td>
                     <button
                       onClick={() =>
-                        handlePlayerStatusChange("DEAD", player.id)
+                        handlePlayerStatusChange("DEAD", user.playerId)
                       }
                     >
                       Tapa
                     </button>
                   </td>
                   <td>
-                    <button onClick={() => handleMakeWanted(player.id)}>
+                    <button onClick={() => handleMakeWanted(user.playerId)}>
                       Etsintäkuuluta
                     </button>
                   </td>
@@ -47,17 +44,17 @@ const PlayerTable = ({
                   <td>
                     <button
                       onClick={() =>
-                        handlePlayerStatusChange("ACTIVE", player.id)
+                        handlePlayerStatusChange("ACTIVE", user.playerId)
                       }
                     >
                       Herätä henkiin
                     </button>
                   </td>
-                  {player.state != "DETECTIVE" && (
+                  {user.state != "DETECTIVE" && (
                     <td>
                       <button
                         onClick={() =>
-                          handlePlayerStatusChange("DETECTIVE", player.id)
+                          handlePlayerStatusChange("DETECTIVE", user.playerId)
                         }
                       >
                         Etsiväksi
