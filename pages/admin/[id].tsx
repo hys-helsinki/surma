@@ -60,29 +60,15 @@ export const getServerSideProps: GetServerSideProps = async ({
     }
   });
   tournament = JSON.parse(JSON.stringify(tournament));
-  const userList = JSON.parse(JSON.stringify(users));
+  users = JSON.parse(JSON.stringify(users));
   ringList = JSON.parse(JSON.stringify(ringList));
   return {
-    props: { tournament, userList, ringList }
+    props: { tournament, users, ringList }
   };
 };
 
-export default function Tournament({ tournament, userList, ringList }) {
-  const [users, setUsers] = useState<any[]>(userList);
+export default function Tournament({ tournament, users, ringList }) {
   const [rings, setRings] = useState<any[]>(ringList);
-
-  const handlePlayerStatusChange = (playerState, id) => {
-    const data = { state: playerState };
-    fetch(`/api/player/${id}/state`, {
-      method: "PATCH",
-      body: JSON.stringify(data)
-    });
-    const playerToBeUpdated = users.find((p) => p.id == id);
-    const updatedPlayer = { ...playerToBeUpdated, state: playerState };
-    setUsers(
-      users.map((player) => (player.id !== id ? player : updatedPlayer))
-    );
-  };
 
   const handleMakeWanted = async (id) => {
     const res = await fetch(`/api/player/${id}/wanted`, {
@@ -123,9 +109,8 @@ export default function Tournament({ tournament, userList, ringList }) {
               </div>
             )}
             <PlayerTable
-              users={finishedRegistrations}
+              userList={finishedRegistrations}
               tournament={tournament}
-              handlePlayerStatusChange={handlePlayerStatusChange}
               handleMakeWanted={handleMakeWanted}
             />
           </Grid>

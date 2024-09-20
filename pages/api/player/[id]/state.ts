@@ -34,10 +34,18 @@ export default async function handler(
   if (req.method === "PATCH") {
     const playerId = req.query.id as string;
     const { state } = JSON.parse(req.body);
-    const result = await prisma.player.update({
+    const updatedPlayer = await prisma.player.update({
       where: { id: playerId },
       data: { state }
     });
-    res.status(204).end();
+    const userWithUpdatedPlayer = await prisma.user.findUnique({
+      where: {
+        id: updatedPlayer.userId
+      },
+      include: {
+        player: true
+      }
+    });
+    res.json(userWithUpdatedPlayer);
   }
 }
