@@ -90,15 +90,16 @@ export default function Tournament({ tournament, userList, ringList }) {
     });
 
     const createdRing = await res.json();
-
     setRings((prevRings) => prevRings.concat(createdRing));
   };
 
-  const unfinishedRegistrations = users.filter(
-    (user) => !user.player && !user.umpire
-  );
+  const unfinishedRegistrations = users
+    .filter((user) => !user.player && !user.umpire)
+    .sort((a, b) => a.firstName.localeCompare(b.firstName));
 
-  const finishedRegistrations = users.filter((user) => user.player);
+  const finishedRegistrations = users
+    .filter((user) => user.player)
+    .sort((a, b) => a.firstName.localeCompare(b.firstName));
 
   return (
     <AuthenticationRequired>
@@ -106,19 +107,21 @@ export default function Tournament({ tournament, userList, ringList }) {
         <h2 style={{ width: "100%" }}>{tournament.name}</h2>
         <Grid container>
           <Grid item xs={12} md={6}>
-            <div style={{ paddingLeft: "10px", marginBottom: "30px" }}>
-              <h3>Keskeneräiset ilmoittautumiset</h3>
-              {unfinishedRegistrations.map((user) => (
-                <Link
-                  href={`/tournaments/${tournament.id}/users/${user.id}`}
-                  key={user.id}
-                >
-                  <a>
-                    {user.firstName} {user.lastName}
-                  </a>
-                </Link>
-              ))}
-            </div>
+            {unfinishedRegistrations.length > 0 && (
+              <div style={{ paddingLeft: "10px", marginBottom: "30px" }}>
+                <h3>Keskeneräiset ilmoittautumiset</h3>
+                {unfinishedRegistrations.map((user) => (
+                  <Link
+                    href={`/tournaments/${tournament.id}/users/${user.id}`}
+                    key={user.id}
+                  >
+                    <a>
+                      {user.firstName} {user.lastName}
+                    </a>
+                  </Link>
+                ))}
+              </div>
+            )}
             <PlayerTable
               users={finishedRegistrations}
               tournament={tournament}
