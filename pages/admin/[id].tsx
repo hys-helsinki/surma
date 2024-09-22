@@ -1,4 +1,4 @@
-import { Grid } from "@mui/material";
+import { Grid, Box } from "@mui/material";
 import { GetServerSideProps } from "next";
 import { unstable_getServerSession } from "next-auth";
 import { useState } from "react";
@@ -89,7 +89,7 @@ export default function Tournament({ tournament, users, ringList }) {
 
   return (
     <AuthenticationRequired>
-      <div>
+      <Box sx={{ m: 2 }}>
         <h2 style={{ width: "100%" }}>{tournament.name}</h2>
         <Grid container>
           <Grid item xs={12} md={6}>
@@ -122,7 +122,7 @@ export default function Tournament({ tournament, users, ringList }) {
             />
           </Grid>
         </Grid>
-      </div>
+      </Box>
     </AuthenticationRequired>
   );
 }
