@@ -6,6 +6,7 @@ import { useSession } from "next-auth/react";
 import { Box, Container } from "@mui/material";
 import PlayerDetailsForm from "./PlayerDetailsForm";
 import ImageUploadForm from "./ImageUploadForm";
+import { getTournamentDates } from "../../utils";
 
 export default function PlayerForm({ tournament }) {
   const { data, status } = useSession();
@@ -25,15 +26,11 @@ export default function PlayerForm({ tournament }) {
   const end = new Date(tournament.endTime);
 
   const isRegistrationOpen =
+    new Date().getTime() >
+      new Date(tournament.registrationStartTime).getTime() &&
     new Date().getTime() < new Date(tournament.registrationEndTime).getTime();
 
-  const dates: Array<string> = [];
-  dates.push(`${start.getDate()}.${start.getMonth() + 1}.`);
-  let loopDay = start;
-  while (loopDay < end) {
-    loopDay.setDate(loopDay.getDate() + 1);
-    dates.push(`${loopDay.getDate()}.${loopDay.getMonth() + 1}.`);
-  }
+  const dates = getTournamentDates(start, end);
 
   const uploadImage = async (id: string) => {
     if (!selectedFile) return;
@@ -59,8 +56,41 @@ export default function PlayerForm({ tournament }) {
 
   const handleSubmit = async (values) => {
     setIsLoading(true);
+
+    const calendar = dates.map((date, index) => [
+      date,
+      values[`calendar${index}`]
+    ]);
+
+    const {
+      address,
+      alias,
+      eyeColor,
+      hair,
+      height,
+      learningInstitution,
+      other,
+      security,
+      title
+    } = values;
+
     const userId = data.user.id;
-    const playerData = { tournamentId, userId, ...values };
+
+    const playerData = {
+      tournamentId,
+      userId,
+      address,
+      alias,
+      eyeColor,
+      hair,
+      height,
+      learningInstitution,
+      other,
+      security,
+      title,
+      calendar
+    };
+
     try {
       const response = await fetch("/api/player/create", {
         method: "POST",

@@ -7,7 +7,7 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
   let tournament = await prisma.tournament.findUnique({
     where: {
       id: params.id as string
-    },
+    }
   });
   tournament = JSON.parse(JSON.stringify(tournament)); // to avoid Next.js serialization error
 
@@ -16,13 +16,20 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
   };
 };
 
-export default function Registration({ tournament }: {tournament: Tournament}) {
+export default function Registration({
+  tournament
+}: {
+  tournament: Tournament;
+}) {
+  const isRegistrationOpen =
+    new Date().getTime() >
+      new Date(tournament.registrationStartTime).getTime() &&
+    new Date().getTime() < new Date(tournament.registrationEndTime).getTime();
 
   return (
     <div>
-      {new Date().getTime() <
-      new Date(tournament.registrationEndTime).getTime() ? (
-        <UserForm tournament={tournament}/>
+      {isRegistrationOpen ? (
+        <UserForm tournament={tournament} />
       ) : (
         <p>Ilmoittautuminen ei ole auki</p>
       )}

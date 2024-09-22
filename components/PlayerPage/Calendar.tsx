@@ -1,116 +1,124 @@
 import { useRouter } from "next/router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { getCurrentWeek, getTournamentDates, splitCalendar } from "../utils";
+import { Formik, Form, Field } from "formik";
+import Markdown from "../Common/Markdown";
+import { LoadingButton } from "@mui/lab";
 
 export const Calendar = ({ player, tournament }): JSX.Element => {
+  const [calendar, setCalendar] = useState(player.calendar);
   const [weekNumber, setSlideNumber] = useState(0);
-  const [isUpdating, setIsUpdating] = useState(false);
+  const [weeks, setWeeks] = useState([]);
+  const [isUpdated, setIsUpdated] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
 
-  const { id } = router.query;
+  const { id: userId } = router.query;
 
-  const start = new Date(tournament.startTime);
-  const end = new Date(tournament.endTime);
+  const dates: string[] = getTournamentDates(
+    new Date(tournament.startTime),
+    new Date(tournament.endTime)
+  );
 
-  const dates: Array<any> = [];
+  useEffect(() => {
+    const weeks = splitCalendar(calendar);
+    setWeeks(weeks);
+    const currentWeek = getCurrentWeek(dates);
+    if (currentWeek <= weeks.length - 1) {
+      setSlideNumber(currentWeek);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [calendar]);
 
-  dates.push(`${start.getDate()}.${start.getMonth() + 1}.`);
-  let loopDay = start;
-  while (loopDay < end) {
-    loopDay.setDate(loopDay.getDate() + 1);
-    dates.push(`${loopDay.getDate()}.${loopDay.getMonth() + 1}.`);
-  }
+  if (weeks.length === 0) return null;
 
-  const cal = [];
-  for (const x in player.calendar) {
-    cal.push([x, player.calendar[x]]);
-  }
-
-  let chunks = [];
-  const chunkSize = 7;
-
-  for (let i = 0; i < cal.length; i += chunkSize) {
-    const chunk = cal.slice(i, i + chunkSize);
-    chunks.push(chunk);
-  }
-
-  const handleSlideShow = (event) => {
-    if (weekNumber == chunks.length - 1) {
+  const handleSlideShow = () => {
+    if (weekNumber == weeks.length - 1) {
       setSlideNumber(0);
     } else {
       setSlideNumber(weekNumber + 1);
     }
   };
 
-  const handleCalendarSubmit = async (
-    event: React.FormEvent<HTMLFormElement>
-  ) => {
-    const start = new Date(tournament.startTime);
-    const end = new Date(tournament.endTime);
-    let dates: Array<any> = [];
-    dates.push(`${start.getDate()}.${start.getMonth() + 1}.`);
-    let loopDay = start;
-    while (loopDay < end) {
-      loopDay.setDate(loopDay.getDate() + 1);
-      dates.push(`${loopDay.getDate()}.${loopDay.getMonth() + 1}.`);
-    }
+  const handleCalendarSubmit = async (values) => {
+    setIsLoading(true);
+    const updatedCalendar: string[][] = dates.map((date, index) => [
+      date,
+      values[`calendar${index}`]
+    ]);
 
-    const cal = {};
-    dates.forEach((x, i) => (cal[x] = event.currentTarget.dates[i].value));
-    event.preventDefault();
     const data = {
-      calendar: cal
+      calendar: updatedCalendar
     };
 
     try {
-      await fetch(`/api/user/update/${id}`, {
+      const res = await fetch(`/api/user/update/${userId}`, {
         method: "PUT",
         body: JSON.stringify(data)
       });
-      router.reload();
+      const updatedPlayer = await res.json();
+      setCalendar(updatedPlayer.calendar);
+      setIsUpdated(true);
+      setIsLoading(false);
     } catch (error) {
       console.log(error);
     }
   };
 
+  const calendarInitials = calendar.map((date, index) => ({
+    [`calendar${index}`]: date[1]
+  }));
+
   return (
     <div className="calendar">
-      <h3 style={{ width: "40%", margin: "auto", padding: "10px" }}>
-        Kalenteri
-      </h3>
-      <button onClick={() => setIsUpdating(!isUpdating)}>
-        {!isUpdating ? "Muokkaa kalenteria" : "Peruuta"}
+      <button onClick={() => setIsUpdated(!isUpdated)}>
+        {isUpdated ? "Muokkaa kalenteria" : "Peruuta"}
       </button>
 
-      {!isUpdating ? (
+      {isUpdated ? (
         <div>
           <ul>
-            {chunks[weekNumber].map((c, index) => (
+            {weeks[weekNumber].map((calendarElement: string[], index) => (
               <li
                 key={index}
                 style={{ paddingBottom: "20px", whiteSpace: "pre-line" }}
               >
-                {c[0]}: {c[1]}
+                <p>{calendarElement[0]}</p>
+                <Markdown>{calendarElement[1]}</Markdown>
               </li>
             ))}
           </ul>
-          <button onClick={handleSlideShow} style={{ left: "40%" }}>
+          <button onClick={() => handleSlideShow()} style={{ left: "40%" }}>
             Seuraava
           </button>
         </div>
       ) : (
-        <div>
-          <form onSubmit={handleCalendarSubmit}>
-            <button type="submit">Tallenna muokkaukset</button>
-            {cal.map((c, i) => (
-              <div key={i}>
-                <label htmlFor={c[0]}>
-                  {c[0]}
-                  <textarea id={c[0]} name="dates" defaultValue={c[1]} />
-                </label>
+        <Formik
+          enableReinitialize={true}
+          initialValues={Object.assign({}, ...calendarInitials)}
+          onSubmit={async (values) => {
+            await handleCalendarSubmit(values);
+          }}
+        >
+          <Form>
+            <Markdown>
+              Kalenteri tukee
+              [Markdown-syntaksia](https://www.markdownguide.org/basic-syntax/)
+            </Markdown>
+            <LoadingButton loading={isLoading} type="submit">
+              Tallenna muokkaukset
+            </LoadingButton>
+            {dates.map((date: string, index) => (
+              <div key={index}>
+                <label>{date}</label>
+                <Field name={`calendar${index}`} as="textarea" />
               </div>
             ))}
-          </form>
-        </div>
+            <LoadingButton loading={isLoading} type="submit">
+              Tallenna muokkaukset
+            </LoadingButton>
+          </Form>
+        </Formik>
       )}
     </div>
   );
