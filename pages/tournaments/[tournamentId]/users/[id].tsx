@@ -180,11 +180,11 @@ export default function User({
   const [confirmed, setConfirmed] = useState(
     user.player ? user.player.confirmed : false
   );
-  const { data } = useSession();
+  const session = useSession();
   const theme = useTheme();
   const isMobileView = useMediaQuery(theme.breakpoints.down("md"));
 
-  if (!Boolean(user.player) && user.id !== data.user.id) {
+  if (!Boolean(user.player) && user.id !== session.data.user.id) {
     return (
       <div style={{ margin: 2 }}>
         <h3>Pelaaja ei ole vielä täyttänyt ilmoittaumislomaketta loppuun</h3>
