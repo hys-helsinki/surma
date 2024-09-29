@@ -184,6 +184,8 @@ export default function User({
   const theme = useTheme();
   const isMobileView = useMediaQuery(theme.breakpoints.down("md"));
 
+  if (session.status === "loading") return null;
+
   if (!Boolean(user.player) && user.id !== session.data.user.id) {
     return (
       <div style={{ margin: 2 }}>
