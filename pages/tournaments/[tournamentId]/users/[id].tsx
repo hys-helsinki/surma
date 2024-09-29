@@ -187,7 +187,8 @@ export default function User({
   if (!Boolean(user.player) && user.id !== session.data.user.id) {
     return (
       <div style={{ margin: 2 }}>
-        <h3>Pelaaja ei ole vielä täyttänyt ilmoittaumislomaketta loppuun</h3>
+        <h3>Pelaaja ei ole vielä täyttänyt tietojaan</h3>
+        ```
         <p>
           Nimi: {user.firstName} {user.lastName}
         </p>

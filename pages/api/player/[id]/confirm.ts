@@ -53,7 +53,7 @@ export default async function handler(
       "surma@salamurhaajat.net",
       player.user.email,
       `Ilmoittautumisesi on nyt vahvistettu!`,
-      `Tervetuloa mukaan Helsingin Yliopiston Salamurhaajien turnaukseen ${player.tournament.name}! Tuomaristo on tarkistanut ilmoittautumisesi ja vahvistanut sen.\n\nTämä on automaattinen vahvistusviesti. Älä vastaa tähän viestiin, vaan lähetä viestisi osoitteeseen tuomaristo@salamurhaajat.net`
+      `Tervetuloa mukaan Helsingin Yliopiston Salamurhaajien turnaukseen ${player.tournament.name}! Tuomaristo on tarkistanut ilmoittautumisesi ja vahvistanut sen.\n\nTämä on automaattinen vahvistusviesti. Älä vastaa tähän viestiin. Tuomaristo vastaa peliin liittyviin viesteihin osoitteessa tuomaristo@salamurhaajat.net.`
     );
     return res.status(200).send(result);
   }
