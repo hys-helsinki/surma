@@ -53,7 +53,7 @@ export default async function create(
   sendEmail(
     "surma@salamurhaajat.net",
     user.email,
-    "Kiitos ilmoittautumisestasi salamurhaturnaukseen ${user.tournament.name}!",
+    `Kiitos ilmoittautumisestasi salamurhaturnaukseen ${user.tournament.name}!`,
     `Kiitos ilmoittautumisestasi! Tuomaristo tarkistaa ilmoittautumisesi vielä ennen pelin alkua, ja saat sähköpostitse vahvistusviestin, kun ilmoittautumisesi on hyväksytty. Tuomaristo ottaa erikseen yhteyttä, mikäli antamiasi tietoja pitää täydentää tai muokata.\n\nTämä on automaattinen vahvistusviesti. Älä vastaa tähän viestiin. Tuomaristo vastaa peliin liittyviin viesteihin osoitteessa tuomaristo@salamurhaajat.net.`
   );
   res.status(201).send(result);
