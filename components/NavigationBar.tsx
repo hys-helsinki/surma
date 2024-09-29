@@ -52,7 +52,7 @@ const NavigationBar = ({
 
   return (
     <AppBar position="static">
-      <Container maxWidth="xl" sx={{ backgroundColor: "#424242" }}>
+      <Container maxWidth={false} sx={{ backgroundColor: "#424242" }}>
         <Toolbar disableGutters>
           <Image src={logo} alt="logo" width={45} height={45} />
           <Typography
