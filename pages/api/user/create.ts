@@ -25,7 +25,7 @@ export default async function create(
       }
     });
 
-    const playerUrl = `${process.env.BASE_URL}${playerData.tournamentId}/users/${user.id}`;
+    const playerUrl = `${process.env.BASE_URL}tournaments/${playerData.tournamentId}/users/${user.id}`;
     sendEmail(
       "surma@salamurhaajat.net",
       "tuomaristo@salamurhaajat.net",
