@@ -1,9 +1,9 @@
-import { GetStaticPaths, GetStaticProps } from "next";
+import { GetServerSideProps } from "next";
 import prisma from "../../lib/prisma";
 import UserForm from "../../components/Registration/UserForm";
 import { Tournament } from "@prisma/client";
 
-export const getStaticProps: GetStaticProps = async ({ params }) => {
+export const getServerSideProps: GetServerSideProps = async ({ params }) => {
   let tournament = await prisma.tournament.findUnique({
     where: {
       id: params.id as string
@@ -36,15 +36,3 @@ export default function Registration({
     </div>
   );
 }
-
-export const getStaticPaths: GetStaticPaths = async () => {
-  const tournamentIds = await prisma.tournament.findMany({
-    select: { id: true }
-  });
-  return {
-    paths: tournamentIds.map((tournament) => ({
-      params: tournament
-    })),
-    fallback: false
-  };
-};
