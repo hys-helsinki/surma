@@ -36,16 +36,11 @@ export default async function handler(
     const { state } = JSON.parse(req.body);
     const updatedPlayer = await prisma.player.update({
       where: { id: playerId },
-      data: { state }
-    });
-    const userWithUpdatedPlayer = await prisma.user.findUnique({
-      where: {
-        id: updatedPlayer.userId
-      },
+      data: { state },
       include: {
-        player: true
+        user: true
       }
     });
-    res.json(userWithUpdatedPlayer);
+    res.json(updatedPlayer);
   }
 }

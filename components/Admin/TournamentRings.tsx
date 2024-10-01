@@ -4,8 +4,21 @@ import KeyboardArrowRightRoundedIcon from "@mui/icons-material/KeyboardArrowRigh
 import KeyboardArrowDownRoundedIcon from "@mui/icons-material/KeyboardArrowDownRounded";
 import IconButton from "@mui/material/IconButton";
 import { Button } from "@mui/material";
+import { Player, User, Tournament } from "@prisma/client";
 
-export const TournamentRings = ({ tournament, users, rings }): JSX.Element => {
+interface PlayerWithUser extends Player {
+  user: User;
+}
+
+export const TournamentRings = ({
+  tournament,
+  players,
+  rings
+}: {
+  tournament: Tournament;
+  players: PlayerWithUser[];
+  rings: any;
+}): JSX.Element => {
   const [allRings, setRings] = useState(rings);
   const [newRing, setNewRing] = useState([]);
   const [showForm, setShowForm] = useState(false);
@@ -108,10 +121,10 @@ export const TournamentRings = ({ tournament, users, rings }): JSX.Element => {
     }
   };
 
-  const getPlayerName = (targetId) => {
-    const searchedUser = users.find((user) => targetId == user.player.id);
+  const getPlayerName = (playerId) => {
+    const searchedPlayer = players.find((player) => playerId == player.id);
 
-    return `${searchedUser.firstName} ${searchedUser.lastName}`;
+    return `${searchedPlayer.user.firstName} ${searchedPlayer.user.lastName}`;
   };
 
   return (
@@ -162,9 +175,9 @@ export const TournamentRings = ({ tournament, users, rings }): JSX.Element => {
                     onChange={(e) => setNewHunter(e.target.value)}
                   >
                     <option>--</option>
-                    {users.map((user) => (
-                      <option key={user.player.id} value={user.player.id}>
-                        {user.firstName} {user.lastName}
+                    {players.map((player) => (
+                      <option key={player.id} value={player.id}>
+                        {player.user.firstName} {player.user.lastName}
                       </option>
                     ))}
                   </select>
@@ -176,9 +189,9 @@ export const TournamentRings = ({ tournament, users, rings }): JSX.Element => {
                     onChange={(e) => setNewTarget(e.target.value)}
                   >
                     <option>--</option>
-                    {users.map((user) => (
-                      <option key={user.player.id} value={user.player.id}>
-                        {user.firstName} {user.lastName}
+                    {players.map((player) => (
+                      <option key={player.id} value={player.id}>
+                        {player.user.firstName} {player.user.lastName}
                       </option>
                     ))}
                   </select>
@@ -199,13 +212,13 @@ export const TournamentRings = ({ tournament, users, rings }): JSX.Element => {
           <label>
             Ringin nimi: <input type="text" name="ringName" />
           </label>
-          {users &&
-            users.map((user) => (
-              <div key={user.player.id}>
+          {players &&
+            players.map((player) => (
+              <div key={player.id}>
                 <Assignment
-                  users={users}
-                  user={user}
-                  handleRingChange={(e) => handleRingChange(user.player.id, e)}
+                  players={players}
+                  player={player}
+                  handleRingChange={(e) => handleRingChange(player.id, e)}
                 />
               </div>
             ))}
@@ -216,19 +229,19 @@ export const TournamentRings = ({ tournament, users, rings }): JSX.Element => {
   );
 };
 
-export function Assignment({ users, user, handleRingChange }) {
+export function Assignment({ players, player, handleRingChange }) {
   return (
     <>
       <p>
-        {user.firstName} {user.lastName}
+        {player.user.firstName} {player.user.lastName}
       </p>
       <label>
         Kohde
         <select name="assignments" onChange={handleRingChange}>
           <option>--</option>
-          {users.map((user) => (
-            <option key={user.player.id} value={user.player.id}>
-              {user.firstName} {user.lastName}
+          {players.map((player) => (
+            <option key={player.id} value={player.id}>
+              {player.user.firstName} {player.user.lastName}
             </option>
           ))}
         </select>

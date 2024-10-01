@@ -49,28 +49,39 @@ export const getServerSideProps: GetServerSideProps = async ({
     }
   });
 
+  let players = await prisma.player.findMany({
+    where: {
+      tournamentId: params.id as string
+    },
+    include: {
+      user: true
+    }
+  });
+
   let ringList = await prisma.assignmentRing.findMany({
     where: {
       tournamentId: params.id as string
     },
-    select: {
-      id: true,
-      name: true,
+    include: {
       assignments: true
     }
   });
+
+  // to avoid Next.js serialization error that is caused by Datetime objects
   tournament = JSON.parse(JSON.stringify(tournament));
   users = JSON.parse(JSON.stringify(users));
+  players = JSON.parse(JSON.stringify(players));
   ringList = JSON.parse(JSON.stringify(ringList));
+
   return {
-    props: { tournament, users, ringList }
+    props: { tournament, users, players, ringList }
   };
 };
 
-export default function Tournament({ tournament, users, ringList }) {
+export default function Tournament({ tournament, users, players, ringList }) {
   const [rings, setRings] = useState<any[]>(ringList);
 
-  const handleMakeWanted = async (id) => {
+  const handleMakeWanted = async (id: string) => {
     const res = await fetch(`/api/player/${id}/wanted`, {
       method: "POST"
     });
@@ -83,9 +94,9 @@ export default function Tournament({ tournament, users, ringList }) {
     .filter((user) => !user.player && !user.umpire)
     .sort((a, b) => a.firstName.localeCompare(b.firstName));
 
-  const finishedRegistrations = users
-    .filter((user) => user.player)
-    .sort((a, b) => a.firstName.localeCompare(b.firstName));
+  const finishedRegistrations = players.sort((a, b) =>
+    a.user.firstName.localeCompare(b.user.firstName)
+  );
 
   return (
     <AuthenticationRequired>
@@ -109,7 +120,7 @@ export default function Tournament({ tournament, users, ringList }) {
               </div>
             )}
             <PlayerTable
-              userList={finishedRegistrations}
+              playerList={finishedRegistrations}
               tournament={tournament}
               handleMakeWanted={handleMakeWanted}
             />
@@ -117,7 +128,7 @@ export default function Tournament({ tournament, users, ringList }) {
           <Grid item xs={12} md={6}>
             <TournamentRings
               tournament={tournament}
-              users={finishedRegistrations}
+              players={finishedRegistrations}
               rings={rings}
             />
           </Grid>

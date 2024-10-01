@@ -1,24 +1,41 @@
+import { Player, Tournament, User } from "@prisma/client";
 import Link from "next/link";
 import { useState } from "react";
 
-const PlayerTable = ({ userList, tournament, handleMakeWanted }) => {
-  const [users, setUsers] = useState(userList);
+interface PlayerWithUser extends Player {
+  user: User;
+}
 
-  const handlePlayerStatusChange = async (playerState, id) => {
+const PlayerTable = ({
+  playerList,
+  tournament,
+  handleMakeWanted
+}: {
+  playerList: PlayerWithUser[];
+  tournament: Tournament;
+  handleMakeWanted: (id: string) => Promise<void>;
+}) => {
+  const [players, setPlayers] = useState<PlayerWithUser[]>(playerList);
+
+  const handlePlayerStatusChange = async (playerState: string, id: string) => {
     const data = { state: playerState };
     const res = await fetch(`/api/player/${id}/state`, {
       method: "PATCH",
       body: JSON.stringify(data)
     });
-    const updatedUser = await res.json();
-    setUsers(users.map((user) => (user.player.id !== id ? user : updatedUser)));
+    const updatedPlayer: PlayerWithUser = await res.json();
+    setPlayers(
+      players.map((player) => (player.id !== id ? player : updatedPlayer))
+    );
   };
 
-  if (users.length === 0) return <p>Ei pelaajia</p>;
+  if (players.length === 0) return <p>Ei pelaajia</p>;
 
-  const active = users.filter((user) => user.player.state === "ACTIVE");
-  const dead = users.filter((user) => user.player.state === "DEAD");
-  const detectives = users.filter((user) => user.player.state === "DETECTIVE");
+  const activePlayers = players.filter((player) => player.state === "ACTIVE");
+  const deadPlayers = players.filter((player) => player.state === "DEAD");
+  const detectivePlayers = players.filter(
+    (player) => player.state === "DETECTIVE"
+  );
 
   return (
     <div style={{ paddingLeft: "10px" }}>
@@ -26,48 +43,50 @@ const PlayerTable = ({ userList, tournament, handleMakeWanted }) => {
       <table>
         <tbody>
           <tr>Elossa</tr>
-          {active.map((user) => (
-            <tr key={user.id}>
+          {activePlayers.map((player) => (
+            <tr key={player.id}>
               <td>
-                <Link href={`/tournaments/${tournament.id}/users/${user.id}`}>
+                <Link
+                  href={`/tournaments/${tournament.id}/users/${player.user.id}`}
+                >
                   <a>
-                    {user.firstName} {user.lastName} ({user.player.alias})
+                    {player.user.firstName} {player.user.lastName} (
+                    {player.alias})
                   </a>
                 </Link>
               </td>
 
               <td>
                 <button
-                  onClick={() =>
-                    handlePlayerStatusChange("DEAD", user.player.id)
-                  }
+                  onClick={() => handlePlayerStatusChange("DEAD", player.id)}
                 >
                   Tapa
                 </button>
               </td>
               <td>
-                <button onClick={() => handleMakeWanted(user.player.id)}>
+                <button onClick={() => handleMakeWanted(player.id)}>
                   Etsintäkuuluta
                 </button>
               </td>
             </tr>
           ))}
           <tr>Kuolleet</tr>
-          {dead.map((user) => (
-            <tr key={user.id}>
+          {deadPlayers.map((player) => (
+            <tr key={player.id}>
               <td>
-                <Link href={`/tournaments/${tournament.id}/users/${user.id}`}>
+                <Link
+                  href={`/tournaments/${tournament.id}/users/${player.user.id}`}
+                >
                   <a>
-                    {user.firstName} {user.lastName} ({user.player.alias})
+                    {player.user.firstName} {player.user.lastName} (
+                    {player.alias})
                   </a>
                 </Link>
               </td>
 
               <td>
                 <button
-                  onClick={() =>
-                    handlePlayerStatusChange("ACTIVE", user.player.id)
-                  }
+                  onClick={() => handlePlayerStatusChange("ACTIVE", player.id)}
                 >
                   Herätä henkiin
                 </button>
@@ -76,7 +95,7 @@ const PlayerTable = ({ userList, tournament, handleMakeWanted }) => {
               <td>
                 <button
                   onClick={() =>
-                    handlePlayerStatusChange("DETECTIVE", user.player.id)
+                    handlePlayerStatusChange("DETECTIVE", player.id)
                   }
                 >
                   Etsiväksi
@@ -85,20 +104,21 @@ const PlayerTable = ({ userList, tournament, handleMakeWanted }) => {
             </tr>
           ))}
           <tr>Etsivät</tr>
-          {detectives.map((user) => (
-            <tr key={user.id}>
+          {detectivePlayers.map((player) => (
+            <tr key={player.id}>
               <td>
-                <Link href={`/tournaments/${tournament.id}/users/${user.id}`}>
+                <Link
+                  href={`/tournaments/${tournament.id}/users/${player.user.id}`}
+                >
                   <a>
-                    {user.firstName} {user.lastName} ({user.player.alias})
+                    {player.user.firstName} {player.user.lastName} (
+                    {player.alias})
                   </a>
                 </Link>
               </td>
               <td>
                 <button
-                  onClick={() =>
-                    handlePlayerStatusChange("ACTIVE", user.player.id)
-                  }
+                  onClick={() => handlePlayerStatusChange("ACTIVE", player.id)}
                 >
                   Herätä henkiin
                 </button>
