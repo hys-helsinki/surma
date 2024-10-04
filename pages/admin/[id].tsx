@@ -8,6 +8,7 @@ import prisma from "../../lib/prisma";
 import { authConfig } from "../api/auth/[...nextauth]";
 import PlayerTable from "../../components/Admin/PlayerTable";
 import Link from "next/link";
+import { Field, Form, Formik } from "formik";
 
 const isCurrentUserAuthorized = async (tournamentId, context) => {
   const session = await unstable_getServerSession(
@@ -54,7 +55,12 @@ export const getServerSideProps: GetServerSideProps = async ({
       tournamentId: params.id as string
     },
     include: {
-      user: true
+      user: true,
+      umpire: {
+        include: {
+          user: true
+        }
+      }
     }
   });
 
@@ -80,6 +86,28 @@ export const getServerSideProps: GetServerSideProps = async ({
 
 export default function Tournament({ tournament, users, players, ringList }) {
   const [rings, setRings] = useState<any[]>(ringList);
+  const [showSuccessText, setShowSuccessText] = useState(false);
+
+  const unfinishedRegistrations = users
+    .filter((user) => !user.player && !user.umpire)
+    .sort((a, b) => a.firstName.localeCompare(b.firstName));
+
+  const finishedRegistrations = players.sort((a, b) =>
+    a.user.firstName.localeCompare(b.user.firstName)
+  );
+
+  const umpires = users.filter((user) => user.umpire);
+
+  const handleSaveUmpires = async (values) => {
+    const res = await fetch(`/api/player/umpires`, {
+      method: "PATCH",
+      body: JSON.stringify(values)
+    });
+
+    if (res.status === 200) {
+      setShowSuccessText(true);
+    }
+  };
 
   const handleMakeWanted = async (id: string) => {
     const res = await fetch(`/api/player/${id}/wanted`, {
@@ -90,12 +118,11 @@ export default function Tournament({ tournament, users, players, ringList }) {
     setRings((prevRings) => prevRings.concat(createdRing));
   };
 
-  const unfinishedRegistrations = users
-    .filter((user) => !user.player && !user.umpire)
-    .sort((a, b) => a.firstName.localeCompare(b.firstName));
-
-  const finishedRegistrations = players.sort((a, b) =>
-    a.user.firstName.localeCompare(b.user.firstName)
+  const formInitials = Object.assign(
+    {},
+    ...players.map((player) => ({
+      [`${player.id}`]: player.umpire ? player.umpire.id : ""
+    }))
   );
 
   return (
@@ -124,6 +151,46 @@ export default function Tournament({ tournament, users, players, ringList }) {
               tournament={tournament}
               handleMakeWanted={handleMakeWanted}
             />
+            <h2>Pelaajien tuomarit</h2>
+            <Formik
+              enableReinitialize={true}
+              initialValues={formInitials}
+              onSubmit={(values) => {
+                handleSaveUmpires(values);
+              }}
+            >
+              <Form>
+                {players.map((player) => (
+                  <div key={player.id}>
+                    <div style={{ width: "100%" }}>
+                      <label htmlFor={`${player.id}`}>
+                        {player.user.firstName} {player.user.lastName}
+                      </label>
+                    </div>
+                    <Field
+                      name={`${player.id}`}
+                      id={`${player.id}`}
+                      as="select"
+                    >
+                      <option></option>
+                      {umpires.map((user) => (
+                        <option value={user.umpire.id} key={user.id}>
+                          {user.firstName} {user.lastName}
+                        </option>
+                      ))}
+                    </Field>
+                  </div>
+                ))}
+                <button type="submit" style={{ width: "40%" }}>
+                  Tallenna tuomarit
+                </button>
+                <p
+                  style={{ visibility: showSuccessText ? "visible" : "hidden" }}
+                >
+                  Tuomarien tallentaminen onnistui!
+                </p>
+              </Form>
+            </Formik>
           </Grid>
           <Grid item xs={12} md={6}>
             <TournamentRings
