@@ -13,14 +13,12 @@ import PlayerForm from "../../../../components/Registration/PlayerForm";
 import { useSession } from "next-auth/react";
 
 const isCurrentUserAuthorized = async (currentUser, userId, tournamentId) => {
-  if (currentUser.id == userId) {
-    return true;
-  } else {
-    return (
+  return (
+    currentUser.id == userId ||
+    (currentUser != null &&
       currentUser.umpire != null &&
-      currentUser.umpire.tournamentId == tournamentId
-    );
-  }
+      currentUser.umpire.tournamentId == tournamentId)
+  );
 };
 
 export const getServerSideProps: GetServerSideProps = async ({
