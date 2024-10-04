@@ -39,7 +39,7 @@ const PlayerTable = ({
 
   return (
     <div style={{ paddingLeft: "10px" }}>
-      <h3>Pelaajat</h3>
+      <h2>Pelaajat</h2>
       <table>
         <tbody>
           <tr>Elossa</tr>

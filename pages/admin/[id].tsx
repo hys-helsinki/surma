@@ -128,12 +128,12 @@ export default function Tournament({ tournament, users, players, ringList }) {
   return (
     <AuthenticationRequired>
       <Box sx={{ m: 2 }}>
-        <h2 style={{ width: "100%" }}>{tournament.name}</h2>
+        <h1 style={{ width: "100%" }}>{tournament.name}</h1>
         <Grid container>
           <Grid item xs={12} md={6}>
             {unfinishedRegistrations.length > 0 && (
               <div style={{ paddingLeft: "10px", marginBottom: "30px" }}>
-                <h3>Keskeneräiset ilmoittautumiset</h3>
+                <h2>Keskeneräiset ilmoittautumiset</h2>
                 {unfinishedRegistrations.map((user) => (
                   <Link
                     href={`/tournaments/${tournament.id}/users/${user.id}`}

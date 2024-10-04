@@ -129,7 +129,7 @@ export const TournamentRings = ({
 
   return (
     <div>
-      <h3>Ringit</h3>
+      <h2>Ringit</h2>
       {allRings.map((ring) => (
         <div key={ring.id}>
           <Button
