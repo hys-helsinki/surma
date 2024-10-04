@@ -42,7 +42,11 @@ const PlayerTable = ({
       <h2>Pelaajat</h2>
       <table>
         <tbody>
-          <tr>Elossa</tr>
+          <tr>
+            <td>
+              <p>Elossa</p>
+            </td>
+          </tr>
           {activePlayers.map((player) => (
             <tr key={player.id}>
               <td>
@@ -70,7 +74,11 @@ const PlayerTable = ({
               </td>
             </tr>
           ))}
-          <tr>Kuolleet</tr>
+          <tr>
+            <td>
+              <p>Kuolleet</p>
+            </td>
+          </tr>
           {deadPlayers.map((player) => (
             <tr key={player.id}>
               <td>
@@ -103,7 +111,11 @@ const PlayerTable = ({
               </td>
             </tr>
           ))}
-          <tr>Etsivät</tr>
+          <tr>
+            <td>
+              <p>Etsivät</p>
+            </td>
+          </tr>
           {detectivePlayers.map((player) => (
             <tr key={player.id}>
               <td>
