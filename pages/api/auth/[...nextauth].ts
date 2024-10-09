@@ -23,8 +23,7 @@ export const authConfig = {
   theme: {
     colorScheme: "dark", // "auto" | "dark" | "light"
     brandColor: "#221717", // Hex color code
-    logo: "https://salamurhaajat.net/surma/surma_logo.svg", // Absolute URL to image
-    buttonText: "" // Hex color code
+    logo: "https://salamurhaajat.net/surma/surma_logo.svg" // Absolute URL to image
   },
   callbacks: {
     async session({ session, token, user }) {
