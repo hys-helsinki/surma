@@ -65,7 +65,7 @@ export default function Home({ tournaments }) {
       style={{ padding: "20px" }}
     >
       <button
-        onClick={() => signIn("email", { callbackUrl: "/personal" })}
+        onClick={() => signIn(undefined, { callbackUrl: "/personal" })}
         style={{ margin: "1em" }}
       >
         Kirjaudu sisään
