@@ -131,10 +131,9 @@ export default function Tournament({ tournament, users, players, ringList }) {
               <div style={{ paddingLeft: "10px", marginBottom: "30px" }}>
                 <h2>Keskeneräiset ilmoittautumiset</h2>
                 {unfinishedRegistrations.map((user) => (
-                  <div>
+                  <div key={user.id}>
                     <Link
                       href={`/tournaments/${tournament.id}/users/${user.id}`}
-                      key={user.id}
                     >
                       <a>
                         {user.firstName} {user.lastName}
