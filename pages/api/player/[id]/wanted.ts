@@ -8,13 +8,13 @@ const isCurrentUserAuthorized = async (playerId, req, res) => {
 
   const updatedPlayer = await prisma.player.findFirst({
     where: {
-      id: playerId,
-      userId: session.user.id
+      id: playerId
     },
-    select: {
-      tournamentId: true
+    include: {
+      tournament: true
     }
   });
+
   const umpire = await prisma.umpire.findFirst({
     where: {
       userId: session.user.id,
@@ -31,16 +31,44 @@ export default async function handler(
   if (!isCurrentUserAuthorized(req.query.id, req, res)) {
     res.status(403).end();
   }
-  if (req.method === "PATCH") {
+  if (req.method === "POST") {
     const playerId = req.query.id as string;
-    const { state } = JSON.parse(req.body);
-    const updatedPlayer = await prisma.player.update({
+
+    const player = await prisma.player.findUnique({
       where: { id: playerId },
-      data: { state },
       include: {
+        tournament: true,
         user: true
       }
     });
-    res.json(updatedPlayer);
+
+    const detectives = await prisma.player.findMany({
+      where: {
+        state: "DETECTIVE"
+      }
+    });
+
+    if (detectives.length === 0) {
+      return res.send("No detectives found");
+    }
+
+    const newAssignments = detectives.map((detective) => ({
+      hunterId: detective.id,
+      targetId: player.id
+    }));
+
+    const wantedRing = await prisma.assignmentRing.create({
+      data: {
+        name: `Etsintäkuulutus ${player.user.lastName}`,
+        tournamentId: player.tournament.id,
+        assignments: {
+          createMany: {
+            data: newAssignments
+          }
+        }
+      }
+    });
+
+    res.json(wantedRing);
   }
 }

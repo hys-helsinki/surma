@@ -1,14 +1,23 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 import KeyboardArrowRightRoundedIcon from "@mui/icons-material/KeyboardArrowRightRounded";
 import KeyboardArrowDownRoundedIcon from "@mui/icons-material/KeyboardArrowDownRounded";
 import IconButton from "@mui/material/IconButton";
-import Link from "next/link";
+import { Button } from "@mui/material";
+import { Player, User, Tournament } from "@prisma/client";
+
+interface PlayerWithUser extends Player {
+  user: User;
+}
 
 export const TournamentRings = ({
   tournament,
   players,
   rings
+}: {
+  tournament: Tournament;
+  players: PlayerWithUser[];
+  rings: any;
 }): JSX.Element => {
   const [allRings, setRings] = useState(rings);
   const [newRing, setNewRing] = useState([]);
@@ -17,27 +26,33 @@ export const TournamentRings = ({
   const [newHunter, setNewHunter] = useState("");
   const [newTarget, setNewTarget] = useState("");
 
+  useEffect(() => {
+    setRings(rings);
+  }, [rings]);
+
   const createRing = async (event) => {
     event.preventDefault();
     const readyRing = {
       assignments: Object.values(newRing),
       name: event.target.ringName.value,
-      tournament: tournament.id
+      tournamentId: tournament.id
     };
-    fetch("/api/tournament/rings", {
+    const res = await fetch("/api/tournament/rings", {
       method: "POST",
       body: JSON.stringify(readyRing)
     });
+    const createdRing = await res.json();
     setShowForm(false);
-    setRings(rings.concat(readyRing));
+    setRings(allRings.concat(createdRing));
   };
 
   const deleteRing = async (id) => {
-    fetch("/api/tournament/rings", {
+    const res = await fetch("/api/tournament/rings", {
       method: "DELETE",
       body: JSON.stringify({ ringId: id, tournamentId: tournament.id })
     });
-    setRings(allRings.filter((ring) => ring.id !== id));
+    const deletedRing = await res.json();
+    setRings(allRings.filter((ring) => ring.id !== deletedRing.id));
   };
 
   const handleRingChange = (id, event) => {
@@ -89,7 +104,6 @@ export const TournamentRings = ({
   const addAssignment = async (event, ring) => {
     event.preventDefault();
     if (newHunter && newTarget) {
-      console.log("ok");
       const newAssignment = {
         ringId: ring,
         hunterId: newHunter,
@@ -107,40 +121,53 @@ export const TournamentRings = ({
     }
   };
 
-  const getPlayerName = (targetId) => {
-    const searchedPlayer = players.find((player) => targetId == player.id);
+  const getPlayerName = (playerId) => {
+    const searchedPlayer = players.find((player) => playerId == player.id);
 
     return `${searchedPlayer.user.firstName} ${searchedPlayer.user.lastName}`;
   };
 
+  const sortedPlayers = players.sort((a, b) =>
+    a.user.firstName.localeCompare(b.user.firstName)
+  );
+
   return (
-    <div style={{ padding: "10px" }}>
+    <div>
       <h2>Ringit</h2>
       {allRings.map((ring) => (
         <div key={ring.id}>
-          <a
+          <Button
             onClick={() => toggleShowRing(ring.id)}
-            style={{ marginTop: "5px" }}
+            startIcon={
+              shownRingId == ring.id ? (
+                <KeyboardArrowDownRoundedIcon />
+              ) : (
+                <KeyboardArrowRightRoundedIcon />
+              )
+            }
+            sx={{
+              fontFamily: "inherit",
+              fontSize: "inherit",
+              color: "inherit"
+            }}
           >
-            {shownRingId == ring.id ? (
-              <KeyboardArrowDownRoundedIcon />
-            ) : (
-              <KeyboardArrowRightRoundedIcon />
-            )}
             {ring.name}
-          </a>
+          </Button>
+          <IconButton onClick={() => deleteRing(ring.id)}>
+            <DeleteOutlineIcon htmlColor="#FFFFFF" />
+          </IconButton>
           {shownRingId == ring.id && (
-            <div>
-              <button onClick={() => deleteRing(ring.id)}>Poista</button>
+            <div style={{ paddingLeft: "35px" }}>
               {ring.assignments.map((a) => (
                 <div key={a.id}>
                   <p>Metsästäjä {getPlayerName(a.hunterId)}</p>
                   <p>Kohde {getPlayerName(a.targetId)}</p>
-                  <IconButton
+                  <button
                     onClick={(e) => deleteAssignment(e, a.id, ring.id)}
+                    style={{}}
                   >
-                    <DeleteOutlineIcon htmlColor="#eceff1" />
-                  </IconButton>
+                    Poista toimeksianto
+                  </button>
                 </div>
               ))}
 
@@ -152,7 +179,7 @@ export const TournamentRings = ({
                     onChange={(e) => setNewHunter(e.target.value)}
                   >
                     <option>--</option>
-                    {players.map((player) => (
+                    {sortedPlayers.map((player) => (
                       <option key={player.id} value={player.id}>
                         {player.user.firstName} {player.user.lastName}
                       </option>
@@ -166,14 +193,14 @@ export const TournamentRings = ({
                     onChange={(e) => setNewTarget(e.target.value)}
                   >
                     <option>--</option>
-                    {players.map((player) => (
+                    {sortedPlayers.map((player) => (
                       <option key={player.id} value={player.id}>
                         {player.user.firstName} {player.user.lastName}
                       </option>
                     ))}
                   </select>
                 </label>
-                <button type="submit" style={{ width: "15%" }}>
+                <button type="submit" style={{ width: "20%" }}>
                   Luo uusi toimeksianto
                 </button>
               </form>
@@ -189,17 +216,16 @@ export const TournamentRings = ({
           <label>
             Ringin nimi: <input type="text" name="ringName" />
           </label>
-          {!players
-            ? null
-            : players.map((player) => (
-                <div key={player.id}>
-                  <Assignment
-                    players={players}
-                    player={player}
-                    handleRingChange={(e) => handleRingChange(player.id, e)}
-                  />
-                </div>
-              ))}
+          {players &&
+            sortedPlayers.map((player) => (
+              <div key={player.id}>
+                <Assignment
+                  players={sortedPlayers}
+                  player={player}
+                  handleRingChange={(e) => handleRingChange(player.id, e)}
+                />
+              </div>
+            ))}
           <button type="submit">Luo rinki</button>
         </form>
       )}
