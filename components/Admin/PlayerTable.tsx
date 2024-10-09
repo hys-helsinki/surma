@@ -31,9 +31,15 @@ const PlayerTable = ({
 
   if (players.length === 0) return <p>Ei pelaajia</p>;
 
-  const activePlayers = players.filter((player) => player.state === "ACTIVE");
-  const deadPlayers = players.filter((player) => player.state === "DEAD");
-  const detectivePlayers = players.filter(
+  const sortedPlayers = players.sort((a, b) =>
+    a.user.firstName.localeCompare(b.user.firstName)
+  );
+
+  const activePlayers = sortedPlayers.filter(
+    (player) => player.state === "ACTIVE"
+  );
+  const deadPlayers = sortedPlayers.filter((player) => player.state === "DEAD");
+  const detectivePlayers = sortedPlayers.filter(
     (player) => player.state === "DETECTIVE"
   );
 

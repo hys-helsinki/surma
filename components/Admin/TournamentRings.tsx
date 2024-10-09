@@ -127,6 +127,10 @@ export const TournamentRings = ({
     return `${searchedPlayer.user.firstName} ${searchedPlayer.user.lastName}`;
   };
 
+  const sortedPlayers = players.sort((a, b) =>
+    a.user.firstName.localeCompare(b.user.firstName)
+  );
+
   return (
     <div>
       <h2>Ringit</h2>
@@ -175,7 +179,7 @@ export const TournamentRings = ({
                     onChange={(e) => setNewHunter(e.target.value)}
                   >
                     <option>--</option>
-                    {players.map((player) => (
+                    {sortedPlayers.map((player) => (
                       <option key={player.id} value={player.id}>
                         {player.user.firstName} {player.user.lastName}
                       </option>
@@ -189,7 +193,7 @@ export const TournamentRings = ({
                     onChange={(e) => setNewTarget(e.target.value)}
                   >
                     <option>--</option>
-                    {players.map((player) => (
+                    {sortedPlayers.map((player) => (
                       <option key={player.id} value={player.id}>
                         {player.user.firstName} {player.user.lastName}
                       </option>
@@ -213,10 +217,10 @@ export const TournamentRings = ({
             Ringin nimi: <input type="text" name="ringName" />
           </label>
           {players &&
-            players.map((player) => (
+            sortedPlayers.map((player) => (
               <div key={player.id}>
                 <Assignment
-                  players={players}
+                  players={sortedPlayers}
                   player={player}
                   handleRingChange={(e) => handleRingChange(player.id, e)}
                 />

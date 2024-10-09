@@ -92,10 +92,6 @@ export default function Tournament({ tournament, users, players, ringList }) {
     .filter((user) => !user.player && !user.umpire)
     .sort((a, b) => a.firstName.localeCompare(b.firstName));
 
-  const finishedRegistrations = players.sort((a, b) =>
-    a.user.firstName.localeCompare(b.user.firstName)
-  );
-
   const umpires = users.filter((user) => user.umpire);
 
   const handleSaveUmpires = async (values) => {
@@ -147,7 +143,7 @@ export default function Tournament({ tournament, users, players, ringList }) {
               </div>
             )}
             <PlayerTable
-              playerList={finishedRegistrations}
+              playerList={players}
               tournament={tournament}
               handleMakeWanted={handleMakeWanted}
             />
@@ -195,7 +191,7 @@ export default function Tournament({ tournament, users, players, ringList }) {
           <Grid item xs={12} md={6}>
             <TournamentRings
               tournament={tournament}
-              players={finishedRegistrations}
+              players={players}
               rings={rings}
             />
           </Grid>
