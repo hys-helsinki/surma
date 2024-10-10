@@ -3,18 +3,26 @@ import PlayerInfo from "./PlayerInfo";
 import PlayerDetails from "./PlayerDetails";
 import { useState } from "react";
 
-const Details = ({ user, umpires, currentUserIsUmpire }) => {
+const Details = ({
+  user,
+  umpires,
+  currentUserIsUmpire,
+  currentUserIsHunter
+}) => {
   const [isUpdating, setIsUpdating] = useState(false);
 
   return (
     <Box>
-      <button onClick={() => setIsUpdating(!isUpdating)}>
-        {!isUpdating ? "Muokkaa tietoja" : "Peruuta"}
-      </button>
+      {!currentUserIsHunter && !currentUserIsUmpire && (
+        <button onClick={() => setIsUpdating(!isUpdating)}>
+          {!isUpdating ? "Muokkaa tietoja" : "Peruuta"}
+        </button>
+      )}
       <PlayerInfo
         user={user}
-        currentUserIsUmpire={currentUserIsUmpire}
+        showContactDetails={!currentUserIsHunter}
         umpires={umpires}
+        showLastVisit={currentUserIsUmpire}
       />
       <PlayerDetails user={user} isUpdating={isUpdating} />
     </Box>

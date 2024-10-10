@@ -11,7 +11,7 @@ const states = {
   EXTRA: "Lisäkohde"
 };
 
-const Info = ({ user, imageUrl }) => {
+const Info = ({ user, imageUrl, statusAndAliasVisibile, imageFormVisible }) => {
   const [fileInputState, setFileInputState] = useState("");
   const [selectedFile, setSelectedFile] = useState();
   const [selectedFileName, setSelectedFileName] = useState("");
@@ -55,15 +55,21 @@ const Info = ({ user, imageUrl }) => {
         <h1>
           {user.player.title} {user.firstName} {user.lastName}
         </h1>
-        <h3 style={{ marginTop: "5px", marginBottom: "5px" }}>
-          Peitenimi: {user.player.alias}
-        </h3>
-        <h3 style={{ marginTop: "5px", marginBottom: "10px" }}>
-          Status: {states[user.player.state]}
-        </h3>
+        {statusAndAliasVisibile && (
+          <>
+            <h3 style={{ marginTop: "5px", marginBottom: "5px" }}>
+              Peitenimi: {user.player.alias}
+            </h3>
+            <h3 style={{ marginTop: "5px", marginBottom: "10px" }}>
+              Status: {states[user.player.state]}
+            </h3>
+          </>
+        )}
       </Box>
       {imageUrl && !updateImage ? (
         <ImageComponent imageUrl={imageUrl} setUpdateImage={setUpdateImage} />
+      ) : !imageFormVisible ? (
+        <p>{"Ei kuvaa :("}</p>
       ) : (
         <div style={{ margin: "10px" }}>
           <ImageUploadForm
