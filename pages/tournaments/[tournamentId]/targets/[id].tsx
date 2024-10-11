@@ -13,11 +13,10 @@ import { Tournament } from "@prisma/client";
 
 const isTournamentRunning = (startTime: Date, endTime: Date) => {
   const currentTime = new Date();
-  // return (
-  //   startTime.getTime() < currentTime.getTime() &&
-  //   currentTime.getTime() < endTime.getTime()
-  // );
-  return true;
+  return (
+    startTime.getTime() < currentTime.getTime() &&
+    currentTime.getTime() < endTime.getTime()
+  );
 };
 
 const isCurrentUserAuthorized = async (
