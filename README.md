@@ -24,6 +24,8 @@ This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the app.
 
+If you run into discrepancies between Prisma db schema and your development database, use `npx prisma migrate` to apply latest db schema.
+
 ## Features
 
 ### Registration

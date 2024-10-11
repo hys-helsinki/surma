@@ -1,9 +1,9 @@
 import React from "react";
-import { GetStaticProps } from "next";
+import { GetServerSideProps } from "next";
 import prisma from "../lib/prisma";
 import Link from "next/link";
 
-export const getStaticProps: GetStaticProps = async ({ params }) => {
+export const getServerSideProps: GetServerSideProps = async ({ params }) => {
   let tournaments = await prisma.tournament.findMany({
     select: {
       id: true,

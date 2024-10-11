@@ -17,36 +17,40 @@ const isCurrentUserAuthorized = async (tournamentId, req, res) => {
 
 export default async function rings(req: NextApiRequest, res: NextApiResponse) {
   if (req.method === "POST") {
-    const newRing = JSON.parse(req.body);
+    const data = JSON.parse(req.body);
     // TODO make a dynamic route to supply tournament id as path parameter and move this before method check
-    if (!(await isCurrentUserAuthorized(newRing.tournament, req, res))) {
-      console.log("Unauthorized ring creation attempt!");
-      res.status(403).end();
-    }
-    const savedRing = await prisma.assignmentRing.create({
-      data: {
-        name: newRing.name,
-        tournamentId: newRing.tournament
-      }
-    });
-    const newAssignments = newRing.assignments.map((a) => {
-      return { ...a, ringId: savedRing.id };
-    });
-    const assignmentResult = await prisma.assignment.createMany({
-      data: newAssignments
-    });
-    res.status(201).end();
-  } else if (req.method === "DELETE") {
-    const deletedRing = JSON.parse(req.body);
-    if (!(await isCurrentUserAuthorized(deletedRing.tournamentId, req, res))) {
+    if (!(await isCurrentUserAuthorized(data.tournamentId, req, res))) {
       console.log("Unauthorized ring creation attempt!");
       res.status(403).end();
     }
 
-    const result = await prisma.assignmentRing.delete({
-      where: {
-        id: deletedRing.ringId
+    const createdRing = await prisma.assignmentRing.create({
+      data: {
+        name: data.name,
+        tournamentId: data.tournamentId,
+        assignments: {
+          createMany: {
+            data: data.assignments
+          }
+        }
+      },
+      include: {
+        assignments: true
       }
     });
+    res.json(createdRing);
+  } else if (req.method === "DELETE") {
+    const data = JSON.parse(req.body);
+    if (!(await isCurrentUserAuthorized(data.tournamentId, req, res))) {
+      console.log("Unauthorized ring creation attempt!");
+      res.status(403).end();
+    }
+
+    const deletedRing = await prisma.assignmentRing.delete({
+      where: {
+        id: data.ringId
+      }
+    });
+    res.json(deletedRing);
   }
 }

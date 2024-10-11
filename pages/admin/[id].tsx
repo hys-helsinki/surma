@@ -1,12 +1,14 @@
-import { Grid } from "@mui/material";
+import { Grid, Box } from "@mui/material";
 import { GetServerSideProps } from "next";
 import { unstable_getServerSession } from "next-auth";
-import Link from "next/link";
 import { useState } from "react";
 import { AuthenticationRequired } from "../../components/AuthenticationRequired";
-import { TournamentRings } from "../../components/TournamentRings";
+import { TournamentRings } from "../../components/Admin/TournamentRings";
 import prisma from "../../lib/prisma";
 import { authConfig } from "../api/auth/[...nextauth]";
+import PlayerTable from "../../components/Admin/PlayerTable";
+import Link from "next/link";
+import { Field, Form, Formik } from "formik";
 
 const isCurrentUserAuthorized = async (tournamentId, context) => {
   const session = await unstable_getServerSession(
@@ -37,131 +39,165 @@ export const getServerSideProps: GetServerSideProps = async ({
       id: params.id as string
     }
   });
+
+  let users = await prisma.user.findMany({
+    where: {
+      tournamentId: params.id as string
+    },
+    include: {
+      player: true,
+      umpire: true
+    }
+  });
+
   let players = await prisma.player.findMany({
     where: {
       tournamentId: params.id as string
     },
-    select: {
-      user: {
-        select: {
-          id: true,
-          firstName: true,
-          lastName: true
+    include: {
+      user: true,
+      umpire: {
+        include: {
+          user: true
         }
-      },
-      id: true,
-      targets: true,
-      hunters: true,
-      state: true
+      }
     }
   });
-  let rings = await prisma.assignmentRing.findMany({
+
+  let ringList = await prisma.assignmentRing.findMany({
     where: {
       tournamentId: params.id as string
     },
-    select: {
-      id: true,
-      name: true,
+    include: {
       assignments: true
     }
   });
+
+  // to avoid Next.js serialization error that is caused by Datetime objects
   tournament = JSON.parse(JSON.stringify(tournament));
-  const playerList = JSON.parse(JSON.stringify(players));
-  rings = JSON.parse(JSON.stringify(rings));
+  users = JSON.parse(JSON.stringify(users));
+  players = JSON.parse(JSON.stringify(players));
+  ringList = JSON.parse(JSON.stringify(ringList));
+
   return {
-    props: { tournament, playerList, rings }
+    props: { tournament, users, players, ringList }
   };
 };
 
-export default function Tournament({ tournament, playerList, rings }) {
-  const [players, setPlayers] = useState(playerList);
-  const handlePlayerStatusChange = (playerState, id) => {
-    const data = { state: playerState };
-    fetch(`/api/player/${id}/state`, {
+export default function Tournament({ tournament, users, players, ringList }) {
+  const [rings, setRings] = useState<any[]>(ringList);
+  const [showSuccessText, setShowSuccessText] = useState(false);
+
+  const unfinishedRegistrations = users
+    .filter((user) => !user.player && !user.umpire)
+    .sort((a, b) => a.firstName.localeCompare(b.firstName));
+
+  const umpires = users.filter((user) => user.umpire);
+
+  const handleSaveUmpires = async (values) => {
+    const res = await fetch(`/api/player/umpires`, {
       method: "PATCH",
-      body: JSON.stringify(data)
+      body: JSON.stringify(values)
     });
-    const playerToBeUpdated = players.find((p) => p.id == id);
-    const updatedPlayer = { ...playerToBeUpdated, state: playerState };
-    setPlayers(
-      players.map((player) => (player.id !== id ? player : updatedPlayer))
-    );
+
+    if (res.status === 200) {
+      setShowSuccessText(true);
+    }
   };
+
+  const handleMakeWanted = async (id: string) => {
+    const res = await fetch(`/api/player/${id}/wanted`, {
+      method: "POST"
+    });
+
+    const createdRing = await res.json();
+    setRings((prevRings) => prevRings.concat(createdRing));
+  };
+
+  const formInitials = Object.assign(
+    {},
+    ...players.map((player) => ({
+      [`${player.id}`]: player.umpire ? player.umpire.id : ""
+    }))
+  );
+
   return (
     <AuthenticationRequired>
-      <div>
-        <h2 style={{ width: "100%" }}>{tournament.name}</h2>
+      <Box sx={{ m: 2 }}>
+        <h1 style={{ width: "100%" }}>{tournament.name}</h1>
         <Grid container>
           <Grid item xs={12} md={6}>
-            <div style={{ paddingLeft: "10px" }}>
-              <h2>Pelaajat</h2>
-              <table>
-                <tbody>
-                  {players.map((player) => (
-                    <tr key={player.id}>
-                      <td>
-                        <Link
-                          href={`/tournaments/${tournament.id}/users/${player.user.id}`}
-                        >
-                          <a>
-                            {player.user.firstName} {player.user.lastName}
-                          </a>
-                        </Link>
-                      </td>
-                      {player.state == "ACTIVE" ? (
-                        <td>
-                          <button
-                            onClick={() =>
-                              handlePlayerStatusChange("DEAD", player.id)
-                            }
-                          >
-                            Tapa
-                          </button>
-                        </td>
-                      ) : (
-                        <>
-                          <td>
-                            <button
-                              onClick={() =>
-                                handlePlayerStatusChange("ACTIVE", player.id)
-                              }
-                            >
-                              Herätä henkiin
-                            </button>
-                          </td>
-                          {player.state != "DETECTIVE" && (
-                            <td>
-                              <button
-                                onClick={() =>
-                                  handlePlayerStatusChange(
-                                    "DETECTIVE",
-                                    player.id
-                                  )
-                                }
-                              >
-                                Etsiväksi
-                              </button>
-                            </td>
-                          )}
-                        </>
-                      )}
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
+            {unfinishedRegistrations.length > 0 && (
+              <div style={{ paddingLeft: "10px", marginBottom: "30px" }}>
+                <h2>Keskeneräiset ilmoittautumiset</h2>
+                {unfinishedRegistrations.map((user) => (
+                  <div key={user.id}>
+                    <Link
+                      href={`/tournaments/${tournament.id}/users/${user.id}`}
+                    >
+                      <a>
+                        {user.firstName} {user.lastName}
+                      </a>
+                    </Link>
+                  </div>
+                ))}
+              </div>
+            )}
+            <PlayerTable
+              playerList={players}
+              tournament={tournament}
+              handleMakeWanted={handleMakeWanted}
+            />
+            <h2>Pelaajien tuomarit</h2>
+            <Formik
+              enableReinitialize={true}
+              initialValues={formInitials}
+              onSubmit={(values) => {
+                handleSaveUmpires(values);
+              }}
+            >
+              <Form>
+                {players.map((player) => (
+                  <div key={player.id}>
+                    <div style={{ width: "100%" }}>
+                      <label htmlFor={`${player.id}`}>
+                        {player.user.firstName} {player.user.lastName}
+                      </label>
+                    </div>
+                    <Field
+                      name={`${player.id}`}
+                      id={`${player.id}`}
+                      as="select"
+                    >
+                      <option></option>
+                      {umpires.map((user) => (
+                        <option value={user.umpire.id} key={user.id}>
+                          {user.firstName} {user.lastName}
+                        </option>
+                      ))}
+                    </Field>
+                  </div>
+                ))}
+                <button type="submit" style={{ width: "40%" }}>
+                  Tallenna tuomarit
+                </button>
+                <p
+                  style={{ visibility: showSuccessText ? "visible" : "hidden" }}
+                >
+                  Tuomarien tallentaminen onnistui!
+                </p>
+              </Form>
+            </Formik>
           </Grid>
           <Grid item xs={12} md={6}>
-            <div>
-              <TournamentRings
-                tournament={tournament}
-                players={players}
-                rings={rings}
-              />
-            </div>
+            <TournamentRings
+              tournament={tournament}
+              players={players}
+              rings={rings}
+            />
           </Grid>
         </Grid>
-      </div>
+      </Box>
     </AuthenticationRequired>
   );
 }

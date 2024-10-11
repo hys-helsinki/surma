@@ -1,6 +1,7 @@
 import { PlayerTitle } from "../../../lib/constants";
 import prisma from "../../../lib/prisma";
 import type { NextApiRequest, NextApiResponse } from "next";
+import sendEmail from "../../../lib/ses_mailer";
 
 type PlayerFormData = {
   userId: string;
@@ -22,6 +23,17 @@ export default async function create(
   res: NextApiResponse
 ) {
   const playerData: PlayerFormData = JSON.parse(req.body);
+  const user = await prisma.user.findFirst({
+    where: {
+      id: {
+        equals: playerData.userId
+      }
+    },
+    include: {
+      tournament: true
+    }
+  });
+
   const result = await prisma.player.create({
     data: {
       user: { connect: { id: playerData.userId } },
@@ -38,5 +50,11 @@ export default async function create(
       title: playerData.title
     }
   });
+  sendEmail(
+    "surma@salamurhaajat.net",
+    user.email,
+    `Kiitos ilmoittautumisestasi salamurhaturnaukseen ${user.tournament.name}!`,
+    `Kiitos ilmoittautumisestasi! Tuomaristo tarkistaa ilmoittautumisesi vielä ennen pelin alkua, ja saat sähköpostitse vahvistusviestin, kun ilmoittautumisesi on hyväksytty. Tuomaristo ottaa erikseen yhteyttä, mikäli antamiasi tietoja pitää täydentää tai muokata.\n\nTämä on automaattinen vahvistusviesti. Älä vastaa tähän viestiin. Tuomaristo vastaa peliin liittyviin viesteihin osoitteessa tuomaristo@salamurhaajat.net.`
+  );
   res.status(201).send(result);
 }
