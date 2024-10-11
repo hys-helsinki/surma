@@ -12,11 +12,8 @@ import MobileView from "../../../../components/PlayerPage/MobileView";
 import { Tournament } from "@prisma/client";
 
 const isTournamentRunning = (startTime: Date, endTime: Date) => {
-  const currentTime = new Date();
-  return (
-    startTime.getTime() < currentTime.getTime() &&
-    currentTime.getTime() < endTime.getTime()
-  );
+  const currentTime = new Date().getTime();
+  return startTime.getTime() < currentTime && currentTime < endTime.getTime();
 };
 
 const isCurrentUserAuthorized = async (

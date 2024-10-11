@@ -22,11 +22,8 @@ const isCurrentUserAuthorized = async (currentUser, userId, tournamentId) => {
 };
 
 const isTournamentRunning = (startTime: Date, endTime: Date) => {
-  const currentTime = new Date();
-  return (
-    startTime.getTime() < currentTime.getTime() &&
-    currentTime.getTime() < endTime.getTime()
-  );
+  const currentTime = new Date().getTime();
+  return startTime.getTime() < currentTime && currentTime < endTime.getTime();
 };
 
 export const getServerSideProps: GetServerSideProps = async ({
