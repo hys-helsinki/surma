@@ -17,6 +17,8 @@ export const Calendar = ({
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
 
+  if (!calendar) return null;
+
   const { id: userId } = router.query;
 
   const dates: string[] = getTournamentDates(
