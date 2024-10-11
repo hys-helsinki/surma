@@ -13,10 +13,11 @@ import { Tournament } from "@prisma/client";
 
 const isTournamentRunning = (startTime: Date, endTime: Date) => {
   const currentTime = new Date();
-  return (
-    startTime.getTime() < currentTime.getTime() &&
-    currentTime.getTime() < endTime.getTime()
-  );
+  // return (
+  //   startTime.getTime() < currentTime.getTime() &&
+  //   currentTime.getTime() < endTime.getTime()
+  // );
+  return true;
 };
 
 const isCurrentUserAuthorized = async (
@@ -214,8 +215,8 @@ export default function Target({
       <div>
         <NavigationBar
           targets={targetUsers}
-          userId={user.id}
-          tournamentId={user.tournamentId}
+          userId={currentUser.id}
+          tournamentId={tournament.id}
           currentUserIsUmpire={currentUserIsUmpire}
         />
         {isMobileView ? (
