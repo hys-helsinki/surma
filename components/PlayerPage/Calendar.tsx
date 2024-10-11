@@ -17,6 +17,18 @@ export const Calendar = ({
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
 
+  useEffect(() => {
+    if (calendar) {
+      const weeks = splitCalendar(calendar);
+      setWeeks(weeks);
+      const currentWeek = getCurrentWeek(dates);
+      if (currentWeek <= weeks.length - 1) {
+        setSlideNumber(currentWeek);
+      }
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [calendar]);
+
   if (!calendar) return null;
 
   const { id: userId } = router.query;
@@ -25,16 +37,6 @@ export const Calendar = ({
     new Date(tournament.startTime),
     new Date(tournament.endTime)
   );
-
-  useEffect(() => {
-    const weeks = splitCalendar(calendar);
-    setWeeks(weeks);
-    const currentWeek = getCurrentWeek(dates);
-    if (currentWeek <= weeks.length - 1) {
-      setSlideNumber(currentWeek);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [calendar]);
 
   if (weeks.length === 0) return null;
 
