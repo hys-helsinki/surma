@@ -5,12 +5,14 @@ import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
 
 const PlayerInfo = ({
   user,
-  currentUserIsUmpire,
-  umpires
+  showContactDetails,
+  umpires,
+  showLastVisit
 }: {
   user: any;
-  currentUserIsUmpire: boolean;
+  showContactDetails: boolean;
   umpires: any[];
+  showLastVisit: boolean;
 }): JSX.Element => {
   const [showOtherUmpires, setShowOtherUmpires] = useState(false);
 
@@ -37,7 +39,7 @@ const PlayerInfo = ({
 
       {otherUmpires.length !== 0 && (
         <div>
-          <h3 style={{ display: "inline" }}>Muut tuomarit</h3>
+          <h3 style={{ display: "inline" }}>Turnauksen tuomarit</h3>
           <Button
             onClick={() => setShowOtherUmpires(!showOtherUmpires)}
             sx={{ color: "white" }}
@@ -65,19 +67,20 @@ const PlayerInfo = ({
           ) : null}
         </div>
       )}
+      {showContactDetails && (
+        <Box sx={{ mt: 4 }}>
+          <h2>Yhteystiedot</h2>
+          <p>Puhelinnumero: {user.phone}</p>
+          <p>Sähköpostiosoite: {user.email}</p>
 
-      <Box sx={{ mt: 4 }}>
-        <h2>Yhteystiedot</h2>
-        <p>puhelinnumero: {user.phone}</p>
-        <p>email: {user.email}</p>
-
-        {currentUserIsUmpire && (
-          <>
-            <h3>Käyttäjän viime käynti</h3>
-            <p>20434390242</p>
-          </>
-        )}
-      </Box>
+          {showLastVisit && (
+            <>
+              <h3>Käyttäjän viime käynti</h3>
+              <p>{user.player.lastVisit}</p>
+            </>
+          )}
+        </Box>
+      )}
     </Box>
   );
 };

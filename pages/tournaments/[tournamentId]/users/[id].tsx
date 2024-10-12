@@ -21,6 +21,11 @@ const isCurrentUserAuthorized = async (currentUser, userId, tournamentId) => {
   );
 };
 
+const isTournamentRunning = (startTime: Date, endTime: Date) => {
+  const currentTime = new Date().getTime();
+  return startTime.getTime() < currentTime && currentTime < endTime.getTime();
+};
+
 export const getServerSideProps: GetServerSideProps = async ({
   params,
   ...context
@@ -146,21 +151,18 @@ export const getServerSideProps: GetServerSideProps = async ({
 
   user = JSON.parse(JSON.stringify(user));
   const tournament = user.tournament;
-  let targets = [];
-
-  if (
-    user.player &&
-    new Date().getTime() > new Date(tournament.startTime).getTime()
-  ) {
-    targets = user.player.targets;
-  }
 
   return {
     props: {
       user,
       tournament,
       imageUrl,
-      targets,
+      targets: isTournamentRunning(
+        new Date(tournament.startTime),
+        new Date(tournament.endTime)
+      )
+        ? user.player.targets
+        : [],
       currentUserIsUmpire: currentUser.umpire != null,
       umpires
     }

@@ -5,7 +5,11 @@ import { Formik, Form, Field } from "formik";
 import Markdown from "../Common/Markdown";
 import { LoadingButton } from "@mui/lab";
 
-export const Calendar = ({ player, tournament }): JSX.Element => {
+export const Calendar = ({
+  player,
+  tournament,
+  showEditButton
+}): JSX.Element => {
   const [calendar, setCalendar] = useState(player.calendar);
   const [weekNumber, setSlideNumber] = useState(0);
   const [weeks, setWeeks] = useState([]);
@@ -13,22 +17,26 @@ export const Calendar = ({ player, tournament }): JSX.Element => {
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
 
+  useEffect(() => {
+    if (calendar) {
+      const weeks = splitCalendar(calendar);
+      setWeeks(weeks);
+      const currentWeek = getCurrentWeek(dates);
+      if (currentWeek <= weeks.length - 1) {
+        setSlideNumber(currentWeek);
+      }
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [calendar]);
+
+  if (!calendar) return null;
+
   const { id: userId } = router.query;
 
   const dates: string[] = getTournamentDates(
     new Date(tournament.startTime),
     new Date(tournament.endTime)
   );
-
-  useEffect(() => {
-    const weeks = splitCalendar(calendar);
-    setWeeks(weeks);
-    const currentWeek = getCurrentWeek(dates);
-    if (currentWeek <= weeks.length - 1) {
-      setSlideNumber(currentWeek);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [calendar]);
 
   if (weeks.length === 0) return null;
 
@@ -71,9 +79,11 @@ export const Calendar = ({ player, tournament }): JSX.Element => {
 
   return (
     <div className="calendar">
-      <button onClick={() => setIsUpdated(!isUpdated)}>
-        {isUpdated ? "Muokkaa kalenteria" : "Peruuta"}
-      </button>
+      {showEditButton && (
+        <button onClick={() => setIsUpdated(!isUpdated)}>
+          {isUpdated ? "Muokkaa kalenteria" : "Peruuta"}
+        </button>
+      )}
 
       {isUpdated ? (
         <div>

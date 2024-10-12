@@ -1,43 +1,32 @@
 import { GetServerSideProps } from "next";
-import PlayerDetails from "../../../../components/PlayerPage/Details/PlayerDetails";
 import prisma from "../../../../lib/prisma";
-import React, { MouseEventHandler } from "react";
-import { useState } from "react";
-import Image from "next/image";
-import { Grid } from "@mui/material";
+import React from "react";
+import { useMediaQuery, useTheme } from "@mui/material";
 import { AuthenticationRequired } from "../../../../components/AuthenticationRequired";
-import { unstable_getServerSession } from "next-auth";
+import { Session, unstable_getServerSession } from "next-auth";
 import { authConfig } from "../../../api/auth/[...nextauth]";
 import { v2 as cloudinary } from "cloudinary";
 import NavigationBar from "../../../../components/NavigationBar";
+import DesktopView from "../../../../components/PlayerPage/DesktopView";
+import MobileView from "../../../../components/PlayerPage/MobileView";
+import { Tournament } from "@prisma/client";
+
+const isTournamentRunning = (startTime: Date, endTime: Date) => {
+  const currentTime = new Date().getTime();
+  return startTime.getTime() < currentTime && currentTime < endTime.getTime();
+};
 
 const isCurrentUserAuthorized = async (
-  tournamentId,
-  targetId,
-  context,
-  session
+  tournament: Tournament,
+  targetId: string,
+  session: Session
 ) => {
   const isUmpire = await prisma.umpire.findFirst({
     where: {
       userId: session.user.id,
-      tournamentId: tournamentId
+      tournamentId: tournament.id
     }
   });
-
-  const tournament = await prisma.tournament.findUnique({
-    select: {
-      startTime: true,
-      endTime: true
-    },
-    where: {
-      id: tournamentId
-    }
-  });
-
-  const currentTime = new Date();
-  const isTournamentRunning =
-    tournament.startTime.getTime() < currentTime.getTime() &&
-    currentTime.getTime() < tournament.endTime.getTime();
 
   const isHunter = await prisma.assignment.findFirst({
     where: {
@@ -54,7 +43,10 @@ const isCurrentUserAuthorized = async (
     }
   });
 
-  return isUmpire || (isTournamentRunning && isHunter);
+  return (
+    isUmpire ||
+    (isTournamentRunning(tournament.startTime, tournament.endTime) && isHunter)
+  );
 };
 
 export const getServerSideProps: GetServerSideProps = async ({
@@ -67,23 +59,16 @@ export const getServerSideProps: GetServerSideProps = async ({
     authConfig
   );
 
-  if (
-    !(await isCurrentUserAuthorized(
-      params.tournamentId,
-      params.id,
-      context,
-      session
-    ))
-  ) {
-    return { redirect: { destination: "/personal", permanent: false } };
-  }
+  const { id: userId, tournamentId } = params;
 
-  let imageUrl = "";
-  try {
-    const result = await cloudinary.api.resource(params.id as string);
-    imageUrl = result.url;
-  } catch (error) {
-    console.log(error);
+  let tournament = await prisma.tournament.findUnique({
+    where: {
+      id: tournamentId as string
+    }
+  });
+
+  if (!(await isCurrentUserAuthorized(tournament, userId as string, session))) {
+    return { redirect: { destination: "/personal", permanent: false } };
   }
 
   let currentUser = await prisma.user.findUnique({
@@ -92,15 +77,7 @@ export const getServerSideProps: GetServerSideProps = async ({
     },
     select: {
       id: true,
-      tournamentId: true,
       umpire: true,
-      tournament: {
-        select: {
-          startTime: true,
-          endTime: true,
-          id: true
-        }
-      },
       player: {
         select: {
           state: true,
@@ -124,38 +101,41 @@ export const getServerSideProps: GetServerSideProps = async ({
     }
   });
 
-  currentUser = JSON.parse(JSON.stringify(currentUser));
-
-  let tournament = currentUser.tournament;
-
-  const player = await prisma.player.findUnique({
+  let user = await prisma.user.findUnique({
     where: {
-      userId: params.id as string
+      id: params.id as string
     },
     select: {
-      alias: true,
-      address: true,
-      learningInstitution: true,
-      eyeColor: true,
-      hair: true,
-      height: true,
-      other: true,
-      title: true,
-      calendar: true,
-      user: {
+      id: true,
+      firstName: true,
+      lastName: true,
+      player: {
         select: {
-          firstName: true,
-          lastName: true
-        }
-      },
-      umpire: {
-        select: {
-          user: {
+          id: true,
+          alias: true,
+          address: true,
+          learningInstitution: true,
+          eyeColor: true,
+          hair: true,
+          height: true,
+          other: true,
+          calendar: true,
+          lastVisit: true,
+          title: true,
+          state: true,
+          safetyNotes: true,
+          umpire: {
             select: {
-              firstName: true,
-              lastName: true,
-              phone: true,
-              email: true
+              id: true,
+              responsibility: true,
+              user: {
+                select: {
+                  firstName: true,
+                  lastName: true,
+                  phone: true,
+                  email: true
+                }
+              }
             }
           }
         }
@@ -163,68 +143,67 @@ export const getServerSideProps: GetServerSideProps = async ({
     }
   });
 
-  let targets = [];
-  if (
-    currentUser.player &&
-    new Date().getTime() > new Date(tournament.startTime).getTime()
-  ) {
-    targets = currentUser.player.targets;
+  const umpires = await prisma.umpire.findMany({
+    select: {
+      id: true,
+      responsibility: true,
+      user: {
+        select: {
+          firstName: true,
+          lastName: true,
+          phone: true,
+          email: true
+        }
+      }
+    }
+  });
+
+  let imageUrl = "";
+  try {
+    const result = await cloudinary.api.resource(params.id as string);
+    imageUrl = result.url;
+  } catch (error) {
+    console.log(error);
   }
+
+  tournament = JSON.parse(JSON.stringify(tournament));
 
   return {
     props: {
-      player,
-      imageUrl,
       currentUser,
+      user,
       tournament,
-      targets,
-      currentUserIsUmpire: currentUser.umpire != null
+      imageUrl,
+      targets: isTournamentRunning(
+        new Date(tournament.startTime),
+        new Date(tournament.endTime)
+      )
+        ? currentUser.player.targets
+        : [],
+      currentUserIsUmpire: currentUser.umpire != null,
+      umpires
     }
   };
 };
 
 export default function Target({
-  player,
-  imageUrl,
+  user,
   currentUser,
   tournament,
-  targets,
-  currentUserIsUmpire
+  imageUrl,
+  targets = [],
+  currentUserIsUmpire,
+  umpires
 }): JSX.Element {
-  const [showPicture, setShowPicture] = useState(false);
-  const [slideNumber, setSlideNumber] = useState(0);
-
-  const cal = [];
-  for (const x in player.calendar) {
-    cal.push([x, player.calendar[x]]);
-  }
-
-  let chunks = [];
-  const chunkSize = 7;
-
-  for (let i = 0; i < cal.length; i += chunkSize) {
-    const chunk = cal.slice(i, i + chunkSize);
-    chunks.push(chunk);
-  }
-  const handleSlideShow = (event) => {
-    if (slideNumber == chunks.length - 1) {
-      setSlideNumber(0);
-    } else {
-      setSlideNumber(slideNumber + 1);
-    }
-  };
-
-  const togglePicture: MouseEventHandler = () => {
-    if (showPicture === true) {
-      setShowPicture(false);
-    } else {
-      setShowPicture(true);
-    }
-  };
+  const theme = useTheme();
+  const isMobileView = useMediaQuery(theme.breakpoints.down("md"));
 
   let targetUsers = [];
-  if (targets) {
-    targetUsers = targets.map((assignment) => assignment.target.user);
+
+  if (targets.length > 0) {
+    targetUsers = currentUser.player.targets.map(
+      (assignment) => assignment.target.user
+    );
   }
 
   return (
@@ -236,85 +215,25 @@ export default function Target({
           tournamentId={tournament.id}
           currentUserIsUmpire={currentUserIsUmpire}
         />
-        <Grid container>
-          <Grid item xs={12} md={5}>
-            <div
-              style={{
-                paddingLeft: "10px",
-                display: "inline-block"
-              }}
-            >
-              <h1>
-                {player.title} {player.user.firstName} {player.user.lastName}
-              </h1>
-              {imageUrl !== "" ? (
-                <div>
-                  {showPicture ? (
-                    <div>
-                      <Image
-                        src={imageUrl}
-                        width="100%"
-                        height="100%"
-                        layout="responsive"
-                        objectFit="contain"
-                        alt="profile picture"
-                      ></Image>
-                    </div>
-                  ) : null}
-                  <button onClick={togglePicture}>
-                    {showPicture ? "piilota" : "näytä kuva"}
-                  </button>
-                </div>
-              ) : (
-                <p>Ei kuvaa</p>
-              )}
-
-              <div>
-                <div className="userdetails">
-                  {player.umpire && (
-                    <div>
-                      <h3>Pelaajan tuomari</h3>
-                      <p>
-                        {player.umpire.user.firstName}{" "}
-                        {player.umpire.user.lastName}
-                      </p>
-                      <p>{player.umpire.user.phone}</p>
-                      <p>{player.umpire.user.email}</p>
-                    </div>
-                  )}
-                  <h2>Kohteen tiedot</h2>
-                  {currentUser.player.state == "DETECTIVE" && (
-                    <h3>Pelaajan alias: {player.alias}</h3>
-                  )}
-                  {/* <PlayerDetails player={player} /> */}
-                </div>
-              </div>
-            </div>
-          </Grid>
-          <Grid item xs={12} md={7}>
-            <div className="calendar">
-              <h3 style={{ width: "40%", margin: "auto", padding: "10px" }}>
-                Kalenteri
-              </h3>
-
-              <div>
-                <ul>
-                  {chunks[slideNumber].map((c, index) => (
-                    <li
-                      key={index}
-                      style={{ paddingBottom: "20px", whiteSpace: "pre-line" }}
-                    >
-                      {c[0]}: {c[1]}
-                    </li>
-                  ))}
-                </ul>
-                <button onClick={handleSlideShow} style={{ left: "40%" }}>
-                  Seuraava
-                </button>
-              </div>
-            </div>
-          </Grid>
-        </Grid>
+        {isMobileView ? (
+          <MobileView
+            user={user}
+            tournament={tournament}
+            imageUrl={imageUrl}
+            currentUserIsUmpire={currentUserIsUmpire}
+            umpires={umpires}
+            currentUserIsHunter={true}
+          />
+        ) : (
+          <DesktopView
+            user={user}
+            tournament={tournament}
+            imageUrl={imageUrl}
+            currentUserIsUmpire={currentUserIsUmpire}
+            umpires={umpires}
+            currentUserIsHunter={true}
+          />
+        )}
       </div>
     </AuthenticationRequired>
   );
