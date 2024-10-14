@@ -67,7 +67,14 @@ const Info = ({ user, imageUrl, showStatusAndAlias, showImageForm }) => {
         )}
       </Box>
       {imageUrl && !updateImage ? (
-        <ImageComponent imageUrl={imageUrl} setUpdateImage={setUpdateImage} />
+        <>
+          <ImageComponent imageUrl={imageUrl} />
+          {showImageForm && (
+            <button onClick={() => setUpdateImage((prevState) => !prevState)}>
+              Vaihda kuva
+            </button>
+          )}
+        </>
       ) : !showImageForm ? (
         <p>{"Ei kuvaa :("}</p>
       ) : (
