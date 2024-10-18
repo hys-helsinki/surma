@@ -164,7 +164,8 @@ export const getServerSideProps: GetServerSideProps = async ({
         ? user.player.targets
         : [],
       currentUserIsUmpire: currentUser.umpire != null,
-      umpires
+      umpires,
+      currentUser
     }
   };
 };
@@ -175,7 +176,8 @@ export default function User({
   imageUrl,
   targets = [],
   currentUserIsUmpire,
-  umpires
+  umpires,
+  currentUser
 }): JSX.Element {
   const [confirmed, setConfirmed] = useState(
     user.player ? user.player.confirmed : false
@@ -256,7 +258,7 @@ export default function User({
             tournament={tournament}
             imageUrl={imageUrl}
             currentUserIsUmpire={currentUserIsUmpire}
-            currentUserId={user.id}
+            currentUserId={currentUser.id}
             umpires={umpires}
           />
         ) : (
@@ -265,7 +267,7 @@ export default function User({
             tournament={tournament}
             imageUrl={imageUrl}
             currentUserIsUmpire={currentUserIsUmpire}
-            currentUserId={user.id}
+            currentUserId={currentUser.id}
             umpires={umpires}
           />
         )}
