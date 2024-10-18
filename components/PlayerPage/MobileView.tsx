@@ -61,7 +61,7 @@ const MobileView = ({
           user.id === currentUserId
         }
         showStatus={currentUserIsUmpire || user.id === currentUserId}
-        showImageForm={!currentUserIsHunter && !currentUserIsUmpire}
+        showImageForm={user.id === currentUserId}
       />
 
       <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
