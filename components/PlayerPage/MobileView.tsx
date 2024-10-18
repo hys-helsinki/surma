@@ -60,7 +60,7 @@ const MobileView = ({
           currentUserIsUmpire ||
           user.id === currentUserId
         }
-        showStatus={!currentUserIsHunter && !currentUserIsDetective}
+        showStatus={currentUserIsUmpire || user.id === currentUserId}
         showImageForm={!currentUserIsHunter && !currentUserIsUmpire}
       />
 
