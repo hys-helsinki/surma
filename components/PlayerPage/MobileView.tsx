@@ -31,6 +31,8 @@ const MobileView = ({
   imageUrl,
   currentUserIsUmpire,
   currentUserIsHunter = false,
+  currentUserIsDetective = false,
+  currentUserId,
   umpires
 }: {
   user;
@@ -38,6 +40,8 @@ const MobileView = ({
   imageUrl;
   currentUserIsUmpire: boolean;
   currentUserIsHunter?: boolean;
+  currentUserIsDetective?: boolean;
+  currentUserId;
   umpires;
 }) => {
   const [value, setValue] = useState(0);
@@ -51,8 +55,13 @@ const MobileView = ({
       <Info
         user={user}
         imageUrl={imageUrl}
-        showStatusAndAlias={!currentUserIsHunter}
-        showImageForm={!currentUserIsHunter && !currentUserIsUmpire}
+        showAlias={
+          currentUserIsDetective ||
+          currentUserIsUmpire ||
+          user.id === currentUserId
+        }
+        showStatus={currentUserIsUmpire || user.id === currentUserId}
+        showImageForm={user.id === currentUserId}
       />
 
       <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
