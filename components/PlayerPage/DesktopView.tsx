@@ -9,6 +9,8 @@ const DesktopView = ({
   imageUrl,
   currentUserIsUmpire,
   currentUserIsHunter = false,
+  currentUserIsDetective = false,
+  currentUserId,
   umpires
 }: {
   user;
@@ -16,6 +18,8 @@ const DesktopView = ({
   imageUrl;
   currentUserIsUmpire: boolean;
   currentUserIsHunter?: boolean;
+  currentUserIsDetective?: boolean;
+  currentUserId;
   umpires;
 }) => {
   return (
@@ -25,7 +29,12 @@ const DesktopView = ({
           <Info
             user={user}
             imageUrl={imageUrl}
-            showStatusAndAlias={!currentUserIsHunter}
+            showAlias={
+              currentUserIsDetective ||
+              currentUserIsUmpire ||
+              user.id === currentUserId
+            }
+            showStatus={!currentUserIsHunter && !currentUserIsDetective}
             showImageForm={!currentUserIsHunter && !currentUserIsUmpire}
           />
           <Details

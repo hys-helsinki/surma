@@ -256,6 +256,7 @@ export default function User({
             tournament={tournament}
             imageUrl={imageUrl}
             currentUserIsUmpire={currentUserIsUmpire}
+            currentUserId={user.id}
             umpires={umpires}
           />
         ) : (
@@ -264,6 +265,7 @@ export default function User({
             tournament={tournament}
             imageUrl={imageUrl}
             currentUserIsUmpire={currentUserIsUmpire}
+            currentUserId={user.id}
             umpires={umpires}
           />
         )}

@@ -181,6 +181,7 @@ export const getServerSideProps: GetServerSideProps = async ({
         ? currentUser.player.targets
         : [],
       currentUserIsUmpire: currentUser.umpire != null,
+      currentUserIsDetective: currentUser.player.state === "DETECTIVE",
       umpires
     }
   };
@@ -193,6 +194,7 @@ export default function Target({
   imageUrl,
   targets = [],
   currentUserIsUmpire,
+  currentUserIsDetective,
   umpires
 }): JSX.Element {
   const theme = useTheme();
@@ -223,6 +225,8 @@ export default function Target({
             currentUserIsUmpire={currentUserIsUmpire}
             umpires={umpires}
             currentUserIsHunter={true}
+            currentUserIsDetective={currentUserIsDetective}
+            currentUserId={currentUser.id}
           />
         ) : (
           <DesktopView
@@ -232,6 +236,8 @@ export default function Target({
             currentUserIsUmpire={currentUserIsUmpire}
             umpires={umpires}
             currentUserIsHunter={true}
+            currentUserIsDetective={currentUserIsDetective}
+            currentUserId={currentUser.id}
           />
         )}
       </div>

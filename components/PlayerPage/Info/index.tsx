@@ -11,7 +11,7 @@ const states = {
   EXTRA: "Lisäkohde"
 };
 
-const Info = ({ user, imageUrl, showStatusAndAlias, showImageForm }) => {
+const Info = ({ user, imageUrl, showAlias, showStatus, showImageForm }) => {
   const [fileInputState, setFileInputState] = useState("");
   const [selectedFile, setSelectedFile] = useState();
   const [selectedFileName, setSelectedFileName] = useState("");
@@ -55,15 +55,16 @@ const Info = ({ user, imageUrl, showStatusAndAlias, showImageForm }) => {
         <h1>
           {user.player.title} {user.firstName} {user.lastName}
         </h1>
-        {showStatusAndAlias && (
-          <>
-            <h3 style={{ marginTop: "5px", marginBottom: "5px" }}>
-              Peitenimi: {user.player.alias}
-            </h3>
-            <h3 style={{ marginTop: "5px", marginBottom: "10px" }}>
-              Status: {states[user.player.state]}
-            </h3>
-          </>
+
+        {showAlias && (
+          <h3 style={{ marginTop: "5px", marginBottom: "5px" }}>
+            Peitenimi: {user.player.alias}
+          </h3>
+        )}
+        {showStatus && (
+          <h3 style={{ marginTop: "5px", marginBottom: "10px" }}>
+            Status: {states[user.player.state]}
+          </h3>
         )}
       </Box>
       {imageUrl && !updateImage ? (
