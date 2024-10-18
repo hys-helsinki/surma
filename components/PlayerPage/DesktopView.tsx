@@ -35,7 +35,7 @@ const DesktopView = ({
               user.id === currentUserId
             }
             showStatus={currentUserIsUmpire || user.id === currentUserId}
-            showImageForm={!currentUserIsHunter && !currentUserIsUmpire}
+            showImageForm={user.id === currentUserId}
           />
           <Details
             user={user}
