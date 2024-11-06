@@ -54,3 +54,5 @@ jobs:
         env:
           POSTGRES_URL: postgres://postgres:postgres@postgres:5432
       - run: npm run test
+        env:
+          POSTGRES_URL: postgres://postgres:postgres@postgres:5432
