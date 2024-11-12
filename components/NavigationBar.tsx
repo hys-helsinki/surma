@@ -14,7 +14,7 @@ import Collapse from "@mui/material/Collapse";
 import { AppBar, Box } from "@mui/material";
 import ExpandLess from "@mui/icons-material/ExpandLess";
 import ExpandMore from "@mui/icons-material/ExpandMore";
-import Image from "next/image";
+import Image from "next/legacy/image";
 import logo from "/public/images/surma_logo.svg";
 import Link from "next/link";
 import OpenInNewIcon from "@mui/icons-material/OpenInNew";

@@ -1,4 +1,4 @@
-import Image from "next/image";
+import Image from "next/legacy/image";
 import logo from "/public/images/surma_logo.svg";
 import { Box, Container } from "@mui/material";
 

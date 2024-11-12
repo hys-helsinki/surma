@@ -1,7 +1,7 @@
 import { Box, Container } from "@mui/material";
 import { Form, Formik } from "formik";
 import * as Yup from "yup";
-import Image from "next/image";
+import Image from "next/legacy/image";
 import logo from "/public/images/surma_logo.svg";
 import TextInput from "./TextInput";
 import { LoadingButton } from "@mui/lab";
