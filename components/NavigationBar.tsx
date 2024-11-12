@@ -14,7 +14,7 @@ import Collapse from "@mui/material/Collapse";
 import { AppBar, Box } from "@mui/material";
 import ExpandLess from "@mui/icons-material/ExpandLess";
 import ExpandMore from "@mui/icons-material/ExpandMore";
-import Image from "next/legacy/image";
+import Image from "next/image";
 import logo from "/public/images/surma_logo.svg";
 import Link from "next/link";
 import OpenInNewIcon from "@mui/icons-material/OpenInNew";
@@ -51,10 +51,18 @@ const NavigationBar = ({
   };
 
   return (
-    <AppBar position="static">
+    (<AppBar position="static">
       <Container maxWidth={false} sx={{ backgroundColor: "#424242" }}>
         <Toolbar disableGutters>
-          <Image src={logo} alt="logo" width={45} height={45} />
+          <Image
+            src={logo}
+            alt="logo"
+            width={45}
+            height={45}
+            style={{
+              maxWidth: "100%",
+              height: "auto"
+            }} />
           <Typography
             variant="h6"
             noWrap
@@ -231,7 +239,7 @@ const NavigationBar = ({
           </Box>
         </Toolbar>
       </Container>
-    </AppBar>
+    </AppBar>)
   );
 };
 export default NavigationBar;

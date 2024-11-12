@@ -1,4 +1,4 @@
-import Image from "next/legacy/image";
+import Image from "next/image";
 import { useState } from "react";
 
 const ImageComponent = ({ imageUrl }: { imageUrl: string }) => {
@@ -10,11 +10,13 @@ const ImageComponent = ({ imageUrl }: { imageUrl: string }) => {
         <div>
           <Image
             src={imageUrl}
-            width="100%"
-            height="100%"
-            layout="responsive"
-            objectFit="contain"
             alt="profile picture"
+            sizes="100vw"
+            style={{
+              width: "100%",
+              height: "auto",
+              objectFit: "contain"
+            }}
           ></Image>
         </div>
       ) : null}
