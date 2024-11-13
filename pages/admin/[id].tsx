@@ -135,9 +135,7 @@ export default function Tournament({ tournament, users, players, ringList }) {
                     <Link
                       href={`/tournaments/${tournament.id}/users/${user.id}`}
                     >
-                      <a>
-                        {user.firstName} {user.lastName}
-                      </a>
+                      {user.firstName} {user.lastName}
                     </Link>
                   </div>
                 ))}

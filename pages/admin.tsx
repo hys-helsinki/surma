@@ -54,9 +54,7 @@ export default function Admin({ newTournaments }) {
         </div>
         {newTournaments.map((tournament) => (
           <div key={tournament.id}>
-            <Link href={`/admin/${tournament.id}/`}>
-              <a>{tournament.name}</a>
-            </Link>
+            <Link href={`/admin/${tournament.id}/`}>{tournament.name}</Link>
 
             <p>Alkaa: {modifyDate(tournament.startTime)}</p>
             <p>Päättyy: {modifyDate(tournament.endTime)}</p>

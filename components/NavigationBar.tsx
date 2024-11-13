@@ -51,7 +51,7 @@ const NavigationBar = ({
   };
 
   return (
-    (<AppBar position="static">
+    <AppBar position="static">
       <Container maxWidth={false} sx={{ backgroundColor: "#424242" }}>
         <Toolbar disableGutters>
           <Image
@@ -62,7 +62,8 @@ const NavigationBar = ({
             style={{
               maxWidth: "100%",
               height: "auto"
-            }} />
+            }}
+          />
           <Typography
             variant="h6"
             noWrap
@@ -134,9 +135,7 @@ const NavigationBar = ({
                           <Link
                             href={`/tournaments/${tournamentId}/targets/${target.id}`}
                           >
-                            <a>
-                              {target.firstName} {target.lastName}
-                            </a>
+                            {target.firstName} {target.lastName}
                           </Link>
                         </ListItemButton>
                       ))
@@ -208,9 +207,7 @@ const NavigationBar = ({
                     <Link
                       href={`/tournaments/${tournamentId}/targets/${target.id}`}
                     >
-                      <a>
-                        {target.firstName} {target.lastName}
-                      </a>
+                      {target.firstName} {target.lastName}
                     </Link>
                   </MenuItem>
                 ))
@@ -239,7 +236,7 @@ const NavigationBar = ({
           </Box>
         </Toolbar>
       </Container>
-    </AppBar>)
+    </AppBar>
   );
 };
 export default NavigationBar;
