@@ -12,9 +12,9 @@ const ImageComponent = ({ imageUrl }: { imageUrl: string }) => {
             src={imageUrl}
             alt="profile picture"
             sizes="100vw"
+            width={500}
+            height={500}
             style={{
-              width: "100%",
-              height: "auto",
               objectFit: "contain"
             }}
           ></Image>
