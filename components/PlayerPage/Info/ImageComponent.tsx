@@ -11,12 +11,20 @@ const ImageComponent = ({ imageUrl }: { imageUrl: string }) => {
   return (
     <div>
       {showPicture ? (
-        <div>
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "row",
+            justifyContent: "center",
+            alignItems: "center"
+          }}
+        >
           <Image
             loader={imageLoader}
             unoptimized
             src={imageUrl}
             alt="profile picture"
+            sizes="100vw"
             width={500}
             height={500}
             style={{
