@@ -4,14 +4,19 @@ import { useState } from "react";
 const ImageComponent = ({ imageUrl }: { imageUrl: string }) => {
   const [showPicture, setShowPicture] = useState(false);
 
+  const imageLoader = ({ src }) => {
+    return imageUrl;
+  };
+
   return (
     <div>
       {showPicture ? (
         <div>
           <Image
+            loader={imageLoader}
+            unoptimized
             src={imageUrl}
             alt="profile picture"
-            sizes="100vw"
             width={500}
             height={500}
             style={{
