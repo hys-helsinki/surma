@@ -49,7 +49,7 @@ const PlayerDetailsForm = ({
     hair: "",
     height: 0,
     other: "",
-    security: ""
+    safetyNotes: ""
   };
 
   return (

@@ -10,12 +10,18 @@ export const Calendar = ({
   tournament,
   showEditButton
 }): JSX.Element => {
-  const [calendar, setCalendar] = useState(player.calendar);
+  const [calendar, setCalendar] = useState([]);
   const [weekNumber, setSlideNumber] = useState(0);
   const [weeks, setWeeks] = useState([]);
   const [isUpdated, setIsUpdated] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
+
+  useEffect(() => {
+    if (player.calendar) {
+      setCalendar(player.calendar);
+    }
+  }, [player.calendar]);
 
   useEffect(() => {
     if (calendar) {
