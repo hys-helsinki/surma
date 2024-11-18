@@ -59,10 +59,7 @@ const PlayerTable = ({
                 <Link
                   href={`/tournaments/${tournament.id}/users/${player.user.id}`}
                 >
-                  <a>
-                    {player.user.firstName} {player.user.lastName} (
-                    {player.alias})
-                  </a>
+                  {player.user.firstName} {player.user.lastName}({player.alias})
                 </Link>
               </td>
 
@@ -91,10 +88,7 @@ const PlayerTable = ({
                 <Link
                   href={`/tournaments/${tournament.id}/users/${player.user.id}`}
                 >
-                  <a>
-                    {player.user.firstName} {player.user.lastName} (
-                    {player.alias})
-                  </a>
+                  {player.user.firstName} {player.user.lastName}({player.alias})
                 </Link>
               </td>
 
@@ -128,10 +122,7 @@ const PlayerTable = ({
                 <Link
                   href={`/tournaments/${tournament.id}/users/${player.user.id}`}
                 >
-                  <a>
-                    {player.user.firstName} {player.user.lastName} (
-                    {player.alias})
-                  </a>
+                  {player.user.firstName} {player.user.lastName}({player.alias})
                 </Link>
               </td>
               <td>

@@ -22,7 +22,7 @@ const TournamentTable = ({ tournaments }) => {
       now > new Date(tournament.registrationStartTime).getTime();
     const registrationLink = isRegistrationOpen ? (
       <Link href={`/registration/${tournament.id}`}>
-        <a>Ilmoittautumislomake</a>
+        Ilmoittautumislomake
       </Link>
     ) : (
       <p>Ilmoittautuminen ei ole vielä auki</p>

@@ -13,16 +13,14 @@ const BottomText = () => {
   return (
     <Box sx={{ my: 3, wordWrap: "break-word" }}>
       Ilmoittautuessasi turnaukseen hyväksyt Helsingin yliopiston
-      salamurhaajien&nbsp;
+      salamurhaajien 
       <Link
         href={"https://salamurhaajat.net/mika-salamurhapeli/turnaussaannot"}
         passHref
       >
-        <a>
-          <u>turnaussäännöt</u>
-        </a>
+        <u>turnaussäännöt</u>
       </Link>
-      &nbsp;sekä&nbsp;
+      sekä
       <GdprModal text="tietosuojakäytännön" />.
     </Box>
   );

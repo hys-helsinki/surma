@@ -4,17 +4,32 @@ import { useState } from "react";
 const ImageComponent = ({ imageUrl }: { imageUrl: string }) => {
   const [showPicture, setShowPicture] = useState(false);
 
+  const imageLoader = ({ src }) => {
+    return imageUrl;
+  };
+
   return (
     <div>
       {showPicture ? (
-        <div>
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "row",
+            justifyContent: "center",
+            alignItems: "center"
+          }}
+        >
           <Image
+            loader={imageLoader}
+            unoptimized
             src={imageUrl}
-            width="100%"
-            height="100%"
-            layout="responsive"
-            objectFit="contain"
             alt="profile picture"
+            sizes="100vw"
+            width={500}
+            height={500}
+            style={{
+              objectFit: "contain"
+            }}
           ></Image>
         </div>
       ) : null}

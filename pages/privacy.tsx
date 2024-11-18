@@ -4,7 +4,7 @@ import { Box, Container } from "@mui/material";
 
 export default function Privacy() {
   return (
-    <Container maxWidth="md">
+    (<Container maxWidth="md">
       <Box>
         <Box sx={{ display: "flex", paddingTop: "20px" }}>
           <Image
@@ -15,9 +15,10 @@ export default function Privacy() {
             style={{
               paddingTop: "10px",
               paddingLeft: "5px",
-              paddingRight: "10px"
-            }}
-          />
+              paddingRight: "10px",
+              maxWidth: "100%",
+              height: "auto"
+            }} />
           <h1 style={{ marginLeft: "10px" }}>Tietosuojakäytäntö</h1>
         </Box>
         <Box sx={{ paddingTop: "5px" }}>
@@ -324,6 +325,6 @@ export default function Privacy() {
           </p>
         </Box>
       </Box>
-    </Container>
+    </Container>)
   );
 }
