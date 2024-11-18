@@ -70,7 +70,7 @@ export default function PlayerForm({ tournament }) {
       height,
       learningInstitution,
       other,
-      security,
+      safetyNotes,
       title
     } = values;
 
@@ -86,7 +86,7 @@ export default function PlayerForm({ tournament }) {
       height,
       learningInstitution,
       other,
-      security,
+      safetyNotes,
       title,
       calendar
     };
