@@ -13,7 +13,7 @@ jobs:
   container-job:
     runs-on: ubuntu-latest
     # Docker Hub image that `container-job` executes in
-    container: node:18-alpine3.18
+    container: node:18
     # Service containers to run with `container-job`
     services:
       # Label used to access the service container
@@ -43,6 +43,19 @@ jobs:
           cache: "npm"
       - name: Install dependencies
         run: npm ci
+      - name: Get installed Playwright version
+        id: playwright-version
+        run: echo "PLAYWRIGHT_VERSION=$(node -e "console.log(require('./package-lock.json').dependencies['@playwright/test'].version)")" >> $GITHUB_ENV
+      - name: Install Playwright Browsers
+        run: npx playwright install --with-deps
+        if: steps.playwright-cache.outputs.cache-hit != 'true'
+      - name: Cache playwright binaries
+        uses: actions/cache@v3
+        id: playwright-cache
+        with:
+          path: |
+            ~/.cache/ms-playwright
+          key: ${{ runner.os }}-playwright-${{ env.PLAYWRIGHT_VERSION }}
       - name: initialize database
         run: npx prisma generate && npx prisma db push
         env:
@@ -51,4 +64,6 @@ jobs:
       - run: npm run build --if-present
         env:
           POSTGRES_URL: postgres://postgres:postgres@postgres:5432
-#    - run: npm test
+      - run: npm run test
+        env:
+          POSTGRES_URL: postgres://postgres:postgres@postgres:5432
