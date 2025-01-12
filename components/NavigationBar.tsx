@@ -36,8 +36,6 @@ const NavigationBar = () => {
     }
   }, [data]);
 
-  if (!user) return null;
-
   const handleClick = () => {
     setOpen(!open);
   };
@@ -57,8 +55,10 @@ const NavigationBar = () => {
     setAnchorElTarget(null);
   };
 
-  const tournamentId = data.user.tournamentId;
+  const tournamentId = data ? data.user.tournamentId : "";
+  const userId = data ? data.user.id : "";
   const targets = user ? user.player.targets : [];
+  const currentUserIsUmpire = user ? user.umpire : false;
 
   return (
     <AppBar position="static">
@@ -152,14 +152,14 @@ const NavigationBar = () => {
                     )}
                   </List>
                 </Collapse>
-                <ListItemButton>
-                  <Link
-                    href={`/tournaments/${tournamentId}/users/${data.user.id}`}
-                  >
-                    Oma sivu
-                  </Link>
-                </ListItemButton>
-                {user.umpire && (
+                {userId && (
+                  <ListItemButton>
+                    <Link href={`/tournaments/${tournamentId}/users/${userId}`}>
+                      Oma sivu
+                    </Link>
+                  </ListItemButton>
+                )}
+                {currentUserIsUmpire && (
                   <ListItemButton>
                     <Link href={`/admin/${tournamentId}`}>Ylläpito</Link>
                   </ListItemButton>
@@ -190,12 +190,14 @@ const NavigationBar = () => {
             SURMA
           </Typography>
           <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }}>
-            <Button
-              onClick={handleOpenTargetMenu}
-              sx={{ minWidth: 100, my: 2, color: "white", display: "block" }}
-            >
-              Kohteet
-            </Button>
+            {targets.length != 0 && (
+              <Button
+                onClick={handleOpenTargetMenu}
+                sx={{ minWidth: 100, my: 2, color: "white", display: "block" }}
+              >
+                Kohteet
+              </Button>
+            )}
             <Menu
               id="menu-appbar-one"
               anchorEl={anchorElTarget}
@@ -211,28 +213,26 @@ const NavigationBar = () => {
               open={Boolean(anchorElTarget)}
               onClose={handleCloseTargetMenu}
             >
-              {targets.length == 0 ? (
-                <MenuItem>Ei kohteita</MenuItem>
-              ) : (
-                targets.map((target) => (
-                  <MenuItem key={target.id}>
-                    <Link
-                      href={`/tournaments/${tournamentId}/targets/${target.id}`}
-                    >
-                      {target.firstName} {target.lastName}
-                    </Link>
-                  </MenuItem>
-                ))
-              )}
+              {targets.map((target) => (
+                <MenuItem key={target.id}>
+                  <Link
+                    href={`/tournaments/${tournamentId}/targets/${target.id}`}
+                  >
+                    {target.firstName} {target.lastName}
+                  </Link>
+                </MenuItem>
+              ))}
             </Menu>
-            <Button
-              sx={{ minWidth: 100, my: 2, color: "white", display: "block" }}
-            >
-              <Link href={`/tournaments/${tournamentId}/users/${data.user.id}`}>
-                Oma sivu
-              </Link>
-            </Button>
-            {user.umpire && (
+            {userId && (
+              <Button
+                sx={{ minWidth: 100, my: 2, color: "white", display: "block" }}
+              >
+                <Link href={`/tournaments/${tournamentId}/users/${userId}`}>
+                  Oma sivu
+                </Link>
+              </Button>
+            )}
+            {currentUserIsUmpire && (
               <Button
                 sx={{ minWidth: 100, my: 2, color: "white", display: "block" }}
               >
