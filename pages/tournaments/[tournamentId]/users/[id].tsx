@@ -36,7 +36,7 @@ export const getServerSideProps: GetServerSideProps = async ({
     authConfig
   );
 
-  const currentUser = await prisma.user.findUnique({
+  let currentUser = await prisma.user.findUnique({
     where: {
       id: session.user.id
     },
@@ -150,6 +150,7 @@ export const getServerSideProps: GetServerSideProps = async ({
   }
 
   user = JSON.parse(JSON.stringify(user));
+  currentUser = JSON.parse(JSON.stringify(currentUser));
   const tournament = user.tournament;
 
   return {
