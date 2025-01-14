@@ -20,6 +20,8 @@ import Link from "next/link";
 import OpenInNewIcon from "@mui/icons-material/OpenInNew";
 import { useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
+import { signIn } from "next-auth/react";
+import { useMediaQuery, useTheme } from "@mui/material";
 
 const NavigationBar = () => {
   const { data } = useSession();
@@ -27,6 +29,8 @@ const NavigationBar = () => {
   const [anchorElNav, setAnchorElNav] = React.useState(null);
   const [anchorElTarget, setAnchorElTarget] = React.useState(null);
   const [open, setOpen] = React.useState(false);
+  const theme = useTheme();
+  const isMobileView = useMediaQuery(theme.breakpoints.down("md"));
 
   useEffect(() => {
     if (data) {
@@ -246,6 +250,18 @@ const NavigationBar = () => {
               <OpenInNewIcon />
             </Button>
           </Box>
+          {!data && (
+            <Button
+              onClick={() => signIn("email", { callbackUrl: "/personal" })}
+              sx={{
+                color: "black",
+                backgroundColor: "white",
+                p: isMobileView ? 0 : 1
+              }}
+            >
+              Kirjaudu sisään
+            </Button>
+          )}
         </Toolbar>
       </Container>
     </AppBar>
