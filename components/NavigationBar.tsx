@@ -135,29 +135,28 @@ const NavigationBar = () => {
                 component="nav"
                 aria-labelledby="nested-list-subheader"
               >
-                <ListItemButton onClick={handleClick}>
-                  Kohteet
-                  {open ? <ExpandLess /> : <ExpandMore />}
-                </ListItemButton>
-                <Collapse in={open} timeout="auto" unmountOnExit>
-                  <List component="div" disablePadding>
-                    {targets.length == 0 ? (
-                      <ListItemText sx={{ marginLeft: 2 }}>
-                        Ei kohteita
-                      </ListItemText>
-                    ) : (
-                      targets.map((target, i) => (
-                        <ListItemButton key={i} sx={{ pl: 4 }}>
-                          <Link
-                            href={`/tournaments/${tournamentId}/targets/${target.id}`}
-                          >
-                            {target.firstName} {target.lastName}
-                          </Link>
-                        </ListItemButton>
-                      ))
-                    )}
-                  </List>
-                </Collapse>
+                {targets.length != 0 && (
+                  <>
+                    <ListItemButton onClick={handleClick}>
+                      Kohteet
+                      {open ? <ExpandLess /> : <ExpandMore />}
+                    </ListItemButton>
+                    <Collapse in={open} timeout="auto" unmountOnExit>
+                      <List component="div" disablePadding>
+                        {targets.map((target) => (
+                          <ListItemButton key={target.id} sx={{ pl: 4 }}>
+                            <Link
+                              href={`/tournaments/${tournamentId}/targets/${target.id}`}
+                            >
+                              {target.target.user.firstName}{" "}
+                              {target.target.user.lastName}
+                            </Link>
+                          </ListItemButton>
+                        ))}
+                      </List>
+                    </Collapse>
+                  </>
+                )}
                 {userId && (
                   <ListItemButton>
                     <Link href={`/tournaments/${tournamentId}/users/${userId}`}>
@@ -224,7 +223,7 @@ const NavigationBar = () => {
                   <Link
                     href={`/tournaments/${tournamentId}/targets/${target.id}`}
                   >
-                    {target.firstName} {target.lastName}
+                    {target.target.user.firstName} {target.target.user.lastName}
                   </Link>
                 </MenuItem>
               ))}
