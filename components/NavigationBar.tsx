@@ -1,34 +1,36 @@
-import * as React from "react";
-import Toolbar from "@mui/material/Toolbar";
-import IconButton from "@mui/material/IconButton";
-import Typography from "@mui/material/Typography";
-import Menu from "@mui/material/Menu";
-import Container from "@mui/material/Container";
-import Button from "@mui/material/Button";
-import MenuItem from "@mui/material/MenuItem";
-import MenuIcon from "@mui/icons-material/Menu";
-import List from "@mui/material/List";
-import ListItemButton from "@mui/material/ListItemButton";
-import ListItemText from "@mui/material/ListItemText";
-import Collapse from "@mui/material/Collapse";
-import { AppBar, Box } from "@mui/material";
-import ExpandLess from "@mui/icons-material/ExpandLess";
-import ExpandMore from "@mui/icons-material/ExpandMore";
 import Image from "next/image";
 import logo from "/public/images/surma_logo.svg";
 import Link from "next/link";
-import OpenInNewIcon from "@mui/icons-material/OpenInNew";
-import { useSession } from "next-auth/react";
+import { useSession, signIn } from "next-auth/react";
 import { useEffect, useState } from "react";
-import { signIn } from "next-auth/react";
-import { useMediaQuery, useTheme } from "@mui/material";
+import OpenInNewIcon from "@mui/icons-material/OpenInNew";
+import MenuIcon from "@mui/icons-material/Menu";
+import ExpandLess from "@mui/icons-material/ExpandLess";
+import ExpandMore from "@mui/icons-material/ExpandMore";
+import {
+  AppBar,
+  Box,
+  useMediaQuery,
+  useTheme,
+  Toolbar,
+  IconButton,
+  Typography,
+  Menu,
+  Container,
+  Button,
+  MenuItem,
+  List,
+  ListItemButton,
+  ListItemText,
+  Collapse
+} from "@mui/material";
 
 const NavigationBar = () => {
   const { data } = useSession();
   const [user, setUser] = useState(null);
-  const [anchorElNav, setAnchorElNav] = React.useState(null);
-  const [anchorElTarget, setAnchorElTarget] = React.useState(null);
-  const [open, setOpen] = React.useState(false);
+  const [anchorElNav, setAnchorElNav] = useState(null);
+  const [anchorElTarget, setAnchorElTarget] = useState(null);
+  const [open, setOpen] = useState(false);
   const theme = useTheme();
   const isMobileView = useMediaQuery(theme.breakpoints.down("md"));
 
