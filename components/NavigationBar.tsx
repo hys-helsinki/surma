@@ -77,7 +77,8 @@ const NavigationBar = () => {
             height={45}
             style={{
               maxWidth: "100%",
-              height: "auto"
+              height: "auto",
+              marginRight: isMobileView ? 0 : "1rem"
             }}
           />
           <Typography
