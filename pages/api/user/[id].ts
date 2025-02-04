@@ -61,7 +61,7 @@ export default async function handler(
     ? user.player.targets
     : [];
 
-  const updatedPlayer = { ...user.player, targets };
-  const userWithUpdatedTargets = { ...user, player: updatedPlayer };
-  res.json(userWithUpdatedTargets);
+  user = { ...user, player: { ...user.player, targets } };
+
+  res.json(user);
 }
