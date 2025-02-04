@@ -36,7 +36,7 @@ const NavigationBar = () => {
 
   useEffect(() => {
     if (data) {
-      fetch(`/api/user/${data.user.id}`)
+      fetch(`/api/user/${data.user.id}/navbar_data`)
         .then((response) => response.json())
         .then((json) => setUser(json));
     }
