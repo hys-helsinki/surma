@@ -77,10 +77,7 @@ const InfoAccordion = () => {
           </p>
           <p>
             Lue lisää pelaajatiedoista ja niiden käsittelystä{" "}
-            <Link href="/privacy">
-              <a>Surman tietosuojakäytännöstä</a>
-            </Link>
-            .
+            <Link href="/privacy">Surman tietosuojakäytännöstä</Link>.
           </p>
           <p>
             Lue lisää salamurhaturnauksesta ja sen säännöistä{" "}

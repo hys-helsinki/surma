@@ -30,9 +30,17 @@ const UserForm = ({ tournament }: { tournament: Tournament }) => {
   };
 
   return (
-    <Container maxWidth="md">
+    (<Container maxWidth="md">
       <Box sx={{ display: "flex" }}>
-        <Image src={logo} width={60} height={60} alt="logo" />
+        <Image
+          src={logo}
+          width={60}
+          height={60}
+          alt="logo"
+          style={{
+            maxWidth: "100%",
+            height: "auto"
+          }} />
         <h1 style={{ marginLeft: "10px" }}>Ilmoittautuminen</h1>
       </Box>
       <Box sx={{ my: 4 }}>
@@ -87,7 +95,7 @@ const UserForm = ({ tournament }: { tournament: Tournament }) => {
           </Form>
         </Formik>
       </Box>
-    </Container>
+    </Container>)
   );
 };
 

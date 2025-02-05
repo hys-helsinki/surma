@@ -22,9 +22,7 @@ export default function Tournaments({ tournaments }) {
       <h2>Ilmoittautuminen avoinna</h2>
       {tournaments.map((tournament) => (
         <div key={tournament.id}>
-          <Link href={`/registration/${tournament.id}`}>
-            <a>{tournament.name}</a>
-          </Link>
+          <Link href={`/registration/${tournament.id}`}>{tournament.name}</Link>
         </div>
       ))}
     </div>
