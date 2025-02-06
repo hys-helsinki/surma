@@ -1,5 +1,20 @@
+import prisma from "../../lib/prisma";
 import type { NextApiRequest, NextApiResponse } from "next";
+import { unstable_getServerSession } from "next-auth";
 import { v2 as cloudinary } from "cloudinary";
+import { authConfig } from "./auth/[...nextauth]";
+
+const isCurrentUserAuthorized = async (playerId, req, res) => {
+  const session = await unstable_getServerSession(req, res, authConfig);
+
+  const currentPlayer = await prisma.player.findFirst({
+    where: {
+      id: playerId,
+      userId: session.user.id
+    }
+  });
+  return currentPlayer;
+};
 
 export const config = {
   api: {
@@ -13,6 +28,9 @@ export default async function upload(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
+  if (!isCurrentUserAuthorized(req.query.id, req, res)) {
+    res.status(403).end();
+  }
   if (req.method === "POST") {
     try {
       const imageData = JSON.parse(req.body);
