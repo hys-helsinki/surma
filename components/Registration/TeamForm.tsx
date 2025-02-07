@@ -1,8 +1,6 @@
 import { Box, Button, Container } from "@mui/material";
 import { Form, Formik } from "formik";
 import * as Yup from "yup";
-import Image from "next/image";
-import logo from "/public/images/surma_logo.svg";
 import TextInput from "./TextInput";
 import { LoadingButton } from "@mui/lab";
 import { Tournament } from "@prisma/client";
@@ -61,19 +59,7 @@ const TeamForm = ({ tournament }: { tournament: Tournament }) => {
 
   return (
     <Container maxWidth="md">
-      <Box sx={{ display: "flex" }}>
-        <Image
-          src={logo}
-          width={60}
-          height={60}
-          alt="logo"
-          style={{
-            maxWidth: "100%",
-            height: "auto"
-          }}
-        />
-        <h1 style={{ marginLeft: "10px" }}>Ilmoittautuminen</h1>
-      </Box>
+      <h1>Ilmoittautuminen</h1>
       <Box sx={{ my: 5 }}>
         <Formik
           enableReinitialize={true}
