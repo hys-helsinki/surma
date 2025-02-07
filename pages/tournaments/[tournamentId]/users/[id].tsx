@@ -1,7 +1,6 @@
 import { GetServerSideProps } from "next";
 import prisma from "../../../../lib/prisma";
 import { useState } from "react";
-import NavigationBar from "../../../../components/NavigationBar";
 import { Alert, Button, useMediaQuery, useTheme } from "@mui/material";
 import { AuthenticationRequired } from "../../../../components/AuthenticationRequired";
 import { unstable_getServerSession } from "next-auth";
@@ -228,12 +227,6 @@ export default function User({
   return (
     <AuthenticationRequired>
       <div>
-        <NavigationBar
-          targets={targetUsers}
-          userId={user.id}
-          tournamentId={user.tournamentId}
-          currentUserIsUmpire={currentUserIsUmpire}
-        />
         {!user.player.confirmed && (
           <Alert
             severity="warning"

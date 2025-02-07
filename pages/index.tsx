@@ -60,16 +60,10 @@ export async function getServerSideProps(context) {
 
 export default function Home({ tournaments }) {
   return (
-    (<div
+    <div
       className={`${styles.center} ${styles.main}`}
       style={{ padding: "20px" }}
     >
-      <button
-        onClick={() => signIn("email", { callbackUrl: "/personal" })}
-        style={{ margin: "1em" }}
-      >
-        Kirjaudu sisään
-      </button>
       <h1 className={styles.container} style={{ padding: "1em" }}>
         Surma (Murhamaster 3.0)
       </h1>
@@ -82,13 +76,14 @@ export default function Home({ tournaments }) {
         style={{
           maxWidth: "100%",
           height: "auto"
-        }} />
+        }}
+      />
       <h2 className={styles.container} style={{ padding: "1em" }}>
         {" "}
         Avoimet salamurhaturnaukset{" "}
       </h2>
       <TournamentTable tournaments={tournaments}></TournamentTable>
       <InfoAccordion></InfoAccordion>
-    </div>)
+    </div>
   );
 }

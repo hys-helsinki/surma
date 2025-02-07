@@ -1,35 +1,46 @@
-import * as React from "react";
-import Toolbar from "@mui/material/Toolbar";
-import IconButton from "@mui/material/IconButton";
-import Typography from "@mui/material/Typography";
-import Menu from "@mui/material/Menu";
-import Container from "@mui/material/Container";
-import Button from "@mui/material/Button";
-import MenuItem from "@mui/material/MenuItem";
-import MenuIcon from "@mui/icons-material/Menu";
-import List from "@mui/material/List";
-import ListItemButton from "@mui/material/ListItemButton";
-import ListItemText from "@mui/material/ListItemText";
-import Collapse from "@mui/material/Collapse";
-import { AppBar, Box } from "@mui/material";
-import ExpandLess from "@mui/icons-material/ExpandLess";
-import ExpandMore from "@mui/icons-material/ExpandMore";
 import Image from "next/image";
 import logo from "/public/images/surma_logo.svg";
 import Link from "next/link";
+import { useSession, signIn } from "next-auth/react";
+import { useEffect, useState } from "react";
 import OpenInNewIcon from "@mui/icons-material/OpenInNew";
-import { useSession } from "next-auth/react";
+import MenuIcon from "@mui/icons-material/Menu";
+import ExpandLess from "@mui/icons-material/ExpandLess";
+import ExpandMore from "@mui/icons-material/ExpandMore";
+import {
+  AppBar,
+  Box,
+  useMediaQuery,
+  useTheme,
+  Toolbar,
+  IconButton,
+  Typography,
+  Menu,
+  Container,
+  Button,
+  MenuItem,
+  List,
+  ListItemButton,
+  ListItemText,
+  Collapse
+} from "@mui/material";
 
-const NavigationBar = ({
-  targets,
-  userId,
-  tournamentId,
-  currentUserIsUmpire
-}) => {
+const NavigationBar = () => {
   const { data } = useSession();
-  const [anchorElNav, setAnchorElNav] = React.useState(null);
-  const [anchorElTarget, setAnchorElTarget] = React.useState(null);
-  const [open, setOpen] = React.useState(false);
+  const [user, setUser] = useState(null);
+  const [anchorElNav, setAnchorElNav] = useState(null);
+  const [anchorElTarget, setAnchorElTarget] = useState(null);
+  const [open, setOpen] = useState(false);
+  const theme = useTheme();
+  const isMobileView = useMediaQuery(theme.breakpoints.down("md"));
+
+  useEffect(() => {
+    if (data) {
+      fetch(`/api/user/${data.user.id}/navbar_data`)
+        .then((response) => response.json())
+        .then((json) => setUser(json));
+    }
+  }, [data]);
 
   const handleClick = () => {
     setOpen(!open);
@@ -50,6 +61,11 @@ const NavigationBar = ({
     setAnchorElTarget(null);
   };
 
+  const tournamentId = data ? data.user.tournamentId : "";
+  const userId = data ? data.user.id : "";
+  const targets = user ? user.player.targets : [];
+  const currentUserIsUmpire = user ? user.umpire : false;
+
   return (
     <AppBar position="static">
       <Container maxWidth={false} sx={{ backgroundColor: "#424242" }}>
@@ -61,7 +77,8 @@ const NavigationBar = ({
             height={45}
             style={{
               maxWidth: "100%",
-              height: "auto"
+              height: "auto",
+              marginRight: isMobileView ? 0 : "1rem"
             }}
           />
           <Typography
@@ -119,45 +136,46 @@ const NavigationBar = ({
                 component="nav"
                 aria-labelledby="nested-list-subheader"
               >
-                <ListItemButton onClick={handleClick}>
-                  Kohteet
-                  {open ? <ExpandLess /> : <ExpandMore />}
-                </ListItemButton>
-                <Collapse in={open} timeout="auto" unmountOnExit>
-                  <List component="div" disablePadding>
-                    {targets.length == 0 ? (
-                      <ListItemText sx={{ marginLeft: 2 }}>
-                        Ei kohteita
-                      </ListItemText>
-                    ) : (
-                      targets.map((target, i) => (
-                        <ListItemButton key={i} sx={{ pl: 4 }}>
-                          <Link
-                            href={`/tournaments/${tournamentId}/targets/${target.id}`}
-                          >
-                            {target.firstName} {target.lastName}
-                          </Link>
-                        </ListItemButton>
-                      ))
-                    )}
-                  </List>
-                </Collapse>
-                <ListItemButton>
-                  <Link href={`/tournaments/${tournamentId}/users/${userId}`}>
-                    Oma sivu
-                  </Link>
-                </ListItemButton>
+                {targets.length != 0 && (
+                  <>
+                    <ListItemButton onClick={handleClick}>
+                      Kohteet
+                      {open ? <ExpandLess /> : <ExpandMore />}
+                    </ListItemButton>
+                    <Collapse in={open} timeout="auto" unmountOnExit>
+                      <List component="div" disablePadding>
+                        {targets.map((target) => (
+                          <ListItemButton key={target.id} sx={{ pl: 4 }}>
+                            <Link
+                              href={`/tournaments/${tournamentId}/targets/${target.id}`}
+                            >
+                              {target.target.user.firstName}{" "}
+                              {target.target.user.lastName}
+                            </Link>
+                          </ListItemButton>
+                        ))}
+                      </List>
+                    </Collapse>
+                  </>
+                )}
+                {userId && (
+                  <ListItemButton>
+                    <Link href={`/tournaments/${tournamentId}/users/${userId}`}>
+                      Oma sivu
+                    </Link>
+                  </ListItemButton>
+                )}
+                {currentUserIsUmpire && (
+                  <ListItemButton>
+                    <Link href={`/admin/${tournamentId}`}>Ylläpito</Link>
+                  </ListItemButton>
+                )}
                 <ListItemButton>
                   <Link href="https://salamurhaajat.net/mika-salamurhapeli/turnaussaannot">
                     Turnaussäännöt
                   </Link>
                   <OpenInNewIcon />
                 </ListItemButton>
-                {currentUserIsUmpire && (
-                  <ListItemButton>
-                    <Link href={`/admin/${tournamentId}`}>Ylläpito</Link>
-                  </ListItemButton>
-                )}
               </List>
             </Menu>
           </Box>
@@ -178,12 +196,14 @@ const NavigationBar = ({
             SURMA
           </Typography>
           <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }}>
-            <Button
-              onClick={handleOpenTargetMenu}
-              sx={{ minWidth: 100, my: 2, color: "white", display: "block" }}
-            >
-              Kohteet
-            </Button>
+            {targets.length != 0 && (
+              <Button
+                onClick={handleOpenTargetMenu}
+                sx={{ minWidth: 100, my: 2, color: "white", display: "block" }}
+              >
+                Kohteet
+              </Button>
+            )}
             <Menu
               id="menu-appbar-one"
               anchorEl={anchorElTarget}
@@ -199,33 +219,25 @@ const NavigationBar = ({
               open={Boolean(anchorElTarget)}
               onClose={handleCloseTargetMenu}
             >
-              {targets.length == 0 ? (
-                <MenuItem>Ei kohteita</MenuItem>
-              ) : (
-                targets.map((target) => (
-                  <MenuItem key={target.id}>
-                    <Link
-                      href={`/tournaments/${tournamentId}/targets/${target.id}`}
-                    >
-                      {target.firstName} {target.lastName}
-                    </Link>
-                  </MenuItem>
-                ))
-              )}
+              {targets.map((target) => (
+                <MenuItem key={target.id}>
+                  <Link
+                    href={`/tournaments/${tournamentId}/targets/${target.id}`}
+                  >
+                    {target.target.user.firstName} {target.target.user.lastName}
+                  </Link>
+                </MenuItem>
+              ))}
             </Menu>
-            <Button
-              sx={{ minWidth: 100, my: 2, color: "white", display: "block" }}
-            >
-              <Link href={`/tournaments/${tournamentId}/users/${userId}`}>
-                Oma sivu
-              </Link>
-            </Button>
-            <Button sx={{ minWidth: 100, my: 2, color: "white" }}>
-              <Link href="https://salamurhaajat.net/mika-salamurhapeli/turnaussaannot">
-                Turnaussäännöt
-              </Link>
-              <OpenInNewIcon />
-            </Button>
+            {userId && (
+              <Button
+                sx={{ minWidth: 100, my: 2, color: "white", display: "block" }}
+              >
+                <Link href={`/tournaments/${tournamentId}/users/${userId}`}>
+                  Oma sivu
+                </Link>
+              </Button>
+            )}
             {currentUserIsUmpire && (
               <Button
                 sx={{ minWidth: 100, my: 2, color: "white", display: "block" }}
@@ -233,7 +245,25 @@ const NavigationBar = ({
                 <Link href={`/admin/${tournamentId}`}>Ylläpito</Link>
               </Button>
             )}
+            <Button sx={{ minWidth: 100, my: 2, color: "white" }}>
+              <Link href="https://salamurhaajat.net/mika-salamurhapeli/turnaussaannot">
+                Turnaussäännöt
+              </Link>
+              <OpenInNewIcon />
+            </Button>
           </Box>
+          {!data && (
+            <Button
+              onClick={() => signIn("email", { callbackUrl: "/personal" })}
+              sx={{
+                color: "black",
+                backgroundColor: "white",
+                p: isMobileView ? 0 : 1
+              }}
+            >
+              Kirjaudu sisään
+            </Button>
+          )}
         </Toolbar>
       </Container>
     </AppBar>

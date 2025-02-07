@@ -6,7 +6,6 @@ import { AuthenticationRequired } from "../../../../components/AuthenticationReq
 import { Session, unstable_getServerSession } from "next-auth";
 import { authConfig } from "../../../api/auth/[...nextauth]";
 import { v2 as cloudinary } from "cloudinary";
-import NavigationBar from "../../../../components/NavigationBar";
 import DesktopView from "../../../../components/PlayerPage/DesktopView";
 import MobileView from "../../../../components/PlayerPage/MobileView";
 import { Tournament } from "@prisma/client";
@@ -211,12 +210,6 @@ export default function Target({
   return (
     <AuthenticationRequired>
       <div>
-        <NavigationBar
-          targets={targetUsers}
-          userId={currentUser.id}
-          tournamentId={tournament.id}
-          currentUserIsUmpire={currentUserIsUmpire}
-        />
         {isMobileView ? (
           <MobileView
             user={user}

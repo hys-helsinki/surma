@@ -42,7 +42,7 @@ export default async function rings(req: NextApiRequest, res: NextApiResponse) {
   } else if (req.method === "DELETE") {
     const data = JSON.parse(req.body);
     if (!(await isCurrentUserAuthorized(data.tournamentId, req, res))) {
-      console.log("Unauthorized ring creation attempt!");
+      console.log("Unauthorized ring delete attempt!");
       res.status(403).end();
     }
 
