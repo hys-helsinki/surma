@@ -5,6 +5,7 @@ import TextInput from "./TextInput";
 import { LoadingButton } from "@mui/lab";
 import { Tournament } from "@prisma/client";
 import { useState } from "react";
+import GdprModal from "../GdprModal";
 
 const TeamForm = ({ tournament }: { tournament: Tournament }) => {
   const [numberOfPlayers, setNumberOfPlayers] = useState(1);
@@ -60,6 +61,36 @@ const TeamForm = ({ tournament }: { tournament: Tournament }) => {
   return (
     <Container maxWidth="md">
       <h1>Ilmoittautuminen</h1>
+      <Box sx={{ my: 4 }}>
+        <h3>
+          Tervetuloa ilmoittautumaan HYSin salamurhaturnaukseen &quot;
+          {tournament.name}&quot;!
+        </h3>
+        <p>
+          Ilmoittautuminen on kaksivaiheinen. Ensimmäisessä vaiheessa syöttäkää
+          joukkueenne tiedot eli nimi ja pelaajien yhteystiedot. Joukkueen koko
+          on 2-4 pelaajaa. Mukaan voi myös ilmoittautua yksin, jolloin
+          tuomaristo määrittää sinulle joukkueen.
+        </p>
+        <p>
+          Näitä tietoja tarvitaan Surmaan kirjautumiseen ja jotta tuomaristo voi
+          ottaa pelaajiin yhteyttä turnaukseen liittyvissä asioissa.
+          Ilmoittautuessasi turnaukseen hyväksyt Helsingin yliopiston
+          salamurhaajien&nbsp;
+          <GdprModal text="tietosuojakäytännön" />.
+        </p>
+        <p>
+          Jos tulee mieleen kysymyksiä, otathan yhteyttä tuomaristoon
+          (tuomaristo@salamurhaajat.net)
+        </p>
+        <p>
+          <strong>
+            HUOM! Vain yhden joukkueen jäsenen tarvitsee täyttää tämä lomake.
+            Lomakkeen lähettämisen jälkeen joukkueen jäsenet pystyvät
+            kirjautumaan sovellukseen tässä annetuilla sähköpostiosoitteilla.
+          </strong>
+        </p>
+      </Box>
       <Box sx={{ my: 5 }}>
         <Formik
           enableReinitialize={true}
