@@ -1,4 +1,4 @@
-import { Box, Button, Container } from "@mui/material";
+import { Box, Container } from "@mui/material";
 import { Form, Formik } from "formik";
 import * as Yup from "yup";
 import TextInput from "./TextInput";
@@ -85,7 +85,7 @@ const TeamForm = ({ tournament }: { tournament: Tournament }) => {
             <TextInput label="Joukkueen nimi" name="teamName" type="text" />
             {Array.from({ length: numberOfPlayers }, (x, i) => i + 1).map(
               (n) => (
-                <Box sx={{ my: 5 }} key={n}>
+                <Box sx={{ my: 3 }} key={n}>
                   <h2>Pelaaja {n}</h2>
                   <Box
                     sx={{ display: "flex", justifyContent: "space-between" }}
@@ -122,8 +122,17 @@ const TeamForm = ({ tournament }: { tournament: Tournament }) => {
               <button
                 onClick={() => setNumberOfPlayers(numberOfPlayers + 1)}
                 type="button"
+                style={{ marginRight: "1rem" }}
               >
                 Lisää pelaaja
+              </button>
+            )}
+            {numberOfPlayers > 1 && (
+              <button
+                onClick={() => setNumberOfPlayers(numberOfPlayers - 1)}
+                type="button"
+              >
+                Poista pelaaja
               </button>
             )}
             <LoadingButton type="submit">Luo käyttäjät</LoadingButton>
