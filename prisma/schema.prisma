@@ -42,6 +42,8 @@ model Player {
   tournamentId        String
   umpire              Umpire?      @relation(fields: [umpireId], references: [id])
   umpireId            String?
+  team                Team?        @relation(fields: [teamId], references: [id])
+  teamId              String?
   alias               String
   address             String
   learningInstitution String?
@@ -72,15 +74,23 @@ enum PlayerTitle {
   TT
 }
 
+model Team {
+  id         String   @id @default(uuid())
+  createdAt  DateTime @default(now())
+  modifiedAt DateTime @default(now())
+  name       String
+  players    Player[]
+}
+
 model Umpire {
-  id           String     @id @default(uuid())
-  createdAt    DateTime   @default(now())
-  modifiedAt   DateTime   @default(now())
-  userId       String     @unique
-  user         User       @relation(fields: [userId], references: [id], onDelete: Cascade)
-  tournament   Tournament @relation(fields: [tournamentId], references: [id])
-  tournamentId String
-  players      Player[]
+  id             String     @id @default(uuid())
+  createdAt      DateTime   @default(now())
+  modifiedAt     DateTime   @default(now())
+  userId         String     @unique
+  user           User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  tournament     Tournament @relation(fields: [tournamentId], references: [id])
+  tournamentId   String
+  players        Player[]
   responsibility String?
 }
 
