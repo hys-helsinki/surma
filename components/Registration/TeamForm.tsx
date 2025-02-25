@@ -1,4 +1,4 @@
-import { Box, Container } from "@mui/material";
+import { Box, Container, Grid } from "@mui/material";
 import { Form, Formik } from "formik";
 import * as Yup from "yup";
 import TextInput from "./TextInput";
@@ -118,24 +118,22 @@ const TeamForm = ({ tournament }: { tournament: Tournament }) => {
               (n) => (
                 <Box sx={{ my: 3 }} key={n}>
                   <h2>Pelaaja {n}</h2>
-                  <Box
-                    sx={{ display: "flex", justifyContent: "space-between" }}
-                  >
-                    <Box sx={{ width: "45%" }}>
+                  <Grid container spacing={{ xs: 0, md: 2 }}>
+                    <Grid item xs={12} md={6}>
                       <TextInput
                         label="Etunimi"
                         name={`firstName${n}`}
                         type="text"
                       />
-                    </Box>
-                    <Box sx={{ width: "45%" }}>
+                    </Grid>
+                    <Grid item xs={12} md={6}>
                       <TextInput
                         label="Sukunimi"
                         name={`lastName${n}`}
                         type="text"
                       />
-                    </Box>
-                  </Box>
+                    </Grid>
+                  </Grid>
                   <TextInput
                     label="Sähköpostiosoite"
                     name={`email${n}`}
