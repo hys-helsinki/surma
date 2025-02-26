@@ -11,22 +11,23 @@ datasource db {
 }
 
 model User {
-  id           String     @id @default(uuid())
-  createdAt    DateTime   @default(now()) @db.Timestamptz(3)
-  modifiedAt   DateTime   @default(now()) @db.Timestamptz(3)
-  tournament   Tournament @relation(fields: [tournamentId], references: [id])
-  tournamentId String
-  firstName    String
-  lastName     String
-  phone        String?
-  email        String     @unique
-  player       Player?
-  umpire       Umpire?
-
+  id            String     @id @default(uuid())
+  createdAt     DateTime   @default(now()) @db.Timestamptz(3)
+  modifiedAt    DateTime   @default(now()) @db.Timestamptz(3)
+  tournament    Tournament @relation(fields: [tournamentId], references: [id])
+  tournamentId  String
+  firstName     String
+  lastName      String
+  phone         String?
+  email         String     @unique
+  player        Player?
+  umpire        Umpire?
+  team          Team?      @relation(fields: [teamId], references: [id])
+  teamId        String?
   // for next-auth
   name          String?
   image         String?
-  emailVerified DateTime? @db.Timestamptz(3)
+  emailVerified DateTime?  @db.Timestamptz(3)
   accounts      Account[]
   sessions      Session[]
 }
@@ -42,6 +43,8 @@ model Player {
   tournamentId        String
   umpire              Umpire?      @relation(fields: [umpireId], references: [id])
   umpireId            String?
+  team                Team?        @relation(fields: [teamId], references: [id])
+  teamId              String?
   alias               String
   address             String
   learningInstitution String?
@@ -72,43 +75,56 @@ enum PlayerTitle {
   TT
 }
 
+model Team {
+  id         String   @id @default(uuid())
+  createdAt  DateTime @default(now())
+  modifiedAt DateTime @default(now())
+  name       String
+  players    Player[]
+  users      User[]
+}
+
 model Umpire {
-  id           String     @id @default(uuid())
-  createdAt    DateTime   @default(now())
-  modifiedAt   DateTime   @default(now())
-  userId       String     @unique
-  user         User       @relation(fields: [userId], references: [id], onDelete: Cascade)
-  tournament   Tournament @relation(fields: [tournamentId], references: [id])
-  tournamentId String
-  players      Player[]
+  id             String     @id @default(uuid())
+  createdAt      DateTime   @default(now())
+  modifiedAt     DateTime   @default(now())
+  userId         String     @unique
+  user           User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  tournament     Tournament @relation(fields: [tournamentId], references: [id])
+  tournamentId   String
+  players        Player[]
   responsibility String?
 }
 
 model Tournament {
-  id                    String           @id @default(uuid())
-  createdAt             DateTime         @default(now()) @db.Timestamptz(3)
-  modifiedAt            DateTime         @default(now()) @db.Timestamptz(3)
+  id                    String               @id @default(uuid())
+  createdAt             DateTime             @default(now()) @db.Timestamptz(3)
+  modifiedAt            DateTime             @default(now()) @db.Timestamptz(3)
   name                  String
-  startTime             DateTime         @db.Timestamptz(3)
-  endTime               DateTime         @db.Timestamptz(3)
-  registrationStartTime DateTime         @db.Timestamptz(3)
-  registrationEndTime   DateTime         @db.Timestamptz(3)
+  startTime             DateTime             @db.Timestamptz(3)
+  endTime               DateTime             @db.Timestamptz(3)
+  registrationStartTime DateTime             @db.Timestamptz(3)
+  registrationEndTime   DateTime             @db.Timestamptz(3)
+  teamGame              Boolean              @default(false)
   players               Player[]
   umpires               Umpire[]
   rings                 AssignmentRing[]
   users                 User[]
+  TeamAssignmentRing    TeamAssignmentRing[]
 }
 
 model Assignment {
-  id         String         @id @default(uuid())
-  createdAt  DateTime       @default(now()) @db.Timestamptz(3)
-  modifiedAt DateTime       @default(now()) @db.Timestamptz(3)
-  ring       AssignmentRing @relation(fields: [ringId], references: [id], onDelete: Cascade)
-  ringId     String
-  hunter     Player         @relation(name: "PlayerHasTarget", fields: [hunterId], references: [id], onDelete: Cascade)
-  hunterId   String
-  target     Player         @relation(name: "PlayerIsHunted", fields: [targetId], references: [id], onDelete: Cascade)
-  targetId   String
+  id                   String              @id @default(uuid())
+  createdAt            DateTime            @default(now()) @db.Timestamptz(3)
+  modifiedAt           DateTime            @default(now()) @db.Timestamptz(3)
+  ring                 AssignmentRing      @relation(fields: [ringId], references: [id], onDelete: Cascade)
+  ringId               String
+  hunter               Player              @relation(name: "PlayerHasTarget", fields: [hunterId], references: [id], onDelete: Cascade)
+  hunterId             String
+  target               Player              @relation(name: "PlayerIsHunted", fields: [targetId], references: [id], onDelete: Cascade)
+  targetId             String
+  TeamAssignmentRing   TeamAssignmentRing? @relation(fields: [teamAssignmentRingId], references: [id])
+  teamAssignmentRingId String?
 }
 
 model AssignmentRing {
@@ -119,6 +135,25 @@ model AssignmentRing {
   tournament   Tournament   @relation(fields: [tournamentId], references: [id])
   tournamentId String
   assignments  Assignment[]
+}
+
+model TeamAssignment {
+  id                   String              @id @default(uuid())
+  createdAt            DateTime            @default(now()) @db.Timestamptz(3)
+  modifiedAt           DateTime            @default(now()) @db.Timestamptz(3)
+  TeamAssignmentRing   TeamAssignmentRing? @relation(fields: [teamAssignmentRingId], references: [id])
+  teamAssignmentRingId String?
+}
+
+model TeamAssignmentRing {
+  id           String           @id @default(uuid())
+  createdAt    DateTime         @default(now()) @db.Timestamptz(3)
+  modifiedAt   DateTime         @default(now()) @db.Timestamptz(3)
+  name         String?
+  tournament   Tournament       @relation(fields: [tournamentId], references: [id])
+  tournamentId String
+  assignments  TeamAssignment[]
+  Assignment   Assignment[]
 }
 
 // next-auth models
