@@ -47,7 +47,7 @@ model Player {
   learningInstitution String?
   eyeColor            String?
   hair                String?
-  height              Int?
+  height              String?
   safetyNotes         String?
   other               String?
   calendar            Json?

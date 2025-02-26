@@ -1,0 +1,2 @@
+-- AlterTable
+ALTER TABLE "Player" ALTER COLUMN "height" SET DATA TYPE TEXT;
