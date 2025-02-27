@@ -43,7 +43,7 @@ export default async function create(
       learningInstitution: playerData.learningInstitution,
       eyeColor: playerData.eyeColor,
       hair: playerData.hair,
-      height: parseInt(playerData.height),
+      height: playerData.height,
       other: playerData.other,
       safetyNotes: playerData.safetyNotes,
       calendar: playerData.calendar,
