@@ -117,16 +117,15 @@ model Tournament {
 }
 
 model Assignment {
-  id                   String              @id @default(uuid())
-  createdAt            DateTime            @default(now()) @db.Timestamptz(3)
-  modifiedAt           DateTime            @default(now()) @db.Timestamptz(3)
-  ring                 AssignmentRing      @relation(fields: [ringId], references: [id], onDelete: Cascade)
+  id                   String         @id @default(uuid())
+  createdAt            DateTime       @default(now()) @db.Timestamptz(3)
+  modifiedAt           DateTime       @default(now()) @db.Timestamptz(3)
+  ring                 AssignmentRing @relation(fields: [ringId], references: [id], onDelete: Cascade)
   ringId               String
-  hunter               Player              @relation(name: "PlayerHasTarget", fields: [hunterId], references: [id], onDelete: Cascade)
+  hunter               Player         @relation(name: "PlayerHasTarget", fields: [hunterId], references: [id], onDelete: Cascade)
   hunterId             String
-  target               Player              @relation(name: "PlayerIsHunted", fields: [targetId], references: [id], onDelete: Cascade)
+  target               Player         @relation(name: "PlayerIsHunted", fields: [targetId], references: [id], onDelete: Cascade)
   targetId             String
-  TeamAssignmentRing   TeamAssignmentRing? @relation(fields: [teamAssignmentRingId], references: [id])
   teamAssignmentRingId String?
 }
 
@@ -144,7 +143,7 @@ model TeamAssignment {
   id                   String              @id @default(uuid())
   createdAt            DateTime            @default(now()) @db.Timestamptz(3)
   modifiedAt           DateTime            @default(now()) @db.Timestamptz(3)
-  TeamAssignmentRing   TeamAssignmentRing? @relation(fields: [teamAssignmentRingId], references: [id])
+  teamAssignmentRing   TeamAssignmentRing? @relation(fields: [teamAssignmentRingId], references: [id])
   teamAssignmentRingId String?
 }
 
@@ -156,7 +155,6 @@ model TeamAssignmentRing {
   tournament   Tournament       @relation(fields: [tournamentId], references: [id])
   tournamentId String
   assignments  TeamAssignment[]
-  Assignment   Assignment[]
 }
 
 // next-auth models
