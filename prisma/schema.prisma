@@ -76,14 +76,16 @@ enum PlayerTitle {
 }
 
 model Team {
-  id           String     @id @default(uuid())
-  createdAt    DateTime   @default(now())
-  modifiedAt   DateTime   @default(now())
+  id           String           @id @default(uuid())
+  createdAt    DateTime         @default(now())
+  modifiedAt   DateTime         @default(now())
   name         String
   tournamentId String
-  tournament   Tournament @relation(fields: [tournamentId], references: [id])
+  tournament   Tournament       @relation(fields: [tournamentId], references: [id])
   players      Player[]
   users        User[]
+  targets      TeamAssignment[] @relation(name: "TeamHasTarget")
+  hunters      TeamAssignment[] @relation(name: "TeamIsHunted")
 }
 
 model Umpire {
@@ -143,6 +145,10 @@ model TeamAssignment {
   id                   String              @id @default(uuid())
   createdAt            DateTime            @default(now()) @db.Timestamptz(3)
   modifiedAt           DateTime            @default(now()) @db.Timestamptz(3)
+  huntingTeam          Team                @relation(name: "TeamHasTarget", fields: [huntingTeamId], references: [id], onDelete: Cascade)
+  huntingTeamId        String
+  targetTeam           Team                @relation(name: "TeamIsHunted", fields: [targetTeamId], references: [id], onDelete: Cascade)
+  targetTeamId         String
   teamAssignmentRing   TeamAssignmentRing? @relation(fields: [teamAssignmentRingId], references: [id])
   teamAssignmentRingId String?
 }
