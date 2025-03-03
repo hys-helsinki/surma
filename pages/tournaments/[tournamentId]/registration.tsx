@@ -56,18 +56,15 @@ export default function Registration({
 }: {
   tournament: Tournament;
 }) {
-  // const isRegistrationOpen =
-  //   new Date().getTime() >
-  //     new Date(tournament.registrationStartTime).getTime() &&
-  //   new Date().getTime() < new Date(tournament.registrationEndTime).getTime();
-  const isRegistrationOpen = false;
-
-  const isTeamTournament = false;
+  const isRegistrationOpen =
+    new Date().getTime() >
+      new Date(tournament.registrationStartTime).getTime() &&
+    new Date().getTime() < new Date(tournament.registrationEndTime).getTime();
 
   return (
     <div>
       {isRegistrationOpen ? (
-        isTeamTournament ? (
+        tournament.teamGame ? (
           <TeamForm tournament={tournament} />
         ) : (
           <UserForm tournament={tournament} />
