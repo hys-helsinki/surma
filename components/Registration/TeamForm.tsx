@@ -6,11 +6,13 @@ import { LoadingButton } from "@mui/lab";
 import { Tournament } from "@prisma/client";
 import { useState } from "react";
 import GdprModal from "../GdprModal";
+import { useRouter } from "next/router";
 
 const TeamForm = ({ tournament }: { tournament: Tournament }) => {
   const [numberOfPlayers, setNumberOfPlayers] = useState(1);
+  const router = useRouter();
 
-  const submitForm = (values) => {
+  const submitForm = async (values) => {
     const groupedValues = Array.from(
       { length: numberOfPlayers },
       (x, i) => i + 1
@@ -22,6 +24,7 @@ const TeamForm = ({ tournament }: { tournament: Tournament }) => {
 
     const userObjects = groupedValues.map(
       ([firstName, lastName, email, phone]) => ({
+        tournamentId: tournament.id,
         firstName,
         lastName,
         email,
@@ -32,10 +35,18 @@ const TeamForm = ({ tournament }: { tournament: Tournament }) => {
     const formdata = {
       tournamentId: tournament.id,
       teamName: values["teamName"],
-      ...userObjects
+      users: userObjects
     };
 
-    console.log(formdata);
+    try {
+      const response = await fetch("/api/team/create", {
+        method: "POST",
+        body: JSON.stringify(formdata)
+      });
+      router.push("/");
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   const initialValues = {
