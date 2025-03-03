@@ -10,8 +10,6 @@ export default async function create(
     const teamData = JSON.parse(req.body);
     const { teamName, users, tournamentId } = teamData;
 
-    console.log(teamData);
-
     const team = await prisma.team.create({
       data: {
         tournament: { connect: { id: tournamentId } },
