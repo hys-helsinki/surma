@@ -10,9 +10,11 @@ import { useRouter } from "next/router";
 
 const TeamForm = ({ tournament }: { tournament: Tournament }) => {
   const [numberOfPlayers, setNumberOfPlayers] = useState(1);
+  const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
 
   const submitForm = async (values) => {
+    setIsLoading(true);
     const groupedValues = Array.from(
       { length: numberOfPlayers },
       (x, i) => i + 1
@@ -44,7 +46,9 @@ const TeamForm = ({ tournament }: { tournament: Tournament }) => {
         body: JSON.stringify(formdata)
       });
       router.push("/");
+      setIsLoading(false);
     } catch (error) {
+      setIsLoading(false);
       console.log(error);
     }
   };
@@ -175,7 +179,9 @@ const TeamForm = ({ tournament }: { tournament: Tournament }) => {
                 Poista pelaaja
               </button>
             )}
-            <LoadingButton type="submit">Luo käyttäjät</LoadingButton>
+            <LoadingButton loading={isLoading} type="submit">
+              Luo käyttäjät
+            </LoadingButton>
           </Form>
         </Formik>
       </Box>
