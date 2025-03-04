@@ -12,16 +12,18 @@ import Markdown from "../../Common/Markdown";
 const BottomText = () => {
   return (
     <Box sx={{ my: 3, wordWrap: "break-word" }}>
-      Ilmoittautuessasi turnaukseen hyväksyt Helsingin yliopiston
-      salamurhaajien 
-      <Link
-        href={"https://salamurhaajat.net/mika-salamurhapeli/turnaussaannot"}
-        passHref
-      >
-        <u>turnaussäännöt</u>
-      </Link>
-      sekä
-      <GdprModal text="tietosuojakäytännön" />.
+      <div>
+        Ilmoittautuessasi turnaukseen hyväksyt Helsingin yliopiston
+        salamurhaajien{" "}
+        <Link
+          href={"https://salamurhaajat.net/mika-salamurhapeli/turnaussaannot"}
+          passHref
+        >
+          turnaussäännöt
+        </Link>{" "}
+        sekä{" "}
+      </div>
+      <GdprModal text=" tietosuojakäytännön" />.
     </Box>
   );
 };
