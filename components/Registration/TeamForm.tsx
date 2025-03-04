@@ -15,16 +15,16 @@ const TeamForm = ({ tournament }: { tournament: Tournament }) => {
 
   const submitForm = async (values) => {
     setIsLoading(true);
-    const groupedValues = Array.from(
-      { length: numberOfPlayers },
-      (x, i) => i + 1
-    ).map((n) =>
+
+    const rangeArray = Array.from({ length: numberOfPlayers }, (x, i) => i + 1);
+
+    const groupedFormValues = rangeArray.map((n) =>
       Object.entries(values)
-        .filter((v) => v[0].includes(n.toString()))
-        .map((v) => v[1])
+        .filter((value) => value[0].includes(n.toString()))
+        .map((value) => value[1])
     );
 
-    const userObjects = groupedValues.map(
+    const userObjects = groupedFormValues.map(
       ([firstName, lastName, email, phone]) => ({
         tournamentId: tournament.id,
         firstName,
