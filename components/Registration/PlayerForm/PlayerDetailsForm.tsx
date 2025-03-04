@@ -45,7 +45,7 @@ const PlayerDetailsForm = ({
     learningInstitution: "",
     eyeColor: "",
     hair: "",
-    height: 0,
+    height: "",
     other: "",
     safetyNotes: ""
   };
@@ -55,7 +55,8 @@ const PlayerDetailsForm = ({
       enableReinitialize={true}
       initialValues={Object.assign(initialFields, ...calendarInitials)}
       validationSchema={Yup.object({
-        alias: Yup.string().required("Pakollinen")
+        alias: Yup.string().required("Pakollinen"),
+        address: Yup.string().required("Pakollinen")
       })}
       onSubmit={(values) => {
         handleSubmit(values);
