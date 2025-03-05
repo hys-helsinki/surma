@@ -34,6 +34,8 @@ export default async function create(
     }
   });
 
+  const team = user.teamId ? { connect: { id: user.teamId } } : {};
+
   const result = await prisma.player.create({
     data: {
       user: { connect: { id: playerData.userId } },
@@ -47,7 +49,8 @@ export default async function create(
       other: playerData.other,
       safetyNotes: playerData.safetyNotes,
       calendar: playerData.calendar,
-      title: playerData.title
+      title: playerData.title,
+      team
     }
   });
   sendEmail(

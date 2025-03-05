@@ -21,7 +21,7 @@ const TournamentTable = ({ tournaments }) => {
       now < new Date(tournament.registrationEndTime).getTime() &&
       now > new Date(tournament.registrationStartTime).getTime();
     const registrationLink = isRegistrationOpen ? (
-      <Link href={`/registration/${tournament.id}`}>
+      <Link href={`/tournaments/${tournament.id}/registration`}>
         Ilmoittautumislomake
       </Link>
     ) : (
