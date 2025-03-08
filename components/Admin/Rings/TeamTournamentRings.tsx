@@ -38,6 +38,7 @@ const NewAssignment = ({ teams, team, handleRingChange }) => {
 
 const Ring = ({ ring, rings, setRings, teams, tournament }) => {
   const [showRing, setShowRing] = useState(false);
+  const [assignments, setAssignments] = useState(ring.assignments);
 
   const getTeamName = (teamId: string) => {
     return teams.find((team) => teamId == team.id).name;
@@ -50,6 +51,18 @@ const Ring = ({ ring, rings, setRings, teams, tournament }) => {
     });
     const deletedRing = await res.json();
     setRings(rings.filter((ring) => ring.id !== deletedRing.id));
+  };
+
+  const deleteAssignment = async (id) => {
+    const res = await fetch("/api/team-assignments/delete", {
+      method: "DELETE",
+      body: id
+    });
+    const ringWithoutDeletedAssigment = await res.json();
+    setRings(
+      rings.map((r) => (r.id !== ring ? r : ringWithoutDeletedAssigment))
+    );
+    setAssignments(assignments.filter((assignment) => assignment.id !== id));
   };
 
   return (
@@ -76,7 +89,7 @@ const Ring = ({ ring, rings, setRings, teams, tournament }) => {
       </IconButton>
       {showRing && (
         <div style={{ paddingLeft: "35px" }}>
-          {ring.assignments.map((a: TeamAssignment) => (
+          {assignments.map((a: TeamAssignment) => (
             <div key={a.id}>
               <p>
                 <strong>Metsästäjä:</strong> {getTeamName(a.huntingTeamId)}
@@ -84,6 +97,9 @@ const Ring = ({ ring, rings, setRings, teams, tournament }) => {
               <p>
                 <strong>Kohde:</strong> {getTeamName(a.targetTeamId)}
               </p>
+              <button onClick={() => deleteAssignment(a.id)}>
+                Poista toimeksianto
+              </button>
               <p>---------</p>
             </div>
           ))}
@@ -102,15 +118,13 @@ export const TeamTournamentRings = ({
 }: {
   tournament: Tournament;
   players: PlayerWithUser[];
-  rings: any;
+  rings: any[];
   teams: Team[];
   setRings;
 }): JSX.Element => {
   const [newRing, setNewRing] = useState([]);
   const [showForm, setShowForm] = useState(false);
   const [shownRingId, setShownRingId] = useState("");
-  const [newHunter, setNewHunter] = useState("");
-  const [newTarget, setNewTarget] = useState("");
 
   if (!teams) return;
 
