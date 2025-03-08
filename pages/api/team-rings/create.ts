@@ -42,6 +42,45 @@ export default async function handler(
       }
     });
 
+    const teams = await prisma.team.findMany({
+      include: {
+        players: true
+      }
+    });
+
+    let playerAssignments = [];
+
+    createdRing.assignments.forEach((assignment) => {
+      const hunterPlayers = teams.find(
+        (team) => team.id === assignment.huntingTeamId
+      ).players;
+
+      const targetPlayers = teams.find(
+        (team) => team.id === assignment.targetTeamId
+      ).players;
+
+      hunterPlayers.map((hunter) => {
+        targetPlayers.map((target) => {
+          playerAssignments.push({
+            hunterId: hunter.id,
+            targetId: target.id,
+            teamAssignmentRingId: createdRing.id
+          });
+        });
+      });
+    });
+
+    await prisma.assignmentRing.create({
+      data: {
+        tournamentId: createdRing.tournamentId,
+        assignments: {
+          createMany: {
+            data: playerAssignments
+          }
+        }
+      }
+    });
+
     res.json(createdRing);
   }
 }
