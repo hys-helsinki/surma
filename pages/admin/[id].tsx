@@ -3,7 +3,8 @@ import { GetServerSideProps } from "next";
 import { unstable_getServerSession } from "next-auth";
 import { useState } from "react";
 import { AuthenticationRequired } from "../../components/AuthenticationRequired";
-import { TournamentRings } from "../../components/Admin/TournamentRings";
+import { TournamentRings } from "../../components/Admin/Rings/TournamentRings";
+import { TeamTournamentRings } from "../../components/Admin/Rings/TeamTournamentRings";
 import prisma from "../../lib/prisma";
 import { authConfig } from "../api/auth/[...nextauth]";
 import PlayerTable from "../../components/Admin/PlayerTable";
@@ -64,7 +65,7 @@ export const getServerSideProps: GetServerSideProps = async ({
     }
   });
 
-  let ringList = await prisma.assignmentRing.findMany({
+  const rings = await prisma.assignmentRing.findMany({
     where: {
       tournamentId: params.id as string
     },
@@ -73,18 +74,41 @@ export const getServerSideProps: GetServerSideProps = async ({
     }
   });
 
+  const teamRings = await prisma.teamAssignmentRing.findMany({
+    where: {
+      tournamentId: params.id as string
+    },
+    include: {
+      assignments: true
+    }
+  });
+
+  let teams = await prisma.team.findMany({
+    where: {
+      tournamentId: params.id as string
+    }
+  });
+
   // to avoid Next.js serialization error that is caused by Datetime objects
   tournament = JSON.parse(JSON.stringify(tournament));
   users = JSON.parse(JSON.stringify(users));
   players = JSON.parse(JSON.stringify(players));
+  teams = JSON.parse(JSON.stringify(teams));
+  let ringList = tournament.teamGame ? teamRings : rings;
   ringList = JSON.parse(JSON.stringify(ringList));
 
   return {
-    props: { tournament, users, players, ringList }
+    props: { tournament, users, players, ringList, teams }
   };
 };
 
-export default function Tournament({ tournament, users, players, ringList }) {
+export default function Tournament({
+  tournament,
+  users,
+  players,
+  ringList,
+  teams
+}) {
   const [rings, setRings] = useState<any[]>(ringList);
   const [showSuccessText, setShowSuccessText] = useState(false);
 
@@ -188,11 +212,21 @@ export default function Tournament({ tournament, users, players, ringList }) {
             </Formik>
           </Grid>
           <Grid item xs={12} md={6}>
-            <TournamentRings
-              tournament={tournament}
-              players={players}
-              rings={rings}
-            />
+            {tournament.teamGame ? (
+              <TeamTournamentRings
+                tournament={tournament}
+                players={players}
+                rings={rings}
+                teams={teams}
+                setRings={setRings}
+              />
+            ) : (
+              <TournamentRings
+                tournament={tournament}
+                players={players}
+                rings={rings}
+              />
+            )}
           </Grid>
         </Grid>
       </Box>
