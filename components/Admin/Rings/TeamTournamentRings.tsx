@@ -17,7 +17,7 @@ interface PlayerWithUser extends Player {
   user: User;
 }
 
-function TA({ teams, team, handleRingChange }) {
+const NewAssignment = ({ teams, team, handleRingChange }) => {
   return (
     <div>
       <p>{team.name}</p>
@@ -34,10 +34,68 @@ function TA({ teams, team, handleRingChange }) {
       </label>
     </div>
   );
-}
+};
+
+const Ring = ({ ring, rings, setRings, teams, tournament }) => {
+  const [showRing, setShowRing] = useState(false);
+
+  const getTeamName = (teamId: string) => {
+    return teams.find((team) => teamId == team.id).name;
+  };
+
+  const deleteRing = async (id) => {
+    const res = await fetch(`/api/team-rings/${id}/delete`, {
+      method: "DELETE",
+      body: JSON.stringify({ ringId: id, tournamentId: tournament.id })
+    });
+    const deletedRing = await res.json();
+    setRings(rings.filter((ring) => ring.id !== deletedRing.id));
+  };
+
+  return (
+    <div key={ring.id}>
+      <Button
+        onClick={() => setShowRing(!showRing)}
+        startIcon={
+          showRing ? (
+            <KeyboardArrowDownRoundedIcon />
+          ) : (
+            <KeyboardArrowRightRoundedIcon />
+          )
+        }
+        sx={{
+          fontFamily: "inherit",
+          fontSize: "inherit",
+          color: "inherit"
+        }}
+      >
+        {ring.name}
+      </Button>
+      <IconButton onClick={() => deleteRing(ring.id)}>
+        <DeleteOutlineIcon htmlColor="#FFFFFF" />
+      </IconButton>
+      {showRing && (
+        <div style={{ paddingLeft: "35px" }}>
+          {ring.assignments.map((a: TeamAssignment) => (
+            <div key={a.id}>
+              <p>
+                <strong>Metsästäjä:</strong> {getTeamName(a.huntingTeamId)}
+              </p>
+              <p>
+                <strong>Kohde:</strong> {getTeamName(a.targetTeamId)}
+              </p>
+              <p>---------</p>
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+};
 
 export const TeamTournamentRings = ({
   tournament,
+  players,
   rings,
   teams,
   setRings
@@ -74,15 +132,6 @@ export const TeamTournamentRings = ({
     setNewRing([]);
   };
 
-  const deleteRing = async (id) => {
-    const res = await fetch(`/api/team-rings/${id}/delete`, {
-      method: "DELETE",
-      body: JSON.stringify({ ringId: id, tournamentId: tournament.id })
-    });
-    const deletedRing = await res.json();
-    setRings(rings.filter((ring) => ring.id !== deletedRing.id));
-  };
-
   const handleRingChange = (id, event) => {
     const assignment = newRing.find(
       (assignment) => assignment.huntingTeamId === id
@@ -109,52 +158,18 @@ export const TeamTournamentRings = ({
       setShownRingId(ringId);
     }
   };
-
-  const getTeamName = (teamId: string) => {
-    return teams.find((team) => teamId == team.id).name;
-  };
-
   return (
     <div>
       <h2>Ringit</h2>
       {rings.map((ring) => (
-        <div key={ring.id}>
-          <Button
-            onClick={() => toggleShowRing(ring.id)}
-            startIcon={
-              shownRingId == ring.id ? (
-                <KeyboardArrowDownRoundedIcon />
-              ) : (
-                <KeyboardArrowRightRoundedIcon />
-              )
-            }
-            sx={{
-              fontFamily: "inherit",
-              fontSize: "inherit",
-              color: "inherit"
-            }}
-          >
-            {ring.name}
-          </Button>
-          <IconButton onClick={() => deleteRing(ring.id)}>
-            <DeleteOutlineIcon htmlColor="#FFFFFF" />
-          </IconButton>
-          {shownRingId == ring.id && (
-            <div style={{ paddingLeft: "35px" }}>
-              {ring.assignments.map((a: TeamAssignment) => (
-                <div key={a.id}>
-                  <p>
-                    <strong>Metsästäjä:</strong> {getTeamName(a.huntingTeamId)}
-                  </p>
-                  <p>
-                    <strong>Kohde:</strong> {getTeamName(a.targetTeamId)}
-                  </p>
-                  <p>---------</p>
-                </div>
-              ))}
-            </div>
-          )}
-        </div>
+        <Ring
+          key={ring.id}
+          ring={ring}
+          rings={rings}
+          setRings={setRings}
+          teams={teams}
+          tournament={tournament}
+        />
       ))}
       <button onClick={() => setShowForm(!showForm)}>
         {!showForm ? "luo uusi rinki" : "peruuta"}
@@ -165,7 +180,7 @@ export const TeamTournamentRings = ({
             Ringin nimi: <input type="text" name="ringName" />
           </label>
           {teams.map((team) => (
-            <TA
+            <NewAssignment
               teams={teams}
               team={team}
               handleRingChange={(e) => handleRingChange(team.id, e)}
