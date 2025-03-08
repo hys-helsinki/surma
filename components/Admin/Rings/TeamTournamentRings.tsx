@@ -44,7 +44,7 @@ const Ring = ({ ring, rings, setRings, teams, tournament }) => {
   };
 
   const deleteRing = async (id) => {
-    const res = await fetch(`/api/team-rings/${id}/delete`, {
+    const res = await fetch(`/api/team-rings/delete`, {
       method: "DELETE",
       body: JSON.stringify({ ringId: id, tournamentId: tournament.id })
     });
