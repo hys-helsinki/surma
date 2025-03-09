@@ -160,6 +160,13 @@ export const TeamTournamentRings = ({
       tournamentId: tournament.id
     };
 
+    if (
+      readyRing.assignments.length == 0 ||
+      readyRing.assignments.map((a) => a.targetTeamId).includes("")
+    ) {
+      return;
+    }
+
     const res = await fetch("/api/team-rings/create", {
       method: "POST",
       body: JSON.stringify(readyRing)
@@ -174,9 +181,7 @@ export const TeamTournamentRings = ({
     const assignment = newRing.find(
       (assignment) => assignment.huntingTeamId === id
     );
-    if (event.target.value === "--") {
-      return; // to prevent throwing error when the user selects the placeholder value again
-    }
+
     const teamId = event.target.value;
 
     if (!assignment) {
@@ -219,7 +224,7 @@ export const TeamTournamentRings = ({
                   name="assignments"
                   onChange={(e) => handleRingChange(team.id, e)}
                 >
-                  <option>--</option>
+                  <option value={""}>--</option>
                   {teams.map((team) => (
                     <option key={team.id} value={team.id}>
                       {team.name}
