@@ -215,7 +215,6 @@ export default function Tournament({
             {tournament.teamGame ? (
               <TeamTournamentRings
                 tournament={tournament}
-                players={players}
                 rings={rings}
                 teams={teams}
                 setRings={setRings}

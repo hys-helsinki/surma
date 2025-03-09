@@ -4,30 +4,7 @@ import KeyboardArrowRightRoundedIcon from "@mui/icons-material/KeyboardArrowRigh
 import KeyboardArrowDownRoundedIcon from "@mui/icons-material/KeyboardArrowDownRounded";
 import IconButton from "@mui/material/IconButton";
 import { Button } from "@mui/material";
-import { Player, User, Tournament, Team, TeamAssignment } from "@prisma/client";
-
-interface PlayerWithUser extends Player {
-  user: User;
-}
-
-const NewAssignment = ({ teams, team, handleRingChange }) => {
-  return (
-    <div>
-      <p>{team.name}</p>
-      <label>
-        Kohde
-        <select name="assignments" onChange={handleRingChange}>
-          <option>--</option>
-          {teams.map((team) => (
-            <option key={team.id} value={team.id}>
-              {team.name}
-            </option>
-          ))}
-        </select>
-      </label>
-    </div>
-  );
-};
+import { Tournament, Team, TeamAssignment } from "@prisma/client";
 
 const Ring = ({ ring, rings, setRings, teams, tournament }) => {
   const [showRing, setShowRing] = useState(false);
@@ -124,7 +101,7 @@ const Ring = ({ ring, rings, setRings, teams, tournament }) => {
                   name="assignments"
                   onChange={(e) => setNewHunter(e.target.value)}
                 >
-                  <option>--</option>
+                  <option value={""}>--</option>
                   {teams.map((team) => (
                     <option key={team.id} value={team.id}>
                       {getTeamName(team.id)}
@@ -140,7 +117,7 @@ const Ring = ({ ring, rings, setRings, teams, tournament }) => {
                   name="assignments"
                   onChange={(e) => setNewTarget(e.target.value)}
                 >
-                  <option>--</option>
+                  <option value={""}>--</option>
                   {teams.map((team) => (
                     <option key={team.id} value={team.id}>
                       {getTeamName(team.id)}
@@ -161,20 +138,17 @@ const Ring = ({ ring, rings, setRings, teams, tournament }) => {
 
 export const TeamTournamentRings = ({
   tournament,
-  players,
   rings,
   teams,
   setRings
 }: {
   tournament: Tournament;
-  players: PlayerWithUser[];
   rings: any[];
   teams: Team[];
   setRings;
 }): JSX.Element => {
   const [newRing, setNewRing] = useState([]);
   const [showForm, setShowForm] = useState(false);
-  const [shownRingId, setShownRingId] = useState("");
 
   if (!teams) return;
 
@@ -215,13 +189,6 @@ export const TeamTournamentRings = ({
     }
   };
 
-  const toggleShowRing = (ringId) => {
-    if (shownRingId == ringId) {
-      setShownRingId("");
-    } else {
-      setShownRingId(ringId);
-    }
-  };
   return (
     <div>
       <h2>Ringit</h2>
@@ -244,12 +211,23 @@ export const TeamTournamentRings = ({
             Ringin nimi: <input type="text" name="ringName" />
           </label>
           {teams.map((team) => (
-            <NewAssignment
-              teams={teams}
-              team={team}
-              handleRingChange={(e) => handleRingChange(team.id, e)}
-              key={team.id}
-            />
+            <div key={team.id}>
+              <p>{team.name}</p>
+              <label>
+                Kohde
+                <select
+                  name="assignments"
+                  onChange={(e) => handleRingChange(team.id, e)}
+                >
+                  <option>--</option>
+                  {teams.map((team) => (
+                    <option key={team.id} value={team.id}>
+                      {team.name}
+                    </option>
+                  ))}
+                </select>
+              </label>
+            </div>
           ))}
           <button type="submit">Luo rinki</button>
         </form>
