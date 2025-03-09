@@ -27,5 +27,12 @@ export default async function rings(req: NextApiRequest, res: NextApiResponse) {
       id: data.ringId
     }
   });
+
+  await prisma.assignment.deleteMany({
+    where: {
+      teamAssignmentRingId: deletedRing.id
+    }
+  });
+
   res.json(deletedRing);
 }
