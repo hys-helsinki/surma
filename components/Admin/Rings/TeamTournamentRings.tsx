@@ -1,17 +1,10 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 import KeyboardArrowRightRoundedIcon from "@mui/icons-material/KeyboardArrowRightRounded";
 import KeyboardArrowDownRoundedIcon from "@mui/icons-material/KeyboardArrowDownRounded";
 import IconButton from "@mui/material/IconButton";
 import { Button } from "@mui/material";
-import {
-  Player,
-  User,
-  Tournament,
-  Team,
-  Assignment,
-  TeamAssignment
-} from "@prisma/client";
+import { Player, User, Tournament, Team, TeamAssignment } from "@prisma/client";
 
 interface PlayerWithUser extends Player {
   user: User;
@@ -39,6 +32,8 @@ const NewAssignment = ({ teams, team, handleRingChange }) => {
 const Ring = ({ ring, rings, setRings, teams, tournament }) => {
   const [showRing, setShowRing] = useState(false);
   const [assignments, setAssignments] = useState(ring.assignments);
+  const [newHunter, setNewHunter] = useState("");
+  const [newTarget, setNewTarget] = useState("");
 
   const getTeamName = (teamId: string) => {
     return teams.find((team) => teamId == team.id).name;
@@ -63,6 +58,24 @@ const Ring = ({ ring, rings, setRings, teams, tournament }) => {
       rings.map((r) => (r.id !== ring ? r : ringWithoutDeletedAssigment))
     );
     setAssignments(assignments.filter((assignment) => assignment.id !== id));
+  };
+
+  const createAssignment = async (event) => {
+    event.preventDefault();
+    if (newHunter && newTarget) {
+      const newAssignment = {
+        teamAssignmentRingId: ring.id,
+        huntingTeamId: newHunter,
+        targetTeamId: newTarget
+      };
+
+      const res = await fetch("/api/team-assignments/create", {
+        method: "POST",
+        body: JSON.stringify(newAssignment)
+      });
+      const createdAssignment = await res.json();
+      setAssignments(assignments.concat(createdAssignment));
+    }
   };
 
   return (
@@ -103,6 +116,43 @@ const Ring = ({ ring, rings, setRings, teams, tournament }) => {
               <p>---------</p>
             </div>
           ))}
+          <form onSubmit={createAssignment}>
+            <div>
+              <label>
+                <strong>Metsästäjä:</strong>
+                <select
+                  name="assignments"
+                  onChange={(e) => setNewHunter(e.target.value)}
+                >
+                  <option>--</option>
+                  {teams.map((team) => (
+                    <option key={team.id} value={team.id}>
+                      {getTeamName(team.id)}
+                    </option>
+                  ))}
+                </select>
+              </label>
+            </div>
+            <div>
+              <label>
+                Kohde
+                <select
+                  name="assignments"
+                  onChange={(e) => setNewTarget(e.target.value)}
+                >
+                  <option>--</option>
+                  {teams.map((team) => (
+                    <option key={team.id} value={team.id}>
+                      {getTeamName(team.id)}
+                    </option>
+                  ))}
+                </select>
+              </label>
+            </div>
+            <button type="submit" style={{ width: "30%" }}>
+              Luo uusi toimeksianto
+            </button>
+          </form>
         </div>
       )}
     </div>
