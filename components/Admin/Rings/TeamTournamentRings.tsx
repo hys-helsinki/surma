@@ -5,27 +5,34 @@ import KeyboardArrowDownRoundedIcon from "@mui/icons-material/KeyboardArrowDownR
 import IconButton from "@mui/material/IconButton";
 import { Button } from "@mui/material";
 import { Tournament, Team, TeamAssignment } from "@prisma/client";
+import { LoadingButton } from "@mui/lab";
 
 const Ring = ({ ring, rings, setRings, teams, tournament }) => {
   const [showRing, setShowRing] = useState(false);
   const [assignments, setAssignments] = useState(ring.assignments);
   const [newHunter, setNewHunter] = useState("");
   const [newTarget, setNewTarget] = useState("");
+  const [isDeletingRing, setIsDeletingRing] = useState(false);
+  const [isCreatingAssignment, setIsCreatingAssignment] = useState(false);
+  const [isDeletingAssignment, setIsDeletingAssignment] = useState(false);
 
   const getTeamName = (teamId: string) => {
     return teams.find((team) => teamId == team.id).name;
   };
 
   const deleteRing = async (id) => {
+    setIsDeletingRing(true);
     const res = await fetch(`/api/team-rings/delete`, {
       method: "DELETE",
       body: JSON.stringify({ ringId: id, tournamentId: tournament.id })
     });
     const deletedRing = await res.json();
     setRings(rings.filter((ring) => ring.id !== deletedRing.id));
+    setIsDeletingRing(false);
   };
 
   const deleteAssignment = async (id) => {
+    setIsDeletingAssignment(true);
     const res = await fetch("/api/team-assignments/delete", {
       method: "DELETE",
       body: id
@@ -35,11 +42,13 @@ const Ring = ({ ring, rings, setRings, teams, tournament }) => {
       rings.map((r) => (r.id !== ring ? r : ringWithoutDeletedAssigment))
     );
     setAssignments(assignments.filter((assignment) => assignment.id !== id));
+    setIsDeletingAssignment(false);
   };
 
   const createAssignment = async (event) => {
     event.preventDefault();
     if (newHunter && newTarget) {
+      setIsCreatingAssignment(true);
       const newAssignment = {
         teamAssignmentRingId: ring.id,
         huntingTeamId: newHunter,
@@ -52,6 +61,9 @@ const Ring = ({ ring, rings, setRings, teams, tournament }) => {
       });
       const createdAssignment = await res.json();
       setAssignments(assignments.concat(createdAssignment));
+      setIsCreatingAssignment(false);
+      setNewHunter("");
+      setNewTarget("");
     }
   };
 
@@ -75,7 +87,10 @@ const Ring = ({ ring, rings, setRings, teams, tournament }) => {
         {ring.name}
       </Button>
       <IconButton onClick={() => deleteRing(ring.id)}>
-        <DeleteOutlineIcon htmlColor="#FFFFFF" />
+        <DeleteOutlineIcon
+          htmlColor="#FFFFFF"
+          color={isDeletingRing ? "disabled" : "inherit"}
+        />
       </IconButton>
       {showRing && (
         <div style={{ paddingLeft: "35px" }}>
@@ -87,9 +102,18 @@ const Ring = ({ ring, rings, setRings, teams, tournament }) => {
               <p>
                 <strong>Kohde:</strong> {getTeamName(a.targetTeamId)}
               </p>
-              <button onClick={() => deleteAssignment(a.id)}>
+              <LoadingButton
+                onClick={() => deleteAssignment(a.id)}
+                loading={isDeletingAssignment}
+                sx={{
+                  fontFamily: "tahoma",
+                  fontWeight: "bold",
+                  textTransform: "none",
+                  letterSpacing: "normal"
+                }}
+              >
                 Poista toimeksianto
-              </button>
+              </LoadingButton>
               <p>---------</p>
             </div>
           ))}
@@ -126,9 +150,18 @@ const Ring = ({ ring, rings, setRings, teams, tournament }) => {
                 </select>
               </label>
             </div>
-            <button type="submit" style={{ width: "30%" }}>
+            <LoadingButton
+              type="submit"
+              sx={{
+                fontFamily: "tahoma",
+                fontWeight: "bold",
+                textTransform: "none",
+                letterSpacing: "normal"
+              }}
+              loading={isCreatingAssignment}
+            >
               Luo uusi toimeksianto
-            </button>
+            </LoadingButton>
           </form>
         </div>
       )}
@@ -149,6 +182,7 @@ export const TeamTournamentRings = ({
 }): JSX.Element => {
   const [newRing, setNewRing] = useState([]);
   const [showForm, setShowForm] = useState(false);
+  const [isCreatingRing, setIsCreatingRing] = useState(false);
 
   if (!teams) return;
 
@@ -167,6 +201,8 @@ export const TeamTournamentRings = ({
       return;
     }
 
+    setIsCreatingRing(true);
+
     const res = await fetch("/api/team-rings/create", {
       method: "POST",
       body: JSON.stringify(readyRing)
@@ -175,6 +211,7 @@ export const TeamTournamentRings = ({
     setShowForm(false);
     setRings(rings.concat(createdRing));
     setNewRing([]);
+    setIsCreatingRing(false);
   };
 
   const handleRingChange = (id, event) => {
@@ -211,7 +248,7 @@ export const TeamTournamentRings = ({
         {!showForm ? "luo uusi rinki" : "peruuta"}
       </button>
       {!showForm ? null : (
-        <form onSubmit={createRing} style={{ width: "40%" }}>
+        <form onSubmit={createRing} style={{ width: "100%" }}>
           <label>
             Ringin nimi: <input type="text" name="ringName" />
           </label>
@@ -234,7 +271,18 @@ export const TeamTournamentRings = ({
               </label>
             </div>
           ))}
-          <button type="submit">Luo rinki</button>
+          <LoadingButton
+            type="submit"
+            loading={isCreatingRing}
+            sx={{
+              fontFamily: "tahoma",
+              fontWeight: "bold",
+              textTransform: "none",
+              letterSpacing: "normal"
+            }}
+          >
+            Luo rinki
+          </LoadingButton>
         </form>
       )}
     </div>
