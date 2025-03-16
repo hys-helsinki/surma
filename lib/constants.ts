@@ -4,3 +4,5 @@ export enum PlayerTitle {
   LL = "LL",
   TT = "TT"
 }
+
+export const TEAM_MAX_PLAYERS = 4;

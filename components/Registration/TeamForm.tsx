@@ -7,6 +7,7 @@ import { Tournament } from "@prisma/client";
 import { useState } from "react";
 import GdprModal from "../GdprModal";
 import { useRouter } from "next/router";
+import { TEAM_MAX_PLAYERS } from "../../lib/constants";
 
 const TeamForm = ({ tournament }: { tournament: Tournament }) => {
   const [isLoading, setIsLoading] = useState(false);
@@ -143,7 +144,7 @@ const TeamForm = ({ tournament }: { tournament: Tournament }) => {
                           )}
                         </Box>
                       ))}
-                    {values.users.length < 4 && (
+                    {values.users.length < TEAM_MAX_PLAYERS && (
                       <button
                         type="button"
                         className="secondary"
