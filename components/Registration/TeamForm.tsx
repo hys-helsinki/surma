@@ -1,5 +1,5 @@
 import { Box, Container, Grid } from "@mui/material";
-import { Form, Formik } from "formik";
+import { FieldArray, Form, Formik } from "formik";
 import * as Yup from "yup";
 import TextInput from "./TextInput";
 import { LoadingButton } from "@mui/lab";
@@ -9,35 +9,19 @@ import GdprModal from "../GdprModal";
 import { useRouter } from "next/router";
 
 const TeamForm = ({ tournament }: { tournament: Tournament }) => {
-  const [numberOfPlayers, setNumberOfPlayers] = useState(1);
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
 
   const submitForm = async (values) => {
     setIsLoading(true);
 
-    const rangeArray = Array.from({ length: numberOfPlayers }, (x, i) => i + 1);
-
-    const groupedFormValues = rangeArray.map((n) =>
-      Object.entries(values)
-        .filter((value) => value[0].includes(n.toString()))
-        .map((value) => value[1])
-    );
-
-    const userObjects = groupedFormValues.map(
-      ([firstName, lastName, email, phone]) => ({
-        tournamentId: tournament.id,
-        firstName,
-        lastName,
-        email,
-        phone
-      })
-    );
-
     const formdata = {
       tournamentId: tournament.id,
       teamName: values["teamName"],
-      users: userObjects
+      users: values.users.map((user) => ({
+        ...user,
+        tournamentId: tournament.id
+      }))
     };
 
     try {
@@ -55,22 +39,14 @@ const TeamForm = ({ tournament }: { tournament: Tournament }) => {
 
   const initialValues = {
     teamName: "",
-    firstName1: "",
-    lastName1: "",
-    email1: "",
-    phone1: "",
-    firstName2: "",
-    lastName2: "",
-    email2: "",
-    phone2: "",
-    firstName3: "",
-    lastName3: "",
-    email3: "",
-    phone3: "",
-    firstName4: "",
-    lastName4: "",
-    email4: "",
-    phone4: ""
+    users: [
+      {
+        firstName: "",
+        lastName: "",
+        email: "",
+        phone: ""
+      }
+    ]
   };
 
   return (
@@ -108,81 +84,89 @@ const TeamForm = ({ tournament }: { tournament: Tournament }) => {
       </Box>
       <Box sx={{ my: 5 }}>
         <Formik
-          enableReinitialize={true}
           initialValues={initialValues}
           validationSchema={Yup.object({
-            teamName: Yup.string().required("Pakollinen"),
-            firstName1: Yup.string().required("Pakollinen"),
-            lastName1: Yup.string().required("Pakollinen"),
-            email1: Yup.string().required("Pakollinen"),
-            phone1: Yup.number()
-              .typeError("Syötä vain numeroita")
-              .required("Pakollinen")
+            teamName: Yup.string().required("Pakollinen")
           })}
           onSubmit={(values) => submitForm(values)}
         >
-          <Form
-            onKeyDown={(e) => {
-              if (e.key === "Enter") {
-                e.preventDefault();
-              }
-            }}
-          >
-            <TextInput label="Joukkueen nimi" name="teamName" type="text" />
-            {Array.from({ length: numberOfPlayers }, (x, i) => i + 1).map(
-              (n) => (
-                <Box sx={{ my: 3 }} key={n}>
-                  <h2>Pelaaja {n}</h2>
-                  <Grid container spacing={{ xs: 0, md: 2 }}>
-                    <Grid item xs={12} md={6}>
-                      <TextInput
-                        label="Etunimi"
-                        name={`firstName${n}`}
-                        type="text"
-                      />
-                    </Grid>
-                    <Grid item xs={12} md={6}>
-                      <TextInput
-                        label="Sukunimi"
-                        name={`lastName${n}`}
-                        type="text"
-                      />
-                    </Grid>
-                  </Grid>
-                  <TextInput
-                    label="Sähköpostiosoite"
-                    name={`email${n}`}
-                    type="email"
-                  />
-                  <TextInput
-                    label="Puhelinnumero"
-                    name={`phone${n}`}
-                    type="text"
-                  />
-                </Box>
-              )
-            )}
-            {numberOfPlayers < 4 && (
-              <button
-                onClick={() => setNumberOfPlayers(numberOfPlayers + 1)}
-                type="button"
-                style={{ marginRight: "1rem" }}
-              >
-                Lisää pelaaja
-              </button>
-            )}
-            {numberOfPlayers > 1 && (
-              <button
-                onClick={() => setNumberOfPlayers(numberOfPlayers - 1)}
-                type="button"
-              >
-                Poista pelaaja
-              </button>
-            )}
-            <LoadingButton loading={isLoading} type="submit">
-              Luo käyttäjät
-            </LoadingButton>
-          </Form>
+          {({ values }) => (
+            <Form
+              onKeyDown={(e) => {
+                if (e.key === "Enter") {
+                  e.preventDefault();
+                }
+              }}
+            >
+              <TextInput label="Joukkueen nimi" name="teamName" type="text" />
+              <FieldArray name="users">
+                {({ remove, push }) => (
+                  <div>
+                    {values.users.length > 0 &&
+                      values.users.map((user, index) => (
+                        <Box sx={{ my: 3 }} key={index}>
+                          <h2>Pelaaja {index + 1}</h2>
+                          <Grid container spacing={{ xs: 0, md: 2 }}>
+                            <Grid item xs={12} md={6}>
+                              <TextInput
+                                label="Etunimi"
+                                name={`users.${index}.firstName`}
+                                type="text"
+                              />
+                            </Grid>
+                            <Grid item xs={12} md={6}>
+                              <TextInput
+                                label="Sukunimi"
+                                name={`users.${index}.lastName`}
+                                type="text"
+                              />
+                            </Grid>
+                          </Grid>
+                          <TextInput
+                            label="Sähköpostiosoite"
+                            name={`users[${index}].email`}
+                            type="email"
+                          />
+                          <TextInput
+                            label="Puhelinnumero"
+                            name={`users[${index}].phone`}
+                            type="text"
+                          />
+                          {index !== 0 && (
+                            <button
+                              type="button"
+                              className="secondary"
+                              onClick={() => remove(index)}
+                            >
+                              Poista pelaaja
+                            </button>
+                          )}
+                        </Box>
+                      ))}
+                    {values.users.length < 4 && (
+                      <button
+                        type="button"
+                        className="secondary"
+                        onClick={() =>
+                          push({
+                            firstName: "",
+                            lastName: "",
+                            email: "",
+                            phone: ""
+                          })
+                        }
+                      >
+                        Lisää pelaaja
+                      </button>
+                    )}
+                  </div>
+                )}
+              </FieldArray>
+              <LoadingButton loading={isLoading} type="submit">
+                Luo käyttäjät
+              </LoadingButton>
+            </Form>
+          )}
         </Formik>
       </Box>
     </Container>
