@@ -70,10 +70,7 @@ export default function Registration({
           <UserForm tournament={tournament} />
         )
       ) : (
-        <h4 style={{ margin: 10 }}>
-          Ilmoittautuminen ei ole enää auki. Jos haluat vielä mukaan
-          turnaukseen, otathan yhteyttä tuomaristoon.
-        </h4>
+        <h3 style={{ margin: 10 }}>Ilmoittautuminen ei ole auki</h3>
       )}
     </div>
   );
