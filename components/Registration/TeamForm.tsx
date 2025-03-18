@@ -121,14 +121,14 @@ const TeamForm = ({ tournament }: { tournament: Tournament }) => {
                             <Grid item xs={12} md={6}>
                               <TextInput
                                 label="Etunimi"
-                                name={`users.${index}.firstName`}
+                                name={`users[${index}].firstName`}
                                 type="text"
                               />
                             </Grid>
                             <Grid item xs={12} md={6}>
                               <TextInput
                                 label="Sukunimi"
-                                name={`users.${index}.lastName`}
+                                name={`users[${index}].lastName`}
                                 type="text"
                               />
                             </Grid>
