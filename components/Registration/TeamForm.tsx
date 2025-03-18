@@ -87,7 +87,17 @@ const TeamForm = ({ tournament }: { tournament: Tournament }) => {
         <Formik
           initialValues={initialValues}
           validationSchema={Yup.object({
-            teamName: Yup.string().required("Pakollinen")
+            teamName: Yup.string().required("Pakollinen"),
+            users: Yup.array().of(
+              Yup.object().shape({
+                firstName: Yup.string().required("Pakollinen"),
+                lastName: Yup.string().required("Pakollinen"),
+                email: Yup.string().required("Pakollinen"),
+                phone: Yup.number()
+                  .typeError("Syötä vain numeroita")
+                  .required("Pakollinen")
+              })
+            )
           })}
           onSubmit={(values) => submitForm(values)}
         >
