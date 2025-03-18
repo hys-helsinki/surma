@@ -117,7 +117,7 @@ const TeamForm = ({ tournament }: { tournament: Tournament }) => {
                       values.users.map((user, index) => (
                         <Box sx={{ my: 3 }} key={index}>
                           <h2>Pelaaja {index + 1}</h2>
-                          <Grid container spacing={{ xs: 0, md: 2 }}>
+                          <Grid container spacing={{ xs: 0, md: 2 }} className="firstAndLastName">
                             <Grid item xs={12} md={6}>
                               <TextInput
                                 label="Etunimi"
