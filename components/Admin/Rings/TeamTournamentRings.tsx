@@ -3,7 +3,7 @@ import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 import KeyboardArrowRightRoundedIcon from "@mui/icons-material/KeyboardArrowRightRounded";
 import KeyboardArrowDownRoundedIcon from "@mui/icons-material/KeyboardArrowDownRounded";
 import IconButton from "@mui/material/IconButton";
-import { Button } from "@mui/material";
+import { Button, Grid } from "@mui/material";
 import { Tournament, Team, TeamAssignment } from "@prisma/client";
 import { LoadingButton } from "@mui/lab";
 
@@ -68,7 +68,7 @@ const Ring = ({ ring, rings, setRings, teams, tournament }) => {
   };
 
   return (
-    <div key={ring.id}>
+    <div>
       <Button
         onClick={() => setShowRing(!showRing)}
         startIcon={
@@ -232,59 +232,61 @@ export const TeamTournamentRings = ({
   };
 
   return (
-    <div>
-      <h2>Ringit</h2>
-      {rings.map((ring) => (
-        <Ring
-          key={ring.id}
-          ring={ring}
-          rings={rings}
-          setRings={setRings}
-          teams={teams}
-          tournament={tournament}
-        />
-      ))}
-      <button onClick={() => setShowForm(!showForm)}>
-        {!showForm ? "luo uusi rinki" : "peruuta"}
-      </button>
-      {!showForm ? null : (
-        <form onSubmit={createRing} style={{ width: "100%" }}>
-          <label>
-            Ringin nimi: <input type="text" name="ringName" />
-          </label>
-          {teams.map((team) => (
-            <div key={team.id}>
-              <p>{team.name}</p>
-              <label>
-                Kohde
-                <select
-                  name="assignments"
-                  onChange={(e) => handleRingChange(team.id, e)}
-                >
-                  <option value={""}>--</option>
-                  {teams.map((team) => (
-                    <option key={team.id} value={team.id}>
-                      {team.name}
-                    </option>
-                  ))}
-                </select>
-              </label>
-            </div>
-          ))}
-          <LoadingButton
-            type="submit"
-            loading={isCreatingRing}
-            sx={{
-              fontFamily: "tahoma",
-              fontWeight: "bold",
-              textTransform: "none",
-              letterSpacing: "normal"
-            }}
-          >
-            Luo rinki
-          </LoadingButton>
-        </form>
-      )}
-    </div>
+    <Grid container>
+      <Grid item xs={12} md={3}>
+        <h2>Ringit</h2>
+        {rings.map((ring) => (
+          <Ring
+            key={ring.id}
+            ring={ring}
+            rings={rings}
+            setRings={setRings}
+            teams={teams}
+            tournament={tournament}
+          />
+        ))}
+        <button onClick={() => setShowForm(!showForm)}>
+          {!showForm ? "luo uusi rinki" : "peruuta"}
+        </button>
+        {!showForm ? null : (
+          <form onSubmit={createRing} style={{ width: "100%" }}>
+            <label>
+              Ringin nimi: <input type="text" name="ringName" />
+            </label>
+            {teams.map((team) => (
+              <div key={team.id}>
+                <p>{team.name}</p>
+                <label>
+                  Kohde
+                  <select
+                    name="assignments"
+                    onChange={(e) => handleRingChange(team.id, e)}
+                  >
+                    <option value={""}>--</option>
+                    {teams.map((team) => (
+                      <option key={team.id} value={team.id}>
+                        {team.name}
+                      </option>
+                    ))}
+                  </select>
+                </label>
+              </div>
+            ))}
+            <LoadingButton
+              type="submit"
+              loading={isCreatingRing}
+              sx={{
+                fontFamily: "tahoma",
+                fontWeight: "bold",
+                textTransform: "none",
+                letterSpacing: "normal"
+              }}
+            >
+              Luo rinki
+            </LoadingButton>
+          </form>
+        )}
+      </Grid>
+    </Grid>
   );
 };
