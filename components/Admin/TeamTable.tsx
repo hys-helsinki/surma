@@ -51,7 +51,7 @@ const PlayerRow = ({ player: p, tournament, setRings }) => {
 
   return (
     <tr key={player.id}>
-      <td style={{ width: "50%" }}>
+      <td style={{ width: "40%" }}>
         <Link
           href={`/tournaments/${tournament.id}/users/${player.user.id}`}
           passHref
@@ -61,6 +61,7 @@ const PlayerRow = ({ player: p, tournament, setRings }) => {
           </p>
         </Link>
       </td>
+      <td style={{ width: "15%" }}>{player.state}</td>
       {player.state == "ACTIVE" && (
         <td>
           <LoadingButton
