@@ -42,6 +42,20 @@ export default async function handler(
         team: true
       }
     });
+    if (state === "DEAD") {
+      await prisma.assignment.deleteMany({
+        where: {
+          OR: [
+            {
+              hunterId: playerId
+            },
+            {
+              targetId: playerId
+            }
+          ]
+        }
+      });
+    }
     res.json(updatedPlayer);
   }
 }
