@@ -9,11 +9,11 @@ interface PlayerWithUser extends Player {
 const PlayerTable = ({
   playerList,
   tournament,
-  handleMakeWanted
+  setRings
 }: {
   playerList: PlayerWithUser[];
   tournament: Tournament;
-  handleMakeWanted: (id: string) => Promise<void>;
+  setRings: any;
 }) => {
   const [players, setPlayers] = useState<PlayerWithUser[]>(playerList);
 
@@ -27,6 +27,15 @@ const PlayerTable = ({
     setPlayers(
       players.map((player) => (player.id !== id ? player : updatedPlayer))
     );
+  };
+
+  const handleMakeWanted = async (id: string) => {
+    const res = await fetch(`/api/player/${id}/wanted`, {
+      method: "POST"
+    });
+
+    const createdRing = await res.json();
+    setRings((prevRings) => prevRings.concat(createdRing));
   };
 
   if (players.length === 0) return <p>Ei pelaajia</p>;

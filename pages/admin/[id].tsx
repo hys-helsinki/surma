@@ -148,15 +148,6 @@ export default function Tournament({
 
   const umpires = users.filter((user) => user.umpire);
 
-  const handleMakeWanted = async (id: string) => {
-    const res = await fetch(`/api/player/${id}/wanted`, {
-      method: "POST"
-    });
-
-    const createdRing = await res.json();
-    setRings((prevRings) => prevRings.concat(createdRing));
-  };
-
   return (
     <AuthenticationRequired>
       <Box sx={{ m: 2 }}>
@@ -184,14 +175,14 @@ export default function Tournament({
             <TeamTable
               tournament={tournament}
               teams={teams}
-              handleMakeWanted={handleMakeWanted}
               users={users}
+              setRings={setRings}
             />
           ) : (
             <PlayerTable
               playerList={players}
               tournament={tournament}
-              handleMakeWanted={handleMakeWanted}
+              setRings={setRings}
             />
           )}
         </TabPanel>

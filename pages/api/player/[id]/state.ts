@@ -38,7 +38,8 @@ export default async function handler(
       where: { id: playerId },
       data: { state },
       include: {
-        user: true
+        user: true,
+        team: true
       }
     });
     res.json(updatedPlayer);
