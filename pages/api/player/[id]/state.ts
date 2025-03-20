@@ -8,8 +8,7 @@ const isCurrentUserAuthorized = async (playerId, req, res) => {
 
   const updatedPlayer = await prisma.player.findFirst({
     where: {
-      id: playerId,
-      userId: session.user.id
+      id: playerId
     },
     select: {
       tournamentId: true
