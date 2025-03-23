@@ -1,3 +1,4 @@
+import { LoadingButton } from "@mui/lab";
 import { Grid } from "@mui/material";
 import { Field, Form, Formik } from "formik";
 import { useState } from "react";
@@ -12,7 +13,9 @@ const UmpireSelect = ({
   teamGame: boolean;
 }) => {
   const [showSuccessText, setShowSuccessText] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const handleSaveUmpires = async (values) => {
+    setIsLoading(true);
     const res = await fetch(`/api/player/umpires`, {
       method: "PATCH",
       body: JSON.stringify(values)
@@ -21,6 +24,7 @@ const UmpireSelect = ({
     if (res.status === 200) {
       setShowSuccessText(true);
     }
+    setIsLoading(false);
   };
 
   const formInitials = Object.assign(
@@ -64,7 +68,9 @@ const UmpireSelect = ({
                 </Field>
               </div>
             ))}
-            <button type="submit">Tallenna tuomarit</button>
+            <LoadingButton type="submit" loading={isLoading}>
+              Tallenna tuomarit
+            </LoadingButton>
             <p style={{ visibility: showSuccessText ? "visible" : "hidden" }}>
               Tuomarien tallentaminen onnistui!
             </p>
