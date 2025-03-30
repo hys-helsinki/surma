@@ -38,10 +38,15 @@ export default async function handler(
       data: { state },
       include: {
         user: true,
-        team: true
+        team: true,
+        tournament: true
       }
     });
-    if (state === "DEAD") {
+
+    if (!updatedPlayer.tournament.teamGame && state === "DEAD") {
+      // teamGame-tarkistus, koska vuoden 2025 joukkueturnauksessa on käytössä erikoissääntö jossa kohteita ei heti poisteta kuolleilta pelaajilta.
+      // Otetaan tarkistus pois turnauksen jälkeen jos näyttää siltä ettei erikoissääntöä jatkossa haluta käyttää joukkueturnauksissa.
+
       await prisma.assignment.deleteMany({
         where: {
           OR: [
