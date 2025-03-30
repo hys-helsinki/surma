@@ -131,7 +131,7 @@ const TeamTable = ({
     .sort((a, b) => a.firstName.localeCompare(b.firstName));
 
   return (
-    <Grid sx={{ marginBottom: "30px" }} container className="firstAndLastName">
+    <Grid sx={{ marginBottom: "30px" }} container>
       <Grid item xs={12} lg={7}>
         {unfinishedRegistrations.length > 0 && (
           <div style={{ marginBottom: "30px" }}>
