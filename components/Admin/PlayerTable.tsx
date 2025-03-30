@@ -9,11 +9,13 @@ interface PlayerWithUser extends Player {
 const PlayerTable = ({
   playerList,
   tournament,
-  setRings
+  setRings,
+  users
 }: {
   playerList: PlayerWithUser[];
   tournament: Tournament;
   setRings: any;
+  users: any[];
 }) => {
   const [players, setPlayers] = useState<PlayerWithUser[]>(playerList);
 
@@ -52,8 +54,24 @@ const PlayerTable = ({
     (player) => player.state === "DETECTIVE"
   );
 
+  const unfinishedRegistrations = users
+    .filter((user) => !user.player && !user.umpire)
+    .sort((a, b) => a.firstName.localeCompare(b.firstName));
+
   return (
     <div style={{ paddingLeft: "10px" }}>
+      {unfinishedRegistrations.length > 0 && (
+        <div style={{ marginBottom: "30px" }}>
+          <h2>Keskeneräiset ilmoittautumiset</h2>
+          {unfinishedRegistrations.map((user) => (
+            <div key={user.id}>
+              <Link href={`/tournaments/${tournament.id}/users/${user.id}`}>
+                {user.firstName} {user.lastName}
+              </Link>
+            </div>
+          ))}
+        </div>
+      )}
       <h2>Pelaajat</h2>
       <table>
         <tbody>
@@ -68,7 +86,8 @@ const PlayerTable = ({
                 <Link
                   href={`/tournaments/${tournament.id}/users/${player.user.id}`}
                 >
-                  {player.user.firstName} {player.user.lastName}({player.alias})
+                  {player.user.firstName} {player.user.lastName} ({player.alias}
+                  )
                 </Link>
               </td>
 
@@ -97,7 +116,8 @@ const PlayerTable = ({
                 <Link
                   href={`/tournaments/${tournament.id}/users/${player.user.id}`}
                 >
-                  {player.user.firstName} {player.user.lastName}({player.alias})
+                  {player.user.firstName} {player.user.lastName} ({player.alias}
+                  )
                 </Link>
               </td>
 
@@ -131,7 +151,8 @@ const PlayerTable = ({
                 <Link
                   href={`/tournaments/${tournament.id}/users/${player.user.id}`}
                 >
-                  {player.user.firstName} {player.user.lastName}({player.alias})
+                  {player.user.firstName} {player.user.lastName} ({player.alias}
+                  )
                 </Link>
               </td>
               <td>

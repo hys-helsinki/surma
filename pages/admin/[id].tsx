@@ -183,6 +183,7 @@ export default function Tournament({
               playerList={players}
               tournament={tournament}
               setRings={setRings}
+              users={users}
             />
           )}
         </TabPanel>
