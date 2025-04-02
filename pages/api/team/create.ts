@@ -35,7 +35,7 @@ export default async function create(
       teamData.teamName
     }\nPelaajat: ${team.users.map(
       (user) =>
-        `\n${user.firstName} ${user.lastName}\n(${process.env.BASE_URL}tournaments/${tournamentId}/users/${user.id})`
+        `\n${user.firstName} ${user.lastName}\n(${process.env.BASE_URL}/tournaments/${tournamentId}/users/${user.id})`
     )}`;
 
     sendEmail(
