@@ -19,7 +19,7 @@ export default async function create(
       data: {
         firstName: playerData.firstName,
         lastName: playerData.lastName,
-        email: playerData.email,
+        email: playerData.email.toLowerCase(), // normalize user email for next-auth
         phone: playerData.phone,
         tournament: { connect: { id: playerData.tournamentId } }
       }
