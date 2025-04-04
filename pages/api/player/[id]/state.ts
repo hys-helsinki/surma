@@ -2,14 +2,14 @@ import prisma from "../../../../lib/prisma";
 import type { NextApiRequest, NextApiResponse } from "next";
 import { unstable_getServerSession } from "next-auth";
 import { authConfig } from "../../auth/[...nextauth]";
+import { FeatureFlag } from "../../../../lib/constants";
 
 const isCurrentUserAuthorized = async (playerId, req, res) => {
   const session = await unstable_getServerSession(req, res, authConfig);
 
   const updatedPlayer = await prisma.player.findFirst({
     where: {
-      id: playerId,
-      userId: session.user.id
+      id: playerId
     },
     select: {
       tournamentId: true
@@ -38,9 +38,29 @@ export default async function handler(
       where: { id: playerId },
       data: { state },
       include: {
-        user: true
+        user: true,
+        team: true,
+        tournament: true
       }
     });
+
+    if (FeatureFlag.DELETE_DEAD_PLAYER_ASSIGMENTS && state === "DEAD") {
+      // teamGame-tarkistus, koska vuoden 2025 joukkueturnauksessa on käytössä erikoissääntö jossa kohteita ei heti poisteta kuolleilta pelaajilta.
+      // Otetaan tarkistus pois turnauksen jälkeen jos näyttää siltä ettei erikoissääntöä jatkossa haluta käyttää joukkueturnauksissa.
+
+      await prisma.assignment.deleteMany({
+        where: {
+          OR: [
+            {
+              hunterId: playerId
+            },
+            {
+              targetId: playerId
+            }
+          ]
+        }
+      });
+    }
     res.json(updatedPlayer);
   }
 }

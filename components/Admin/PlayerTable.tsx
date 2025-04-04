@@ -9,11 +9,13 @@ interface PlayerWithUser extends Player {
 const PlayerTable = ({
   playerList,
   tournament,
-  handleMakeWanted
+  setRings,
+  users
 }: {
   playerList: PlayerWithUser[];
   tournament: Tournament;
-  handleMakeWanted: (id: string) => Promise<void>;
+  setRings: any;
+  users: any[];
 }) => {
   const [players, setPlayers] = useState<PlayerWithUser[]>(playerList);
 
@@ -27,6 +29,15 @@ const PlayerTable = ({
     setPlayers(
       players.map((player) => (player.id !== id ? player : updatedPlayer))
     );
+  };
+
+  const handleMakeWanted = async (id: string) => {
+    const res = await fetch(`/api/player/${id}/wanted`, {
+      method: "POST"
+    });
+
+    const createdRing = await res.json();
+    setRings((prevRings) => prevRings.concat(createdRing));
   };
 
   if (players.length === 0) return <p>Ei pelaajia</p>;
@@ -43,8 +54,24 @@ const PlayerTable = ({
     (player) => player.state === "DETECTIVE"
   );
 
+  const unfinishedRegistrations = users
+    .filter((user) => !user.player && !user.umpire)
+    .sort((a, b) => a.firstName.localeCompare(b.firstName));
+
   return (
     <div style={{ paddingLeft: "10px" }}>
+      {unfinishedRegistrations.length > 0 && (
+        <div style={{ marginBottom: "30px" }}>
+          <h2>Keskeneräiset ilmoittautumiset</h2>
+          {unfinishedRegistrations.map((user) => (
+            <div key={user.id}>
+              <Link href={`/tournaments/${tournament.id}/users/${user.id}`}>
+                {user.firstName} {user.lastName}
+              </Link>
+            </div>
+          ))}
+        </div>
+      )}
       <h2>Pelaajat</h2>
       <table>
         <tbody>
@@ -59,7 +86,8 @@ const PlayerTable = ({
                 <Link
                   href={`/tournaments/${tournament.id}/users/${player.user.id}`}
                 >
-                  {player.user.firstName} {player.user.lastName}({player.alias})
+                  {player.user.firstName} {player.user.lastName} ({player.alias}
+                  )
                 </Link>
               </td>
 
@@ -88,7 +116,8 @@ const PlayerTable = ({
                 <Link
                   href={`/tournaments/${tournament.id}/users/${player.user.id}`}
                 >
-                  {player.user.firstName} {player.user.lastName}({player.alias})
+                  {player.user.firstName} {player.user.lastName} ({player.alias}
+                  )
                 </Link>
               </td>
 
@@ -122,7 +151,8 @@ const PlayerTable = ({
                 <Link
                   href={`/tournaments/${tournament.id}/users/${player.user.id}`}
                 >
-                  {player.user.firstName} {player.user.lastName}({player.alias})
+                  {player.user.firstName} {player.user.lastName} ({player.alias}
+                  )
                 </Link>
               </td>
               <td>
