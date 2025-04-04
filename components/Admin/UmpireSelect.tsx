@@ -27,7 +27,7 @@ const UmpireSelect = ({
     setIsLoading(false);
   };
 
-  const formInitials = Object.assign(
+  const initialValues = Object.assign(
     {},
     ...players.map((player) => ({
       [`${player.id}`]: player.umpire ? player.umpire.id : ""
@@ -44,7 +44,7 @@ const UmpireSelect = ({
         <h2> Pelaajien tuomarit</h2>
         <Formik
           enableReinitialize={true}
-          initialValues={formInitials}
+          initialValues={initialValues}
           onSubmit={(values) => {
             handleSaveUmpires(values);
           }}
