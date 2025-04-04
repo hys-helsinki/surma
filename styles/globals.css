@@ -67,7 +67,8 @@ textarea {
   color: #a50000;
 }
 
-button {
+button,
+.MuiLoadingButton-root {
   background-color: white;
   color: black;
   padding: 14px 20px;
@@ -90,7 +91,8 @@ button[type="submit"] {
   cursor: pointer;
 }
 
-button:hover {
+button:hover,
+.MuiLoadingButton-root:hover {
   background-color: #a50000;
   color: white;
   font-weight: bold;

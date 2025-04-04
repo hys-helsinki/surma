@@ -62,13 +62,13 @@ export const TournamentRings = ({
     }
     const playerId = event.target.value;
 
-    if (!assignment) {
-      setNewRing(newRing.concat({ hunterId: id, targetId: playerId }));
-    } else {
+    if (assignment) {
       const changedAssignment = { ...assignment, targetId: playerId };
       setNewRing(
         newRing.map((a) => (a.hunterId !== id ? a : changedAssignment))
       );
+    } else {
+      setNewRing(newRing.concat({ hunterId: id, targetId: playerId }));
     }
   };
 
@@ -211,7 +211,7 @@ export const TournamentRings = ({
       <button onClick={toggleForm}>
         {!showForm ? "luo uusi rinki" : "peruuta"}
       </button>
-      {!showForm ? null : (
+      {showForm && (
         <form onSubmit={createRing} style={{ width: "40%" }}>
           <label>
             Ringin nimi: <input type="text" name="ringName" />
