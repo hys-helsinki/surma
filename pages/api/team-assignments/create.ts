@@ -24,7 +24,10 @@ const isCreateAuthorized = async (ringId, req, res) => {
   return isCurrentUserAuthorized(ring.tournamentId, req, res);
 };
 
-export default async function rings(req: NextApiRequest, res: NextApiResponse) {
+export default async function handler(
+  req: NextApiRequest,
+  res: NextApiResponse
+) {
   const newTeamAssignment = JSON.parse(req.body);
   if (
     !(await isCreateAuthorized(

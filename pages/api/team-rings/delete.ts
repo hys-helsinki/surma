@@ -15,7 +15,10 @@ const isCurrentUserAuthorized = async (tournamentId, req, res) => {
   return umpire;
 };
 
-export default async function rings(req: NextApiRequest, res: NextApiResponse) {
+export default async function handler(
+  req: NextApiRequest,
+  res: NextApiResponse
+) {
   const data = JSON.parse(req.body);
   if (!(await isCurrentUserAuthorized(data.tournamentId, req, res))) {
     console.log("Unauthorized ring delete attempt!");
