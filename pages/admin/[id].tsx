@@ -65,23 +65,27 @@ export const getServerSideProps: GetServerSideProps = async ({
     }
   });
 
-  const rings = await prisma.assignmentRing.findMany({
-    where: {
-      tournamentId: params.id as string
-    },
-    include: {
-      assignments: true
-    }
-  });
+  let ringList = [];
 
-  const teamRings = await prisma.teamAssignmentRing.findMany({
-    where: {
-      tournamentId: params.id as string
-    },
-    include: {
-      assignments: true
-    }
-  });
+  if (tournament.teamGame) {
+    ringList = await prisma.teamAssignmentRing.findMany({
+      where: {
+        tournamentId: params.id as string
+      },
+      include: {
+        assignments: true
+      }
+    });
+  } else {
+    ringList = await prisma.assignmentRing.findMany({
+      where: {
+        tournamentId: params.id as string
+      },
+      include: {
+        assignments: true
+      }
+    });
+  }
 
   let teams = await prisma.team.findMany({
     where: {
@@ -94,7 +98,6 @@ export const getServerSideProps: GetServerSideProps = async ({
   users = JSON.parse(JSON.stringify(users));
   players = JSON.parse(JSON.stringify(players));
   teams = JSON.parse(JSON.stringify(teams));
-  let ringList = tournament.teamGame ? teamRings : rings;
   ringList = JSON.parse(JSON.stringify(ringList));
 
   return {
