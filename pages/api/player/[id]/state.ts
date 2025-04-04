@@ -2,6 +2,7 @@ import prisma from "../../../../lib/prisma";
 import type { NextApiRequest, NextApiResponse } from "next";
 import { unstable_getServerSession } from "next-auth";
 import { authConfig } from "../../auth/[...nextauth]";
+import { FeatureFlag } from "../../../../lib/constants";
 
 const isCurrentUserAuthorized = async (playerId, req, res) => {
   const session = await unstable_getServerSession(req, res, authConfig);
@@ -43,7 +44,7 @@ export default async function handler(
       }
     });
 
-    if (!updatedPlayer.tournament.teamGame && state === "DEAD") {
+    if (FeatureFlag.DELETE_DEAD_PLAYER_ASSIGMENTS && state === "DEAD") {
       // teamGame-tarkistus, koska vuoden 2025 joukkueturnauksessa on käytössä erikoissääntö jossa kohteita ei heti poisteta kuolleilta pelaajilta.
       // Otetaan tarkistus pois turnauksen jälkeen jos näyttää siltä ettei erikoissääntöä jatkossa haluta käyttää joukkueturnauksissa.
 
