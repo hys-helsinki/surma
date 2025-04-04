@@ -31,7 +31,10 @@ const isDeleteAuthorized = async (assignmentId, req, res) => {
   );
 };
 
-export default async function rings(req: NextApiRequest, res: NextApiResponse) {
+export default async function handler(
+  req: NextApiRequest,
+  res: NextApiResponse
+) {
   const assignmentId = req.body;
   if (!(await isDeleteAuthorized(assignmentId, req, res))) {
     console.log("Unauthorized assigment delete attempt!");

@@ -24,21 +24,28 @@ const isCreateAuthorized = async (ringId, req, res) => {
   return isCurrentUserAuthorized(ring.tournamentId, req, res);
 };
 
-export default async function rings(req: NextApiRequest, res: NextApiResponse) {
-  const newAssignment = JSON.parse(req.body);
+export default async function handler(
+  req: NextApiRequest,
+  res: NextApiResponse
+) {
+  const newTeamAssignment = JSON.parse(req.body);
   if (
-    !(await isCreateAuthorized(newAssignment.teamAssignmentRingId, req, res))
+    !(await isCreateAuthorized(
+      newTeamAssignment.teamAssignmentRingId,
+      req,
+      res
+    ))
   ) {
     console.log("Unauthorized assigment create attempt!");
     res.status(403).end();
   }
-  const savedAssigment = await prisma.teamAssignment.create({
-    data: newAssignment
+  const savedTeamAssigment = await prisma.teamAssignment.create({
+    data: newTeamAssignment
   });
 
   const assignment = await prisma.assignment.findFirst({
     where: {
-      teamAssignmentRingId: savedAssigment.teamAssignmentRingId
+      teamAssignmentRingId: savedTeamAssigment.teamAssignmentRingId
     }
   });
 
@@ -51,19 +58,19 @@ export default async function rings(req: NextApiRequest, res: NextApiResponse) {
   let playerAssignments = [];
 
   const hunterPlayers = teams.find(
-    (team) => team.id === savedAssigment.huntingTeamId
+    (team) => team.id === savedTeamAssigment.huntingTeamId
   ).players;
 
   const targetPlayers = teams.find(
-    (team) => team.id === savedAssigment.targetTeamId
+    (team) => team.id === savedTeamAssigment.targetTeamId
   ).players;
 
-  hunterPlayers.map((hunter) => {
-    targetPlayers.map((target) => {
+  hunterPlayers.forEach((hunter) => {
+    targetPlayers.forEach((target) => {
       playerAssignments.push({
         hunterId: hunter.id,
         targetId: target.id,
-        teamAssignmentRingId: savedAssigment.teamAssignmentRingId,
+        teamAssignmentRingId: savedTeamAssigment.teamAssignmentRingId,
         ringId: assignment.ringId
       });
     });
@@ -73,5 +80,5 @@ export default async function rings(req: NextApiRequest, res: NextApiResponse) {
     data: playerAssignments
   });
 
-  res.json(savedAssigment);
+  res.json(savedTeamAssigment);
 }

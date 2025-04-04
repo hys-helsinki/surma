@@ -221,13 +221,13 @@ export const TeamTournamentRings = ({
 
     const teamId = event.target.value;
 
-    if (!assignment) {
-      setNewRing(newRing.concat({ huntingTeamId: id, targetTeamId: teamId }));
-    } else {
+    if (assignment) {
       const changedAssignment = { ...assignment, targetTeamId: teamId };
       setNewRing(
         newRing.map((a) => (a.huntingTeamId !== id ? a : changedAssignment))
       );
+    } else {
+      setNewRing(newRing.concat({ huntingTeamId: id, targetTeamId: teamId }));
     }
   };
 

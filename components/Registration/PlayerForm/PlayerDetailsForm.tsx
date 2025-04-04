@@ -12,16 +12,18 @@ import Markdown from "../../Common/Markdown";
 const BottomText = () => {
   return (
     <Box sx={{ my: 3, wordWrap: "break-word" }}>
-      Ilmoittautuessasi turnaukseen hyväksyt Helsingin yliopiston
-      salamurhaajien 
-      <Link
-        href={"https://salamurhaajat.net/mika-salamurhapeli/turnaussaannot"}
-        passHref
-      >
-        <u>turnaussäännöt</u>
-      </Link>
-      sekä
-      <GdprModal text="tietosuojakäytännön" />.
+      <div>
+        Ilmoittautuessasi turnaukseen hyväksyt Helsingin yliopiston
+        salamurhaajien{" "}
+        <Link
+          href={"https://salamurhaajat.net/mika-salamurhapeli/turnaussaannot"}
+          passHref
+        >
+          turnaussäännöt
+        </Link>{" "}
+        sekä{" "}
+      </div>
+      <GdprModal text=" tietosuojakäytännön" />.
     </Box>
   );
 };
@@ -45,7 +47,7 @@ const PlayerDetailsForm = ({
     learningInstitution: "",
     eyeColor: "",
     hair: "",
-    height: 0,
+    height: "",
     other: "",
     safetyNotes: ""
   };
@@ -55,7 +57,8 @@ const PlayerDetailsForm = ({
       enableReinitialize={true}
       initialValues={Object.assign(initialFields, ...calendarInitials)}
       validationSchema={Yup.object({
-        alias: Yup.string().required("Pakollinen")
+        alias: Yup.string().required("Pakollinen"),
+        address: Yup.string().required("Pakollinen")
       })}
       onSubmit={(values) => {
         handleSubmit(values);

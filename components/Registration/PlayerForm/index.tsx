@@ -1,7 +1,5 @@
 import { useRouter } from "next/router";
 import { useState } from "react";
-import logo from "/public/images/surma_logo.svg";
-import Image from "next/image";
 import { useSession } from "next-auth/react";
 import { Box, Container } from "@mui/material";
 import PlayerDetailsForm from "./PlayerDetailsForm";
@@ -100,29 +98,16 @@ export default function PlayerForm({ tournament }) {
       await uploadImage(createdPlayer.id);
       router.reload();
     } catch (error) {
+      setIsLoading(false);
       console.log(error);
     }
   };
 
   return (
-    (<Container maxWidth="md">
+    <Container maxWidth="md">
       {isRegistrationOpen ? (
         <Box>
-          <Box sx={{ display: "flex", paddingTop: "20px" }}>
-            <Image
-              src={logo}
-              width={75}
-              height={75}
-              alt="Slaughter logo"
-              style={{
-                paddingTop: "10px",
-                paddingLeft: "5px",
-                paddingRight: "10px",
-                maxWidth: "100%",
-                height: "auto"
-              }} />
-            <h1 style={{ marginLeft: "10px" }}>Ilmoittautuminen</h1>
-          </Box>
+          <h1 style={{ marginLeft: "10px" }}>Ilmoittautuminen</h1>
           <Box sx={{ my: 4 }}>
             <p>
               Tässä lomakkeessa kysytään turnauksen kannalta olennaisia tietoja,
@@ -130,8 +115,9 @@ export default function PlayerForm({ tournament }) {
               tuomaristo vahvistaa vielä ilmoittautumisesi.
             </p>
             <p>
-              Ainoastaan peitenimi on tässä vaiheessa pakollinen - muut kentät
-              voi täyttää myöhemminkin ja niitä voi muokata turnauksen aikana.
+              Ainoastaan peitenimi ja osoite ovat tässä vaiheessa pakollisia -
+              muut kentät voi täyttää myöhemminkin ja niitä voi muokata
+              turnauksen aikana.
             </p>
             <p>
               Kalenterin tiedot tulee pitää ajan tasalla sekä riittävän selkeinä
@@ -157,6 +143,6 @@ export default function PlayerForm({ tournament }) {
       ) : (
         <p>Ilmoittautuminen ei ole auki</p>
       )}
-    </Container>)
+    </Container>
   );
 }

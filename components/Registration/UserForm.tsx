@@ -1,8 +1,6 @@
-import { Box, Container } from "@mui/material";
+import { Box, Container, Grid } from "@mui/material";
 import { Form, Formik } from "formik";
 import * as Yup from "yup";
-import Image from "next/image";
-import logo from "/public/images/surma_logo.svg";
 import TextInput from "./TextInput";
 import { LoadingButton } from "@mui/lab";
 import { useState } from "react";
@@ -20,7 +18,6 @@ const UserForm = ({ tournament }: { tournament: Tournament }) => {
   }) => {
     setIsLoading(true);
     const formdata = { tournamentId: tournament.id, ...values };
-    console.log(formdata.email);
     const response = await fetch("/api/user/create", {
       method: "POST",
       body: JSON.stringify(formdata)
@@ -30,19 +27,9 @@ const UserForm = ({ tournament }: { tournament: Tournament }) => {
   };
 
   return (
-    (<Container maxWidth="md">
-      <Box sx={{ display: "flex" }}>
-        <Image
-          src={logo}
-          width={60}
-          height={60}
-          alt="logo"
-          style={{
-            maxWidth: "100%",
-            height: "auto"
-          }} />
-        <h1 style={{ marginLeft: "10px" }}>Ilmoittautuminen</h1>
-      </Box>
+    <Container maxWidth="md">
+      <h1 style={{ marginLeft: "10px" }}>Ilmoittautuminen</h1>
+
       <Box sx={{ my: 4 }}>
         <p>
           Tervetuloa ilmoittautumaan HYSin salamurhaturnaukseen &quot;
@@ -73,29 +60,37 @@ const UserForm = ({ tournament }: { tournament: Tournament }) => {
             lastName: Yup.string().required("Pakollinen"),
             email: Yup.string().required("Pakollinen"),
             phone: Yup.number()
+              .typeError("Syötä vain numeroita")
               .required("Pakollinen")
-              .integer("Syötä vain numeroita")
           })}
           onSubmit={(values) => {
             submitForm(values);
           }}
         >
-          <Form>
-            <TextInput label="Etunimi" name="firstName" type="text" />
-            <TextInput label="Sukunimi" name="lastName" type="text" />
+          <Form
+            onKeyDown={(e) => {
+              if (e.key === "Enter") {
+                e.preventDefault();
+              }
+            }}
+          >
+            <Grid container spacing={{ xs: 0, md: 2 }}>
+              <Grid item xs={12} md={6}>
+                <TextInput label="Etunimi" name="firstName" type="text" />
+              </Grid>
+              <Grid item xs={12} md={6}>
+                <TextInput label="Sukunimi" name="lastName" type="text" />
+              </Grid>
+            </Grid>
             <TextInput label="Sähköpostiosoite" name="email" type="email" />
             <TextInput label="Puhelinnumero" name="phone" type="text" />
-            <LoadingButton
-              loading={isLoading}
-              type="submit"
-              sx={{ width: "50%" }}
-            >
+            <LoadingButton loading={isLoading} type="submit">
               Luo käyttäjä
             </LoadingButton>
           </Form>
         </Formik>
       </Box>
-    </Container>)
+    </Container>
   );
 };
 

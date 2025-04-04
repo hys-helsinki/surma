@@ -59,8 +59,8 @@ export default async function handler(
         (team) => team.id === assignment.targetTeamId
       ).players;
 
-      hunterPlayers.map((hunter) => {
-        targetPlayers.map((target) => {
+      hunterPlayers.forEach((hunter) => {
+        targetPlayers.forEach((target) => {
           playerAssignments.push({
             hunterId: hunter.id,
             targetId: target.id,
