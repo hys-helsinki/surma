@@ -22,7 +22,9 @@ export default async function create(
         name: teamName,
         users: {
           createMany: {
-            data: users
+            data: users.map((user) => {
+              return { ...user, email: user.email.toLowerCase() }; // normalize user email for next-auth
+            })
           }
         }
       },
