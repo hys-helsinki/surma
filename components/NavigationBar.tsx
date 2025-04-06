@@ -145,9 +145,12 @@ const NavigationBar = () => {
                     <Collapse in={open} timeout="auto" unmountOnExit>
                       <List component="div" disablePadding>
                         {targets.map((target) => (
-                          <ListItemButton key={target.id} sx={{ pl: 4 }}>
+                          <ListItemButton
+                            key={target.target.user.id}
+                            sx={{ pl: 4 }}
+                          >
                             <Link
-                              href={`/tournaments/${tournamentId}/targets/${target.id}`}
+                              href={`/tournaments/${tournamentId}/targets/${target.target.user.id}`}
                             >
                               {target.target.user.firstName}{" "}
                               {target.target.user.lastName}
@@ -220,9 +223,9 @@ const NavigationBar = () => {
               onClose={handleCloseTargetMenu}
             >
               {targets.map((target) => (
-                <MenuItem key={target.id}>
+                <MenuItem key={target.target.user.id}>
                   <Link
-                    href={`/tournaments/${tournamentId}/targets/${target.id}`}
+                    href={`/tournaments/${tournamentId}/targets/${target.target.user.id}`}
                   >
                     {target.target.user.firstName} {target.target.user.lastName}
                   </Link>
