@@ -41,7 +41,7 @@ const PlayerDetails = ({ user, isUpdating }) => {
         <h2>Kuvaus</h2>
         {!isUpdating ? (
           <>
-            <p>
+            <pre style={{ whiteSpace: "pre-wrap" }}>
               <PriorityHighIcon
                 color="warning"
                 fontSize="small"
@@ -52,7 +52,7 @@ const PlayerDetails = ({ user, isUpdating }) => {
                 paikat):{" "}
               </b>
               {player.safetyNotes}
-            </p>
+            </pre>
             <p>
               <b>Osoite:</b> {player.address}
             </p>
@@ -68,9 +68,10 @@ const PlayerDetails = ({ user, isUpdating }) => {
             <p>
               <b>Pituus:</b> {player.height}
             </p>
-            <p>
-              <b>Ulkonäkö, kulkuvälineet ja muut lisätiedot:</b> {player.other}
-            </p>
+            <pre style={{ whiteSpace: "pre-wrap" }}>
+              <b>Ulkonäkö, kulkuvälineet ja muut lisätiedot: </b>
+              {player.other}
+            </pre>
           </>
         ) : (
           <UpdateForm
