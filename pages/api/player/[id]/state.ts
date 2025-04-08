@@ -45,7 +45,7 @@ export default async function handler(
     });
 
     if (state === "DEAD") {
-      if (FeatureFlag.DELETE_DEAD_PLAYER_ASSIGMENTS) {
+      if (FeatureFlag.DELETE_DEAD_HUNTER_ASSIGNMENTS) {
         // teamGame-tarkistus, koska vuoden 2025 joukkueturnauksessa on käytössä erikoissääntö jossa kohteita ei heti poisteta kuolleilta pelaajilta.
         // Otetaan tarkistus pois turnauksen jälkeen jos näyttää siltä ettei erikoissääntöä jatkossa haluta käyttää joukkueturnauksissa.
 
