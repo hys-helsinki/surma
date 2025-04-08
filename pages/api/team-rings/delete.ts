@@ -25,6 +25,12 @@ export default async function handler(
     res.status(403).end();
   }
 
+  await prisma.teamAssignment.deleteMany({
+    where: {
+      teamAssignmentRingId: data.ringId
+    }
+  });
+
   const deletedRing = await prisma.teamAssignmentRing.delete({
     where: {
       id: data.ringId
