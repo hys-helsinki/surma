@@ -44,22 +44,32 @@ export default async function handler(
       }
     });
 
-    if (FeatureFlag.DELETE_DEAD_PLAYER_ASSIGMENTS && state === "DEAD") {
-      // teamGame-tarkistus, koska vuoden 2025 joukkueturnauksessa on käytössä erikoissääntö jossa kohteita ei heti poisteta kuolleilta pelaajilta.
-      // Otetaan tarkistus pois turnauksen jälkeen jos näyttää siltä ettei erikoissääntöä jatkossa haluta käyttää joukkueturnauksissa.
+    if (state === "DEAD") {
+      if (FeatureFlag.DELETE_DEAD_HUNTER_ASSIGNMENTS) {
+        // teamGame-tarkistus, koska vuoden 2025 joukkueturnauksessa on käytössä erikoissääntö jossa kohteita ei heti poisteta kuolleilta pelaajilta.
+        // Otetaan tarkistus pois turnauksen jälkeen jos näyttää siltä ettei erikoissääntöä jatkossa haluta käyttää joukkueturnauksissa.
 
-      await prisma.assignment.deleteMany({
-        where: {
-          OR: [
-            {
-              hunterId: playerId
-            },
-            {
-              targetId: playerId
-            }
-          ]
-        }
-      });
+        await prisma.assignment.deleteMany({
+          where: {
+            OR: [
+              {
+                hunterId: playerId
+              },
+              {
+                targetId: playerId
+              }
+            ]
+          }
+        });
+      } else {
+        // Poistetaan joka tapauksessa pelaaja metsästäjien kohteista, koska muuten toimeksiannot pitää itse klikkailla pois kannasta.
+        // Ideana kuitenkin on, ettei kuollutta pelaajaa jahtaa enää kukaan.
+        await prisma.assignment.deleteMany({
+          where: {
+            targetId: playerId
+          }
+        });
+      }
     }
     res.json(updatedPlayer);
   }
