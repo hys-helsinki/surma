@@ -79,22 +79,7 @@ export const getServerSideProps: GetServerSideProps = async ({
       umpire: true,
       player: {
         select: {
-          state: true,
-          targets: {
-            select: {
-              target: {
-                select: {
-                  user: {
-                    select: {
-                      id: true,
-                      firstName: true,
-                      lastName: true
-                    }
-                  }
-                }
-              }
-            }
-          }
+          state: true
         }
       }
     }
@@ -111,7 +96,7 @@ export const getServerSideProps: GetServerSideProps = async ({
       player: {
         select: {
           id: true,
-          alias: true,
+          alias: currentUser.player.state === "DETECTIVE" ? true : false,
           address: true,
           learningInstitution: true,
           eyeColor: true,
@@ -119,9 +104,7 @@ export const getServerSideProps: GetServerSideProps = async ({
           height: true,
           other: true,
           calendar: true,
-          lastVisit: true,
           title: true,
-          state: true,
           safetyNotes: true,
           umpire: {
             select: {
@@ -173,12 +156,6 @@ export const getServerSideProps: GetServerSideProps = async ({
       user,
       tournament,
       imageUrl,
-      targets: isTournamentRunning(
-        new Date(tournament.startTime),
-        new Date(tournament.endTime)
-      )
-        ? currentUser.player.targets
-        : [],
       currentUserIsUmpire: currentUser.umpire != null,
       currentUserIsDetective: currentUser.player.state === "DETECTIVE",
       umpires
@@ -191,21 +168,12 @@ export default function Target({
   currentUser,
   tournament,
   imageUrl,
-  targets = [],
   currentUserIsUmpire,
   currentUserIsDetective,
   umpires
 }): JSX.Element {
   const theme = useTheme();
   const isMobileView = useMediaQuery(theme.breakpoints.down("md"));
-
-  let targetUsers = [];
-
-  if (targets.length > 0) {
-    targetUsers = currentUser.player.targets.map(
-      (assignment) => assignment.target.user
-    );
-  }
 
   return (
     <AuthenticationRequired>
