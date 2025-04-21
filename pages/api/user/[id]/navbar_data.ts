@@ -54,12 +54,13 @@ export default async function handler(
     }
   });
 
-  const targets = isTournamentRunning(
-    new Date(user.tournament.startTime),
-    new Date(user.tournament.endTime)
-  )
-    ? user.player.targets
-    : [];
+  const targets =
+    isTournamentRunning(
+      new Date(user.tournament.startTime),
+      new Date(user.tournament.endTime)
+    ) && user.player
+      ? user.player.targets
+      : [];
 
   user = { ...user, player: { ...user.player, targets } };
 
