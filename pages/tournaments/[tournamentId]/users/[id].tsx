@@ -148,7 +148,6 @@ export default function User({
   user,
   tournament,
   imageUrl,
-  targets = [],
   currentUserIsUmpire,
   umpires,
   currentUser
