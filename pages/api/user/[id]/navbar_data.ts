@@ -45,12 +45,7 @@ export default async function handler(
         }
       },
       umpire: true,
-      tournament: {
-        select: {
-          startTime: true,
-          endTime: true
-        }
-      }
+      tournament: true
     }
   });
 
@@ -59,10 +54,10 @@ export default async function handler(
       new Date(user.tournament.startTime),
       new Date(user.tournament.endTime)
     ) && user.player
-      ? user.player.targets
+      ? user.player.targets.map((target) => target.target.user)
       : [];
 
-  user = { ...user, player: { ...user.player, targets } };
+  const responseData = { ...user, player: { ...user.player, targets } };
 
-  res.json(user);
+  res.json(responseData);
 }
