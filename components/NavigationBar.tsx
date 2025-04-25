@@ -21,13 +21,21 @@ import {
   MenuItem,
   List,
   ListItemButton,
-  ListItemText,
   Collapse
 } from "@mui/material";
+import { Player, Tournament, Umpire, User } from "@prisma/client";
+interface PlayerWithTargets extends Player {
+  targets: { id: string; firstName: string; lastName: string }[];
+}
+interface NavBarUser extends User {
+  player: PlayerWithTargets;
+  tournament: Tournament;
+  umpire: Umpire;
+}
 
 const NavigationBar = () => {
   const { data } = useSession();
-  const [user, setUser] = useState(null);
+  const [user, setUser] = useState<NavBarUser>(null);
   const [anchorElNav, setAnchorElNav] = useState(null);
   const [anchorElTarget, setAnchorElTarget] = useState(null);
   const [open, setOpen] = useState(false);
