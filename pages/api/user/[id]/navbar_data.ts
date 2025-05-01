@@ -57,7 +57,11 @@ export default async function handler(
       ? user.player.targets.map((target) => target.target.user)
       : [];
 
-  const responseData = { ...user, player: { ...user.player, targets } };
+  const uniqueTargets = targets.filter(
+    (value, index, self) => index === self.findIndex((t) => t.id === value.id)
+  );
+
+  const responseData = { ...user, player: { ...user.player, uniqueTargets } };
 
   res.json(responseData);
 }
