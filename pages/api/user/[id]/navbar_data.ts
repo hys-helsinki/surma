@@ -61,7 +61,10 @@ export default async function handler(
     (value, index, self) => index === self.findIndex((t) => t.id === value.id)
   );
 
-  const responseData = { ...user, player: { ...user.player, uniqueTargets } };
+  const responseData = {
+    ...user,
+    player: { ...user.player, targets: uniqueTargets }
+  };
 
   res.json(responseData);
 }
