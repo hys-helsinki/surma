@@ -21,13 +21,21 @@ import {
   MenuItem,
   List,
   ListItemButton,
-  ListItemText,
   Collapse
 } from "@mui/material";
+import { Player, Tournament, Umpire, User } from "@prisma/client";
+interface PlayerWithTargets extends Player {
+  targets: { id: string; firstName: string; lastName: string }[];
+}
+interface NavBarUser extends User {
+  player: PlayerWithTargets;
+  tournament: Tournament;
+  umpire: Umpire;
+}
 
 const NavigationBar = () => {
   const { data } = useSession();
-  const [user, setUser] = useState(null);
+  const [user, setUser] = useState<NavBarUser>(null);
   const [anchorElNav, setAnchorElNav] = useState(null);
   const [anchorElTarget, setAnchorElTarget] = useState(null);
   const [open, setOpen] = useState(false);
@@ -81,6 +89,8 @@ const NavigationBar = () => {
               marginRight: isMobileView ? 0 : "1rem"
             }}
           />
+
+          {/* Mobile */}
           <Typography
             variant="h6"
             noWrap
@@ -144,16 +154,12 @@ const NavigationBar = () => {
                     </ListItemButton>
                     <Collapse in={open} timeout="auto" unmountOnExit>
                       <List component="div" disablePadding>
-                        {targets.map((target) => (
-                          <ListItemButton
-                            key={target.target.user.id}
-                            sx={{ pl: 4 }}
-                          >
+                        {targets.map((user) => (
+                          <ListItemButton key={user.id} sx={{ pl: 4 }}>
                             <Link
-                              href={`/tournaments/${tournamentId}/targets/${target.target.user.id}`}
+                              href={`/tournaments/${tournamentId}/targets/${user.id}`}
                             >
-                              {target.target.user.firstName}{" "}
-                              {target.target.user.lastName}
+                              {user.firstName} {user.lastName}
                             </Link>
                           </ListItemButton>
                         ))}
@@ -182,6 +188,8 @@ const NavigationBar = () => {
               </List>
             </Menu>
           </Box>
+
+          {/* Desktop */}
           <Typography
             variant="h5"
             noWrap
@@ -222,12 +230,12 @@ const NavigationBar = () => {
               open={Boolean(anchorElTarget)}
               onClose={handleCloseTargetMenu}
             >
-              {targets.map((target) => (
-                <MenuItem key={target.target.user.id}>
+              {targets.map((user) => (
+                <MenuItem key={user.id}>
                   <Link
-                    href={`/tournaments/${tournamentId}/targets/${target.target.user.id}`}
+                    href={`/tournaments/${tournamentId}/targets/${user.id}`}
                   >
-                    {target.target.user.firstName} {target.target.user.lastName}
+                    {user.firstName} {user.lastName}
                   </Link>
                 </MenuItem>
               ))}

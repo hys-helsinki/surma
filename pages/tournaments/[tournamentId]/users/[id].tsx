@@ -20,11 +20,6 @@ const isCurrentUserAuthorized = async (currentUser, userId, tournamentId) => {
   );
 };
 
-const isTournamentRunning = (startTime: Date, endTime: Date) => {
-  const currentTime = new Date().getTime();
-  return startTime.getTime() < currentTime && currentTime < endTime.getTime();
-};
-
 export const getServerSideProps: GetServerSideProps = async ({
   params,
   ...context
@@ -81,21 +76,6 @@ export const getServerSideProps: GetServerSideProps = async ({
           confirmed: true,
           state: true,
           safetyNotes: true,
-          targets: {
-            select: {
-              target: {
-                select: {
-                  user: {
-                    select: {
-                      id: true,
-                      firstName: true,
-                      lastName: true
-                    }
-                  }
-                }
-              }
-            }
-          },
           umpire: {
             select: {
               id: true,
@@ -157,12 +137,6 @@ export const getServerSideProps: GetServerSideProps = async ({
       user,
       tournament,
       imageUrl,
-      targets: isTournamentRunning(
-        new Date(tournament.startTime),
-        new Date(tournament.endTime)
-      )
-        ? user.player.targets
-        : [],
       currentUserIsUmpire: currentUser.umpire != null,
       umpires,
       currentUser
@@ -174,7 +148,6 @@ export default function User({
   user,
   tournament,
   imageUrl,
-  targets = [],
   currentUserIsUmpire,
   umpires,
   currentUser
@@ -204,14 +177,6 @@ export default function User({
 
   if (!Boolean(user.player)) {
     return <PlayerForm tournament={user.tournament} />;
-  }
-
-  let targetUsers = [];
-
-  if (targets.length > 0) {
-    targetUsers = user.player.targets.map(
-      (assignment) => assignment.target.user
-    );
   }
 
   const handleConfirmRegistration = async () => {

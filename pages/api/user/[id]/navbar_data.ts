@@ -45,23 +45,26 @@ export default async function handler(
         }
       },
       umpire: true,
-      tournament: {
-        select: {
-          startTime: true,
-          endTime: true
-        }
-      }
+      tournament: true
     }
   });
 
-  const targets = isTournamentRunning(
-    new Date(user.tournament.startTime),
-    new Date(user.tournament.endTime)
-  )
-    ? user.player.targets
-    : [];
+  const targets =
+    isTournamentRunning(
+      new Date(user.tournament.startTime),
+      new Date(user.tournament.endTime)
+    ) && user.player
+      ? user.player.targets.map((target) => target.target.user)
+      : [];
 
-  user = { ...user, player: { ...user.player, targets } };
+  const uniqueTargets = targets.filter(
+    (value, index, array) => index === array.findIndex((t) => t.id === value.id)
+  );
 
-  res.json(user);
+  const responseData = {
+    ...user,
+    player: { ...user.player, targets: uniqueTargets }
+  };
+
+  res.json(responseData);
 }
