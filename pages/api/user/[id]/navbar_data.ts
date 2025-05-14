@@ -58,7 +58,7 @@ export default async function handler(
       : [];
 
   const uniqueTargets = targets.filter(
-    (value, index, self) => index === self.findIndex((t) => t.id === value.id)
+    (value, index, array) => index === array.findIndex((t) => t.id === value.id)
   );
 
   const responseData = {
