@@ -35,6 +35,7 @@ export default async function upload(
     try {
       const imageData = JSON.parse(req.body);
       const uploadedResponse = await cloudinary.uploader.upload(imageData.url, {
+        folder: "surma",
         public_id: imageData.publicId
       });
       res.status(200).send(uploadedResponse);
