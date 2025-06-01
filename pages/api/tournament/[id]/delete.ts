@@ -25,7 +25,9 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
-  if (!isCurrentUserAuthorized(req.query.id, req, res)) {
+  const tournamentId = req.query.id as string;
+  console.log(tournamentId);
+  if (!isCurrentUserAuthorized(tournamentId, req, res)) {
     res.status(403).end();
   }
   if (req.method === "DELETE") {
@@ -34,6 +36,11 @@ export default async function handler(
         "surma/",
         function (result) {}
       );
+      await prisma.tournament.delete({
+        where: {
+          id: tournamentId
+        }
+      });
     } catch (error) {
       console.log(error);
       return res.status(500).end();

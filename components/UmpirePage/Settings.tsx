@@ -9,6 +9,7 @@ import { Form, Formik } from "formik";
 import { useField } from "formik";
 import moment from "moment";
 import * as Yup from "yup";
+import { useRouter } from "next/router";
 
 const DateTimePicker = ({ label, name }) => {
   const [field, meta, helpers] = useField(name);
@@ -103,8 +104,10 @@ const TournamentEditForm = ({ tournament }: { tournament: Tournament }) => {
   );
 };
 
-const DeleteButton = () => {
+const DeleteButton = ({ tournament }: { tournament: Tournament }) => {
   const [loading, setLoading] = useState(false);
+  const router = useRouter();
+
   const deleteTournamentResources = async () => {
     if (
       window.confirm(
@@ -112,12 +115,16 @@ const DeleteButton = () => {
       )
     ) {
       setLoading(true);
-
-      // const res = await fetch(`/api/tournament/${tournament.id}/delete`, {
-      //   method: "DELETE"
-      // });
-      // console.log(res);
-      console.log("ok");
+      try {
+        const res = await fetch(`/api/tournament/${tournament.id}/delete`, {
+          method: "DELETE"
+        });
+        if (res.status == 200) {
+          router.push("/");
+        }
+      } catch (error) {
+        console.log(error);
+      }
       setLoading(false);
     } else {
       console.log("cancel");
@@ -157,8 +164,9 @@ const DeleteButton = () => {
 const Settings = ({ tournament }: { tournament: Tournament }) => {
   return (
     <Box>
+      <h2>Asetukset</h2>
       <TournamentEditForm tournament={tournament} />
-      <DeleteButton />
+      <DeleteButton tournament={tournament} />
     </Box>
   );
 };

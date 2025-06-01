@@ -14,7 +14,7 @@ model User {
   id            String     @id @default(uuid())
   createdAt     DateTime   @default(now()) @db.Timestamptz(3)
   modifiedAt    DateTime   @default(now()) @db.Timestamptz(3)
-  tournament    Tournament @relation(fields: [tournamentId], references: [id])
+  tournament    Tournament @relation(fields: [tournamentId], references: [id], onDelete: Cascade)
   tournamentId  String
   firstName     String
   lastName      String
@@ -39,7 +39,7 @@ model Player {
   lastVisit           DateTime?    @db.Timestamptz(3)
   userId              String       @unique
   user                User         @relation(fields: [userId], references: [id], onDelete: Cascade)
-  tournament          Tournament   @relation(fields: [tournamentId], references: [id])
+  tournament          Tournament   @relation(fields: [tournamentId], references: [id], onDelete: Cascade)
   tournamentId        String
   umpire              Umpire?      @relation(fields: [umpireId], references: [id])
   umpireId            String?
@@ -81,7 +81,7 @@ model Team {
   modifiedAt   DateTime         @default(now())
   name         String
   tournamentId String
-  tournament   Tournament       @relation(fields: [tournamentId], references: [id])
+  tournament   Tournament       @relation(fields: [tournamentId], references: [id], onDelete: Cascade)
   players      Player[]
   users        User[]
   targets      TeamAssignment[] @relation(name: "TeamHasTarget")
@@ -94,7 +94,7 @@ model Umpire {
   modifiedAt     DateTime   @default(now())
   userId         String     @unique
   user           User       @relation(fields: [userId], references: [id], onDelete: Cascade)
-  tournament     Tournament @relation(fields: [tournamentId], references: [id])
+  tournament     Tournament @relation(fields: [tournamentId], references: [id], onDelete: Cascade)
   tournamentId   String
   players        Player[]
   responsibility String?
@@ -136,7 +136,7 @@ model AssignmentRing {
   createdAt    DateTime     @default(now()) @db.Timestamptz(3)
   modifiedAt   DateTime     @default(now()) @db.Timestamptz(3)
   name         String?
-  tournament   Tournament   @relation(fields: [tournamentId], references: [id])
+  tournament   Tournament   @relation(fields: [tournamentId], references: [id], onDelete: Cascade)
   tournamentId String
   assignments  Assignment[]
 }
@@ -149,7 +149,7 @@ model TeamAssignment {
   huntingTeamId        String
   targetTeam           Team                @relation(name: "TeamIsHunted", fields: [targetTeamId], references: [id], onDelete: Cascade)
   targetTeamId         String
-  teamAssignmentRing   TeamAssignmentRing? @relation(fields: [teamAssignmentRingId], references: [id])
+  teamAssignmentRing   TeamAssignmentRing? @relation(fields: [teamAssignmentRingId], references: [id], onDelete: Cascade)
   teamAssignmentRingId String?
 }
 
@@ -158,7 +158,7 @@ model TeamAssignmentRing {
   createdAt    DateTime         @default(now()) @db.Timestamptz(3)
   modifiedAt   DateTime         @default(now()) @db.Timestamptz(3)
   name         String?
-  tournament   Tournament       @relation(fields: [tournamentId], references: [id])
+  tournament   Tournament       @relation(fields: [tournamentId], references: [id], onDelete: Cascade)
   tournamentId String
   assignments  TeamAssignment[]
 }
