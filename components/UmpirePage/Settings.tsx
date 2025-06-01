@@ -8,6 +8,7 @@ import Box from "@mui/material/Box";
 import { Form, Formik } from "formik";
 import { useField } from "formik";
 import moment from "moment";
+import * as Yup from "yup";
 
 const DateTimePicker = ({ label, name }) => {
   const [field, meta, helpers] = useField(name);
@@ -19,15 +20,15 @@ const DateTimePicker = ({ label, name }) => {
   return (
     <Box my={1}>
       {label && <label>{label}</label>}
+      {meta.error ? (
+        <div className="registration-error">{meta.error}</div>
+      ) : null}
       <Datetime
         {...field}
         inputProps={{ name: name }}
         value={field.value}
         onChange={handleChange}
       />
-      {meta.touched && meta.error ? (
-        <div style={{ color: "red" }}>{meta.error}</div>
-      ) : null}
     </Box>
   );
 };
@@ -60,6 +61,20 @@ const TournamentEditForm = ({ tournament }: { tournament: Tournament }) => {
       onSubmit={(values) => {
         submitForm(values);
       }}
+      validationSchema={Yup.object({
+        startTime: Yup.date()
+          .typeError("Tarkista päivämäärän formaatti")
+          .required("Pakollinen"),
+        endTime: Yup.date()
+          .typeError("Tarkista päivämäärän formaatti")
+          .required("Pakollinen"),
+        registrationStartTime: Yup.date()
+          .typeError("Tarkista päivämäärän formaatti")
+          .required("Pakollinen"),
+        registrationEndTime: Yup.date()
+          .typeError("Tarkista päivämäärän formaatti")
+          .required("Pakollinen")
+      })}
     >
       <Form
         onKeyDown={(e) => {
