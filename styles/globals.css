@@ -114,3 +114,7 @@ a {
   text-decoration: underline;
   display: inline;
 }
+
+.rdtPicker {
+  color: black;
+}
