@@ -50,54 +50,56 @@ const TournamentEditForm = ({ tournament }: { tournament: Tournament }) => {
     setIsLoading(false);
   };
   return (
-    <Formik
-      enableReinitialize={true}
-      initialValues={{
-        startTime: moment(tournament.startTime),
-        endTime: moment(tournament.endTime),
-        registrationStartTime: moment(tournament.registrationStartTime),
-        registrationEndTime: moment(tournament.registrationEndTime)
-      }}
-      onSubmit={(values) => {
-        submitForm(values);
-      }}
-      validationSchema={Yup.object({
-        startTime: Yup.date()
-          .typeError("Tarkista päivämäärän formaatti")
-          .required("Pakollinen"),
-        endTime: Yup.date()
-          .typeError("Tarkista päivämäärän formaatti")
-          .required("Pakollinen"),
-        registrationStartTime: Yup.date()
-          .typeError("Tarkista päivämäärän formaatti")
-          .required("Pakollinen"),
-        registrationEndTime: Yup.date()
-          .typeError("Tarkista päivämäärän formaatti")
-          .required("Pakollinen")
-      })}
-    >
-      <Form
-        onKeyDown={(e) => {
-          if (e.key === "Enter") {
-            e.preventDefault();
-          }
+    <Box width={{ xs: "100%", md: "25%" }}>
+      <Formik
+        enableReinitialize={true}
+        initialValues={{
+          startTime: moment(tournament.startTime),
+          endTime: moment(tournament.endTime),
+          registrationStartTime: moment(tournament.registrationStartTime),
+          registrationEndTime: moment(tournament.registrationEndTime)
         }}
+        onSubmit={(values) => {
+          submitForm(values);
+        }}
+        validationSchema={Yup.object({
+          startTime: Yup.date()
+            .typeError("Tarkista päivämäärän formaatti")
+            .required("Pakollinen"),
+          endTime: Yup.date()
+            .typeError("Tarkista päivämäärän formaatti")
+            .required("Pakollinen"),
+          registrationStartTime: Yup.date()
+            .typeError("Tarkista päivämäärän formaatti")
+            .required("Pakollinen"),
+          registrationEndTime: Yup.date()
+            .typeError("Tarkista päivämäärän formaatti")
+            .required("Pakollinen")
+        })}
       >
-        <DateTimePicker label="Turnaus alkaa" name="startTime" />
-        <DateTimePicker label="Turnaus päättyy" name="endTime" />
-        <DateTimePicker
-          label="Ilmoittautuminen alkaa"
-          name="registrationStartTime"
-        />
-        <DateTimePicker
-          label="Ilmoittautuminen päättyy"
-          name="registrationEndTime"
-        />
-        <LoadingButton loading={isLoading} type="submit">
-          Tallenna muutokset
-        </LoadingButton>
-      </Form>
-    </Formik>
+        <Form
+          onKeyDown={(e) => {
+            if (e.key === "Enter") {
+              e.preventDefault();
+            }
+          }}
+        >
+          <DateTimePicker label="Turnaus alkaa" name="startTime" />
+          <DateTimePicker label="Turnaus päättyy" name="endTime" />
+          <DateTimePicker
+            label="Ilmoittautuminen alkaa"
+            name="registrationStartTime"
+          />
+          <DateTimePicker
+            label="Ilmoittautuminen päättyy"
+            name="registrationEndTime"
+          />
+          <LoadingButton loading={isLoading} type="submit">
+            Tallenna muutokset
+          </LoadingButton>
+        </Form>
+      </Formik>
+    </Box>
   );
 };
 
@@ -123,19 +125,38 @@ const DeleteButton = () => {
   };
 
   return (
-    <LoadingButton
-      onClick={() => deleteTournamentResources()}
-      loading={loading}
-      className="delete-tournament"
+    <Box
+      sx={{
+        borderTop: "2px dashed white ",
+        width: { xs: "100%", md: "40%" },
+        paddingTop: 2
+      }}
     >
-      Poista turnaus
-    </LoadingButton>
+      <div>
+        <i>
+          Huom! Alla olevan napin painaminen lopettaa turnauksen ja poistaa
+          kaiken siihen liittyvän datan (turnauksen tiedot sekä kaikkien
+          käyttäjien - sekä pelaajien että tuomarien - tiedot). Surmaan ei voi
+          enää tämän jälkeen kirjautua eikä tietoja voi palauttaa myöhemmin,
+          joten otathan talteen kaiken tarvittavan datan ennen tietojen
+          poistamista.
+        </i>
+      </div>
+
+      <LoadingButton
+        onClick={() => deleteTournamentResources()}
+        loading={loading}
+        className="delete-tournament"
+      >
+        Lopeta turnaus ja poista data
+      </LoadingButton>
+    </Box>
   );
 };
 
 const Settings = ({ tournament }: { tournament: Tournament }) => {
   return (
-    <Box width={{ xs: "100%", md: "25%" }}>
+    <Box>
       <TournamentEditForm tournament={tournament} />
       <DeleteButton />
     </Box>
