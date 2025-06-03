@@ -1,8 +1,10 @@
 import NextAuth, { DefaultSession } from "next-auth";
 import EmailProvider from "next-auth/providers/email";
+import CredentialsProvider from "next-auth/providers/credentials";
 import { PrismaAdapter } from "@next-auth/prisma-adapter";
 import prisma from "../../../lib/prisma";
 import { Prisma } from "@prisma/client";
+import bcrypt from "bcrypt";
 
 export const authConfig = {
   adapter: PrismaAdapter(prisma),
@@ -18,6 +20,35 @@ export const authConfig = {
         }
       },
       from: "Surma authorization <no-reply.surma@salamurhaajat.net>"
+    }),
+    CredentialsProvider({
+      name: "Credentials",
+      credentials: {
+        username: {
+          label: "Email",
+          type: "text",
+          placeholder: "your username"
+        },
+        password: { label: "Password", type: "password" }
+      },
+      async authorize(credentials, req) {
+        // Find user by username (or email)
+        const user = await prisma.user.findUnique({
+          where: { email: credentials.username } // Or use another unique field for username
+        });
+
+        if (user && user.password) {
+          const isValid = await bcrypt.compare(
+            credentials.password,
+            user.password
+          );
+          if (isValid) {
+            return { id: user.id, name: user.name, email: user.email };
+          }
+        }
+        // Reject if not valid
+        return null;
+      }
     })
   ],
   callbacks: {
