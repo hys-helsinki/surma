@@ -22,6 +22,7 @@ export const authConfig = {
       from: "Surma authorization <no-reply.surma@salamurhaajat.net>"
     }),
     CredentialsProvider({
+      id: "admin-login",
       name: "Credentials",
       credentials: {
         username: {
@@ -43,7 +44,7 @@ export const authConfig = {
             adminUser.password
           );
           if (isValid) {
-            return { email: adminUser.email };
+            return { id: "ADMIN", name: "ADMIN", email: adminUser.email };
           }
         }
         // Reject if not valid
