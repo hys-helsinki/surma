@@ -33,17 +33,17 @@ export const authConfig = {
       },
       async authorize(credentials, req) {
         // Find user by username (or email)
-        const user = await prisma.user.findUnique({
+        const adminUser = await prisma.adminUser.findUnique({
           where: { email: credentials.username } // Or use another unique field for username
         });
 
-        if (user && user.password) {
+        if (adminUser && adminUser.password) {
           const isValid = await bcrypt.compare(
             credentials.password,
-            user.password
+            adminUser.password
           );
           if (isValid) {
-            return { id: user.id, name: user.name, email: user.email };
+            return { email: adminUser.email };
           }
         }
         // Reject if not valid
