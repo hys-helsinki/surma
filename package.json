@@ -41,6 +41,7 @@
   },
   "devDependencies": {
     "@playwright/test": "^1.41.2",
+    "@types/bcrypt": "^5.0.2",
     "@types/node": "^18.0.5",
     "@types/react": "^18.0.15",
     "eslint": "8.18.0",
