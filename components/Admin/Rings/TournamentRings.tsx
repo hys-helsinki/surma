@@ -3,14 +3,23 @@ import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 import KeyboardArrowUpRoundedIcon from "@mui/icons-material/KeyboardArrowUpRounded";
 import KeyboardArrowDownRoundedIcon from "@mui/icons-material/KeyboardArrowDownRounded";
 import IconButton from "@mui/material/IconButton";
-import { Box, Button } from "@mui/material";
-import { Player, User, Tournament } from "@prisma/client";
+import { Box, Button, Grid } from "@mui/material";
+import {
+  Player,
+  User,
+  Tournament,
+  Assignment,
+  AssignmentRing
+} from "@prisma/client";
 import CreateRingForm from "./CreateRingForm";
 import { Field, Form, Formik } from "formik";
 import LoadingButton from "@mui/lab/LoadingButton";
-
 interface PlayerWithUser extends Player {
   user: User;
+  targets: Assignment[];
+}
+interface RingWithAssignments extends AssignmentRing {
+  assignments: Assignment[];
 }
 
 const Ring = ({ ring, rings, setRings, players, tournament }) => {
@@ -22,17 +31,23 @@ const Ring = ({ ring, rings, setRings, players, tournament }) => {
 
   if (!assignments || !players) return null;
 
+  const getPlayerName = (playerId) => {
+    if (!playerId) return;
+    const searchedPlayer = players.find((player) => playerId == player.id);
+
+    return `${searchedPlayer.user.firstName} ${searchedPlayer.user.lastName}`;
+  };
+
   const deleteAssignment = async (id: string) => {
     setIsDeletingAssignment(true);
     const res = await fetch("/api/tournament/assignments", {
       method: "DELETE",
       body: id
     });
-    const ringWithoutDeletedAssigment = await res.json();
-    setRings(
-      rings.map((r) => (r.id !== ring ? r : ringWithoutDeletedAssigment))
-    );
-    setAssignments(assignments.filter((assignment) => assignment.id !== id));
+    const deletedAssignment = await res.json();
+    if (deletedAssignment) {
+      setAssignments(assignments.filter((assignment) => assignment.id !== id));
+    }
     setIsDeletingAssignment(false);
   };
 
@@ -63,13 +78,6 @@ const Ring = ({ ring, rings, setRings, players, tournament }) => {
     const deletedRing = await res.json();
     setRings(rings.filter((ring) => ring.id !== deletedRing.id));
     setIsDeletingRing(false);
-  };
-
-  const getPlayerName = (playerId) => {
-    if (!playerId) return;
-    const searchedPlayer = players.find((player) => playerId == player.id);
-
-    return `${searchedPlayer.user.firstName} ${searchedPlayer.user.lastName}`;
   };
 
   return (
@@ -161,7 +169,7 @@ export const TournamentRings = ({
   players: PlayerWithUser[];
   rings: any;
 }): JSX.Element => {
-  const [allRings, setRings] = useState(rings);
+  const [allRings, setRings] = useState<RingWithAssignments[]>(rings);
   const [showForm, setShowForm] = useState(false);
 
   useEffect(() => {
@@ -172,30 +180,56 @@ export const TournamentRings = ({
     a.user.firstName.localeCompare(b.user.firstName)
   );
 
+  const getPlayerName = (playerId) => {
+    if (!playerId) return;
+    const searchedPlayer = players.find((player) => playerId == player.id);
+
+    return `${searchedPlayer.user.firstName} ${searchedPlayer.user.lastName}`;
+  };
+
   return (
-    <Box width={{ xs: "100%", md: "25%" }}>
-      <h2>Ringit</h2>
-      {allRings.map((ring) => (
-        <Ring
-          players={players}
-          ring={ring}
-          tournament={tournament}
-          rings={allRings}
-          setRings={setRings}
-          key={ring.id}
-        />
-      ))}
-      <button onClick={() => setShowForm(!showForm)}>
-        {!showForm ? "Luo uusi rinki" : "Peruuta"}
-      </button>
-      {showForm && (
-        <CreateRingForm
-          players={sortedPlayers}
-          tournament={tournament}
-          setShowForm={setShowForm}
-          setRings={setRings}
-        />
-      )}
-    </Box>
+    <Grid container>
+      <Grid item xs={12} md={3}>
+        <h2>Ringit</h2>
+        {allRings.map((ring) => (
+          <Ring
+            players={players}
+            ring={ring}
+            tournament={tournament}
+            rings={allRings}
+            setRings={setRings}
+            key={ring.id}
+          />
+        ))}
+        <button onClick={() => setShowForm(!showForm)}>
+          {!showForm ? "Luo uusi rinki" : "Peruuta"}
+        </button>
+        {showForm && (
+          <CreateRingForm
+            players={sortedPlayers}
+            tournament={tournament}
+            setShowForm={setShowForm}
+            setRings={setRings}
+          />
+        )}
+      </Grid>
+      <Grid item xs={12} md={3}>
+        <h2>Pelaajien kohteet</h2>
+        {players.map((player) => (
+          <Box key={player.id}>
+            <p>
+              {player.user.firstName} {player.user.lastName}
+            </p>
+            <ul>
+              {player.targets.map((assignment) => (
+                <li key={assignment.id}>
+                  {getPlayerName(assignment.targetId)}
+                </li>
+              ))}
+            </ul>
+          </Box>
+        ))}
+      </Grid>
+    </Grid>
   );
 };
