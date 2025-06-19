@@ -40,7 +40,10 @@ const isCreateAuthorized = async (ringId, req, res) => {
   return isCurrentUserAuthorized(ring.tournamentId, req, res);
 };
 
-export default async function rings(req: NextApiRequest, res: NextApiResponse) {
+export default async function handler(
+  req: NextApiRequest,
+  res: NextApiResponse
+) {
   if (req.method === "DELETE") {
     const assignmentId = req.body;
     if (!(await isDeleteAuthorized(assignmentId, req, res))) {
@@ -52,15 +55,7 @@ export default async function rings(req: NextApiRequest, res: NextApiResponse) {
         id: assignmentId
       }
     });
-    const updatedRing = await prisma.assignmentRing.findUnique({
-      where: {
-        id: deletedAssignment.ringId
-      },
-      include: {
-        assignments: true
-      }
-    });
-    res.json(updatedRing);
+    res.json(deletedAssignment);
   } else if (req.method === "POST") {
     const newAssignment = JSON.parse(req.body);
     if (!(await isCreateAuthorized(newAssignment.ringId, req, res))) {
@@ -71,14 +66,6 @@ export default async function rings(req: NextApiRequest, res: NextApiResponse) {
       data: newAssignment
     });
 
-    const updatedRing = await prisma.assignmentRing.findUnique({
-      where: {
-        id: savedAssigment.ringId
-      },
-      include: {
-        assignments: true
-      }
-    });
-    res.json(updatedRing);
+    res.json(savedAssigment);
   }
 }
