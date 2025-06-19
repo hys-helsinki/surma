@@ -22,7 +22,7 @@ interface RingWithAssignments extends AssignmentRing {
   assignments: Assignment[];
 }
 
-const Ring = ({ ring, rings, setRings, players, tournament }) => {
+const Ring = ({ ring, rings, setRings, players, setPlayers, tournament }) => {
   const [showRing, setShowRing] = useState(false);
   const [assignments, setAssignments] = useState(ring.assignments);
   const [isDeletingRing, setIsDeletingRing] = useState(false);
@@ -44,9 +44,10 @@ const Ring = ({ ring, rings, setRings, players, tournament }) => {
       method: "DELETE",
       body: id
     });
-    const deletedAssignment = await res.json();
-    if (deletedAssignment) {
+    const responseData = await res.json();
+    if (responseData.deletedAssignment) {
       setAssignments(assignments.filter((assignment) => assignment.id !== id));
+      setPlayers(responseData.players);
     }
     setIsDeletingAssignment(false);
   };
@@ -64,9 +65,10 @@ const Ring = ({ ring, rings, setRings, players, tournament }) => {
       method: "POST",
       body: JSON.stringify(newAssignment)
     });
-    const createdAssignment = await res.json();
-    setAssignments(assignments.concat(createdAssignment));
+    const responseData = await res.json();
+    setAssignments(assignments.concat(responseData.savedAssignment));
     setIsCreatingAssignment(false);
+    setPlayers(responseData.players);
   };
 
   const deleteRing = async (id) => {
@@ -75,8 +77,11 @@ const Ring = ({ ring, rings, setRings, players, tournament }) => {
       method: "DELETE",
       body: JSON.stringify({ ringId: id, tournamentId: tournament.id })
     });
-    const deletedRing = await res.json();
-    setRings(rings.filter((ring) => ring.id !== deletedRing.id));
+    const responseData = await res.json();
+    if (responseData.deletedRing) {
+      setRings(rings.filter((ring) => ring.id !== responseData.deletedRing.id));
+      setPlayers(responseData.players);
+    }
     setIsDeletingRing(false);
   };
 
@@ -132,6 +137,7 @@ const Ring = ({ ring, rings, setRings, players, tournament }) => {
                     {players.map((p) => (
                       <option
                         value={p.id}
+                        key={p.id}
                       >{`${p.user.firstName} ${p.user.lastName}`}</option>
                     ))}
                   </Field>
@@ -143,6 +149,7 @@ const Ring = ({ ring, rings, setRings, players, tournament }) => {
                     {players.map((p) => (
                       <option
                         value={p.id}
+                        key={p.id}
                       >{`${p.user.firstName} ${p.user.lastName}`}</option>
                     ))}
                   </Field>
@@ -162,7 +169,7 @@ const Ring = ({ ring, rings, setRings, players, tournament }) => {
 
 export const TournamentRings = ({
   tournament,
-  players,
+  players: playerList,
   rings
 }: {
   tournament: Tournament;
@@ -170,6 +177,7 @@ export const TournamentRings = ({
   rings: any;
 }): JSX.Element => {
   const [allRings, setRings] = useState<RingWithAssignments[]>(rings);
+  const [players, setPlayers] = useState(playerList);
   const [showForm, setShowForm] = useState(false);
 
   useEffect(() => {
@@ -194,6 +202,7 @@ export const TournamentRings = ({
         {allRings.map((ring) => (
           <Ring
             players={players}
+            setPlayers={setPlayers}
             ring={ring}
             tournament={tournament}
             rings={allRings}
@@ -207,6 +216,7 @@ export const TournamentRings = ({
         {showForm && (
           <CreateRingForm
             players={sortedPlayers}
+            setPlayers={setPlayers}
             tournament={tournament}
             setShowForm={setShowForm}
             setRings={setRings}

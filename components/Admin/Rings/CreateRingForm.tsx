@@ -8,11 +8,13 @@ interface PlayerWithUser extends Player {
 
 const CreateRingForm = ({
   players,
+  setPlayers,
   tournament,
   setShowForm,
   setRings
 }: {
   players: PlayerWithUser[];
+  setPlayers: any;
   tournament: any;
   setShowForm: any;
   setRings: any;
@@ -35,9 +37,10 @@ const CreateRingForm = ({
       method: "POST",
       body: JSON.stringify(newRing)
     });
-    const createdRing = await res.json();
+    const responseData = await res.json();
+    setPlayers(responseData.players);
+    setRings((prevRings) => prevRings.concat(responseData.createdRing));
     setShowForm(false);
-    setRings((prevRings) => prevRings.concat(createdRing));
   };
 
   return (

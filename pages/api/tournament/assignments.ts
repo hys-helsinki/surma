@@ -55,17 +55,31 @@ export default async function handler(
         id: assignmentId
       }
     });
-    res.json(deletedAssignment);
+
+    const updatedPlayers = await prisma.player.findMany({
+      include: {
+        user: true,
+        targets: true
+      }
+    });
+    res.json({ deletedAssignment, players: updatedPlayers });
   } else if (req.method === "POST") {
     const newAssignment = JSON.parse(req.body);
     if (!(await isCreateAuthorized(newAssignment.ringId, req, res))) {
       console.log("Unauthorized assigment create attempt!");
       res.status(403).end();
     }
-    const savedAssigment = await prisma.assignment.create({
+    const savedAssignment = await prisma.assignment.create({
       data: newAssignment
     });
 
-    res.json(savedAssigment);
+    const updatedPlayers = await prisma.player.findMany({
+      include: {
+        user: true,
+        targets: true
+      }
+    });
+
+    res.json({ savedAssignment, players: updatedPlayers });
   }
 }
