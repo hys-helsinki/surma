@@ -44,34 +44,36 @@ const CreateRingForm = ({
   };
 
   return (
-    <Formik
-      initialValues={{ name: "" }}
-      onSubmit={(values) => createRing(values)}
-    >
-      {() => (
-        <Form>
-          <Box>
-            <label>Ringin nimi</label>
-            <Field name="name" />
-          </Box>
-          {players.map((hunter) => (
-            <Box key={hunter.id}>
-              <label>{`${hunter.user.firstName} ${hunter.user.lastName}`}</label>
-              <Field as="select" name={hunter.id}>
-                <option value="">--</option>
-                {players.map((target) => (
-                  <option
-                    value={target.id}
-                    key={target.id}
-                  >{`${target.user.firstName} ${target.user.lastName}`}</option>
-                ))}
-              </Field>
+    <Box width={{ xs: "100%", md: "80%" }}>
+      <Formik
+        initialValues={{ name: "" }}
+        onSubmit={(values) => createRing(values)}
+      >
+        {() => (
+          <Form>
+            <Box>
+              <label>Ringin nimi</label>
+              <Field name="name" />
             </Box>
-          ))}
-          <Button type="submit">Tallenna</Button>
-        </Form>
-      )}
-    </Formik>
+            {players.map((hunter) => (
+              <Box key={hunter.id}>
+                <label>{`${hunter.user.firstName} ${hunter.user.lastName}`}</label>
+                <Field as="select" name={hunter.id}>
+                  <option value="">--</option>
+                  {players.map((target) => (
+                    <option
+                      value={target.id}
+                      key={target.id}
+                    >{`${target.user.firstName} ${target.user.lastName}`}</option>
+                  ))}
+                </Field>
+              </Box>
+            ))}
+            <Button type="submit">Tallenna</Button>
+          </Form>
+        )}
+      </Formik>
+    </Box>
   );
 };
 

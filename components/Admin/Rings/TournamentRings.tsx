@@ -14,6 +14,7 @@ import {
 import CreateRingForm from "./CreateRingForm";
 import { Field, Form, Formik } from "formik";
 import LoadingButton from "@mui/lab/LoadingButton";
+import { none } from "@cloudinary/url-gen/qualifiers/fontHinting";
 interface PlayerWithUser extends Player {
   user: User;
   targets: Assignment[];
@@ -114,14 +115,22 @@ const Ring = ({ ring, rings, setRings, players, setPlayers, tournament }) => {
         <div style={{ paddingLeft: "2rem" }}>
           {assignments.map((assignment) => (
             <div key={assignment.id}>
-              <p>Metsästäjä {getPlayerName(assignment.hunterId)}</p>
-              <p>Kohde {getPlayerName(assignment.targetId)}</p>
+              <p>
+                <strong>Metsästäjä: </strong>
+                {getPlayerName(assignment.hunterId)}
+              </p>
+              <p>
+                <strong>Kohde: </strong>
+                {getPlayerName(assignment.targetId)}
+              </p>
               <LoadingButton
                 onClick={() => deleteAssignment(assignment.id)}
                 loading={isDeletingAssignment}
+                sx={{ margin: "10px" }}
               >
                 Poista toimeksianto
               </LoadingButton>
+              <p>---------</p>
             </div>
           ))}
           <Formik
@@ -154,10 +163,11 @@ const Ring = ({ ring, rings, setRings, players, setPlayers, tournament }) => {
                     ))}
                   </Field>
                 </Box>
-
-                <LoadingButton type="submit" loading={isCreatingAssignment}>
-                  Luo uusi toimeksianto
-                </LoadingButton>
+                <Box width={{ xs: "100%", md: "70%" }}>
+                  <LoadingButton type="submit" loading={isCreatingAssignment}>
+                    Luo uusi toimeksianto
+                  </LoadingButton>
+                </Box>
               </Form>
             )}
           </Formik>
@@ -197,7 +207,7 @@ export const TournamentRings = ({
 
   return (
     <Grid container>
-      <Grid item xs={12} md={3}>
+      <Grid item xs={12} md={4}>
         <h2>Ringit</h2>
         {allRings.map((ring) => (
           <Ring
@@ -223,7 +233,7 @@ export const TournamentRings = ({
           />
         )}
       </Grid>
-      <Grid item xs={12} md={3}>
+      <Grid item xs={12} md={4}>
         <h2>Pelaajien kohteet</h2>
         {players.map((player) => (
           <Box key={player.id}>
