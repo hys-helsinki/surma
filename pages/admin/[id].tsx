@@ -84,7 +84,8 @@ export const getServerSideProps: GetServerSideProps = async ({
         include: {
           user: true
         }
-      }
+      },
+      targets: true
     }
   });
 
