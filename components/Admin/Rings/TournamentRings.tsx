@@ -14,7 +14,6 @@ import {
 import CreateRingForm from "./CreateRingForm";
 import { Field, Form, Formik } from "formik";
 import LoadingButton from "@mui/lab/LoadingButton";
-import { none } from "@cloudinary/url-gen/qualifiers/fontHinting";
 interface PlayerWithUser extends Player {
   user: User;
   targets: Assignment[];
@@ -194,9 +193,9 @@ export const TournamentRings = ({
     setRings(rings);
   }, [rings]);
 
-  const sortedPlayers = players.sort((a, b) =>
-    a.user.firstName.localeCompare(b.user.firstName)
-  );
+  const sortedActivePlayers = players
+    .filter((player) => player.state === "ACTIVE")
+    .sort((a, b) => a.user.firstName.localeCompare(b.user.firstName));
 
   const getPlayerName = (playerId) => {
     if (!playerId) return;
@@ -211,7 +210,7 @@ export const TournamentRings = ({
         <h2>Ringit</h2>
         {allRings.map((ring) => (
           <Ring
-            players={players}
+            players={sortedActivePlayers}
             setPlayers={setPlayers}
             ring={ring}
             tournament={tournament}
@@ -225,7 +224,7 @@ export const TournamentRings = ({
         </button>
         {showForm && (
           <CreateRingForm
-            players={sortedPlayers}
+            players={sortedActivePlayers}
             setPlayers={setPlayers}
             tournament={tournament}
             setShowForm={setShowForm}
