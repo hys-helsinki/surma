@@ -15,6 +15,8 @@ import CreateRingForm from "./CreateRingForm";
 import { Field, Form, Formik } from "formik";
 import LoadingButton from "@mui/lab/LoadingButton";
 import { playerColors } from "../../../lib/constants";
+import PlayersWithTargets from "./PlayersWithTargets";
+import { getPlayerName } from "../../utils";
 interface PlayerWithUser extends Player {
   user: User;
   targets: Assignment[];
@@ -46,13 +48,6 @@ const AssignmentCard = ({
     setIsDeletingAssignment(false);
   };
 
-  const getPlayerName = (playerId) => {
-    if (!playerId) return;
-    const searchedPlayer = players.find((player) => playerId == player.id);
-
-    return `${searchedPlayer.user.firstName} ${searchedPlayer.user.lastName}`;
-  };
-
   return (
     <Card
       sx={{
@@ -67,11 +62,11 @@ const AssignmentCard = ({
     >
       <p>
         <strong>Metsästäjä: </strong>
-        {getPlayerName(assignment.hunterId)}
+        {getPlayerName(assignment.hunterId, players)}
       </p>
       <p>
         <strong>Kohde: </strong>
-        {getPlayerName(assignment.targetId)}
+        {getPlayerName(assignment.targetId, players)}
       </p>
       <LoadingButton
         onClick={() => deleteAssignment(assignment.id)}
@@ -233,13 +228,6 @@ export const TournamentRings = ({
     (player) => player.state === "ACTIVE"
   );
 
-  const getPlayerName = (playerId) => {
-    if (!playerId) return;
-    const searchedPlayer = players.find((player) => playerId == player.id);
-
-    return `${searchedPlayer.user.firstName} ${searchedPlayer.user.lastName}`;
-  };
-
   return (
     <Grid container>
       <Grid item xs={12} md={4}>
@@ -269,21 +257,7 @@ export const TournamentRings = ({
         )}
       </Grid>
       <Grid item xs={12} md={4}>
-        <h2>Pelaajien kohteet</h2>
-        {players.map((player) => (
-          <Box key={player.id}>
-            <p>
-              {player.user.firstName} {player.user.lastName}
-            </p>
-            <ul>
-              {player.targets.map((assignment) => (
-                <li key={assignment.id}>
-                  {getPlayerName(assignment.targetId)}
-                </li>
-              ))}
-            </ul>
-          </Box>
-        ))}
+        <PlayersWithTargets players={players} />
       </Grid>
     </Grid>
   );
