@@ -55,7 +55,6 @@ const AssignmentCard = ({
 
   return (
     <Card
-      key={assignment.id}
       sx={{
         pl: 2,
         mr: 2,
