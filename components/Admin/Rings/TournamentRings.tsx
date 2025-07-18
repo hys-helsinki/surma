@@ -3,7 +3,7 @@ import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 import KeyboardArrowUpRoundedIcon from "@mui/icons-material/KeyboardArrowUpRounded";
 import KeyboardArrowDownRoundedIcon from "@mui/icons-material/KeyboardArrowDownRounded";
 import IconButton from "@mui/material/IconButton";
-import { Box, Button, Grid } from "@mui/material";
+import { Box, Button, Grid, Card } from "@mui/material";
 import {
   Player,
   User,
@@ -14,6 +14,7 @@ import {
 import CreateRingForm from "./CreateRingForm";
 import { Field, Form, Formik } from "formik";
 import LoadingButton from "@mui/lab/LoadingButton";
+import { playerColors } from "../../../lib/constants";
 interface PlayerWithUser extends Player {
   user: User;
   targets: Assignment[];
@@ -22,21 +23,14 @@ interface RingWithAssignments extends AssignmentRing {
   assignments: Assignment[];
 }
 
-const Ring = ({ ring, rings, setRings, players, setPlayers, tournament }) => {
-  const [showRing, setShowRing] = useState(false);
-  const [assignments, setAssignments] = useState(ring.assignments);
-  const [isDeletingRing, setIsDeletingRing] = useState(false);
-  const [isCreatingAssignment, setIsCreatingAssignment] = useState(false);
+const AssignmentCard = ({
+  assignment,
+  setAssignments,
+  setPlayers,
+  assignments,
+  players
+}) => {
   const [isDeletingAssignment, setIsDeletingAssignment] = useState(false);
-
-  if (!assignments || !players) return null;
-
-  const getPlayerName = (playerId) => {
-    if (!playerId) return;
-    const searchedPlayer = players.find((player) => playerId == player.id);
-
-    return `${searchedPlayer.user.firstName} ${searchedPlayer.user.lastName}`;
-  };
 
   const deleteAssignment = async (id: string) => {
     setIsDeletingAssignment(true);
@@ -51,6 +45,52 @@ const Ring = ({ ring, rings, setRings, players, setPlayers, tournament }) => {
     }
     setIsDeletingAssignment(false);
   };
+
+  const getPlayerName = (playerId) => {
+    if (!playerId) return;
+    const searchedPlayer = players.find((player) => playerId == player.id);
+
+    return `${searchedPlayer.user.firstName} ${searchedPlayer.user.lastName}`;
+  };
+
+  return (
+    <Card
+      key={assignment.id}
+      sx={{
+        pl: 2,
+        mr: 2,
+        my: 2,
+        backgroundImage: `linear-gradient(${
+          players.find((p) => assignment.hunterId === p.id).colorCode
+        }, ${players.find((p) => assignment.targetId === p.id).colorCode})`,
+        width: { xs: "100%", md: "75%" }
+      }}
+    >
+      <p>
+        <strong>Metsästäjä: </strong>
+        {getPlayerName(assignment.hunterId)}
+      </p>
+      <p>
+        <strong>Kohde: </strong>
+        {getPlayerName(assignment.targetId)}
+      </p>
+      <LoadingButton
+        onClick={() => deleteAssignment(assignment.id)}
+        loading={isDeletingAssignment}
+        sx={{ margin: "10px" }}
+        variant="contained"
+      >
+        Poista toimeksianto
+      </LoadingButton>
+    </Card>
+  );
+};
+
+const Ring = ({ ring, rings, setRings, players, setPlayers, tournament }) => {
+  const [showRing, setShowRing] = useState(false);
+  const [assignments, setAssignments] = useState(ring.assignments);
+  const [isDeletingRing, setIsDeletingRing] = useState(false);
+  const [isCreatingAssignment, setIsCreatingAssignment] = useState(false);
 
   const createAssignment = async (values) => {
     setIsCreatingAssignment(true);
@@ -113,24 +153,13 @@ const Ring = ({ ring, rings, setRings, players, setPlayers, tournament }) => {
       {showRing && (
         <div style={{ paddingLeft: "2rem" }}>
           {assignments.map((assignment) => (
-            <div key={assignment.id}>
-              <p>
-                <strong>Metsästäjä: </strong>
-                {getPlayerName(assignment.hunterId)}
-              </p>
-              <p>
-                <strong>Kohde: </strong>
-                {getPlayerName(assignment.targetId)}
-              </p>
-              <LoadingButton
-                onClick={() => deleteAssignment(assignment.id)}
-                loading={isDeletingAssignment}
-                sx={{ margin: "10px" }}
-              >
-                Poista toimeksianto
-              </LoadingButton>
-              <p>---------</p>
-            </div>
+            <AssignmentCard
+              assignment={assignment}
+              setAssignments={setAssignments}
+              setPlayers={setPlayers}
+              assignments={assignments}
+              players={players}
+            />
           ))}
           <Formik
             initialValues={{ hunterId: "", targetId: "" }}
@@ -162,7 +191,7 @@ const Ring = ({ ring, rings, setRings, players, setPlayers, tournament }) => {
                     ))}
                   </Field>
                 </Box>
-                <Box width={{ xs: "100%", md: "70%" }}>
+                <Box width={{ xs: "100%", md: "60%" }}>
                   <LoadingButton type="submit" loading={isCreatingAssignment}>
                     Luo uusi toimeksianto
                   </LoadingButton>
@@ -193,9 +222,16 @@ export const TournamentRings = ({
     setRings(rings);
   }, [rings]);
 
-  const sortedActivePlayers = players
-    .filter((player) => player.state === "ACTIVE")
-    .sort((a, b) => a.user.firstName.localeCompare(b.user.firstName));
+  const sortedPlayersWithColors = players
+    .sort((a, b) => a.user.firstName.localeCompare(b.user.firstName))
+    .map((player, index) => ({
+      ...player,
+      colorCode: playerColors[index]
+    }));
+
+  const activePlayers = sortedPlayersWithColors.filter(
+    (player) => player.state === "ACTIVE"
+  );
 
   const getPlayerName = (playerId) => {
     if (!playerId) return;
@@ -210,7 +246,7 @@ export const TournamentRings = ({
         <h2>Ringit</h2>
         {allRings.map((ring) => (
           <Ring
-            players={sortedActivePlayers}
+            players={activePlayers}
             setPlayers={setPlayers}
             ring={ring}
             tournament={tournament}
@@ -224,7 +260,7 @@ export const TournamentRings = ({
         </button>
         {showForm && (
           <CreateRingForm
-            players={sortedActivePlayers}
+            players={activePlayers}
             setPlayers={setPlayers}
             tournament={tournament}
             setShowForm={setShowForm}
