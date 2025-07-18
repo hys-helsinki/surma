@@ -63,7 +63,7 @@ const AssignmentCard = ({
         backgroundImage: `linear-gradient(${
           players.find((p) => assignment.hunterId === p.id).colorCode
         }, ${players.find((p) => assignment.targetId === p.id).colorCode})`,
-        width: { xs: "100%", md: "75%" }
+        width: { xs: "100%", md: "70%" }
       }}
     >
       <p>
