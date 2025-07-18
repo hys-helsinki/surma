@@ -1,6 +1,8 @@
+import { LoadingButton } from "@mui/lab";
 import { Box, Button } from "@mui/material";
 import { Player, User } from "@prisma/client";
 import { Field, Form, Formik } from "formik";
+import { useState } from "react";
 
 interface PlayerWithUser extends Player {
   user: User;
@@ -19,7 +21,9 @@ const CreateRingForm = ({
   setShowForm: any;
   setRings: any;
 }) => {
+  const [loading, setLoading] = useState(false);
   const createRing = async (values) => {
+    setLoading(true);
     const assignments = Object.entries(values)
       .filter((entry) => entry[0] !== "name")
       .map((entry) => ({
@@ -41,6 +45,7 @@ const CreateRingForm = ({
     setPlayers(responseData.players);
     setRings((prevRings) => prevRings.concat(responseData.createdRing));
     setShowForm(false);
+    setLoading(false);
   };
 
   return (
@@ -57,7 +62,7 @@ const CreateRingForm = ({
             </Box>
             {players.map((hunter) => (
               <Box key={hunter.id}>
-                <label>{`${hunter.user.firstName} ${hunter.user.lastName}`}</label>
+                <label>{`${hunter.user.firstName} ${hunter.user.lastName} -->`}</label>
                 <Field as="select" name={hunter.id}>
                   <option value="">--</option>
                   {players.map((target) => (
@@ -69,7 +74,9 @@ const CreateRingForm = ({
                 </Field>
               </Box>
             ))}
-            <Button type="submit">Tallenna</Button>
+            <LoadingButton type="submit" loading={loading}>
+              Tallenna
+            </LoadingButton>
           </Form>
         )}
       </Formik>
