@@ -159,6 +159,7 @@ const Ring = ({ ring, rings, setRings, players, setPlayers, tournament }) => {
               setPlayers={setPlayers}
               assignments={assignments}
               players={players}
+              key={assignment.id}
             />
           ))}
           <Formik
