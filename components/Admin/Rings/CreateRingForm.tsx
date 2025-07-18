@@ -1,5 +1,5 @@
 import { LoadingButton } from "@mui/lab";
-import { Box, Button } from "@mui/material";
+import { Box } from "@mui/material";
 import { Player, User } from "@prisma/client";
 import { Field, Form, Formik } from "formik";
 import { useState } from "react";
