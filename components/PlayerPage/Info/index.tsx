@@ -29,7 +29,8 @@ const Info = ({ user, imageUrl, showAlias, showStatus, showImageForm }) => {
           method: "POST",
           body: JSON.stringify({
             url: reader.result,
-            publicId: user.player.id
+            publicId: user.player.id,
+            tournamentId: user.tournamentId
           })
         });
         setFileInputState("");
