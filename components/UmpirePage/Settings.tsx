@@ -10,6 +10,7 @@ import { useField } from "formik";
 import moment from "moment";
 import * as Yup from "yup";
 import { useRouter } from "next/router";
+import { Tooltip } from "@mui/material";
 
 const DateTimePicker = ({ label, name }) => {
   const [field, meta, helpers] = useField(name);
@@ -108,6 +109,11 @@ const DeleteButton = ({ tournament }: { tournament: Tournament }) => {
   const [loading, setLoading] = useState(false);
   const router = useRouter();
 
+  const isTournamentFinished = () => {
+    const currentTime = new Date().getTime();
+    return currentTime > new Date(tournament.endTime).getTime();
+  };
+
   const deleteTournamentResources = async () => {
     if (
       window.confirm(
@@ -149,14 +155,23 @@ const DeleteButton = ({ tournament }: { tournament: Tournament }) => {
           poistamista.
         </i>
       </div>
-
-      <LoadingButton
-        onClick={() => deleteTournamentResources()}
-        loading={loading}
-        className="delete-tournament"
+      <Tooltip
+        title={
+          !isTournamentFinished() &&
+          "Turnauksen voi poistaa vasta turnauksen päättymisen jälkeen"
+        }
       >
-        Lopeta turnaus ja poista data
-      </LoadingButton>
+        <span>
+          <LoadingButton
+            onClick={() => deleteTournamentResources()}
+            loading={loading}
+            className="delete-tournament"
+            disabled={!isTournamentFinished()}
+          >
+            Lopeta turnaus ja poista data
+          </LoadingButton>
+        </span>
+      </Tooltip>
     </Box>
   );
 };

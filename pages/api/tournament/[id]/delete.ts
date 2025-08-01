@@ -26,26 +26,35 @@ export default async function handler(
   res: NextApiResponse
 ) {
   const tournamentId = req.query.id as string;
-  console.log(tournamentId);
   if (!isCurrentUserAuthorized(tournamentId, req, res)) {
     res.status(403).end();
   }
   if (req.method === "DELETE") {
-    try {
-      await cloudinary.api.delete_resources_by_prefix(
-        "surma/",
-        function (result) {}
-      );
-      await prisma.tournament.delete({
-        where: {
-          id: tournamentId
-        }
-      });
-    } catch (error) {
-      console.log(error);
-      return res.status(500).end();
-    }
+    const tournament = await prisma.tournament.findUnique({
+      where: {
+        id: tournamentId
+      }
+    });
 
-    return res.status(200).end();
+    const currentTime = new Date().getTime();
+
+    if (currentTime > new Date(tournament.endTime).getTime()) {
+      try {
+        await cloudinary.api.delete_resources_by_prefix(
+          "surma/",
+          function (result) {}
+        );
+        await prisma.tournament.delete({
+          where: {
+            id: tournamentId
+          }
+        });
+      } catch (error) {
+        console.log(error);
+        return res.status(500).end();
+      }
+
+      return res.status(200).end();
+    }
   }
 }
