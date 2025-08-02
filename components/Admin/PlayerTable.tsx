@@ -20,15 +20,22 @@ const PlayerTable = ({
   const [players, setPlayers] = useState<PlayerWithUser[]>(playerList);
 
   const handlePlayerStatusChange = async (playerState: string, id: string) => {
-    const data = { state: playerState };
-    const res = await fetch(`/api/player/${id}/state`, {
-      method: "PATCH",
-      body: JSON.stringify(data)
-    });
-    const updatedPlayer: PlayerWithUser = await res.json();
-    setPlayers(
-      players.map((player) => (player.id !== id ? player : updatedPlayer))
-    );
+    if (
+      playerState !== "DEAD" ||
+      window.confirm(
+        "Haluatko varmasti merkitä pelaajan kuolleeksi? Pelaajan tappaminen poistaa toimeksiannot, joissa pelaaja on kohde tai metsästäjä"
+      )
+    ) {
+      const data = { state: playerState };
+      const res = await fetch(`/api/player/${id}/state`, {
+        method: "PATCH",
+        body: JSON.stringify(data)
+      });
+      const updatedPlayer: PlayerWithUser = await res.json();
+      setPlayers(
+        players.map((player) => (player.id !== id ? player : updatedPlayer))
+      );
+    }
   };
 
   const handleMakeWanted = async (id: string) => {
