@@ -202,15 +202,16 @@ const Ring = ({ ring, rings, setRings, players, setPlayers, tournament }) => {
 
 export const TournamentRings = ({
   tournament,
-  players: playerList,
+  players,
+  setPlayers,
   rings
 }: {
   tournament: Tournament;
   players: PlayerWithUser[];
+  setPlayers: any;
   rings: any;
 }): JSX.Element => {
   const [allRings, setRings] = useState<RingWithAssignments[]>(rings);
-  const [players, setPlayers] = useState(playerList);
   const [showForm, setShowForm] = useState(false);
 
   useEffect(() => {

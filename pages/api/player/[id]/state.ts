@@ -109,20 +109,22 @@ export default async function handler(
   }
   if (req.method === "PATCH") {
     const playerId = req.query.id as string;
-    const { state } = JSON.parse(req.body);
+    const { state, teamGame } = JSON.parse(req.body);
+
+    if (state === "DEAD") {
+      updateRing(playerId, teamGame);
+    }
+
     const updatedPlayer = await prisma.player.update({
       where: { id: playerId },
       data: { state },
       include: {
         user: true,
         team: true,
-        tournament: true
+        targets: true
       }
     });
-
-    if (state === "DEAD") {
-      updateRing(playerId, updatedPlayer.tournament.teamGame);
-    }
-    res.json(updatedPlayer);
+    const rings = await prisma.assignmentRing.findMany();
+    res.json({ updatedPlayer, rings });
   }
 }

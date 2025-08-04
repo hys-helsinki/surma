@@ -1,24 +1,32 @@
-import { Player, Tournament, User } from "@prisma/client";
+import {
+  Assignment,
+  AssignmentRing,
+  Player,
+  Team,
+  Tournament,
+  User
+} from "@prisma/client";
 import Link from "next/link";
-import { useState } from "react";
 
 interface PlayerWithUser extends Player {
   user: User;
+  targets: Assignment[];
+  team?: Team;
 }
 
 const PlayerTable = ({
-  playerList,
+  players,
+  setPlayers,
   tournament,
   setRings,
   users
 }: {
-  playerList: PlayerWithUser[];
+  players: PlayerWithUser[];
+  setPlayers: any;
   tournament: Tournament;
   setRings: any;
   users: any[];
 }) => {
-  const [players, setPlayers] = useState<PlayerWithUser[]>(playerList);
-
   const handlePlayerStatusChange = async (playerState: string, id: string) => {
     if (
       playerState !== "DEAD" ||
@@ -26,15 +34,20 @@ const PlayerTable = ({
         "Haluatko varmasti merkitä pelaajan kuolleeksi? Pelaajan tappaminen poistaa toimeksiannot, joissa pelaaja on kohde tai metsästäjä"
       )
     ) {
-      const data = { state: playerState };
+      const data = { state: playerState, teamGame: tournament.teamGame };
       const res = await fetch(`/api/player/${id}/state`, {
         method: "PATCH",
         body: JSON.stringify(data)
       });
-      const updatedPlayer: PlayerWithUser = await res.json();
+      const {
+        updatedPlayer,
+        rings
+      }: { updatedPlayer: PlayerWithUser; rings: AssignmentRing } =
+        await res.json();
       setPlayers(
         players.map((player) => (player.id !== id ? player : updatedPlayer))
       );
+      setRings(rings);
     }
   };
 
