@@ -124,7 +124,9 @@ export default async function handler(
         targets: true
       }
     });
-    const rings = await prisma.assignmentRing.findMany();
+    const rings = await prisma.assignmentRing.findMany({
+      include: { assignments: true }
+    });
     res.json({ updatedPlayer, rings });
   }
 }
