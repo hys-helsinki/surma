@@ -21,36 +21,48 @@ const PlayerRow = ({ player, players, setPlayers, tournament, setRings }) => {
   const [isWantedLoading, setIsWantedLoading] = useState(false);
 
   const handlePlayerStatusChange = async (playerState: string, id: string) => {
-    if (
-      playerState !== "DEAD" ||
-      window.confirm(
-        "Haluatko varmasti merkitä pelaajan kuolleeksi? Pelaajan tappaminen poistaa toimeksiannot, joissa pelaaja on kohde tai metsästäjä"
-      )
-    ) {
-      const data = { state: playerState, teamGame: tournament.teamGame };
-      const res = await fetch(`/api/player/${id}/state`, {
-        method: "PATCH",
-        body: JSON.stringify(data)
-      });
-      const {
-        updatedPlayer,
-        rings
-      }: { updatedPlayer: PlayerWithUser; rings: AssignmentRing } =
-        await res.json();
-      setPlayers(
-        players.map((player) => (player.id !== id ? player : updatedPlayer))
-      );
-      setRings(rings);
+    setIsStateButtonLoading(playerState);
+    try {
+      if (
+        playerState !== "DEAD" ||
+        window.confirm(
+          "Haluatko varmasti merkitä pelaajan kuolleeksi? Pelaajan tappaminen poistaa toimeksiannot, joissa pelaaja on kohde tai metsästäjä"
+        )
+      ) {
+        const data = { state: playerState, teamGame: tournament.teamGame };
+        const res = await fetch(`/api/player/${id}/state`, {
+          method: "PATCH",
+          body: JSON.stringify(data)
+        });
+        const {
+          updatedPlayer,
+          rings
+        }: { updatedPlayer: PlayerWithUser; rings: AssignmentRing } =
+          await res.json();
+        setPlayers(
+          players.map((player) => (player.id !== id ? player : updatedPlayer))
+        );
+        setRings(rings);
+      }
+    } catch (e) {
+      console.log(e);
     }
+    setIsStateButtonLoading("");
   };
 
   const handleMakeWanted = async (id: string) => {
-    const res = await fetch(`/api/player/${id}/wanted`, {
-      method: "POST"
-    });
+    setIsWantedLoading(true);
+    try {
+      const res = await fetch(`/api/player/${id}/wanted`, {
+        method: "POST"
+      });
 
-    const createdRing = await res.json();
-    setRings((prevRings) => prevRings.concat(createdRing));
+      const createdRing = await res.json();
+      setRings((prevRings) => prevRings.concat(createdRing));
+    } catch (e) {
+      console.log(e);
+    }
+    setIsWantedLoading(false);
   };
 
   return (
