@@ -53,13 +53,19 @@ const PlayerRow = ({ player, players, setPlayers, tournament, setRings }) => {
   const handleMakeWanted = async (id: string) => {
     setIsWantedLoading(true);
     try {
-      const res = await fetch(`/api/player/${id}/wanted`, {
-        method: "POST"
-      });
+      if (
+        window.confirm(
+          "Haluatko varmasti etsintäkuuluttaa pelaajan? Etsintäkuuluttaminen antaa pelaajan kohteeksi kaikille etsiville"
+        )
+      ) {
+        const res = await fetch(`/api/player/${id}/wanted`, {
+          method: "POST"
+        });
 
-      const { wantedRing, players } = await res.json();
-      setRings((prevRings) => prevRings.concat(wantedRing));
-      setPlayers(players);
+        const { wantedRing, players } = await res.json();
+        setRings((prevRings) => prevRings.concat(wantedRing));
+        setPlayers(players);
+      }
     } catch (e) {
       console.log(e);
     }
