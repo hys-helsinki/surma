@@ -6,14 +6,10 @@ import InfoAccordion from "../components/InfoAccordion";
 import TournamentTable from "../components/TournamentTable";
 import { authConfig } from "./api/auth/[...nextauth]";
 import prisma from "../lib/prisma";
-import { unstable_getServerSession } from "next-auth/next";
+import { getServerSession } from "next-auth/next";
 
 export async function getServerSideProps(context) {
-  const session = await unstable_getServerSession(
-    context.req,
-    context.res,
-    authConfig
-  );
+  const session = await getServerSession(context.req, context.res, authConfig);
 
   if (session) {
     const user = await prisma.user.findUnique({

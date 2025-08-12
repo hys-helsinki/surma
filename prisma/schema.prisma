@@ -10,6 +10,11 @@ datasource db {
   url      = env("POSTGRES_URL")
 }
 
+model AdminUser {
+  email    String  @unique
+  password String?
+}
+
 model User {
   id            String     @id @default(uuid())
   createdAt     DateTime   @default(now()) @db.Timestamptz(3)

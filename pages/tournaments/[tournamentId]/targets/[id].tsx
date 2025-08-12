@@ -3,7 +3,7 @@ import prisma from "../../../../lib/prisma";
 import React from "react";
 import { useMediaQuery, useTheme } from "@mui/material";
 import { AuthenticationRequired } from "../../../../components/AuthenticationRequired";
-import { Session, unstable_getServerSession } from "next-auth";
+import { Session, getServerSession } from "next-auth";
 import { authConfig } from "../../../api/auth/[...nextauth]";
 import { v2 as cloudinary } from "cloudinary";
 import DesktopView from "../../../../components/PlayerPage/DesktopView";
@@ -52,11 +52,7 @@ export const getServerSideProps: GetServerSideProps = async ({
   params,
   ...context
 }) => {
-  const session = await unstable_getServerSession(
-    context.req,
-    context.res,
-    authConfig
-  );
+  const session = await getServerSession(context.req, context.res, authConfig);
 
   const { id: userId, tournamentId } = params;
 

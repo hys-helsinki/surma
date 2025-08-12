@@ -1,10 +1,10 @@
 import prisma from "../../../lib/prisma";
 import type { NextApiRequest, NextApiResponse } from "next";
-import { unstable_getServerSession } from "next-auth";
+import { getServerSession } from "next-auth";
 import { authConfig } from "../auth/[...nextauth]";
 
 const isCurrentUserAuthorized = async (tournamentId, req, res) => {
-  const session = await unstable_getServerSession(req, res, authConfig);
+  const session = await getServerSession(req, res, authConfig);
 
   const umpire = await prisma.umpire.findFirst({
     where: {
