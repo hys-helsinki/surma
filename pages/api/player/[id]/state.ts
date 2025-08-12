@@ -1,11 +1,11 @@
 import prisma from "../../../../lib/prisma";
 import type { NextApiRequest, NextApiResponse } from "next";
-import { unstable_getServerSession } from "next-auth";
+import { getServerSession } from "next-auth";
 import { authConfig } from "../../auth/[...nextauth]";
 import { FeatureFlag } from "../../../../lib/constants";
 
 const isCurrentUserAuthorized = async (playerId, req, res) => {
-  const session = await unstable_getServerSession(req, res, authConfig);
+  const session = await getServerSession(req, res, authConfig);
 
   const updatedPlayer = await prisma.player.findFirst({
     where: {
