@@ -112,7 +112,7 @@ export default async function handler(
     const { state, teamGame } = JSON.parse(req.body);
 
     if (state === "DEAD") {
-      updateRing(playerId, teamGame);
+      await updateRing(playerId, teamGame);
     }
 
     const updatedPlayer = await prisma.player.update({

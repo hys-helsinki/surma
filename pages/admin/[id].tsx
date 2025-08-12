@@ -214,6 +214,7 @@ export default function Tournament({
               players={players}
               setPlayers={setPlayers}
               rings={rings}
+              setRings={setRings}
             />
           )}
         </TabPanel>

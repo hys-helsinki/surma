@@ -57,8 +57,9 @@ const PlayerRow = ({ player, players, setPlayers, tournament, setRings }) => {
         method: "POST"
       });
 
-      const createdRing = await res.json();
-      setRings((prevRings) => prevRings.concat(createdRing));
+      const { wantedRing, players } = await res.json();
+      setRings((prevRings) => prevRings.concat(wantedRing));
+      setPlayers(players);
     } catch (e) {
       console.log(e);
     }
