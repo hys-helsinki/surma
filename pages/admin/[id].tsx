@@ -10,6 +10,7 @@ import { authConfig } from "../api/auth/[...nextauth]";
 import PlayerTable from "../../components/Admin/PlayerTable";
 import TeamTable from "../../components/Admin/TeamTable";
 import UmpireSelect from "../../components/Admin/UmpireSelect";
+import Settings from "../../components/UmpirePage/Settings";
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -170,6 +171,7 @@ export default function Tournament({
             <Tab label="Pelaajat" />
             <Tab label="Ringit" />
             <Tab label="Tuomarien asettaminen" />
+            <Tab label="Asetukset" />
           </Tabs>
         </Box>
 
@@ -212,6 +214,9 @@ export default function Tournament({
               rings={rings}
             />
           )}
+        </TabPanel>
+        <TabPanel value={value} index={3}>
+          <Settings tournament={tournament} />
         </TabPanel>
       </Box>
     </AuthenticationRequired>

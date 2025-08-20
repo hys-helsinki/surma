@@ -40,7 +40,8 @@ export default function PlayerForm({ tournament }) {
           method: "POST",
           body: JSON.stringify({
             url: reader.result,
-            publicId: id
+            publicId: id,
+            tournamentId
           })
         });
       };
