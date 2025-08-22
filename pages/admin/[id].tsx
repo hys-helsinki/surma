@@ -1,4 +1,4 @@
-import { Grid, Box, Tabs, Tab } from "@mui/material";
+import { Box, Tabs, Tab } from "@mui/material";
 import { GetServerSideProps } from "next";
 import { unstable_getServerSession } from "next-auth";
 import { useState } from "react";
@@ -85,7 +85,8 @@ export const getServerSideProps: GetServerSideProps = async ({
         include: {
           user: true
         }
-      }
+      },
+      targets: true
     }
   });
 

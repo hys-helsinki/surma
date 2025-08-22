@@ -38,7 +38,14 @@ export default async function rings(req: NextApiRequest, res: NextApiResponse) {
         assignments: true
       }
     });
-    res.json(createdRing);
+
+    const updatedPlayers = await prisma.player.findMany({
+      include: {
+        user: true,
+        targets: true
+      }
+    });
+    res.json({ createdRing, players: updatedPlayers });
   } else if (req.method === "DELETE") {
     const data = JSON.parse(req.body);
     if (!(await isCurrentUserAuthorized(data.tournamentId, req, res))) {
@@ -51,6 +58,12 @@ export default async function rings(req: NextApiRequest, res: NextApiResponse) {
         id: data.ringId
       }
     });
-    res.json(deletedRing);
+    const updatedPlayers = await prisma.player.findMany({
+      include: {
+        user: true,
+        targets: true
+      }
+    });
+    res.json({ deletedRing, players: updatedPlayers });
   }
 }
