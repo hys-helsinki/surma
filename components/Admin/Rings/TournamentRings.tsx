@@ -157,7 +157,7 @@ const Ring = ({ ring, rings, setRings, players, setPlayers, tournament }) => {
             />
           ))}
           <Formik
-            initialValues={{ hunterId: "", targetId: "" }}
+            initialValues={{ hunter: "", target: "" }}
             onSubmit={(values) => createAssignment(values)}
           >
             {() => (
