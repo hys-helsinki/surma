@@ -32,25 +32,25 @@ export default function PlayerForm({ tournament }) {
 
   const uploadImage = async (id: string) => {
     if (!selectedFile) return;
+    const reader = new FileReader();
     try {
-      const reader = new FileReader();
       reader.readAsDataURL(selectedFile);
-      reader.onloadend = async () => {
-        await fetch("/api/upload", {
-          method: "POST",
-          body: JSON.stringify({
-            url: reader.result,
-            publicId: id,
-            tournamentId
-          })
-        });
-      };
-      setFileInputState("");
-      setSelectedFileName("");
-      setSelectedFile(null);
     } catch (error) {
       console.log(error);
+      setIsLoading(false);
     }
+    reader.onload = async () => {
+      await fetch("/api/upload", {
+        method: "POST",
+        body: JSON.stringify({
+          url: reader.result,
+          publicId: id,
+          tournamentId
+        })
+      });
+      setIsLoading(false);
+      router.reload();
+    };
   };
 
   const handleSubmit = async (values) => {
@@ -97,7 +97,6 @@ export default function PlayerForm({ tournament }) {
       });
       const createdPlayer = await response.json();
       await uploadImage(createdPlayer.id);
-      router.reload();
     } catch (error) {
       setIsLoading(false);
       console.log(error);

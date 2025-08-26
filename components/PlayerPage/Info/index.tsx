@@ -16,6 +16,7 @@ const Info = ({ user, imageUrl, showAlias, showStatus, showImageForm }) => {
   const [selectedFile, setSelectedFile] = useState();
   const [selectedFileName, setSelectedFileName] = useState("");
   const [updateImage, setUpdateImage] = useState(false);
+  const [showPicture, setShowPicture] = useState(false);
   const router = useRouter();
 
   const uploadImage = async (event) => {
@@ -70,12 +71,25 @@ const Info = ({ user, imageUrl, showAlias, showStatus, showImageForm }) => {
       </Box>
       {imageUrl && !updateImage ? (
         <>
-          <ImageComponent imageUrl={imageUrl} />
-          {showImageForm && (
-            <button onClick={() => setUpdateImage((prevState) => !prevState)}>
-              Vaihda kuva
+          <ImageComponent imageUrl={imageUrl} showPicture={showPicture} />
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "row",
+              justifyContent: "center",
+              alignItems: "center",
+              gap: "10px"
+            }}
+          >
+            <button onClick={() => setShowPicture(!showPicture)}>
+              {showPicture ? "Piilota" : "Näytä kuva"}
             </button>
-          )}
+            {showImageForm && (
+              <button onClick={() => setUpdateImage(!updateImage)}>
+                Vaihda kuva
+              </button>
+            )}
+          </div>
         </>
       ) : !showImageForm ? (
         <p>{"Ei kuvaa :("}</p>
