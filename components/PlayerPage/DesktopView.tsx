@@ -23,7 +23,7 @@ const DesktopView = ({
   umpires;
 }) => {
   return (
-    <Container>
+    <Container sx={{ marginBottom: "2rem" }}>
       <Grid container>
         <Grid item xs={12} md={6}>
           <Info
@@ -40,12 +40,12 @@ const DesktopView = ({
           <Details
             user={user}
             umpires={umpires}
-            currentUserIsUmpire={currentUserIsUmpire}
+            currentUserIsUmpire={user.id !== currentUserId}
             currentUserIsHunter={currentUserIsHunter}
           />
         </Grid>
         <Grid item xs={12} md={6} padding={2}>
-          <Box sx={{ borderStyle: "solid", borderWidth: "2px" }}>
+          <Box sx={{ borderLeft: "solid red 2px" }}>
             <Calendar
               player={user.player}
               tournament={tournament}

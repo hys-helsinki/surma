@@ -1,7 +1,7 @@
 import { Box } from "@mui/material";
-import PlayerInfo from "./PlayerInfo";
-import PlayerDetails from "./PlayerDetails";
-import { useState } from "react";
+import PlayerDescription from "./PlayerDescription";
+import ContactDetails from "./ContactDetails";
+import Umpires from "./Umpires";
 
 const Details = ({
   user,
@@ -9,22 +9,16 @@ const Details = ({
   currentUserIsUmpire,
   currentUserIsHunter
 }) => {
-  const [isUpdating, setIsUpdating] = useState(false);
-
   return (
     <Box>
-      {!currentUserIsHunter && !currentUserIsUmpire && (
-        <button onClick={() => setIsUpdating(!isUpdating)}>
-          {!isUpdating ? "Muokkaa tietoja" : "Peruuta"}
-        </button>
+      {!currentUserIsHunter && (
+        <ContactDetails user={user} showLastVisit={currentUserIsUmpire} />
       )}
-      <PlayerInfo
-        user={user}
-        showContactDetails={!currentUserIsHunter}
-        umpires={umpires}
-        showLastVisit={currentUserIsUmpire}
+      <Umpires player={user.player} umpires={umpires} />
+      <PlayerDescription
+        player={user.player}
+        showUpdateButton={!currentUserIsHunter && !currentUserIsUmpire}
       />
-      <PlayerDetails user={user} isUpdating={isUpdating} />
     </Box>
   );
 };

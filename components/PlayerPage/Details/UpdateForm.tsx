@@ -1,12 +1,41 @@
 import { Field, Form, Formik } from "formik";
 import TextInput from "../../Registration/TextInput";
 import LoadingButton from "@mui/lab/LoadingButton";
+import { useState } from "react";
+import { useRouter } from "next/router";
 
-export const UpdateForm = ({
-  player,
-  handleSubmit,
-  isLoading
-}): JSX.Element => {
+type FormData = {
+  address: string;
+  learningInstitution: string;
+  eyeColor: string;
+  hair: string;
+  height: number;
+  other: string;
+  safetyNotes: string;
+};
+
+export const UpdateForm = ({ player, setPlayer }): JSX.Element => {
+  const [isLoading, setIsLoading] = useState(false);
+  const router = useRouter();
+
+  const { id } = router.query;
+
+  const handleSubmit = async (values) => {
+    setIsLoading(true);
+    const data: FormData = values;
+    try {
+      const response = await fetch(`/api/user/update/${id}`, {
+        method: "PUT",
+        body: JSON.stringify(data)
+      });
+      const updatedPlayer = await response.json();
+      setPlayer(updatedPlayer);
+      setIsLoading(false);
+    } catch (error) {
+      console.log(error);
+      setIsLoading(false);
+    }
+  };
   return (
     <Formik
       enableReinitialize={true}

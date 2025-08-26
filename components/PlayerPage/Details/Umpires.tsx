@@ -1,22 +1,18 @@
-import { Box, Button, IconButton } from "@mui/material";
+import { Box, Button } from "@mui/material";
 import { useState } from "react";
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
-import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
+import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 
-const PlayerInfo = ({
-  user,
-  showContactDetails,
-  umpires,
-  showLastVisit
+const Umpires = ({
+  player,
+  umpires
 }: {
-  user: any;
-  showContactDetails: boolean;
+  player;
   umpires: any[];
-  showLastVisit: boolean;
 }): JSX.Element => {
   const [showOtherUmpires, setShowOtherUmpires] = useState(false);
 
-  const playerUmpire = user.player.umpire;
+  const playerUmpire = player.umpire;
 
   const otherUmpires = playerUmpire
     ? umpires.filter((umpire) => umpire.id !== playerUmpire.id)
@@ -26,12 +22,14 @@ const PlayerInfo = ({
     <Box>
       {playerUmpire && (
         <Box>
-          <h2>Pelaajan tuomari</h2>
-          <p>
+          <h2>
+            <u>Pelaajan tuomari</u>
+          </h2>
+          <strong>
             {playerUmpire.user.firstName} {playerUmpire.user.lastName} (
             {playerUmpire.responsibility})
-          </p>
-          <p>
+          </strong>
+          <p style={{ marginTop: "auto" }}>
             {playerUmpire.user.email} {playerUmpire.user.phone}
           </p>
         </Box>
@@ -47,42 +45,28 @@ const PlayerInfo = ({
             {showOtherUmpires ? (
               <KeyboardArrowUpIcon />
             ) : (
-              <KeyboardArrowRightIcon />
+              <KeyboardArrowDownIcon />
             )}
           </Button>
           {showOtherUmpires ? (
-            <div>
+            <ul>
               {otherUmpires.map((umpire) => (
-                <div key={umpire.id}>
-                  <p>
+                <li key={umpire.id}>
+                  <strong>
                     {umpire.user.firstName} {umpire.user.lastName} (
                     {umpire.responsibility})
+                  </strong>
+                  <p style={{ marginTop: "auto" }}>
+                    {umpire.user.email}, {umpire.user.phone}
                   </p>
-                  <p>
-                    {umpire.user.email} {umpire.user.phone}
-                  </p>
-                </div>
+                </li>
               ))}
-            </div>
+            </ul>
           ) : null}
         </div>
-      )}
-      {showContactDetails && (
-        <Box sx={{ mt: 4 }}>
-          <h2>Yhteystiedot</h2>
-          <p>Puhelinnumero: {user.phone}</p>
-          <p>Sähköpostiosoite: {user.email}</p>
-
-          {showLastVisit && (
-            <>
-              <h3>Käyttäjän viime käynti</h3>
-              <p>{user.player.lastVisit}</p>
-            </>
-          )}
-        </Box>
       )}
     </Box>
   );
 };
 
-export default PlayerInfo;
+export default Umpires;

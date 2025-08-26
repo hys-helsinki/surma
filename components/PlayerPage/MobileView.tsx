@@ -51,7 +51,7 @@ const MobileView = ({
   };
 
   return (
-    <Box sx={{ width: "100%" }}>
+    <Box sx={{ width: "100%", marginBottom: "2rem" }}>
       <Info
         user={user}
         imageUrl={imageUrl}
