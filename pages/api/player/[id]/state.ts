@@ -4,39 +4,11 @@ import { unstable_getServerSession } from "next-auth";
 import { authConfig } from "../../auth/[...nextauth]";
 import { FeatureFlag } from "../../../../lib/constants";
 
-const updateRings = async (killedPlayerId: string, teamGame: boolean) => {
-  if (!teamGame) {
-    // Tehdään vain yksilöturnauksissa, koska muuten menee hankalaksi
-    const rings = await prisma.assignmentRing.findMany({
-      include: { assignments: true }
-    });
-
-    let newAssignments = [];
-
-    rings.forEach((ring) => {
-      // Tehdään oletus, että yhdessä ringissä pelaaja jahtaa vain yhtä kohdetta ja hänellä on vain yksi metsästäjä
-      const killedPlayerAsTarget = ring.assignments.find(
-        (a) => a.targetId === killedPlayerId
-      );
-      const killedPlayerAsHunter = ring.assignments.find(
-        (a) => a.hunterId === killedPlayerId
-      );
-      if (
-        killedPlayerAsHunter &&
-        killedPlayerAsTarget &&
-        killedPlayerAsTarget.hunterId !== killedPlayerAsHunter.targetId // Jotta rinkiin ei tule toimeksiantoja, joissa pelaaja jahtaa itseään
-      ) {
-        newAssignments.push({
-          hunterId: killedPlayerAsTarget.hunterId,
-          targetId: killedPlayerAsHunter.targetId,
-          ringId: ring.id
-        });
-      }
-    });
-
-    await prisma.assignment.createMany({
-      data: newAssignments
-    });
+const updateTeamGameRings = async (killedPlayerId: string) => {
+  // Nämä tehdään jos kyseessä joukkueturnaus
+  if (FeatureFlag.DELETE_DEAD_HUNTER_ASSIGNMENTS) {
+    // Käytössä featureflag, koska vuoden 2025 joukkueturnauksessa oli käytössä erikoissääntö jossa kohteita ei heti poisteta kuolleilta pelaajilta.
+    // Sääntö oli toimiva, joten jätetään featureflag toistaiseksi.
 
     await prisma.assignment.deleteMany({
       where: {
@@ -51,33 +23,61 @@ const updateRings = async (killedPlayerId: string, teamGame: boolean) => {
       }
     });
   } else {
-    // Nämä tehdään jos kyseessä joukkueturnaus
-    if (FeatureFlag.DELETE_DEAD_HUNTER_ASSIGNMENTS) {
-      // Käytössä featureflag, koska vuoden 2025 joukkueturnauksessa oli käytössä erikoissääntö jossa kohteita ei heti poisteta kuolleilta pelaajilta.
-      // Sääntö oli toimiva, joten jätetään featureflag toistaiseksi.
+    // Poistetaan joka tapauksessa pelaaja metsästäjien kohteista, koska muuten toimeksiannot pitää itse klikkailla pois kannasta.
+    // Ideana kuitenkin on, ettei kuollutta pelaajaa jahtaa enää kukaan.
+    await prisma.assignment.deleteMany({
+      where: {
+        targetId: killedPlayerId
+      }
+    });
+  }
+};
 
-      await prisma.assignment.deleteMany({
-        where: {
-          OR: [
-            {
-              hunterId: killedPlayerId
-            },
-            {
-              targetId: killedPlayerId
-            }
-          ]
-        }
-      });
-    } else {
-      // Poistetaan joka tapauksessa pelaaja metsästäjien kohteista, koska muuten toimeksiannot pitää itse klikkailla pois kannasta.
-      // Ideana kuitenkin on, ettei kuollutta pelaajaa jahtaa enää kukaan.
-      await prisma.assignment.deleteMany({
-        where: {
-          targetId: killedPlayerId
-        }
+const updateSoloGameRings = async (killedPlayerId: string) => {
+  // Tehdään vain yksilöturnauksissa, koska muuten menee hankalaksi
+  const rings = await prisma.assignmentRing.findMany({
+    include: { assignments: true }
+  });
+
+  let newAssignments = [];
+
+  rings.forEach((ring) => {
+    // Tehdään oletus, että yhdessä ringissä pelaaja jahtaa vain yhtä kohdetta ja hänellä on vain yksi metsästäjä
+    const killedPlayerAsTarget = ring.assignments.find(
+      (a) => a.targetId === killedPlayerId
+    );
+    const killedPlayerAsHunter = ring.assignments.find(
+      (a) => a.hunterId === killedPlayerId
+    );
+    if (
+      killedPlayerAsHunter &&
+      killedPlayerAsTarget &&
+      killedPlayerAsTarget.hunterId !== killedPlayerAsHunter.targetId // Jotta rinkiin ei tule toimeksiantoja, joissa pelaaja jahtaa itseään
+    ) {
+      newAssignments.push({
+        hunterId: killedPlayerAsTarget.hunterId,
+        targetId: killedPlayerAsHunter.targetId,
+        ringId: ring.id
       });
     }
-  }
+  });
+
+  await prisma.assignment.createMany({
+    data: newAssignments
+  });
+
+  await prisma.assignment.deleteMany({
+    where: {
+      OR: [
+        {
+          hunterId: killedPlayerId
+        },
+        {
+          targetId: killedPlayerId
+        }
+      ]
+    }
+  });
 };
 
 const isCurrentUserAuthorized = async (playerId, req, res) => {
@@ -112,7 +112,11 @@ export default async function handler(
     const { state, teamGame } = JSON.parse(req.body);
 
     if (state === "DEAD") {
-      await updateRings(playerId, teamGame);
+      if (teamGame) {
+        updateTeamGameRings(playerId);
+      } else {
+        updateSoloGameRings(playerId);
+      }
     }
 
     const updatedPlayer = await prisma.player.update({
