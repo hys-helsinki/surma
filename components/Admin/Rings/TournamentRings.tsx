@@ -16,7 +16,7 @@ import { Field, Form, Formik } from "formik";
 import LoadingButton from "@mui/lab/LoadingButton";
 import { playerColors } from "../../../lib/constants";
 import PlayersWithTargets from "./PlayersWithTargets";
-import { getPlayerName } from "../../utils";
+import { getPlayerFullNameById } from "../../utils";
 interface PlayerWithUser extends Player {
   user: User;
   targets: Assignment[];
@@ -62,11 +62,11 @@ const AssignmentCard = ({
     >
       <p>
         <strong>Metsästäjä: </strong>
-        {getPlayerName(assignment.hunterId, players)}
+        {getPlayerFullNameById(assignment.hunterId, players)}
       </p>
       <p>
         <strong>Kohde: </strong>
-        {getPlayerName(assignment.targetId, players)}
+        {getPlayerFullNameById(assignment.targetId, players)}
       </p>
       <LoadingButton
         onClick={() => deleteAssignment(assignment.id)}

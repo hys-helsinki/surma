@@ -41,7 +41,7 @@ export const getCurrentWeek = (dates: string[]) => {
   return currentWeek;
 };
 
-export const getPlayerName = (playerId, players) => {
+export const getPlayerFullNameById = (playerId, players) => {
   if (!playerId) return;
   const searchedPlayer = players.find((player) => playerId == player.id);
 
