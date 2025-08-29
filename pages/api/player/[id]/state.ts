@@ -4,7 +4,7 @@ import { unstable_getServerSession } from "next-auth";
 import { authConfig } from "../../auth/[...nextauth]";
 import { FeatureFlag } from "../../../../lib/constants";
 
-const updateRing = async (deadPlayerId: string, teamGame: boolean) => {
+const updateRings = async (killedPlayerId: string, teamGame: boolean) => {
   if (!teamGame) {
     // Tehdään vain yksilöturnauksissa, koska muuten menee hankalaksi
     const rings = await prisma.assignmentRing.findMany({
@@ -15,20 +15,20 @@ const updateRing = async (deadPlayerId: string, teamGame: boolean) => {
 
     rings.forEach((ring) => {
       // Tehdään oletus, että yhdessä ringissä pelaaja jahtaa vain yhtä kohdetta ja hänellä on vain yksi metsästäjä
-      const deadWasTarget = ring.assignments.find(
-        (a) => a.targetId === deadPlayerId
+      const killedPlayerAsTarget = ring.assignments.find(
+        (a) => a.targetId === killedPlayerId
       );
-      const deadWasHunter = ring.assignments.find(
-        (a) => a.hunterId === deadPlayerId
+      const killedPlayerAsHunter = ring.assignments.find(
+        (a) => a.hunterId === killedPlayerId
       );
       if (
-        deadWasHunter &&
-        deadWasTarget &&
-        deadWasTarget.hunterId !== deadWasHunter.targetId // Jotta rinkiin ei tule toimeksiantoja, joissa pelaaja jahtaa itseään
+        killedPlayerAsHunter &&
+        killedPlayerAsTarget &&
+        killedPlayerAsTarget.hunterId !== killedPlayerAsHunter.targetId // Jotta rinkiin ei tule toimeksiantoja, joissa pelaaja jahtaa itseään
       ) {
         newAssignments.push({
-          hunterId: deadWasTarget.hunterId,
-          targetId: deadWasHunter.targetId,
+          hunterId: killedPlayerAsTarget.hunterId,
+          targetId: killedPlayerAsHunter.targetId,
           ringId: ring.id
         });
       }
@@ -42,10 +42,10 @@ const updateRing = async (deadPlayerId: string, teamGame: boolean) => {
       where: {
         OR: [
           {
-            hunterId: deadPlayerId
+            hunterId: killedPlayerId
           },
           {
-            targetId: deadPlayerId
+            targetId: killedPlayerId
           }
         ]
       }
@@ -60,10 +60,10 @@ const updateRing = async (deadPlayerId: string, teamGame: boolean) => {
         where: {
           OR: [
             {
-              hunterId: deadPlayerId
+              hunterId: killedPlayerId
             },
             {
-              targetId: deadPlayerId
+              targetId: killedPlayerId
             }
           ]
         }
@@ -73,7 +73,7 @@ const updateRing = async (deadPlayerId: string, teamGame: boolean) => {
       // Ideana kuitenkin on, ettei kuollutta pelaajaa jahtaa enää kukaan.
       await prisma.assignment.deleteMany({
         where: {
-          targetId: deadPlayerId
+          targetId: killedPlayerId
         }
       });
     }
@@ -112,7 +112,7 @@ export default async function handler(
     const { state, teamGame } = JSON.parse(req.body);
 
     if (state === "DEAD") {
-      await updateRing(playerId, teamGame);
+      await updateRings(playerId, teamGame);
     }
 
     const updatedPlayer = await prisma.player.update({
