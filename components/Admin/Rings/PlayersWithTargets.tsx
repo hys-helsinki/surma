@@ -1,5 +1,5 @@
 import { Box } from "@mui/material";
-import { getPlayerName } from "../../utils";
+import { getPlayerFullNameById } from "../../utils";
 
 const PlayersWithTargets = ({ players }) => {
   return (
@@ -14,7 +14,7 @@ const PlayersWithTargets = ({ players }) => {
           <ul>
             {player.targets.map((assignment) => (
               <li key={assignment.id}>
-                {getPlayerName(assignment.targetId, players)}
+                {getPlayerFullNameById(assignment.targetId, players)}
               </li>
             ))}
           </ul>
