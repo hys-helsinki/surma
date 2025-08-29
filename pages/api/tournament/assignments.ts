@@ -40,7 +40,10 @@ const isCreateAuthorized = async (ringId, req, res) => {
   return isCurrentUserAuthorized(ring.tournamentId, req, res);
 };
 
-export default async function rings(req: NextApiRequest, res: NextApiResponse) {
+export default async function handler(
+  req: NextApiRequest,
+  res: NextApiResponse
+) {
   if (req.method === "DELETE") {
     const assignmentId = req.body;
     if (!(await isDeleteAuthorized(assignmentId, req, res))) {
@@ -52,33 +55,31 @@ export default async function rings(req: NextApiRequest, res: NextApiResponse) {
         id: assignmentId
       }
     });
-    const updatedRing = await prisma.assignmentRing.findUnique({
-      where: {
-        id: deletedAssignment.ringId
-      },
+
+    const updatedPlayers = await prisma.player.findMany({
       include: {
-        assignments: true
+        user: true,
+        targets: true
       }
     });
-    res.json(updatedRing);
+    res.json({ deletedAssignment, players: updatedPlayers });
   } else if (req.method === "POST") {
     const newAssignment = JSON.parse(req.body);
     if (!(await isCreateAuthorized(newAssignment.ringId, req, res))) {
       console.log("Unauthorized assigment create attempt!");
       res.status(403).end();
     }
-    const savedAssigment = await prisma.assignment.create({
+    const savedAssignment = await prisma.assignment.create({
       data: newAssignment
     });
 
-    const updatedRing = await prisma.assignmentRing.findUnique({
-      where: {
-        id: savedAssigment.ringId
-      },
+    const updatedPlayers = await prisma.player.findMany({
       include: {
-        assignments: true
+        user: true,
+        targets: true
       }
     });
-    res.json(updatedRing);
+
+    res.json({ savedAssignment, players: updatedPlayers });
   }
 }
