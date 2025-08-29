@@ -79,6 +79,11 @@ button,
   font-weight: bold;
 }
 
+.delete-tournament {
+  background-color: #a50000;
+  color: white;
+}
+
 button[type="submit"] {
   width: 100%;
   background-color: white;
@@ -113,4 +118,8 @@ a {
   color: hotpink;
   text-decoration: underline;
   display: inline;
+}
+
+.rdtPicker {
+  color: black;
 }
