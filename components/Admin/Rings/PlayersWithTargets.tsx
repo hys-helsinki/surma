@@ -8,8 +8,8 @@ const PlayersWithTargets = ({ players }) => {
       {players.map((player) => (
         <Box key={player.id}>
           <p>
-            {player.user.firstName} {player.user.lastName}{" "}
-            {player.state === "DEAD" && " (kuollut)"}
+            {player.user.firstName} {player.user.lastName} ({player.alias})
+            {player.state === "DEAD" && <i> kuollut</i>}
           </p>
           <ul>
             {player.targets.map((assignment) => (

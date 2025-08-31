@@ -66,9 +66,20 @@ export default async function handler(
             data: newAssignments
           }
         }
+      },
+      include: {
+        assignments: true
       }
     });
 
-    res.json(wantedRing);
+    const players = await prisma.player.findMany({
+      include: {
+        user: true,
+        team: true,
+        targets: true
+      }
+    });
+
+    res.json({ wantedRing, players });
   }
 }

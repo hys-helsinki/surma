@@ -1,16 +1,10 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 import KeyboardArrowUpRoundedIcon from "@mui/icons-material/KeyboardArrowUpRounded";
 import KeyboardArrowDownRoundedIcon from "@mui/icons-material/KeyboardArrowDownRounded";
 import IconButton from "@mui/material/IconButton";
 import { Box, Button, Grid, Card } from "@mui/material";
-import {
-  Player,
-  User,
-  Tournament,
-  Assignment,
-  AssignmentRing
-} from "@prisma/client";
+import { Player, User, Tournament, Assignment } from "@prisma/client";
 import CreateRingForm from "./CreateRingForm";
 import { Field, Form, Formik } from "formik";
 import LoadingButton from "@mui/lab/LoadingButton";
@@ -20,9 +14,6 @@ import { getPlayerFullNameById } from "../../utils";
 interface PlayerWithUser extends Player {
   user: User;
   targets: Assignment[];
-}
-interface RingWithAssignments extends AssignmentRing {
-  assignments: Assignment[];
 }
 
 const AssignmentCard = ({
@@ -202,20 +193,18 @@ const Ring = ({ ring, rings, setRings, players, setPlayers, tournament }) => {
 
 export const TournamentRings = ({
   tournament,
-  players: playerList,
-  rings
+  players,
+  setPlayers,
+  rings,
+  setRings
 }: {
   tournament: Tournament;
   players: PlayerWithUser[];
+  setPlayers: any;
   rings: any;
+  setRings: any;
 }): JSX.Element => {
-  const [allRings, setRings] = useState<RingWithAssignments[]>(rings);
-  const [players, setPlayers] = useState(playerList);
   const [showForm, setShowForm] = useState(false);
-
-  useEffect(() => {
-    setRings(rings);
-  }, [rings]);
 
   const sortedPlayersWithColors = players
     .sort((a, b) => a.user.firstName.localeCompare(b.user.firstName))
@@ -225,20 +214,20 @@ export const TournamentRings = ({
     }));
 
   const activePlayers = sortedPlayersWithColors.filter(
-    (player) => player.state === "ACTIVE"
+    (player) => player.state !== "DEAD"
   );
 
   return (
     <Grid container>
       <Grid item xs={12} md={4}>
         <h2>Ringit</h2>
-        {allRings.map((ring) => (
+        {rings.map((ring) => (
           <Ring
             players={activePlayers}
             setPlayers={setPlayers}
             ring={ring}
             tournament={tournament}
-            rings={allRings}
+            rings={rings}
             setRings={setRings}
             key={ring.id}
           />
