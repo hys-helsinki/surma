@@ -39,13 +39,13 @@ const PlayerRow = ({ player, players, setPlayers, tournament, setRings }) => {
           body: JSON.stringify(data)
         });
         const {
-          updatedPlayer,
+          updatedPlayerList,
           rings
-        }: { updatedPlayer: PlayerWithUser; rings: RingWithAssignments[] } =
-          await res.json();
-        setPlayers(
-          players.map((player) => (player.id !== id ? player : updatedPlayer))
-        );
+        }: {
+          updatedPlayerList: PlayerWithUser[];
+          rings: RingWithAssignments[];
+        } = await res.json();
+        setPlayers(updatedPlayerList);
         setRings(rings);
       }
     } catch (e) {

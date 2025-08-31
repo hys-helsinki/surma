@@ -119,9 +119,12 @@ export default async function handler(
       }
     }
 
-    const updatedPlayer = await prisma.player.update({
+    await prisma.player.update({
       where: { id: playerId },
-      data: { state },
+      data: { state }
+    });
+
+    const updatedPlayerList = await prisma.player.findMany({
       include: {
         user: true,
         team: true,
@@ -131,6 +134,6 @@ export default async function handler(
     const rings = await prisma.assignmentRing.findMany({
       include: { assignments: true }
     });
-    res.json({ updatedPlayer, rings });
+    res.json({ updatedPlayerList, rings });
   }
 }
