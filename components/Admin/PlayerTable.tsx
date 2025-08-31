@@ -16,6 +16,10 @@ interface PlayerWithUser extends Player {
   team?: Team;
 }
 
+interface RingWithAssignments extends AssignmentRing {
+  assignments: Assignment[];
+}
+
 const PlayerRow = ({ player, players, setPlayers, tournament, setRings }) => {
   const [isStateButtonLoading, setIsStateButtonLoading] = useState("");
   const [isWantedLoading, setIsWantedLoading] = useState(false);
@@ -37,7 +41,7 @@ const PlayerRow = ({ player, players, setPlayers, tournament, setRings }) => {
         const {
           updatedPlayer,
           rings
-        }: { updatedPlayer: PlayerWithUser; rings: AssignmentRing } =
+        }: { updatedPlayer: PlayerWithUser; rings: RingWithAssignments[] } =
           await res.json();
         setPlayers(
           players.map((player) => (player.id !== id ? player : updatedPlayer))

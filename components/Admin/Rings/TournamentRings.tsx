@@ -1,16 +1,10 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 import KeyboardArrowUpRoundedIcon from "@mui/icons-material/KeyboardArrowUpRounded";
 import KeyboardArrowDownRoundedIcon from "@mui/icons-material/KeyboardArrowDownRounded";
 import IconButton from "@mui/material/IconButton";
 import { Box, Button, Grid, Card } from "@mui/material";
-import {
-  Player,
-  User,
-  Tournament,
-  Assignment,
-  AssignmentRing
-} from "@prisma/client";
+import { Player, User, Tournament, Assignment } from "@prisma/client";
 import CreateRingForm from "./CreateRingForm";
 import { Field, Form, Formik } from "formik";
 import LoadingButton from "@mui/lab/LoadingButton";
@@ -20,9 +14,6 @@ import { getPlayerFullNameById } from "../../utils";
 interface PlayerWithUser extends Player {
   user: User;
   targets: Assignment[];
-}
-interface RingWithAssignments extends AssignmentRing {
-  assignments: Assignment[];
 }
 
 const AssignmentCard = ({
