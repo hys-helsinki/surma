@@ -1,45 +1,154 @@
-import { Player, Tournament, User } from "@prisma/client";
+import LoadingButton from "@mui/lab/LoadingButton";
+import {
+  Assignment,
+  AssignmentRing,
+  Player,
+  Team,
+  Tournament,
+  User
+} from "@prisma/client";
 import Link from "next/link";
 import { useState } from "react";
 
 interface PlayerWithUser extends Player {
   user: User;
+  targets: Assignment[];
+  team?: Team;
 }
 
+interface RingWithAssignments extends AssignmentRing {
+  assignments: Assignment[];
+}
+
+const PlayerRow = ({ player, players, setPlayers, tournament, setRings }) => {
+  const [isStateButtonLoading, setIsStateButtonLoading] = useState("");
+  const [isWantedLoading, setIsWantedLoading] = useState(false);
+
+  const handlePlayerStatusChange = async (playerState: string, id: string) => {
+    setIsStateButtonLoading(playerState);
+    try {
+      if (
+        playerState !== "DEAD" ||
+        window.confirm(
+          "Haluatko varmasti merkitä pelaajan kuolleeksi? Pelaajan tappaminen poistaa toimeksiannot, joissa pelaaja on kohde tai metsästäjä"
+        )
+      ) {
+        const data = { state: playerState, teamGame: tournament.teamGame };
+        const res = await fetch(`/api/player/${id}/state`, {
+          method: "PATCH",
+          body: JSON.stringify(data)
+        });
+        const {
+          updatedPlayerList,
+          rings
+        }: {
+          updatedPlayerList: PlayerWithUser[];
+          rings: RingWithAssignments[];
+        } = await res.json();
+        setPlayers(updatedPlayerList);
+        setRings(rings);
+      }
+    } catch (e) {
+      console.log(e);
+    }
+    setIsStateButtonLoading("");
+  };
+
+  const handleMakeWanted = async (id: string) => {
+    setIsWantedLoading(true);
+    try {
+      if (
+        window.confirm(
+          "Haluatko varmasti etsintäkuuluttaa pelaajan? Etsintäkuuluttaminen antaa pelaajan kohteeksi kaikille etsiville"
+        )
+      ) {
+        const res = await fetch(`/api/player/${id}/wanted`, {
+          method: "POST"
+        });
+
+        const { wantedRing, players } = await res.json();
+        setRings((prevRings) => prevRings.concat(wantedRing));
+        setPlayers(players);
+      }
+    } catch (e) {
+      console.log(e);
+    }
+    setIsWantedLoading(false);
+  };
+
+  return (
+    <tr key={player.id}>
+      <td style={{ width: "50%" }}>
+        <Link
+          href={`/tournaments/${tournament.id}/users/${player.user.id}`}
+          passHref
+        >
+          <p>
+            {player.user.firstName} {player.user.lastName} ({player.alias})
+          </p>
+        </Link>
+      </td>
+      {player.state == "ACTIVE" && (
+        <td>
+          <LoadingButton
+            onClick={() => handlePlayerStatusChange("DEAD", player.id)}
+            style={{ margin: "0 5px 0 0" }}
+            loading={isStateButtonLoading == "DEAD"}
+          >
+            Tapa
+          </LoadingButton>
+        </td>
+      )}
+      {player.state == "ACTIVE" && (
+        <td>
+          <LoadingButton
+            onClick={() => handleMakeWanted(player.id)}
+            style={{ margin: "0 5px 0 0" }}
+            loading={isWantedLoading}
+          >
+            Etsintäkuuluta
+          </LoadingButton>
+        </td>
+      )}
+      {player.state == "DEAD" && (
+        <td>
+          <LoadingButton
+            onClick={() => handlePlayerStatusChange("DETECTIVE", player.id)}
+            style={{ margin: "0 5px 0 0" }}
+            loading={isStateButtonLoading == "DETECTIVE"}
+          >
+            Etsiväksi
+          </LoadingButton>
+        </td>
+      )}
+      {player.state != "ACTIVE" && (
+        <td>
+          <LoadingButton
+            onClick={() => handlePlayerStatusChange("ACTIVE", player.id)}
+            style={{ margin: "0 5px 0 0" }}
+            loading={isStateButtonLoading == "ACTIVE"}
+          >
+            Herätä henkiin
+          </LoadingButton>
+        </td>
+      )}
+    </tr>
+  );
+};
+
 const PlayerTable = ({
-  playerList,
+  players,
+  setPlayers,
   tournament,
   setRings,
   users
 }: {
-  playerList: PlayerWithUser[];
+  players: PlayerWithUser[];
+  setPlayers: any;
   tournament: Tournament;
   setRings: any;
   users: any[];
 }) => {
-  const [players, setPlayers] = useState<PlayerWithUser[]>(playerList);
-
-  const handlePlayerStatusChange = async (playerState: string, id: string) => {
-    const data = { state: playerState };
-    const res = await fetch(`/api/player/${id}/state`, {
-      method: "PATCH",
-      body: JSON.stringify(data)
-    });
-    const updatedPlayer: PlayerWithUser = await res.json();
-    setPlayers(
-      players.map((player) => (player.id !== id ? player : updatedPlayer))
-    );
-  };
-
-  const handleMakeWanted = async (id: string) => {
-    const res = await fetch(`/api/player/${id}/wanted`, {
-      method: "POST"
-    });
-
-    const createdRing = await res.json();
-    setRings((prevRings) => prevRings.concat(createdRing));
-  };
-
   if (players.length === 0) return <p>Ei pelaajia</p>;
 
   const sortedPlayers = players.sort((a, b) =>
@@ -77,92 +186,48 @@ const PlayerTable = ({
         <tbody>
           <tr>
             <td>
-              <p>Elossa</p>
+              <b>Elossa</b>
             </td>
           </tr>
           {activePlayers.map((player) => (
-            <tr key={player.id}>
-              <td>
-                <Link
-                  href={`/tournaments/${tournament.id}/users/${player.user.id}`}
-                >
-                  {player.user.firstName} {player.user.lastName} ({player.alias}
-                  )
-                </Link>
-              </td>
-
-              <td>
-                <button
-                  onClick={() => handlePlayerStatusChange("DEAD", player.id)}
-                >
-                  Tapa
-                </button>
-              </td>
-              <td>
-                <button onClick={() => handleMakeWanted(player.id)}>
-                  Etsintäkuuluta
-                </button>
-              </td>
-            </tr>
+            <PlayerRow
+              key={player.id}
+              player={player}
+              tournament={tournament}
+              setRings={setRings}
+              players={players}
+              setPlayers={setPlayers}
+            />
           ))}
           <tr>
             <td>
-              <p>Kuolleet</p>
+              <b>Kuolleet</b>
             </td>
           </tr>
           {deadPlayers.map((player) => (
-            <tr key={player.id}>
-              <td>
-                <Link
-                  href={`/tournaments/${tournament.id}/users/${player.user.id}`}
-                >
-                  {player.user.firstName} {player.user.lastName} ({player.alias}
-                  )
-                </Link>
-              </td>
-
-              <td>
-                <button
-                  onClick={() => handlePlayerStatusChange("ACTIVE", player.id)}
-                >
-                  Herätä henkiin
-                </button>
-              </td>
-
-              <td>
-                <button
-                  onClick={() =>
-                    handlePlayerStatusChange("DETECTIVE", player.id)
-                  }
-                >
-                  Etsiväksi
-                </button>
-              </td>
-            </tr>
+            <PlayerRow
+              key={player.id}
+              player={player}
+              tournament={tournament}
+              setRings={setRings}
+              players={players}
+              setPlayers={setPlayers}
+            />
           ))}
           <tr>
             <td>
-              <p>Etsivät</p>
+              <b>Etsivät</b>
             </td>
           </tr>
           {detectivePlayers.map((player) => (
-            <tr key={player.id}>
-              <td>
-                <Link
-                  href={`/tournaments/${tournament.id}/users/${player.user.id}`}
-                >
-                  {player.user.firstName} {player.user.lastName} ({player.alias}
-                  )
-                </Link>
-              </td>
-              <td>
-                <button
-                  onClick={() => handlePlayerStatusChange("ACTIVE", player.id)}
-                >
-                  Herätä henkiin
-                </button>
-              </td>
-            </tr>
+            <PlayerRow
+              key={player.id}
+              player={player}
+              tournament={tournament}
+              setRings={setRings}
+              players={players}
+              setPlayers={setPlayers}
+            />
           ))}
         </tbody>
       </table>

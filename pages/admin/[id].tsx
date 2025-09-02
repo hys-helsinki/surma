@@ -1,4 +1,4 @@
-import { Grid, Box, Tabs, Tab } from "@mui/material";
+import { Box, Tabs, Tab } from "@mui/material";
 import { GetServerSideProps } from "next";
 import { unstable_getServerSession } from "next-auth";
 import { useState } from "react";
@@ -85,7 +85,8 @@ export const getServerSideProps: GetServerSideProps = async ({
         include: {
           user: true
         }
-      }
+      },
+      targets: true
     }
   });
 
@@ -139,11 +140,12 @@ export const getServerSideProps: GetServerSideProps = async ({
 export default function Tournament({
   tournament,
   users,
-  players,
+  players: playerList,
   ringList,
   teams
 }) {
   const [rings, setRings] = useState<any[]>(ringList);
+  const [players, setPlayers] = useState(playerList);
   const [value, setValue] = useState(0);
 
   const handleTabChange = (event: React.SyntheticEvent, newValue: number) => {
@@ -185,7 +187,8 @@ export default function Tournament({
             />
           ) : (
             <PlayerTable
-              playerList={players}
+              players={players}
+              setPlayers={setPlayers}
               tournament={tournament}
               setRings={setRings}
               users={users}
@@ -211,7 +214,9 @@ export default function Tournament({
             <TournamentRings
               tournament={tournament}
               players={players}
+              setPlayers={setPlayers}
               rings={rings}
+              setRings={setRings}
             />
           )}
         </TabPanel>
