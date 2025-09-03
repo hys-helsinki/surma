@@ -1,8 +1,8 @@
 import { Field, Form, Formik } from "formik";
 import TextInput from "../../Registration/TextInput";
 import LoadingButton from "@mui/lab/LoadingButton";
-import { useState } from "react";
-import { useRouter } from "next/router";
+import { Dispatch, useContext, useState } from "react";
+import { UserContext } from "../../UserProvider";
 
 type FormData = {
   address: string;
@@ -14,23 +14,29 @@ type FormData = {
   safetyNotes: string;
 };
 
-export const UpdateForm = ({ player, setPlayer }): JSX.Element => {
+export const UpdateForm = ({
+  setUser,
+  setIsUpdating
+}: {
+  setUser: Dispatch<any>;
+  setIsUpdating: Dispatch<any>;
+}): JSX.Element => {
+  const user = useContext(UserContext);
   const [isLoading, setIsLoading] = useState(false);
-  const router = useRouter();
-
-  const { id } = router.query;
+  const player = user.player;
 
   const handleSubmit = async (values) => {
     setIsLoading(true);
     const data: FormData = values;
     try {
-      const response = await fetch(`/api/user/update/${id}`, {
+      const response = await fetch(`/api/user/update/${user.id}`, {
         method: "PUT",
         body: JSON.stringify(data)
       });
-      const updatedPlayer = await response.json();
-      setPlayer(updatedPlayer);
+      const updatedUser = await response.json();
       setIsLoading(false);
+      setIsUpdating(false);
+      setUser(updatedUser);
     } catch (error) {
       console.log(error);
       setIsLoading(false);

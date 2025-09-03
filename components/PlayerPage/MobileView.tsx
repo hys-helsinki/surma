@@ -1,13 +1,19 @@
 import { Box, Tab, Tabs } from "@mui/material";
 import { Calendar } from "./Calendar";
-import { useState } from "react";
+import { Dispatch, useState } from "react";
 import Info from "./Info";
 import Details from "./Details";
+import { Tournament, Umpire, User } from "@prisma/client";
+import { useParams } from "next/navigation";
 
 interface TabPanelProps {
   children?: React.ReactNode;
   index: number;
   value: number;
+}
+
+interface UmpireWithUser extends Umpire {
+  user: User;
 }
 
 const TabPanel = (props: TabPanelProps) => {
@@ -26,23 +32,23 @@ const TabPanel = (props: TabPanelProps) => {
 };
 
 const MobileView = ({
-  user,
   tournament,
   imageUrl,
   currentUserIsUmpire,
   currentUserIsHunter = false,
   currentUserIsDetective = false,
   currentUserId,
-  umpires
+  umpires,
+  setUser
 }: {
-  user;
-  tournament;
-  imageUrl;
+  tournament: Tournament;
+  imageUrl: string;
   currentUserIsUmpire: boolean;
   currentUserIsHunter?: boolean;
   currentUserIsDetective?: boolean;
-  currentUserId;
-  umpires;
+  currentUserId: string;
+  umpires: UmpireWithUser[];
+  setUser: Dispatch<any>;
 }) => {
   const [value, setValue] = useState(0);
 
@@ -50,18 +56,19 @@ const MobileView = ({
     setValue(newValue);
   };
 
+  const { id: userId } = useParams();
+
   return (
     <Box sx={{ width: "100%", marginBottom: "2rem" }}>
       <Info
-        user={user}
         imageUrl={imageUrl}
         showAlias={
           currentUserIsDetective ||
           currentUserIsUmpire ||
-          user.id === currentUserId
+          userId === currentUserId
         }
-        showStatus={currentUserIsUmpire || user.id === currentUserId}
-        showImageForm={user.id === currentUserId}
+        showStatus={currentUserIsUmpire || userId === currentUserId}
+        showImageForm={userId === currentUserId}
       />
 
       <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
@@ -82,17 +89,17 @@ const MobileView = ({
       </Box>
       <TabPanel value={value} index={0}>
         <Calendar
-          player={user.player}
+          setUser={setUser}
           tournament={tournament}
           showEditButton={!currentUserIsHunter && !currentUserIsUmpire}
         />
       </TabPanel>
       <TabPanel value={value} index={1}>
         <Details
-          user={user}
           umpires={umpires}
-          currentUserIsUmpire={currentUserIsUmpire}
+          currentUserIsUmpire={userId !== currentUserId}
           currentUserIsHunter={currentUserIsHunter}
+          setUser={setUser}
         />
       </TabPanel>
     </Box>

@@ -2,22 +2,33 @@ import { Box } from "@mui/material";
 import PlayerDescription from "./PlayerDescription";
 import ContactDetails from "./ContactDetails";
 import Umpires from "./Umpires";
+import { Umpire, User } from "@prisma/client";
+import { Dispatch } from "react";
+
+interface UmpireWithUser extends Umpire {
+  user: User;
+}
 
 const Details = ({
-  user,
   umpires,
   currentUserIsUmpire,
-  currentUserIsHunter
+  currentUserIsHunter,
+  setUser
+}: {
+  umpires: UmpireWithUser[];
+  currentUserIsUmpire: boolean;
+  currentUserIsHunter: boolean;
+  setUser: Dispatch<any>;
 }) => {
   return (
     <Box>
       {!currentUserIsHunter && (
-        <ContactDetails user={user} showLastVisit={currentUserIsUmpire} />
+        <ContactDetails showLastVisit={currentUserIsUmpire} />
       )}
-      <Umpires player={user.player} umpires={umpires} />
+      <Umpires umpires={umpires} />
       <PlayerDescription
-        player={user.player}
         showUpdateButton={!currentUserIsHunter && !currentUserIsUmpire}
+        setUser={setUser}
       />
     </Box>
   );

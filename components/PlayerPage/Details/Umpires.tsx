@@ -1,18 +1,18 @@
 import { Box, Button } from "@mui/material";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
+import { Umpire, User } from "@prisma/client";
+import { UserContext } from "../../UserProvider";
+interface UmpireWithUser extends Umpire {
+  user: User;
+}
 
-const Umpires = ({
-  player,
-  umpires
-}: {
-  player;
-  umpires: any[];
-}): JSX.Element => {
+const Umpires = ({ umpires }: { umpires: UmpireWithUser[] }): JSX.Element => {
+  const user = useContext(UserContext);
   const [showOtherUmpires, setShowOtherUmpires] = useState(false);
 
-  const playerUmpire = player.umpire;
+  const playerUmpire = user.player.umpire;
 
   const otherUmpires = playerUmpire
     ? umpires.filter((umpire) => umpire.id !== playerUmpire.id)

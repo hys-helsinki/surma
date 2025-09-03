@@ -1,15 +1,24 @@
 import { Box } from "@mui/material";
 import { UpdateForm } from "./UpdateForm";
-import { useState } from "react";
+import { Dispatch, useContext, useState } from "react";
+import { UserContext } from "../../UserProvider";
 
-const PlayerDescription = ({ player: p, showUpdateButton }) => {
+const PlayerDescription = ({
+  showUpdateButton,
+  setUser
+}: {
+  showUpdateButton: boolean;
+  setUser: Dispatch<any>;
+}) => {
+  const user = useContext(UserContext);
   const [isUpdating, setIsUpdating] = useState(false);
-  const [player, setPlayer] = useState(p);
+
+  const player = user.player;
 
   return (
     <Box>
       <Box sx={{ mt: 4 }}>
-        <h2>
+        <h2 style={{ marginBottom: "0" }}>
           <u>Kuvaus</u>
         </h2>
         {showUpdateButton && (
@@ -63,7 +72,7 @@ const PlayerDescription = ({ player: p, showUpdateButton }) => {
             </pre>
           </Box>
         ) : (
-          <UpdateForm player={player} setPlayer={setPlayer} />
+          <UpdateForm setUser={setUser} setIsUpdating={setIsUpdating} />
         )}
       </Box>
     </Box>

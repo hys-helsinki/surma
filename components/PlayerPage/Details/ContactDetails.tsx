@@ -1,12 +1,13 @@
 import { Box } from "@mui/material";
+import { useContext } from "react";
+import { UserContext } from "../../UserProvider";
 
 const ContactDetails = ({
-  user,
   showLastVisit
 }: {
-  user: any;
   showLastVisit: boolean;
 }): JSX.Element => {
+  const user = useContext(UserContext);
   return (
     <Box sx={{ my: 3 }}>
       <h2>

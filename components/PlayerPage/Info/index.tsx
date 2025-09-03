@@ -1,8 +1,9 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import ImageUploadForm from "../../Registration/PlayerForm/ImageUploadForm";
 import ImageComponent from "./ImageComponent";
 import { useRouter } from "next/router";
 import { Box } from "@mui/material";
+import { UserContext } from "../../UserProvider";
 
 const states = {
   ACTIVE: "Elossa",
@@ -11,8 +12,19 @@ const states = {
   EXTRA: "Lisäkohde"
 };
 
-const Info = ({ user, imageUrl, showAlias, showStatus, showImageForm }) => {
+const Info = ({
+  imageUrl,
+  showAlias,
+  showStatus,
+  showImageForm
+}: {
+  imageUrl: string;
+  showAlias: boolean;
+  showStatus: boolean;
+  showImageForm: boolean;
+}) => {
   const [fileInputState, setFileInputState] = useState("");
+  const user = useContext(UserContext);
   const [selectedFile, setSelectedFile] = useState();
   const [selectedFileName, setSelectedFileName] = useState("");
   const [updateImage, setUpdateImage] = useState(false);
@@ -92,7 +104,7 @@ const Info = ({ user, imageUrl, showAlias, showStatus, showImageForm }) => {
           </div>
         </>
       ) : !showImageForm ? (
-        <p>{"Ei kuvaa :("}</p>
+        <p style={{ marginLeft: "1rem" }}>{"Ei kuvaa :("}</p>
       ) : (
         <div style={{ margin: "10px" }}>
           <ImageUploadForm

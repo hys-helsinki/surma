@@ -1,6 +1,5 @@
 import { GetServerSideProps } from "next";
 import prisma from "../../../../lib/prisma";
-import { useState } from "react";
 import { Alert, Button, useMediaQuery, useTheme } from "@mui/material";
 import { AuthenticationRequired } from "../../../../components/AuthenticationRequired";
 import { unstable_getServerSession } from "next-auth";
@@ -10,6 +9,8 @@ import DesktopView from "../../../../components/PlayerPage/DesktopView";
 import MobileView from "../../../../components/PlayerPage/MobileView";
 import PlayerForm from "../../../../components/Registration/PlayerForm";
 import { useSession } from "next-auth/react";
+import { useState } from "react";
+import { UserProvider } from "../../../../components/UserProvider";
 
 const isCurrentUserAuthorized = async (currentUser, userId, tournamentId) => {
   return (
@@ -91,18 +92,12 @@ export const getServerSideProps: GetServerSideProps = async ({
             }
           }
         }
-      },
-      tournament: {
-        select: {
-          id: true,
-          name: true,
-          startTime: true,
-          endTime: true,
-          registrationStartTime: true,
-          registrationEndTime: true
-        }
       }
     }
+  });
+
+  let tournament = await prisma.tournament.findUnique({
+    where: { id: params.tournamentId as string }
   });
 
   const umpires = await prisma.umpire.findMany({
@@ -132,7 +127,7 @@ export const getServerSideProps: GetServerSideProps = async ({
 
   user = JSON.parse(JSON.stringify(user));
   currentUser = JSON.parse(JSON.stringify(currentUser));
-  const tournament = user.tournament;
+  tournament = JSON.parse(JSON.stringify(tournament));
 
   return {
     props: {
@@ -147,13 +142,14 @@ export const getServerSideProps: GetServerSideProps = async ({
 };
 
 export default function User({
-  user,
+  user: u,
   tournament,
   imageUrl,
   currentUserIsUmpire,
   umpires,
   currentUser
 }): JSX.Element {
+  const [user, setUser] = useState(u);
   const [confirmed, setConfirmed] = useState(
     user.player ? user.player.confirmed : false
   );
@@ -193,7 +189,7 @@ export default function User({
 
   return (
     <AuthenticationRequired>
-      <div>
+      <UserProvider user={user}>
         {!user.player.confirmed && (
           <Alert
             severity="warning"
@@ -215,7 +211,7 @@ export default function User({
         )}
         {isMobileView ? (
           <MobileView
-            user={user}
+            setUser={setUser}
             tournament={tournament}
             imageUrl={imageUrl}
             currentUserIsUmpire={currentUserIsUmpire}
@@ -224,7 +220,7 @@ export default function User({
           />
         ) : (
           <DesktopView
-            user={user}
+            setUser={setUser}
             tournament={tournament}
             imageUrl={imageUrl}
             currentUserIsUmpire={currentUserIsUmpire}
@@ -232,7 +228,7 @@ export default function User({
             umpires={umpires}
           />
         )}
-      </div>
+      </UserProvider>
     </AuthenticationRequired>
   );
 }
