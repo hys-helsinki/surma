@@ -4,6 +4,7 @@ import ImageComponent from "./ImageComponent";
 import { useRouter } from "next/router";
 import { Box } from "@mui/material";
 import { UserContext } from "../../UserProvider";
+import { LoadingButton } from "@mui/lab";
 
 const states = {
   ACTIVE: "Elossa",
@@ -29,12 +30,14 @@ const Info = ({
   const [selectedFileName, setSelectedFileName] = useState("");
   const [updateImage, setUpdateImage] = useState(false);
   const [showPicture, setShowPicture] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
 
   const uploadImage = async (event) => {
     event.preventDefault();
     if (!selectedFile) return;
     try {
+      setIsLoading(true);
       const reader = new FileReader();
       reader.readAsDataURL(selectedFile);
       reader.onloadend = async () => {
@@ -49,9 +52,11 @@ const Info = ({
         setFileInputState("");
         setSelectedFileName("");
         setSelectedFile(null);
+        setIsLoading(false);
         router.reload();
       };
     } catch (error) {
+      setIsLoading(false);
       console.log(error);
     }
   };
@@ -114,19 +119,29 @@ const Info = ({
             selectedFileName={selectedFileName}
             fileInputState={fileInputState}
           />
-          {selectedFile && (
-            <button
-              onClick={async (e) => await uploadImage(e)}
-              style={{ marginRight: "10px" }}
-            >
-              Lisää kuva
-            </button>
-          )}
-          {updateImage && (
-            <button onClick={() => setUpdateImage(!updateImage)}>
-              Peruuta
-            </button>
-          )}
+          <div style={{ display: "flex", alignItems: "center" }}>
+            {selectedFile && (
+              <LoadingButton
+                onClick={async (e) => await uploadImage(e)}
+                sx={{
+                  textTransform: "none",
+                  lineHeight: "normal",
+                  fontFamily: "revert"
+                }}
+                loading={isLoading}
+              >
+                Lisää kuva
+              </LoadingButton>
+            )}
+            {updateImage && (
+              <button
+                onClick={() => setUpdateImage(!updateImage)}
+                style={{ marginLeft: 3 }}
+              >
+                Peruuta
+              </button>
+            )}
+          </div>
         </div>
       )}
     </Box>
