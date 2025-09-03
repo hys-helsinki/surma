@@ -1,6 +1,6 @@
 import { GetServerSideProps } from "next";
 import prisma from "../../../../lib/prisma";
-import React from "react";
+import React, { useState } from "react";
 import { useMediaQuery, useTheme } from "@mui/material";
 import { AuthenticationRequired } from "../../../../components/AuthenticationRequired";
 import { Session, unstable_getServerSession } from "next-auth";
@@ -9,6 +9,7 @@ import { v2 as cloudinary } from "cloudinary";
 import DesktopView from "../../../../components/PlayerPage/DesktopView";
 import MobileView from "../../../../components/PlayerPage/MobileView";
 import { Tournament } from "@prisma/client";
+import { UserProvider } from "../../../../components/UserProvider";
 
 const isTournamentRunning = (startTime: Date, endTime: Date) => {
   const currentTime = new Date().getTime();
@@ -166,23 +167,25 @@ export const getServerSideProps: GetServerSideProps = async ({
 };
 
 export default function Target({
-  user,
-  currentUser,
+  user: u,
   tournament,
   imageUrl,
   currentUserIsUmpire,
   currentUserIsDetective,
-  umpires
+  umpires,
+  currentUser
 }): JSX.Element {
+  const [user, setUser] = useState(u);
+
   const theme = useTheme();
   const isMobileView = useMediaQuery(theme.breakpoints.down("md"));
 
   return (
     <AuthenticationRequired>
-      <div>
+      <UserProvider user={user}>
         {isMobileView ? (
           <MobileView
-            user={user}
+            setUser={setUser}
             tournament={tournament}
             imageUrl={imageUrl}
             currentUserIsUmpire={currentUserIsUmpire}
@@ -193,7 +196,7 @@ export default function Target({
           />
         ) : (
           <DesktopView
-            user={user}
+            setUser={setUser}
             tournament={tournament}
             imageUrl={imageUrl}
             currentUserIsUmpire={currentUserIsUmpire}
@@ -203,7 +206,7 @@ export default function Target({
             currentUserId={currentUser.id}
           />
         )}
-      </div>
+      </UserProvider>
     </AuthenticationRequired>
   );
 }

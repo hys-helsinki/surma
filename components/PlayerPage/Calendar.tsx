@@ -1,27 +1,27 @@
-import { useRouter } from "next/router";
-import { useEffect, useState } from "react";
+import { Dispatch, useContext, useEffect, useState } from "react";
 import { getCurrentWeek, getTournamentDates, splitCalendar } from "../utils";
 import { Formik, Form, Field } from "formik";
 import Markdown from "../Common/Markdown";
 import { LoadingButton } from "@mui/lab";
+import { Tournament } from "@prisma/client";
+import { UserContext } from "../UserProvider";
 
 export const Calendar = ({
-  player,
   tournament,
-  showEditButton
+  showEditButton,
+  setUser
+}: {
+  tournament: Tournament;
+  showEditButton: boolean;
+  setUser: Dispatch<any>;
 }): JSX.Element => {
-  const [calendar, setCalendar] = useState([]);
+  const user = useContext(UserContext);
   const [weekNumber, setSlideNumber] = useState(0);
   const [weeks, setWeeks] = useState([]);
   const [isUpdated, setIsUpdated] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
-  const router = useRouter();
 
-  useEffect(() => {
-    if (player.calendar) {
-      setCalendar(player.calendar);
-    }
-  }, [player.calendar]);
+  const calendar = user.player.calendar;
 
   useEffect(() => {
     if (calendar) {
@@ -36,8 +36,6 @@ export const Calendar = ({
   }, [calendar]);
 
   if (!calendar) return null;
-
-  const { id: userId } = router.query;
 
   const dates: string[] = getTournamentDates(
     new Date(tournament.startTime),
@@ -66,12 +64,12 @@ export const Calendar = ({
     };
 
     try {
-      const res = await fetch(`/api/user/update/${userId}`, {
+      const res = await fetch(`/api/user/update/${user.id}`, {
         method: "PUT",
         body: JSON.stringify(data)
       });
-      const updatedPlayer = await res.json();
-      setCalendar(updatedPlayer.calendar);
+      const updatedUser = await res.json();
+      setUser(updatedUser);
       setIsUpdated(true);
       setIsLoading(false);
     } catch (error) {

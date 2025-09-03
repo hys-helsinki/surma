@@ -1,9 +1,13 @@
 import Image from "next/image";
 import { useState } from "react";
 
-const ImageComponent = ({ imageUrl }: { imageUrl: string }) => {
-  const [showPicture, setShowPicture] = useState(false);
-
+const ImageComponent = ({
+  imageUrl,
+  showPicture
+}: {
+  imageUrl: string;
+  showPicture: boolean;
+}) => {
   const imageLoader = ({ src }) => {
     return imageUrl;
   };
@@ -33,21 +37,6 @@ const ImageComponent = ({ imageUrl }: { imageUrl: string }) => {
           ></Image>
         </div>
       ) : null}
-      <div
-        style={{
-          display: "flex",
-          flexDirection: "row",
-          justifyContent: "center",
-          alignItems: "center"
-        }}
-      >
-        <button
-          onClick={() => setShowPicture(!showPicture)}
-          style={{ marginRight: "10px" }}
-        >
-          {showPicture ? "Piilota" : "Näytä kuva"}
-        </button>
-      </div>
     </div>
   );
 };
