@@ -1,12 +1,47 @@
 import { Field, Form, Formik } from "formik";
 import TextInput from "../../Registration/TextInput";
 import LoadingButton from "@mui/lab/LoadingButton";
+import { Dispatch, SetStateAction, useContext, useState } from "react";
+import { UserContext, UserWithPlayer } from "../../UserProvider";
+
+type FormData = {
+  address: string;
+  learningInstitution: string;
+  eyeColor: string;
+  hair: string;
+  height: number;
+  other: string;
+  safetyNotes: string;
+};
 
 export const UpdateForm = ({
-  player,
-  handleSubmit,
-  isLoading
+  setUser,
+  setIsUpdating
+}: {
+  setUser: Dispatch<SetStateAction<UserWithPlayer>>;
+  setIsUpdating: Dispatch<SetStateAction<boolean>>;
 }): JSX.Element => {
+  const user = useContext(UserContext);
+  const [isLoading, setIsLoading] = useState(false);
+  const player = user.player;
+
+  const handleSubmit = async (values) => {
+    setIsLoading(true);
+    const data: FormData = values;
+    try {
+      const response = await fetch(`/api/user/update/${user.id}`, {
+        method: "PUT",
+        body: JSON.stringify(data)
+      });
+      const updatedUser = await response.json();
+      setIsLoading(false);
+      setIsUpdating(false);
+      setUser(updatedUser);
+    } catch (error) {
+      console.log(error);
+      setIsLoading(false);
+    }
+  };
   return (
     <Formik
       enableReinitialize={true}

@@ -1,30 +1,32 @@
 import { Box } from "@mui/material";
-import PlayerInfo from "./PlayerInfo";
-import PlayerDetails from "./PlayerDetails";
-import { useState } from "react";
+import PlayerDescription from "./PlayerDescription";
+import ContactDetails from "./ContactDetails";
+import Umpires from "./Umpires";
+import { Umpire, User } from "@prisma/client";
+import { Dispatch } from "react";
+
+interface UmpireWithUser extends Umpire {
+  user: User;
+}
 
 const Details = ({
-  user,
   umpires,
   currentUserIsUmpire,
-  currentUserIsHunter
+  currentUserIsHunter,
+  setUser
+}: {
+  umpires: UmpireWithUser[];
+  currentUserIsUmpire: boolean;
+  currentUserIsHunter: boolean;
+  setUser: Dispatch<any>;
 }) => {
-  const [isUpdating, setIsUpdating] = useState(false);
-
   return (
     <Box>
-      {!currentUserIsHunter && !currentUserIsUmpire && (
-        <button onClick={() => setIsUpdating(!isUpdating)}>
-          {!isUpdating ? "Muokkaa tietoja" : "Peruuta"}
-        </button>
+      {!currentUserIsHunter && (
+        <ContactDetails showLastVisit={currentUserIsUmpire} />
       )}
-      <PlayerInfo
-        user={user}
-        showContactDetails={!currentUserIsHunter}
-        umpires={umpires}
-        showLastVisit={currentUserIsUmpire}
-      />
-      <PlayerDetails user={user} isUpdating={isUpdating} />
+      <Umpires umpires={umpires} />
+      <PlayerDescription setUser={setUser} />
     </Box>
   );
 };

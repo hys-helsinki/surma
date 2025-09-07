@@ -30,7 +30,7 @@ export default async function update(
     res.status(403).end();
   }
   if (req.method === "PUT") {
-    const playerId = req.query.id as string;
+    const userId = req.query.id as string;
     const allowedFields = [
       "address",
       "learningInstitution",
@@ -44,10 +44,28 @@ export default async function update(
     ];
     const filteredUpdateData = _.pick(JSON.parse(req.body), allowedFields);
 
-    const result = await prisma.player.update({
-      where: { userId: playerId },
+    await prisma.player.update({
+      where: { userId },
       data: filteredUpdateData
     });
-    res.json(result);
+
+    const updatedUser = await prisma.user.findFirst({
+      where: {
+        id: userId
+      },
+      include: {
+        player: {
+          include: {
+            umpire: {
+              include: {
+                user: true
+              }
+            }
+          }
+        }
+      }
+    });
+
+    res.json(updatedUser);
   }
 }

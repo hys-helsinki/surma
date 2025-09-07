@@ -1,4 +1,5 @@
-import { Box } from "@mui/material";
+import { Box, Snackbar } from "@mui/material";
+import { useState } from "react";
 
 const ImageUploadForm = ({
   setSelectedFile,
@@ -7,23 +8,29 @@ const ImageUploadForm = ({
   selectedFileName,
   fileInputState
 }) => {
+  const [showImageFileTooBigMessage, setShowImageFileTooBigMessage] =
+    useState(false);
   const handleFileInputChange = (event) => {
     const file = event.target.files[0];
     if (file == undefined) {
       setFileInputState("");
       setSelectedFile(null);
       setSelectedFileName("");
-    } else {
-      setSelectedFile(file);
-      setSelectedFileName(file.name);
-      setFileInputState(event.target.value);
+      return;
     }
+    if (file.size > 10000000) {
+      setShowImageFileTooBigMessage(true);
+      return;
+    }
+    setSelectedFile(file);
+    setSelectedFileName(file.name);
+    setFileInputState(event.target.value);
   };
 
   return (
     <Box sx={{ mb: 2 }}>
       <form>
-        <label htmlFor="image">Valitse kuva itsestäsi</label>
+        <label htmlFor="image">Valitse kuva itsestäsi (max. 10 Mt)</label>
         <input
           type="file"
           name="image"
@@ -38,6 +45,12 @@ const ImageUploadForm = ({
           <i>Valittu tiedosto: {selectedFileName}</i>
         </p>
       ) : null}
+      <Snackbar
+        open={showImageFileTooBigMessage}
+        onClose={() => setShowImageFileTooBigMessage(false)}
+        autoHideDuration={4000}
+        message="Kuva liian suuri (yli 10 Mt)"
+      />
     </Box>
   );
 };
