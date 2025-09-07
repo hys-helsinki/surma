@@ -2,17 +2,12 @@ import { Box } from "@mui/material";
 import { UpdateForm } from "./UpdateForm";
 import { Dispatch, useContext, useState } from "react";
 import { UserContext } from "../../UserProvider";
+import { useSession } from "next-auth/react";
 
-const PlayerDescription = ({
-  showUpdateButton,
-  setUser
-}: {
-  showUpdateButton: boolean;
-  setUser: Dispatch<any>;
-}) => {
+const PlayerDescription = ({ setUser }: { setUser: Dispatch<any> }) => {
   const user = useContext(UserContext);
   const [isUpdating, setIsUpdating] = useState(false);
-
+  const { data: session } = useSession();
   const player = user.player;
 
   return (
@@ -21,7 +16,7 @@ const PlayerDescription = ({
         <h2 style={{ marginBottom: "0" }}>
           <u>Kuvaus</u>
         </h2>
-        {showUpdateButton && (
+        {user.id == session.user.id && (
           <button onClick={() => setIsUpdating(!isUpdating)}>
             {!isUpdating ? "Muokkaa tietoja" : "Peruuta"}
           </button>

@@ -91,13 +91,13 @@ const MobileView = ({
         <Calendar
           setUser={setUser}
           tournament={tournament}
-          showEditButton={!currentUserIsHunter && !currentUserIsUmpire}
+          showEditButton={userId === currentUserId}
         />
       </TabPanel>
       <TabPanel value={value} index={1}>
         <Details
           umpires={umpires}
-          currentUserIsUmpire={userId !== currentUserId}
+          currentUserIsUmpire={currentUserIsUmpire}
           currentUserIsHunter={currentUserIsHunter}
           setUser={setUser}
         />

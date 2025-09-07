@@ -26,10 +26,7 @@ const Details = ({
         <ContactDetails showLastVisit={currentUserIsUmpire} />
       )}
       <Umpires umpires={umpires} />
-      <PlayerDescription
-        showUpdateButton={!currentUserIsHunter && !currentUserIsUmpire}
-        setUser={setUser}
-      />
+      <PlayerDescription setUser={setUser} />
     </Box>
   );
 };

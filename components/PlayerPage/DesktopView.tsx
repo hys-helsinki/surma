@@ -47,7 +47,7 @@ const DesktopView = ({
           />
           <Details
             umpires={umpires}
-            currentUserIsUmpire={userId !== currentUserId}
+            currentUserIsUmpire={currentUserIsUmpire}
             currentUserIsHunter={currentUserIsHunter}
             setUser={setUser}
           />
@@ -57,7 +57,7 @@ const DesktopView = ({
             <Calendar
               setUser={setUser}
               tournament={tournament}
-              showEditButton={!currentUserIsHunter && !currentUserIsUmpire}
+              showEditButton={userId === currentUserId}
             />
           </Box>
         </Grid>
