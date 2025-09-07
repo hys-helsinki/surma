@@ -174,7 +174,7 @@ export default function User({
   }
 
   if (!Boolean(user.player)) {
-    return <PlayerForm tournament={user.tournament} />;
+    return <PlayerForm tournament={tournament} />;
   }
 
   const handleConfirmRegistration = async () => {
