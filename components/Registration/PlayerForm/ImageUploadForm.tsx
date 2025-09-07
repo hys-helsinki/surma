@@ -8,7 +8,8 @@ const ImageUploadForm = ({
   selectedFileName,
   fileInputState
 }) => {
-  const [openSnackbar, setOpenSnackbar] = useState(false);
+  const [showImageFileTooBigMessage, setShowImageFileTooBigMessage] =
+    useState(false);
   const handleFileInputChange = (event) => {
     const file = event.target.files[0];
     if (file == undefined) {
@@ -18,7 +19,7 @@ const ImageUploadForm = ({
       return;
     }
     if (file.size > 10000000) {
-      setOpenSnackbar(true);
+      setShowImageFileTooBigMessage(true);
       return;
     }
     setSelectedFile(file);
@@ -29,7 +30,7 @@ const ImageUploadForm = ({
   return (
     <Box sx={{ mb: 2 }}>
       <form>
-        <label htmlFor="image">Valitse kuva itsestäsi (max. 10MB)</label>
+        <label htmlFor="image">Valitse kuva itsestäsi (max. 10 Mt)</label>
         <input
           type="file"
           name="image"
@@ -45,10 +46,10 @@ const ImageUploadForm = ({
         </p>
       ) : null}
       <Snackbar
-        open={openSnackbar}
-        onClose={() => setOpenSnackbar(false)}
+        open={showImageFileTooBigMessage}
+        onClose={() => setShowImageFileTooBigMessage(false)}
         autoHideDuration={4000}
-        message="Kuva liian suuri"
+        message="Kuva liian suuri (yli 10 Mt)"
       />
     </Box>
   );
