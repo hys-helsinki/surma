@@ -21,7 +21,7 @@ export const Calendar = ({
   const [isUpdated, setIsUpdated] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
 
-  const calendar = user.player.calendar;
+  const calendar = user.player.calendar as any;
 
   useEffect(() => {
     if (calendar) {

@@ -1,8 +1,8 @@
 import { Field, Form, Formik } from "formik";
 import TextInput from "../../Registration/TextInput";
 import LoadingButton from "@mui/lab/LoadingButton";
-import { Dispatch, useContext, useState } from "react";
-import { UserContext } from "../../UserProvider";
+import { Dispatch, SetStateAction, useContext, useState } from "react";
+import { UserContext, UserWithPlayer } from "../../UserProvider";
 
 type FormData = {
   address: string;
@@ -18,8 +18,8 @@ export const UpdateForm = ({
   setUser,
   setIsUpdating
 }: {
-  setUser: Dispatch<any>;
-  setIsUpdating: Dispatch<any>;
+  setUser: Dispatch<SetStateAction<UserWithPlayer>>;
+  setIsUpdating: Dispatch<SetStateAction<boolean>>;
 }): JSX.Element => {
   const user = useContext(UserContext);
   const [isLoading, setIsLoading] = useState(false);
