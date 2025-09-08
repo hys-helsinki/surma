@@ -1,7 +1,7 @@
 import { Box, Tabs, Tab } from "@mui/material";
 import { GetServerSideProps } from "next";
 import { unstable_getServerSession } from "next-auth";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { AuthenticationRequired } from "../../components/AuthenticationRequired";
 import { TournamentRings } from "../../components/Admin/Rings/TournamentRings";
 import { TeamTournamentRings } from "../../components/Admin/Rings/TeamTournamentRings";
@@ -11,6 +11,8 @@ import PlayerTable from "../../components/Admin/PlayerTable";
 import TeamTable from "../../components/Admin/TeamTable";
 import UmpireSelect from "../../components/Admin/UmpireSelect";
 import Settings from "../../components/UmpirePage/Settings";
+import { useRouter } from "next/router";
+import LoadingSpinner from "../../components/Common/LoadingSpinner";
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -147,6 +149,21 @@ export default function Tournament({
   const [rings, setRings] = useState<any[]>(ringList);
   const [players, setPlayers] = useState(playerList);
   const [value, setValue] = useState(0);
+  const [isLoading, setIsLoading] = useState(false);
+  const router = useRouter();
+
+  const startLoading = () => setIsLoading(true);
+  const stopLoading = () => setIsLoading(false);
+  useEffect(() => {
+    router.events.on("routeChangeStart", startLoading);
+    router.events.on("routeChangeComplete", stopLoading);
+    return () => {
+      router.events.off("routeChangeStart", startLoading);
+      router.events.off("routeChangeComplete", stopLoading);
+    };
+  }, [router]);
+
+  if (isLoading) return <LoadingSpinner />;
 
   const handleTabChange = (event: React.SyntheticEvent, newValue: number) => {
     setValue(newValue);

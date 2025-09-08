@@ -9,8 +9,10 @@ import DesktopView from "../../../../components/PlayerPage/DesktopView";
 import MobileView from "../../../../components/PlayerPage/MobileView";
 import PlayerForm from "../../../../components/Registration/PlayerForm";
 import { useSession } from "next-auth/react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { UserProvider } from "../../../../components/UserProvider";
+import { useRouter } from "next/router";
+import LoadingSpinner from "../../../../components/Common/LoadingSpinner";
 
 const isCurrentUserAuthorized = async (currentUser, userId, tournamentId) => {
   return (
@@ -153,11 +155,25 @@ export default function User({
   const [confirmed, setConfirmed] = useState(
     user.player ? user.player.confirmed : false
   );
+  const [isLoading, setIsLoading] = useState(false);
   const session = useSession();
   const theme = useTheme();
   const isMobileView = useMediaQuery(theme.breakpoints.down("md"));
+  const router = useRouter();
 
-  if (session.status === "loading") return null;
+  const startLoading = () => setIsLoading(true);
+  const stopLoading = () => setIsLoading(false);
+
+  useEffect(() => {
+    router.events.on("routeChangeStart", startLoading);
+    router.events.on("routeChangeComplete", stopLoading);
+    return () => {
+      router.events.off("routeChangeStart", startLoading);
+      router.events.off("routeChangeComplete", stopLoading);
+    };
+  }, [router]);
+
+  if (session.status === "loading" || isLoading) return <LoadingSpinner />;
 
   if (!Boolean(user.player) && user.id !== session.data.user.id) {
     return (
