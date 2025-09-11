@@ -254,7 +254,7 @@ export const TournamentRings = ({
         )}
       </Grid>
       <Grid item xs={12} md={4}>
-        <PlayersWithTargets players={players} />
+        <PlayersWithTargets players={players} rings={rings} />
       </Grid>
     </Grid>
   );
