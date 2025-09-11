@@ -27,14 +27,18 @@ const AssignmentCard = ({
 
   const deleteAssignment = async (id: string) => {
     setIsDeletingAssignment(true);
-    const res = await fetch("/api/tournament/assignments", {
-      method: "DELETE",
-      body: id
-    });
-    const responseData = await res.json();
-    if (responseData.deletedAssignment) {
-      setAssignments(assignments.filter((assignment) => assignment.id !== id));
-      setPlayers(responseData.players);
+    if (window.confirm(`Haluatko varmasti poistaa toimeksiannon?`)) {
+      const res = await fetch("/api/tournament/assignments", {
+        method: "DELETE",
+        body: id
+      });
+      const responseData = await res.json();
+      if (responseData.deletedAssignment) {
+        setAssignments(
+          assignments.filter((assignment) => assignment.id !== id)
+        );
+        setPlayers(responseData.players);
+      }
     }
     setIsDeletingAssignment(false);
   };
@@ -98,14 +102,18 @@ const Ring = ({ ring, rings, setRings, players, setPlayers, tournament }) => {
 
   const deleteRing = async (id) => {
     setIsDeletingRing(true);
-    const res = await fetch("/api/tournament/rings", {
-      method: "DELETE",
-      body: JSON.stringify({ ringId: id, tournamentId: tournament.id })
-    });
-    const responseData = await res.json();
-    if (responseData.deletedRing) {
-      setRings(rings.filter((ring) => ring.id !== responseData.deletedRing.id));
-      setPlayers(responseData.players);
+    if (window.confirm(`Haluatko varmasti Ringin ${ring.name}?`)) {
+      const res = await fetch("/api/tournament/rings", {
+        method: "DELETE",
+        body: JSON.stringify({ ringId: id, tournamentId: tournament.id })
+      });
+      const responseData = await res.json();
+      if (responseData.deletedRing) {
+        setRings(
+          rings.filter((ring) => ring.id !== responseData.deletedRing.id)
+        );
+        setPlayers(responseData.players);
+      }
     }
     setIsDeletingRing(false);
   };
