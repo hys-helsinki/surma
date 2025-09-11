@@ -8,7 +8,7 @@ import {
   User
 } from "@prisma/client";
 import Link from "next/link";
-import { useState } from "react";
+import { Dispatch, SetStateAction, useState } from "react";
 
 interface PlayerWithUser extends Player {
   user: User;
@@ -20,17 +20,30 @@ interface RingWithAssignments extends AssignmentRing {
   assignments: Assignment[];
 }
 
-const PlayerRow = ({ player, players, setPlayers, tournament, setRings }) => {
+const PlayerRow = ({
+  player,
+  players,
+  setPlayers,
+  tournament,
+  setRings
+}: {
+  player: PlayerWithUser;
+  players: PlayerWithUser[];
+  setPlayers: Dispatch<SetStateAction<PlayerWithUser[]>>;
+  tournament: Tournament;
+  setRings: Dispatch<SetStateAction<any>>;
+}) => {
   const [isStateButtonLoading, setIsStateButtonLoading] = useState("");
   const [isWantedLoading, setIsWantedLoading] = useState(false);
 
   const handlePlayerStatusChange = async (playerState: string, id: string) => {
     setIsStateButtonLoading(playerState);
+    const searchedPlayer = players.find((player) => player.id === id);
     try {
       if (
         playerState !== "DEAD" ||
         window.confirm(
-          "Haluatko varmasti merkitä pelaajan kuolleeksi? Pelaajan tappaminen poistaa toimeksiannot, joissa pelaaja on kohde tai metsästäjä"
+          `Haluatko varmasti merkitä pelaajan ${searchedPlayer.user.firstName} ${searchedPlayer.user.lastName} kuolleeksi? Pelaajan tappaminen poistaa toimeksiannot, joissa pelaaja on kohde tai metsästäjä`
         )
       ) {
         const data = { state: playerState, teamGame: tournament.teamGame };
@@ -56,10 +69,11 @@ const PlayerRow = ({ player, players, setPlayers, tournament, setRings }) => {
 
   const handleMakeWanted = async (id: string) => {
     setIsWantedLoading(true);
+    const searchedPlayer = players.find((player) => player.id === id);
     try {
       if (
         window.confirm(
-          "Haluatko varmasti etsintäkuuluttaa pelaajan? Etsintäkuuluttaminen antaa pelaajan kohteeksi kaikille etsiville"
+          `Haluatko varmasti etsintäkuuluttaa pelaajan ${searchedPlayer.user.firstName} ${searchedPlayer.user.lastName}? Etsintäkuuluttaminen antaa pelaajan kohteeksi kaikille etsiville`
         )
       ) {
         const res = await fetch(`/api/player/${id}/wanted`, {
