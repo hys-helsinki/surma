@@ -1,4 +1,5 @@
 import LoadingButton from "@mui/lab/LoadingButton";
+import { Grid } from "@mui/material";
 import {
   Assignment,
   AssignmentRing,
@@ -182,70 +183,74 @@ const PlayerTable = ({
     .sort((a, b) => a.firstName.localeCompare(b.firstName));
 
   return (
-    <div style={{ paddingLeft: "10px" }}>
-      {unfinishedRegistrations.length > 0 && (
-        <div style={{ marginBottom: "30px" }}>
-          <h2>Keskeneräiset ilmoittautumiset</h2>
-          {unfinishedRegistrations.map((user) => (
-            <div key={user.id}>
-              <Link href={`/tournaments/${tournament.id}/users/${user.id}`}>
-                {user.firstName} {user.lastName}
-              </Link>
-            </div>
-          ))}
+    <Grid sx={{ marginBottom: "30px" }} container>
+      <Grid item xs={12} lg={7}>
+        {unfinishedRegistrations.length > 0 && (
+          <div style={{ marginBottom: "30px" }}>
+            <h2>Keskeneräiset ilmoittautumiset</h2>
+            {unfinishedRegistrations.map((user) => (
+              <div key={user.id}>
+                <Link href={`/tournaments/${tournament.id}/users/${user.id}`}>
+                  {user.firstName} {user.lastName}
+                </Link>
+              </div>
+            ))}
+          </div>
+        )}
+        <h2>Pelaajat</h2>
+        <div style={{ overflowX: "auto" }}>
+          <table width="100%">
+            <tbody>
+              <tr>
+                <td>
+                  <b>Elossa</b>
+                </td>
+              </tr>
+              {activePlayers.map((player) => (
+                <PlayerRow
+                  key={player.id}
+                  player={player}
+                  tournament={tournament}
+                  setRings={setRings}
+                  players={players}
+                  setPlayers={setPlayers}
+                />
+              ))}
+              <tr>
+                <td>
+                  <b>Kuolleet</b>
+                </td>
+              </tr>
+              {deadPlayers.map((player) => (
+                <PlayerRow
+                  key={player.id}
+                  player={player}
+                  tournament={tournament}
+                  setRings={setRings}
+                  players={players}
+                  setPlayers={setPlayers}
+                />
+              ))}
+              <tr>
+                <td>
+                  <b>Etsivät</b>
+                </td>
+              </tr>
+              {detectivePlayers.map((player) => (
+                <PlayerRow
+                  key={player.id}
+                  player={player}
+                  tournament={tournament}
+                  setRings={setRings}
+                  players={players}
+                  setPlayers={setPlayers}
+                />
+              ))}
+            </tbody>
+          </table>
         </div>
-      )}
-      <h2>Pelaajat</h2>
-      <table>
-        <tbody>
-          <tr>
-            <td>
-              <b>Elossa</b>
-            </td>
-          </tr>
-          {activePlayers.map((player) => (
-            <PlayerRow
-              key={player.id}
-              player={player}
-              tournament={tournament}
-              setRings={setRings}
-              players={players}
-              setPlayers={setPlayers}
-            />
-          ))}
-          <tr>
-            <td>
-              <b>Kuolleet</b>
-            </td>
-          </tr>
-          {deadPlayers.map((player) => (
-            <PlayerRow
-              key={player.id}
-              player={player}
-              tournament={tournament}
-              setRings={setRings}
-              players={players}
-              setPlayers={setPlayers}
-            />
-          ))}
-          <tr>
-            <td>
-              <b>Etsivät</b>
-            </td>
-          </tr>
-          {detectivePlayers.map((player) => (
-            <PlayerRow
-              key={player.id}
-              player={player}
-              tournament={tournament}
-              setRings={setRings}
-              players={players}
-              setPlayers={setPlayers}
-            />
-          ))}
-        </tbody>
-      </table>
-    </div>
+      </Grid>
+    </Grid>
   );
 };
 
