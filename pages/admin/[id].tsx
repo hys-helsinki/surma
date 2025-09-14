@@ -238,7 +238,7 @@ export default function Tournament({
           )}
         </TabPanel>
         <TabPanel value={value} index={3}>
-          <Settings tournament={tournament} />
+          <Settings tournament={tournament} umpireUsers={umpires} />
         </TabPanel>
       </Box>
     </AuthenticationRequired>
