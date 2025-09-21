@@ -45,7 +45,7 @@ const PlayersWithTargets = ({
     if (player.state === "DETECTIVE") {
       return <span style={{ color: "red" }}>Etsivä</span>;
     }
-    if (wantedPlayers.has(player.id)) {
+    if (wantedPlayers?.has(player.id)) {
       return <span style={{ color: "red" }}>Etsintäkuulutettu</span>;
     }
     return;

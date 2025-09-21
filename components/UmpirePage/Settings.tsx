@@ -193,7 +193,7 @@ const Settings = ({
 
   const currentUserId = session.data.user.id;
   const isMainUmpire = umpireUsers.find((user) => user.id === currentUserId)
-    .umpire.mainUmpire;
+    ?.umpire.mainUmpire;
 
   return (
     <Box>
