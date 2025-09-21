@@ -38,7 +38,7 @@ const PlayersWithTargets = ({
 
   const wantedPlayers = searchWantedPlayers();
 
-  const getPlayerState = (player) => {
+  const displayPlayerState = (player) => {
     if (player.state === "DEAD") {
       return <i style={{ color: "red" }}>Kuollut</i>;
     }
@@ -57,7 +57,7 @@ const PlayersWithTargets = ({
         <Box key={player.id}>
           <p>
             {player.user.firstName} {player.user.lastName} ({player.alias}){" "}
-            {getPlayerState(player)}
+            {displayPlayerState(player)}
           </p>
           <ul>
             {player.targets.map((assignment) => (
