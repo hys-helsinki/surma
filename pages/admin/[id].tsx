@@ -13,6 +13,7 @@ import UmpireSelect from "../../components/Admin/UmpireSelect";
 import Settings from "../../components/UmpirePage/Settings";
 import { useRouter } from "next/router";
 import LoadingSpinner from "../../components/Common/LoadingSpinner";
+import { useRouterLoading } from "../../lib/hooks";
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -149,20 +150,8 @@ export default function Tournament({
   const [rings, setRings] = useState<any[]>(ringList);
   const [players, setPlayers] = useState(playerList);
   const [value, setValue] = useState(0);
-  const [isLoading, setIsLoading] = useState(false);
-  const router = useRouter();
 
-  const startLoading = () => setIsLoading(true);
-  const stopLoading = () => setIsLoading(false);
-  useEffect(() => {
-    router.events.on("routeChangeStart", startLoading);
-    router.events.on("routeChangeComplete", stopLoading);
-    return () => {
-      router.events.off("routeChangeStart", startLoading);
-      router.events.off("routeChangeComplete", stopLoading);
-    };
-  }, [router]);
-
+  const isLoading = useRouterLoading();
   if (isLoading) return <LoadingSpinner />;
 
   const handleTabChange = (event: React.SyntheticEvent, newValue: number) => {
