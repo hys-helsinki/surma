@@ -113,9 +113,9 @@ export default async function handler(
 
     if (state === "DEAD") {
       if (teamGame) {
-        updateTeamGameRings(playerId);
+        await updateTeamGameRings(playerId);
       } else {
-        updateSoloGameRings(playerId);
+        await updateSoloGameRings(playerId);
       }
     }
 
@@ -128,7 +128,12 @@ export default async function handler(
       include: {
         user: true,
         team: true,
-        targets: true
+        targets: true,
+        umpire: {
+          include: {
+            user: true
+          }
+        }
       }
     });
     const rings = await prisma.assignmentRing.findMany({

@@ -1,5 +1,5 @@
 import LoadingButton from "@mui/lab/LoadingButton";
-import { Tournament } from "@prisma/client";
+import { Tournament, Umpire, User } from "@prisma/client";
 import { useState } from "react";
 import Datetime from "react-datetime";
 import "moment/locale/fi";
@@ -11,6 +11,11 @@ import moment from "moment";
 import * as Yup from "yup";
 import { useRouter } from "next/router";
 import { Tooltip } from "@mui/material";
+import { useSession } from "next-auth/react";
+
+interface UmpireUser extends User {
+  umpire: Umpire;
+}
 
 const DateTimePicker = ({ label, name }) => {
   const [field, meta, helpers] = useField(name);
@@ -117,7 +122,7 @@ const DeleteButton = ({ tournament }: { tournament: Tournament }) => {
   const deleteTournamentResources = async () => {
     if (
       window.confirm(
-        "Oletko varma, että haluat poistaa kaiken turnaukseen liittyvän datan? Tietoja ei voi palauttaa myöhemmin"
+        "Oletko täysin varma, että haluat poistaa kaiken turnaukseen liittyvän datan? Tietoja ei voi palauttaa myöhemmin."
       )
     ) {
       setLoading(true);
@@ -147,12 +152,13 @@ const DeleteButton = ({ tournament }: { tournament: Tournament }) => {
     >
       <div>
         <i>
-          Huom! Alla olevan napin painaminen lopettaa turnauksen ja poistaa
-          kaiken siihen liittyvän datan (turnauksen tiedot sekä kaikkien
-          käyttäjien - sekä pelaajien että tuomarien - tiedot). Surmaan ei voi
-          enää tämän jälkeen kirjautua eikä tietoja voi palauttaa myöhemmin,
-          joten otathan talteen kaiken tarvittavan datan ennen tietojen
-          poistamista.
+          Huom! Alla olevan napin painaminen poistaa kaiken turnaukseen
+          liittyvän datan (turnauksen tiedot, kaikkien käyttäjien - sekä
+          pelaajien että tuomarien - tiedot ja kuvapalvelimelle tallennetut
+          pelaajien kuvat). Surmaan ei voi enää tämän jälkeen kirjautua eikä
+          tietoja voi palauttaa myöhemmin, joten otathan talteen kaiken
+          tarvittavan datan ennen tietojen poistamista. Tietojen poistaminen on
+          mahdollista vasta turnauksen päättymisen jälkeen.
         </i>
       </div>
       <Tooltip
@@ -168,7 +174,7 @@ const DeleteButton = ({ tournament }: { tournament: Tournament }) => {
             className="delete-tournament"
             disabled={!isTournamentFinished()}
           >
-            Lopeta turnaus ja poista data
+            Poista kaikki turnausdata
           </LoadingButton>
         </span>
       </Tooltip>
@@ -176,12 +182,24 @@ const DeleteButton = ({ tournament }: { tournament: Tournament }) => {
   );
 };
 
-const Settings = ({ tournament }: { tournament: Tournament }) => {
+const Settings = ({
+  tournament,
+  umpireUsers
+}: {
+  tournament: Tournament;
+  umpireUsers: UmpireUser[];
+}) => {
+  const session = useSession();
+
+  const currentUserId = session.data.user.id;
+  const isMainUmpire = umpireUsers.find((user) => user.id === currentUserId)
+    ?.umpire.mainUmpire;
+
   return (
     <Box>
       <h2>Asetukset</h2>
       <TournamentEditForm tournament={tournament} />
-      <DeleteButton tournament={tournament} />
+      {isMainUmpire && <DeleteButton tournament={tournament} />}
     </Box>
   );
 };

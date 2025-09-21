@@ -1,4 +1,5 @@
 import LoadingButton from "@mui/lab/LoadingButton";
+import { Grid } from "@mui/material";
 import {
   Assignment,
   AssignmentRing,
@@ -8,7 +9,7 @@ import {
   User
 } from "@prisma/client";
 import Link from "next/link";
-import { useState } from "react";
+import { Dispatch, SetStateAction, useState } from "react";
 
 interface PlayerWithUser extends Player {
   user: User;
@@ -20,17 +21,30 @@ interface RingWithAssignments extends AssignmentRing {
   assignments: Assignment[];
 }
 
-const PlayerRow = ({ player, players, setPlayers, tournament, setRings }) => {
+const PlayerRow = ({
+  player,
+  players,
+  setPlayers,
+  tournament,
+  setRings
+}: {
+  player: PlayerWithUser;
+  players: PlayerWithUser[];
+  setPlayers: Dispatch<SetStateAction<PlayerWithUser[]>>;
+  tournament: Tournament;
+  setRings: Dispatch<SetStateAction<any>>;
+}) => {
   const [isStateButtonLoading, setIsStateButtonLoading] = useState("");
   const [isWantedLoading, setIsWantedLoading] = useState(false);
 
   const handlePlayerStatusChange = async (playerState: string, id: string) => {
     setIsStateButtonLoading(playerState);
+    const searchedPlayer = players.find((player) => player.id === id);
     try {
       if (
         playerState !== "DEAD" ||
         window.confirm(
-          "Haluatko varmasti merkitä pelaajan kuolleeksi? Pelaajan tappaminen poistaa toimeksiannot, joissa pelaaja on kohde tai metsästäjä"
+          `Haluatko varmasti merkitä pelaajan ${searchedPlayer.user.firstName} ${searchedPlayer.user.lastName} kuolleeksi? Pelaajan tappaminen poistaa toimeksiannot, joissa pelaaja on kohde tai metsästäjä.`
         )
       ) {
         const data = { state: playerState, teamGame: tournament.teamGame };
@@ -56,10 +70,11 @@ const PlayerRow = ({ player, players, setPlayers, tournament, setRings }) => {
 
   const handleMakeWanted = async (id: string) => {
     setIsWantedLoading(true);
+    const searchedPlayer = players.find((player) => player.id === id);
     try {
       if (
         window.confirm(
-          "Haluatko varmasti etsintäkuuluttaa pelaajan? Etsintäkuuluttaminen antaa pelaajan kohteeksi kaikille etsiville"
+          `Haluatko varmasti etsintäkuuluttaa pelaajan ${searchedPlayer.user.firstName} ${searchedPlayer.user.lastName}? Etsintäkuuluttaminen antaa pelaajan kohteeksi kaikille etsiville.`
         )
       ) {
         const res = await fetch(`/api/player/${id}/wanted`, {
@@ -168,70 +183,74 @@ const PlayerTable = ({
     .sort((a, b) => a.firstName.localeCompare(b.firstName));
 
   return (
-    <div style={{ paddingLeft: "10px" }}>
-      {unfinishedRegistrations.length > 0 && (
-        <div style={{ marginBottom: "30px" }}>
-          <h2>Keskeneräiset ilmoittautumiset</h2>
-          {unfinishedRegistrations.map((user) => (
-            <div key={user.id}>
-              <Link href={`/tournaments/${tournament.id}/users/${user.id}`}>
-                {user.firstName} {user.lastName}
-              </Link>
-            </div>
-          ))}
+    <Grid sx={{ marginBottom: "30px" }} container>
+      <Grid item xs={12} lg={7}>
+        {unfinishedRegistrations.length > 0 && (
+          <div style={{ marginBottom: "30px" }}>
+            <h2>Keskeneräiset ilmoittautumiset</h2>
+            {unfinishedRegistrations.map((user) => (
+              <div key={user.id}>
+                <Link href={`/tournaments/${tournament.id}/users/${user.id}`}>
+                  {user.firstName} {user.lastName}
+                </Link>
+              </div>
+            ))}
+          </div>
+        )}
+        <h2>Pelaajat</h2>
+        <div style={{ overflowX: "auto" }}>
+          <table width="100%">
+            <tbody>
+              <tr>
+                <td>
+                  <b>Elossa</b>
+                </td>
+              </tr>
+              {activePlayers.map((player) => (
+                <PlayerRow
+                  key={player.id}
+                  player={player}
+                  tournament={tournament}
+                  setRings={setRings}
+                  players={players}
+                  setPlayers={setPlayers}
+                />
+              ))}
+              <tr>
+                <td>
+                  <b>Kuolleet</b>
+                </td>
+              </tr>
+              {deadPlayers.map((player) => (
+                <PlayerRow
+                  key={player.id}
+                  player={player}
+                  tournament={tournament}
+                  setRings={setRings}
+                  players={players}
+                  setPlayers={setPlayers}
+                />
+              ))}
+              <tr>
+                <td>
+                  <b>Etsivät</b>
+                </td>
+              </tr>
+              {detectivePlayers.map((player) => (
+                <PlayerRow
+                  key={player.id}
+                  player={player}
+                  tournament={tournament}
+                  setRings={setRings}
+                  players={players}
+                  setPlayers={setPlayers}
+                />
+              ))}
+            </tbody>
+          </table>
         </div>
-      )}
-      <h2>Pelaajat</h2>
-      <table>
-        <tbody>
-          <tr>
-            <td>
-              <b>Elossa</b>
-            </td>
-          </tr>
-          {activePlayers.map((player) => (
-            <PlayerRow
-              key={player.id}
-              player={player}
-              tournament={tournament}
-              setRings={setRings}
-              players={players}
-              setPlayers={setPlayers}
-            />
-          ))}
-          <tr>
-            <td>
-              <b>Kuolleet</b>
-            </td>
-          </tr>
-          {deadPlayers.map((player) => (
-            <PlayerRow
-              key={player.id}
-              player={player}
-              tournament={tournament}
-              setRings={setRings}
-              players={players}
-              setPlayers={setPlayers}
-            />
-          ))}
-          <tr>
-            <td>
-              <b>Etsivät</b>
-            </td>
-          </tr>
-          {detectivePlayers.map((player) => (
-            <PlayerRow
-              key={player.id}
-              player={player}
-              tournament={tournament}
-              setRings={setRings}
-              players={players}
-              setPlayers={setPlayers}
-            />
-          ))}
-        </tbody>
-      </table>
-    </div>
+      </Grid>
+    </Grid>
   );
 };
 

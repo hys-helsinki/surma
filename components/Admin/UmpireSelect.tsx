@@ -1,5 +1,5 @@
 import { LoadingButton } from "@mui/lab";
-import { Grid } from "@mui/material";
+import { Grid, Snackbar } from "@mui/material";
 import { Field, Form, Formik } from "formik";
 import { useState } from "react";
 
@@ -35,8 +35,12 @@ const UmpireSelect = ({
   );
 
   const sortedPlayers = teamGame
-    ? players.sort((a, b) => a.team.name - b.team.name)
-    : players.sort((a, b) => a.firstName - b.firstName);
+    ? players.sort(
+        (a, b) =>
+          a.team.name.localeCompare(b.team.name) ||
+          a.user.firstName.localeCompare(b.user.firstName)
+      )
+    : players.sort((a, b) => a.user.firstName.localeCompare(b.user.firstName));
 
   return (
     <Grid container>
@@ -54,8 +58,9 @@ const UmpireSelect = ({
               <div key={player.id}>
                 <div>
                   <label htmlFor={`${player.id}`}>
+                    {teamGame && `${player.team.name}: `}
                     {player.user.firstName} {player.user.lastName}{" "}
-                    {teamGame && `(${player.team.name})`}
+                    {`(${player.alias})`}
                   </label>
                 </div>
                 <Field name={`${player.id}`} id={`${player.id}`} as="select">
@@ -71,9 +76,12 @@ const UmpireSelect = ({
             <LoadingButton type="submit" loading={isLoading}>
               Tallenna tuomarit
             </LoadingButton>
-            <p style={{ visibility: showSuccessText ? "visible" : "hidden" }}>
-              Tuomarien tallentaminen onnistui!
-            </p>
+            <Snackbar
+              open={showSuccessText}
+              onClose={() => setShowSuccessText(false)}
+              autoHideDuration={4000}
+              message="Tuomarien asettaminen onnistui!"
+            />
           </Form>
         </Formik>
       </Grid>
