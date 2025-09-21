@@ -1,6 +1,6 @@
 import { GetServerSideProps } from "next";
 import prisma from "../../../../lib/prisma";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useMediaQuery, useTheme } from "@mui/material";
 import { AuthenticationRequired } from "../../../../components/AuthenticationRequired";
 import { Session, unstable_getServerSession } from "next-auth";
@@ -10,6 +10,9 @@ import DesktopView from "../../../../components/PlayerPage/DesktopView";
 import MobileView from "../../../../components/PlayerPage/MobileView";
 import { Tournament } from "@prisma/client";
 import { UserProvider } from "../../../../components/UserProvider";
+import { useRouter } from "next/router";
+import LoadingSpinner from "../../../../components/Common/LoadingSpinner";
+import { useRouterLoading } from "../../../../lib/hooks";
 
 const isTournamentRunning = (startTime: Date, endTime: Date) => {
   const currentTime = new Date().getTime();
@@ -176,9 +179,12 @@ export default function Target({
   currentUser
 }): JSX.Element {
   const [user, setUser] = useState(u);
-
   const theme = useTheme();
   const isMobileView = useMediaQuery(theme.breakpoints.down("md"));
+
+  const isLoading = useRouterLoading();
+
+  if (isLoading) return <LoadingSpinner />;
 
   return (
     <AuthenticationRequired>

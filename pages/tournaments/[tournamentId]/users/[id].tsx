@@ -9,8 +9,11 @@ import DesktopView from "../../../../components/PlayerPage/DesktopView";
 import MobileView from "../../../../components/PlayerPage/MobileView";
 import PlayerForm from "../../../../components/Registration/PlayerForm";
 import { useSession } from "next-auth/react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { UserProvider } from "../../../../components/UserProvider";
+import { useRouter } from "next/router";
+import LoadingSpinner from "../../../../components/Common/LoadingSpinner";
+import { useRouterLoading } from "../../../../lib/hooks";
 
 const isCurrentUserAuthorized = async (currentUser, userId, tournamentId) => {
   return (
@@ -157,7 +160,9 @@ export default function User({
   const theme = useTheme();
   const isMobileView = useMediaQuery(theme.breakpoints.down("md"));
 
-  if (session.status === "loading") return null;
+  const isLoading = useRouterLoading();
+
+  if (session.status === "loading" || isLoading) return <LoadingSpinner />;
 
   if (!Boolean(user.player) && user.id !== session.data.user.id) {
     return (

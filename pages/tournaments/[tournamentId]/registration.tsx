@@ -5,6 +5,10 @@ import TeamForm from "../../../components/Registration/TeamForm";
 import { Tournament } from "@prisma/client";
 import { unstable_getServerSession } from "next-auth/next";
 import { authConfig } from "../../api/auth/[...nextauth]";
+import { useRouter } from "next/router";
+import { useState, useEffect } from "react";
+import LoadingSpinner from "../../../components/Common/LoadingSpinner";
+import { useRouterLoading } from "../../../lib/hooks";
 
 export const getServerSideProps: GetServerSideProps = async ({
   params,
@@ -56,6 +60,10 @@ export default function Registration({
 }: {
   tournament: Tournament;
 }) {
+  const isLoading = useRouterLoading();
+
+  if (isLoading) return <LoadingSpinner />;
+
   const isRegistrationOpen =
     new Date().getTime() >
       new Date(tournament.registrationStartTime).getTime() &&
