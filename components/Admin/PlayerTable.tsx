@@ -44,7 +44,7 @@ const PlayerRow = ({
       if (
         playerState !== "DEAD" ||
         window.confirm(
-          `Haluatko varmasti merkitä pelaajan ${searchedPlayer.user.firstName} ${searchedPlayer.user.lastName} kuolleeksi? Pelaajan tappaminen poistaa toimeksiannot, joissa pelaaja on kohde tai metsästäjä`
+          `Haluatko varmasti merkitä pelaajan ${searchedPlayer.user.firstName} ${searchedPlayer.user.lastName} kuolleeksi? Pelaajan tappaminen poistaa toimeksiannot, joissa pelaaja on kohde tai metsästäjä.`
         )
       ) {
         const data = { state: playerState, teamGame: tournament.teamGame };
@@ -74,7 +74,7 @@ const PlayerRow = ({
     try {
       if (
         window.confirm(
-          `Haluatko varmasti etsintäkuuluttaa pelaajan ${searchedPlayer.user.firstName} ${searchedPlayer.user.lastName}? Etsintäkuuluttaminen antaa pelaajan kohteeksi kaikille etsiville`
+          `Haluatko varmasti etsintäkuuluttaa pelaajan ${searchedPlayer.user.firstName} ${searchedPlayer.user.lastName}? Etsintäkuuluttaminen antaa pelaajan kohteeksi kaikille etsiville.`
         )
       ) {
         const res = await fetch(`/api/player/${id}/wanted`, {
