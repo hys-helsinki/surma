@@ -102,7 +102,7 @@ const Ring = ({ ring, rings, setRings, players, setPlayers, tournament }) => {
 
   const deleteRing = async (id) => {
     setIsDeletingRing(true);
-    if (window.confirm(`Haluatko varmasti Ringin ${ring.name}?`)) {
+    if (window.confirm(`Haluatko varmasti poistaa ringin ${ring.name}?`)) {
       const res = await fetch("/api/tournament/rings", {
         method: "DELETE",
         body: JSON.stringify({ ringId: id, tournamentId: tournament.id })

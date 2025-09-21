@@ -122,7 +122,7 @@ const DeleteButton = ({ tournament }: { tournament: Tournament }) => {
   const deleteTournamentResources = async () => {
     if (
       window.confirm(
-        "Oletko täysin varma, että haluat poistaa kaiken turnaukseen liittyvän datan? Tietoja ei voi palauttaa myöhemmin"
+        "Oletko täysin varma, että haluat poistaa kaiken turnaukseen liittyvän datan? Tietoja ei voi palauttaa myöhemmin."
       )
     ) {
       setLoading(true);
