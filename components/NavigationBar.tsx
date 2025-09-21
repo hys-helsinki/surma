@@ -156,11 +156,11 @@ const NavigationBar = () => {
                       <List component="div" disablePadding>
                         {targets.map((user) => (
                           <ListItemButton key={user.id} sx={{ pl: 4 }}>
-                            <Link
+                            <a
                               href={`/tournaments/${tournamentId}/targets/${user.id}`}
                             >
                               {user.firstName} {user.lastName}
-                            </Link>
+                            </a>
                           </ListItemButton>
                         ))}
                       </List>
@@ -169,9 +169,9 @@ const NavigationBar = () => {
                 )}
                 {userId && (
                   <ListItemButton>
-                    <Link href={`/tournaments/${tournamentId}/users/${userId}`}>
+                    <a href={`/tournaments/${tournamentId}/users/${userId}`}>
                       Oma sivu
-                    </Link>
+                    </a>
                   </ListItemButton>
                 )}
                 {currentUserIsUmpire && (
@@ -232,11 +232,9 @@ const NavigationBar = () => {
             >
               {targets.map((user) => (
                 <MenuItem key={user.id}>
-                  <Link
-                    href={`/tournaments/${tournamentId}/targets/${user.id}`}
-                  >
+                  <a href={`/tournaments/${tournamentId}/targets/${user.id}`}>
                     {user.firstName} {user.lastName}
-                  </Link>
+                  </a>
                 </MenuItem>
               ))}
             </Menu>
@@ -244,9 +242,9 @@ const NavigationBar = () => {
               <Button
                 sx={{ minWidth: 100, my: 2, color: "white", display: "block" }}
               >
-                <Link href={`/tournaments/${tournamentId}/users/${userId}`}>
+                <a href={`/tournaments/${tournamentId}/users/${userId}`}>
                   Oma sivu
-                </Link>
+                </a>
               </Button>
             )}
             {currentUserIsUmpire && (
