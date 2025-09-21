@@ -35,7 +35,11 @@ const UmpireSelect = ({
   );
 
   const sortedPlayers = teamGame
-    ? players.sort((a, b) => a.team.name.localeCompare(b.team.name))
+    ? players.sort(
+        (a, b) =>
+          a.team.name.localeCompare(b.team.name) ||
+          a.user.firstName.localeCompare(b.user.firstName)
+      )
     : players.sort((a, b) => a.user.firstName.localeCompare(b.user.firstName));
 
   return (
