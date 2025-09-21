@@ -8,6 +8,7 @@ import { authConfig } from "../../api/auth/[...nextauth]";
 import { useRouter } from "next/router";
 import { useState, useEffect } from "react";
 import LoadingSpinner from "../../../components/Common/LoadingSpinner";
+import { useRouterLoading } from "../../../lib/hooks";
 
 export const getServerSideProps: GetServerSideProps = async ({
   params,
@@ -59,19 +60,7 @@ export default function Registration({
 }: {
   tournament: Tournament;
 }) {
-  const [isLoading, setIsLoading] = useState(false);
-  const router = useRouter();
-
-  const startLoading = () => setIsLoading(true);
-  const stopLoading = () => setIsLoading(false);
-  useEffect(() => {
-    router.events.on("routeChangeStart", startLoading);
-    router.events.on("routeChangeComplete", stopLoading);
-    return () => {
-      router.events.off("routeChangeStart", startLoading);
-      router.events.off("routeChangeComplete", stopLoading);
-    };
-  }, [router]);
+  const isLoading = useRouterLoading();
 
   if (isLoading) return <LoadingSpinner />;
 

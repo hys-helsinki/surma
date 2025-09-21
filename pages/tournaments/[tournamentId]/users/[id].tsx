@@ -13,6 +13,7 @@ import { useEffect, useState } from "react";
 import { UserProvider } from "../../../../components/UserProvider";
 import { useRouter } from "next/router";
 import LoadingSpinner from "../../../../components/Common/LoadingSpinner";
+import { useRouterLoading } from "../../../../lib/hooks";
 
 const isCurrentUserAuthorized = async (currentUser, userId, tournamentId) => {
   return (
@@ -155,23 +156,11 @@ export default function User({
   const [confirmed, setConfirmed] = useState(
     user.player ? user.player.confirmed : false
   );
-  const [isLoading, setIsLoading] = useState(false);
   const session = useSession();
   const theme = useTheme();
   const isMobileView = useMediaQuery(theme.breakpoints.down("md"));
-  const router = useRouter();
 
-  const startLoading = () => setIsLoading(true);
-  const stopLoading = () => setIsLoading(false);
-
-  useEffect(() => {
-    router.events.on("routeChangeStart", startLoading);
-    router.events.on("routeChangeComplete", stopLoading);
-    return () => {
-      router.events.off("routeChangeStart", startLoading);
-      router.events.off("routeChangeComplete", stopLoading);
-    };
-  }, [router]);
+  const isLoading = useRouterLoading();
 
   if (session.status === "loading" || isLoading) return <LoadingSpinner />;
 
