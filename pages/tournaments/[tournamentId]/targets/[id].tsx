@@ -1,6 +1,6 @@
 import { GetServerSideProps } from "next";
 import prisma from "../../../../lib/prisma";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { useMediaQuery, useTheme } from "@mui/material";
 import { AuthenticationRequired } from "../../../../components/AuthenticationRequired";
 import { Session, unstable_getServerSession } from "next-auth";
@@ -10,7 +10,6 @@ import DesktopView from "../../../../components/PlayerPage/DesktopView";
 import MobileView from "../../../../components/PlayerPage/MobileView";
 import { Tournament } from "@prisma/client";
 import { UserProvider } from "../../../../components/UserProvider";
-import { useRouter } from "next/router";
 import LoadingSpinner from "../../../../components/Common/LoadingSpinner";
 import { useRouterLoading } from "../../../../lib/hooks";
 
@@ -110,6 +109,7 @@ export const getServerSideProps: GetServerSideProps = async ({
           calendar: true,
           title: true,
           safetyNotes: true,
+          lastVisit: true,
           umpire: {
             select: {
               id: true,

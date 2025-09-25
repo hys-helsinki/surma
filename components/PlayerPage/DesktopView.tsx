@@ -47,8 +47,7 @@ const DesktopView = ({
           />
           <Details
             umpires={umpires}
-            currentUserIsUmpire={currentUserIsUmpire}
-            currentUserIsHunter={currentUserIsHunter}
+            showPhoneAndEmail={currentUserIsUmpire || userId === currentUserId}
             setUser={setUser}
           />
         </Grid>

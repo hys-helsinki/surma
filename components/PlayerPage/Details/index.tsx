@@ -11,20 +11,16 @@ interface UmpireWithUser extends Umpire {
 
 const Details = ({
   umpires,
-  currentUserIsUmpire,
-  currentUserIsHunter,
+  showPhoneAndEmail,
   setUser
 }: {
   umpires: UmpireWithUser[];
-  currentUserIsUmpire: boolean;
-  currentUserIsHunter: boolean;
+  showPhoneAndEmail: boolean;
   setUser: Dispatch<any>;
 }) => {
   return (
     <Box>
-      {!currentUserIsHunter && (
-        <ContactDetails showLastVisit={currentUserIsUmpire} />
-      )}
+      <ContactDetails showPhoneAndEmail={showPhoneAndEmail} />
       <Umpires umpires={umpires} />
       <PlayerDescription setUser={setUser} />
     </Box>
