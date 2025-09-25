@@ -203,7 +203,7 @@ const PlayerTable = ({
             <tbody>
               <tr>
                 <td>
-                  <b>Elossa</b>
+                  <b>Elossa ({activePlayers.length})</b>
                 </td>
               </tr>
               {activePlayers.map((player) => (
@@ -218,7 +218,7 @@ const PlayerTable = ({
               ))}
               <tr>
                 <td>
-                  <b>Kuolleet</b>
+                  <b>Kuolleet ({deadPlayers.length})</b>
                 </td>
               </tr>
               {deadPlayers.map((player) => (
@@ -233,7 +233,7 @@ const PlayerTable = ({
               ))}
               <tr>
                 <td>
-                  <b>Etsivät</b>
+                  <b>Etsivät ({detectivePlayers.length})</b>
                 </td>
               </tr>
               {detectivePlayers.map((player) => (
