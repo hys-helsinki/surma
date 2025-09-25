@@ -30,7 +30,7 @@ const ContactDetails = ({
               month: "numeric",
               timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone
             })}`
-          : " pelaaja ei ole vieraillut Surmassa kirjautumisen jälkeen"}
+          : " Pelaaja ei ole kirjautunut Surmaan ilmoittautumisen jälkeen"}
       </p>
     </Box>
   );
