@@ -20,15 +20,17 @@ const ContactDetails = ({
         </>
       )}
       <p>
-        Viime vierailu:{" "}
-        {`${new Date(user.player.lastVisit).toLocaleTimeString("fi-FI", {
-          hour: "2-digit",
-          minute: "2-digit",
-          year: "numeric",
-          day: "numeric",
-          month: "numeric",
-          timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone
-        })}`}
+        Viime vierailu:
+        {user.player.lastVisit
+          ? ` ${new Date(user.player.lastVisit).toLocaleTimeString("fi-FI", {
+              hour: "2-digit",
+              minute: "2-digit",
+              year: "numeric",
+              day: "numeric",
+              month: "numeric",
+              timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone
+            })}`
+          : " pelaaja ei ole vieraillut Surmassa kirjautumisen jälkeen"}
       </p>
     </Box>
   );
