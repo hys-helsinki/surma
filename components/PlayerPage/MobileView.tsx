@@ -97,8 +97,7 @@ const MobileView = ({
       <TabPanel value={value} index={1}>
         <Details
           umpires={umpires}
-          currentUserIsUmpire={currentUserIsUmpire}
-          currentUserIsHunter={currentUserIsHunter}
+          showPhoneAndEmail={currentUserIsUmpire || userId === currentUserId}
           setUser={setUser}
         />
       </TabPanel>
