@@ -147,7 +147,7 @@ export const getServerSideProps: GetServerSideProps = async ({
   let imageUrl = "";
   try {
     const result = await cloudinary.api.resource(
-      `surma/${tournament.id}/${user.player.id}.jpg` as string
+      `surma/${tournament.id}/${user.player.id}` as string
     );
     imageUrl = result.url;
   } catch (error) {
