@@ -162,7 +162,7 @@ export default function User({
 
   const isLoading = useRouterLoading();
 
-  if (isLoading) return <LoadingSpinner />;
+  if (session.status === "loading" || isLoading) return <LoadingSpinner />;
 
   if (!Boolean(user.player) && user.id !== session.data.user.id) {
     return (
