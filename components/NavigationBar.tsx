@@ -34,7 +34,7 @@ interface NavBarUser extends User {
 }
 
 const NavigationBar = () => {
-  const { data } = useSession();
+  const { data, status } = useSession();
   const [user, setUser] = useState<NavBarUser>(null);
   const [anchorElNav, setAnchorElNav] = useState(null);
   const [anchorElTarget, setAnchorElTarget] = useState(null);
@@ -261,7 +261,7 @@ const NavigationBar = () => {
               <OpenInNewIcon />
             </Button>
           </Box>
-          {!data && (
+          {status !== "loading" && !data && (
             <Button
               onClick={() => signIn("email", { callbackUrl: "/personal" })}
               sx={{
