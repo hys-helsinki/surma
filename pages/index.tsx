@@ -80,8 +80,8 @@ export default function Home({ tournaments }) {
       <h2 className={styles.container} style={{ padding: "1em" }}>
         Avoimet salamurhaturnaukset
       </h2>
-      <TournamentTable tournaments={tournaments}></TournamentTable>
-      <InfoAccordion></InfoAccordion>
+      <TournamentTable tournaments={tournaments} />
+      <InfoAccordion />
     </div>
   );
 }

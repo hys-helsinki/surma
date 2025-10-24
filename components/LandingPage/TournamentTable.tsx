@@ -68,7 +68,6 @@ const TournamentTable = ({ tournaments }) => {
   }
   return (
     <p>
-      {" "}
       Tulevia turnauksia ei ole juuri nyt tiedossa, joten palaathan myöhemmin
       takaisin. Tietoa tulevista turnauksista voi saada myös{" "}
       <a href="https://salamurhaajat.net/tulevat-tapahtumat">
