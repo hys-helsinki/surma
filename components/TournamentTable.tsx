@@ -25,7 +25,7 @@ const TournamentTable = ({ tournaments }) => {
         Ilmoittautumislomake
       </Link>
     ) : (
-      <p>Ilmoittautuminen ei ole vielä auki</p>
+      <p>Ilmoittautuminen ei ole auki</p>
     );
     return registrationLink;
   };

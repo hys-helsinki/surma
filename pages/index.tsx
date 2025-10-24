@@ -65,7 +65,7 @@ export default function Home({ tournaments }) {
       style={{ padding: "20px" }}
     >
       <h1 className={styles.container} style={{ padding: "1em" }}>
-        Surma (Murhamaster 3.0)
+        Surma
       </h1>
       <Image
         src={logo}
@@ -79,8 +79,7 @@ export default function Home({ tournaments }) {
         }}
       />
       <h2 className={styles.container} style={{ padding: "1em" }}>
-        {" "}
-        Avoimet salamurhaturnaukset{" "}
+        Avoimet salamurhaturnaukset
       </h2>
       <TournamentTable tournaments={tournaments}></TournamentTable>
       <InfoAccordion></InfoAccordion>
