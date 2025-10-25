@@ -267,7 +267,8 @@ const NavigationBar = () => {
               sx={{
                 color: "black",
                 backgroundColor: "white",
-                p: isMobileView ? 0 : 1
+                maxWidth: isMobileView ? "7rem" : "10rem",
+                m: 0.5
               }}
             >
               Kirjaudu sisään
