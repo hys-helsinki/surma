@@ -63,14 +63,12 @@ export default function Home({ tournaments }) {
       className={`${styles.center} ${styles.main}`}
       style={{ padding: "20px" }}
     >
-      <h1 className={styles.container} style={{ padding: "1em" }}>
-        Surma
-      </h1>
+      <h1>Surma</h1>
       <Image
         src={logo}
         alt="logo"
-        width={200}
-        height={200}
+        width={100}
+        height={100}
         priority={true}
         style={{
           maxWidth: "100%",
