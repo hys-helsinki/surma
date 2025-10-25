@@ -1,6 +1,7 @@
 import styles from "../../styles/Home.module.css";
 import Link from "next/link";
 import { NoSsr } from "@mui/base/NoSsr";
+import { Box, Grid } from "@mui/material";
 
 const TournamentTable = ({ tournaments }) => {
   const modifyDate = (dateString) => {
@@ -21,9 +22,11 @@ const TournamentTable = ({ tournaments }) => {
       now < new Date(tournament.registrationEndTime).getTime() &&
       now > new Date(tournament.registrationStartTime).getTime();
     const registrationLink = isRegistrationOpen ? (
-      <Link href={`/tournaments/${tournament.id}/registration`}>
-        Ilmoittautumislomake
-      </Link>
+      <p>
+        <Link href={`/tournaments/${tournament.id}/registration`}>
+          Ilmoittaudu mukaan tästä!
+        </Link>
+      </p>
     ) : (
       <p>Ilmoittautuminen ei ole auki</p>
     );
@@ -32,38 +35,39 @@ const TournamentTable = ({ tournaments }) => {
   const tournamentsAvailable = tournaments.length > 0;
   if (tournamentsAvailable) {
     return (
-      <table aria-label="tournament-table" className={styles.tournamentTable}>
-        <thead>
-          <tr>
-            <th>Nimi</th>
-            <th>Turnaus käynnissä</th>
-            <th>Ilmoittautuminen käynnissä</th>
-            <th>Ilmoittautumislomake</th>
-          </tr>
-        </thead>
-        <tbody>
-          {tournaments.map((tournament) => (
-            <tr key={tournament.id}>
-              <td>{tournament.name}</td>
-              <td>
-                <NoSsr>
-                  {modifyDate(tournament.startTime)}&nbsp;-&nbsp;
-                  {modifyDate(tournament.endTime)} (
-                  {Intl.DateTimeFormat().resolvedOptions().timeZone})
-                </NoSsr>
-              </td>
-              <td>
-                <NoSsr>
-                  {modifyDate(tournament.registrationStartTime)}
-                  &nbsp;-&nbsp;{modifyDate(tournament.registrationEndTime)} (
-                  {Intl.DateTimeFormat().resolvedOptions().timeZone})
-                </NoSsr>
-              </td>
-              <td>{registration(tournament)}</td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+      <Box my={3}>
+        {tournaments.map((tournament, index) => (
+          <Grid
+            container
+            key={tournament.id}
+            sx={{
+              borderTop: index > 0 && "0.5px solid white"
+            }}
+          >
+            <Grid item xs={6} md={4}>
+              <h3>Nimi</h3>
+              <p>Syysturnaus 2025: Ruskan salaisuudet</p>
+            </Grid>
+            <Grid item xs={6} md={4}>
+              <h3>Turnaus käynnissä</h3>
+              <NoSsr>
+                {modifyDate(tournament.startTime)}&nbsp;-&nbsp;
+                {modifyDate(tournament.endTime)} (
+                {Intl.DateTimeFormat().resolvedOptions().timeZone})
+              </NoSsr>
+            </Grid>
+            <Grid item xs={12} md={4}>
+              <h3>Ilmoittautuminen</h3>
+              <NoSsr>
+                {modifyDate(tournament.registrationStartTime)}
+                &nbsp;-&nbsp;{modifyDate(tournament.registrationEndTime)} (
+                {Intl.DateTimeFormat().resolvedOptions().timeZone})
+              </NoSsr>
+              {registration(tournament)}
+            </Grid>
+          </Grid>
+        ))}
+      </Box>
     );
   }
   return (
