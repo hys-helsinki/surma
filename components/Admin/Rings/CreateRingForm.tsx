@@ -1,8 +1,9 @@
 import { LoadingButton } from "@mui/lab";
-import { Box } from "@mui/material";
+import { Autocomplete, Box } from "@mui/material";
 import { Player, User } from "@prisma/client";
-import { Field, Form, Formik } from "formik";
+import { Field, FieldArray, Form, Formik } from "formik";
 import { useState } from "react";
+import StyledTextField from "./StyledTextField";
 
 interface PlayerWithUser extends Player {
   user: User;
@@ -24,58 +25,135 @@ const CreateRingForm = ({
   const [loading, setLoading] = useState(false);
   const createRing = async (values) => {
     setLoading(true);
-    const assignments = Object.entries(values)
-      .filter((entry) => entry[0] !== "name")
-      .map((entry) => ({
-        hunterId: entry[0],
-        targetId: entry[1] as string
-      }));
+
+    if (
+      values.assignments.filter((a) => a.hunterId !== "" && a.targetId !== "")
+        .length === 0
+    ) {
+      setLoading(false);
+      return;
+    }
 
     const newRing = {
-      assignments,
+      assignments: values.assignments,
       name: values.name,
       tournamentId: tournament.id
     };
-
-    const res = await fetch("/api/tournament/rings", {
-      method: "POST",
-      body: JSON.stringify(newRing)
-    });
-    const responseData = await res.json();
-    setPlayers(responseData.players);
-    setRings((prevRings) => prevRings.concat(responseData.createdRing));
-    setShowForm(false);
+    try {
+      const res = await fetch("/api/tournament/rings", {
+        method: "POST",
+        body: JSON.stringify(newRing)
+      });
+      const responseData = await res.json();
+      setPlayers(responseData.players);
+      setRings((prevRings) => prevRings.concat(responseData.createdRing));
+      setShowForm(false);
+    } catch (e) {
+      console.log(e);
+    }
     setLoading(false);
   };
+
+  const initialValues = {
+    name: "",
+    assignments: [
+      {
+        hunterId: "",
+        targetId: ""
+      }
+    ]
+  };
+
+  const playersWithIDAndName = players.map((player) => ({
+    id: player.id,
+    name: `${player.user.firstName} ${player.user.lastName}`
+  }));
 
   return (
     <Box width={{ xs: "100%", md: "80%" }}>
       <Formik
-        initialValues={{ name: "" }}
+        initialValues={initialValues}
         onSubmit={(values) => createRing(values)}
+        enableReinitialize
       >
-        {() => (
+        {({ values, setFieldValue }) => (
           <Form>
-            <Box>
-              <label>Ringin nimi</label>
-              <Field name="name" />
-            </Box>
-            {players.map((hunter) => (
-              <Box key={hunter.id}>
-                <label>{`${hunter.user.firstName} ${hunter.user.lastName} -->`}</label>
-                <Field as="select" name={hunter.id}>
-                  <option value="">--</option>
-                  {players.map((target) => (
-                    <option
-                      value={target.id}
-                      key={target.id}
-                    >{`${target.user.firstName} ${target.user.lastName}`}</option>
+            <label>Ringin nimi</label>
+            <Field name="name" />
+            <FieldArray name="assignments">
+              {({ push }) => (
+                <Box>
+                  {values.assignments.map((_, index) => (
+                    <Box sx={{ marginTop: 2 }} key={index}>
+                      <Autocomplete
+                        options={playersWithIDAndName}
+                        getOptionLabel={(player) => player.name}
+                        value={
+                          playersWithIDAndName.find(
+                            (p) => p.id === values.assignments[index].hunterId
+                          ) || { name: "", id: "" }
+                        }
+                        onChange={(e, value) => {
+                          setFieldValue(
+                            `assignments[${index}].hunterId`,
+                            value ? value.id : ""
+                          );
+                        }}
+                        isOptionEqualToValue={(option, value) =>
+                          option.id === value.id || value.id === ""
+                        }
+                        renderInput={(params) => (
+                          <StyledTextField
+                            {...params}
+                            label="Metsästäjä"
+                            name={`assignments[${index}].hunterId`}
+                            sx={{ my: 0.6 }}
+                          />
+                        )}
+                      />
+
+                      <Autocomplete
+                        options={playersWithIDAndName}
+                        getOptionLabel={(player) => player.name}
+                        onChange={(e, value) => {
+                          setFieldValue(
+                            `assignments[${index}].targetId`,
+                            value ? value.id : ""
+                          );
+                        }}
+                        isOptionEqualToValue={(option, value) =>
+                          option.id === value.id
+                        }
+                        renderInput={(params) => (
+                          <StyledTextField
+                            {...params}
+                            label="Kohde"
+                            name={`assignments[${index}].targetId`}
+                          />
+                        )}
+                      />
+                    </Box>
                   ))}
-                </Field>
-              </Box>
-            ))}
+
+                  <button
+                    type="button"
+                    className="secondary"
+                    onClick={() =>
+                      push({
+                        hunterId:
+                          values.assignments[values.assignments.length - 1]
+                            .targetId,
+                        targetId: ""
+                      })
+                    }
+                  >
+                    + Lisää
+                  </button>
+                </Box>
+              )}
+            </FieldArray>
             <LoadingButton type="submit" loading={loading}>
-              Tallenna
+              Tallenna rinki
             </LoadingButton>
           </Form>
         )}
