@@ -3,14 +3,16 @@ import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 import KeyboardArrowUpRoundedIcon from "@mui/icons-material/KeyboardArrowUpRounded";
 import KeyboardArrowDownRoundedIcon from "@mui/icons-material/KeyboardArrowDownRounded";
 import IconButton from "@mui/material/IconButton";
-import { Box, Button, Grid, Card } from "@mui/material";
+import { Box, Button, Grid, Card, Autocomplete } from "@mui/material";
 import { Player, User, Tournament, Assignment } from "@prisma/client";
 import CreateRingForm from "./CreateRingForm";
-import { Field, Form, Formik } from "formik";
+import { FieldArray, Form, Formik } from "formik";
 import LoadingButton from "@mui/lab/LoadingButton";
 import { playerColors } from "../../../lib/constants";
 import PlayersWithTargets from "./PlayersWithTargets";
 import { getPlayerFullNameById } from "../../utils";
+import StyledTextField from "./StyledTextField";
+
 interface PlayerWithUser extends Player {
   user: User;
   targets: Assignment[];
@@ -75,29 +77,51 @@ const AssignmentCard = ({
   );
 };
 
-const Ring = ({ ring, rings, setRings, players, setPlayers, tournament }) => {
+const Ring = ({
+  ring,
+  rings,
+  setRings,
+  players,
+  setPlayers,
+  tournament
+}: {
+  ring: any;
+  rings: any;
+  setRings: any;
+  players: PlayerWithUser[];
+  setPlayers: any;
+  tournament: any;
+}) => {
   const [showRing, setShowRing] = useState(false);
   const [assignments, setAssignments] = useState(ring.assignments);
   const [isDeletingRing, setIsDeletingRing] = useState(false);
   const [isCreatingAssignment, setIsCreatingAssignment] = useState(false);
 
-  const createAssignment = async (values) => {
+  const createAssignments = async (values) => {
     setIsCreatingAssignment(true);
-    if (!values.hunter || !values.target) return;
-    const newAssignment = {
-      ringId: ring.id,
-      hunterId: values.hunter,
-      targetId: values.target
-    };
-
-    const res = await fetch("/api/tournament/assignments", {
-      method: "POST",
-      body: JSON.stringify(newAssignment)
-    });
-    const responseData = await res.json();
-    setAssignments(assignments.concat(responseData.savedAssignment));
+    const newAssignments = values.assignments
+      .filter((a) => a.hunterId !== "" && a.targetId !== "")
+      .map((a) => ({
+        ...a,
+        ringId: ring.id
+      }));
+    if (newAssignments.length === 0) {
+      setIsCreatingAssignment(false);
+      return;
+    }
+    try {
+      const res = await fetch("/api/tournament/assignments", {
+        method: "POST",
+        body: JSON.stringify(newAssignments)
+      });
+      const responseData = await res.json();
+      // console.log(responseData);
+      setAssignments(assignments.concat(responseData.savedAssignments));
+      setPlayers(responseData.players);
+    } catch (e) {
+      console.log(e);
+    }
     setIsCreatingAssignment(false);
-    setPlayers(responseData.players);
   };
 
   const deleteRing = async (id) => {
@@ -117,6 +141,11 @@ const Ring = ({ ring, rings, setRings, players, setPlayers, tournament }) => {
     }
     setIsDeletingRing(false);
   };
+
+  const playersWithIDAndName = players.map((player) => ({
+    id: player.id,
+    name: `${player.user.firstName} ${player.user.lastName}`
+  }));
 
   return (
     <div key={ring.id}>
@@ -156,38 +185,87 @@ const Ring = ({ ring, rings, setRings, players, setPlayers, tournament }) => {
             />
           ))}
           <Formik
-            initialValues={{ hunter: "", target: "" }}
-            onSubmit={(values) => createAssignment(values)}
+            initialValues={{
+              assignments: [
+                {
+                  hunterId: "",
+                  targetId: ""
+                }
+              ]
+            }}
+            onSubmit={(values) => createAssignments(values)}
+            enableReinitialize
           >
-            {() => (
+            {({ values, setFieldValue }) => (
               <Form>
-                <Box>
-                  <label>Metsästäjä</label>
-                  <Field as="select" name="hunter">
-                    <option value="">--</option>
-                    {players.map((p) => (
-                      <option
-                        value={p.id}
-                        key={p.id}
-                      >{`${p.user.firstName} ${p.user.lastName}`}</option>
-                    ))}
-                  </Field>
-                </Box>
-                <Box>
-                  <label>Kohde</label>
-                  <Field as="select" name="target">
-                    <option value="">--</option>
-                    {players.map((p) => (
-                      <option
-                        value={p.id}
-                        key={p.id}
-                      >{`${p.user.firstName} ${p.user.lastName}`}</option>
-                    ))}
-                  </Field>
-                </Box>
+                <FieldArray name="assignments">
+                  {({ push }) => (
+                    <Box>
+                      {values.assignments.map((_, index) => (
+                        <Box sx={{ marginTop: 2 }} key={index}>
+                          <Autocomplete
+                            options={playersWithIDAndName}
+                            getOptionLabel={(player) => player.name}
+                            onChange={(e, value) => {
+                              setFieldValue(
+                                `assignments[${index}].hunterId`,
+                                value ? value.id : ""
+                              );
+                            }}
+                            isOptionEqualToValue={(option, value) =>
+                              option.id === value.id
+                            }
+                            renderInput={(params) => (
+                              <StyledTextField
+                                {...params}
+                                label="Metsästäjä"
+                                name={`assignments[${index}].hunterId`}
+                                sx={{ my: 0.6 }}
+                              />
+                            )}
+                          />
+
+                          <Autocomplete
+                            options={playersWithIDAndName}
+                            getOptionLabel={(player) => player.name}
+                            onChange={(e, value) => {
+                              setFieldValue(
+                                `assignments[${index}].targetId`,
+                                value ? value.id : ""
+                              );
+                            }}
+                            isOptionEqualToValue={(option, value) =>
+                              option.id === value.id
+                            }
+                            renderInput={(params) => (
+                              <StyledTextField
+                                {...params}
+                                label="Kohde"
+                                name={`assignments[${index}].targetId`}
+                              />
+                            )}
+                          />
+                        </Box>
+                      ))}
+
+                      <button
+                        type="button"
+                        className="secondary"
+                        onClick={() =>
+                          push({
+                            hunterId: "",
+                            targetId: ""
+                          })
+                        }
+                      >
+                        + Lisää
+                      </button>
+                    </Box>
+                  )}
+                </FieldArray>
                 <Box width={{ xs: "100%", md: "60%" }}>
                   <LoadingButton type="submit" loading={isCreatingAssignment}>
-                    Luo uusi toimeksianto
+                    Tallenna toimeksiannot
                   </LoadingButton>
                 </Box>
               </Form>
