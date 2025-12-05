@@ -215,6 +215,8 @@ export default function Tournament({
               rings={rings}
               teams={teams}
               setRings={setRings}
+              players={players}
+              setPlayers={setPlayers}
             />
           ) : (
             <TournamentRings
