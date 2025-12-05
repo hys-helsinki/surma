@@ -87,5 +87,12 @@ export default async function handler(
     }
   });
 
-  res.json(updatedRing);
+  const updatedPlayers = await prisma.player.findMany({
+    include: {
+      user: true,
+      targets: true
+    }
+  });
+
+  res.json({ updatedRing, players: updatedPlayers });
 }

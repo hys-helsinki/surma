@@ -80,5 +80,12 @@ export default async function handler(
     data: playerAssignments
   });
 
-  res.json(savedTeamAssigment);
+  const updatedPlayers = await prisma.player.findMany({
+    include: {
+      user: true,
+      targets: true
+    }
+  });
+
+  res.json({ savedTeamAssigment, updatedPlayers });
 }

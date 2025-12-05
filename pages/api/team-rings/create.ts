@@ -51,13 +51,13 @@ export default async function handler(
     let playerAssignments = [];
 
     createdRing.assignments.forEach((assignment) => {
-      const hunterPlayers = teams.find(
-        (team) => team.id === assignment.huntingTeamId
-      ).players;
+      const hunterPlayers = teams
+        .find((team) => team.id === assignment.huntingTeamId)
+        .players.filter((player) => player.state === "ACTIVE");
 
-      const targetPlayers = teams.find(
-        (team) => team.id === assignment.targetTeamId
-      ).players;
+      const targetPlayers = teams
+        .find((team) => team.id === assignment.targetTeamId)
+        .players.filter((player) => player.state === "ACTIVE");
 
       hunterPlayers.forEach((hunter) => {
         targetPlayers.forEach((target) => {
@@ -73,6 +73,7 @@ export default async function handler(
     await prisma.assignmentRing.create({
       data: {
         tournamentId: createdRing.tournamentId,
+        name: createdRing.name,
         assignments: {
           createMany: {
             data: playerAssignments
@@ -81,6 +82,13 @@ export default async function handler(
       }
     });
 
-    res.json(createdRing);
+    const updatedPlayers = await prisma.player.findMany({
+      include: {
+        user: true,
+        targets: true
+      }
+    });
+
+    res.json({ createdRing, players: updatedPlayers });
   }
 }
