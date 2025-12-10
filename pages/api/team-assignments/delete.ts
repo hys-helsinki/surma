@@ -94,5 +94,11 @@ export default async function handler(
     }
   });
 
-  res.json({ updatedRing, players: updatedPlayers });
+  const playerRings = await prisma.assignmentRing.findMany({
+    include: {
+      assignments: true
+    }
+  });
+
+  res.json({ updatedRing, players: updatedPlayers, playerRings });
 }
