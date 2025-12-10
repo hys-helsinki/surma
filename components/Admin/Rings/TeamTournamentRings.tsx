@@ -31,7 +31,7 @@ const AssignmentCard = ({
         body: id
       });
       const responseData = await res.json();
-      if (responseData.deletedAssignment) {
+      if (responseData.deletedTeamAssignment) {
         setAssignments(
           assignments.filter((assignment) => assignment.id !== id)
         );
