@@ -54,7 +54,7 @@ const AssignmentCard = ({
         backgroundImage: `linear-gradient(${
           players.find((p) => assignment.hunterId === p.id).colorCode
         }, ${players.find((p) => assignment.targetId === p.id).colorCode})`,
-        width: { xs: "100%", md: "70%" }
+        width: "100%"
       }}
     >
       <p>
@@ -86,7 +86,7 @@ const Ring = ({
   tournament
 }: {
   ring: any;
-  rings: any;
+  rings: any[];
   setRings: any;
   players: PlayerWithUser[];
   setPlayers: any;
@@ -115,8 +115,14 @@ const Ring = ({
         body: JSON.stringify(newAssignments)
       });
       const responseData = await res.json();
-      // console.log(responseData);
       setAssignments(assignments.concat(responseData.savedAssignments));
+      setRings(
+        rings.map((r) =>
+          ring.id == r.id
+            ? { ...ring, assignments: responseData.savedAssignments }
+            : { ring }
+        )
+      );
       setPlayers(responseData.players);
     } catch (e) {
       console.log(e);
@@ -148,7 +154,12 @@ const Ring = ({
   }));
 
   return (
-    <div key={ring.id}>
+    <Box
+      key={ring.id}
+      sx={{
+        width: { xs: "100%", md: "80%" }
+      }}
+    >
       <Button
         onClick={() => setShowRing(!showRing)}
         startIcon={
@@ -193,7 +204,10 @@ const Ring = ({
                 }
               ]
             }}
-            onSubmit={(values) => createAssignments(values)}
+            onSubmit={async (values, { resetForm }) => {
+              await createAssignments(values);
+              resetForm();
+            }}
             enableReinitialize
           >
             {({ values, setFieldValue }) => (
@@ -212,6 +226,12 @@ const Ring = ({
                                 value ? value.id : ""
                               );
                             }}
+                            value={
+                              playersWithIDAndName.find(
+                                (p) =>
+                                  p.id === values.assignments[index].hunterId
+                              ) || null
+                            }
                             isOptionEqualToValue={(option, value) =>
                               option.id === value.id
                             }
@@ -234,6 +254,12 @@ const Ring = ({
                                 value ? value.id : ""
                               );
                             }}
+                            value={
+                              playersWithIDAndName.find(
+                                (p) =>
+                                  p.id === values.assignments[index].targetId
+                              ) || null
+                            }
                             isOptionEqualToValue={(option, value) =>
                               option.id === value.id
                             }
@@ -273,7 +299,7 @@ const Ring = ({
           </Formik>
         </div>
       )}
-    </div>
+    </Box>
   );
 };
 
@@ -304,36 +330,30 @@ export const TournamentRings = ({
   );
 
   return (
-    <Grid container>
-      <Grid item xs={12} md={4}>
-        <h2>Ringit</h2>
-        {rings.map((ring) => (
-          <Ring
-            players={activePlayers}
-            setPlayers={setPlayers}
-            ring={ring}
-            tournament={tournament}
-            rings={rings}
-            setRings={setRings}
-            key={ring.id}
-          />
-        ))}
-        <button onClick={() => setShowForm(!showForm)}>
-          {!showForm ? "Luo uusi rinki" : "Peruuta"}
-        </button>
-        {showForm && (
-          <CreateRingForm
-            players={activePlayers}
-            setPlayers={setPlayers}
-            tournament={tournament}
-            setShowForm={setShowForm}
-            setRings={setRings}
-          />
-        )}
-      </Grid>
-      <Grid item xs={12} md={4}>
-        <PlayersWithTargets players={players} rings={rings} />
-      </Grid>
-    </Grid>
+    <Box>
+      {rings.map((ring) => (
+        <Ring
+          players={activePlayers}
+          setPlayers={setPlayers}
+          ring={ring}
+          tournament={tournament}
+          rings={rings}
+          setRings={setRings}
+          key={ring.id}
+        />
+      ))}
+      <button onClick={() => setShowForm(!showForm)}>
+        {!showForm ? "Luo uusi rinki" : "Peruuta"}
+      </button>
+      {showForm && (
+        <CreateRingForm
+          players={activePlayers}
+          setPlayers={setPlayers}
+          tournament={tournament}
+          setShowForm={setShowForm}
+          setRings={setRings}
+        />
+      )}
+    </Box>
   );
 };

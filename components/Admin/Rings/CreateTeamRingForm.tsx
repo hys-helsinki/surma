@@ -10,13 +10,15 @@ const CreateTeamRingForm = ({
   setPlayers,
   tournament,
   setShowForm,
-  setRings
+  setTeamRings,
+  setPlayerRings
 }: {
   teams: any;
   setPlayers: any;
   tournament: any;
   setShowForm: any;
-  setRings: any;
+  setTeamRings: any;
+  setPlayerRings: any;
 }) => {
   const [loading, setLoading] = useState(false);
   const createRing = async (values) => {
@@ -43,7 +45,8 @@ const CreateTeamRingForm = ({
       });
       const responseData = await res.json();
       setPlayers(responseData.players);
-      setRings((prevRings) => prevRings.concat(responseData.createdRing));
+      setTeamRings((prevRings) => prevRings.concat(responseData.createdRing));
+      setPlayerRings(responseData.playerRings);
       setShowForm(false);
     } catch (e) {
       console.log(e);
