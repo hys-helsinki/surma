@@ -59,7 +59,8 @@ export default async function handler(
     const updatedPlayers = await prisma.player.findMany({
       include: {
         user: true,
-        targets: true
+        targets: true,
+        team: true
       }
     });
     res.json({ deletedAssignment, players: updatedPlayers });
@@ -77,7 +78,8 @@ export default async function handler(
     const updatedPlayers = await prisma.player.findMany({
       include: {
         user: true,
-        targets: true
+        targets: true,
+        team: true
       }
     });
 

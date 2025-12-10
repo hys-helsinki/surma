@@ -42,7 +42,8 @@ export default async function rings(req: NextApiRequest, res: NextApiResponse) {
     const updatedPlayers = await prisma.player.findMany({
       include: {
         user: true,
-        targets: true
+        targets: true,
+        team: true
       }
     });
     res.json({ createdRing, players: updatedPlayers });
@@ -61,7 +62,8 @@ export default async function rings(req: NextApiRequest, res: NextApiResponse) {
     const updatedPlayers = await prisma.player.findMany({
       include: {
         user: true,
-        targets: true
+        targets: true,
+        team: true
       }
     });
     res.json({ deletedRing, players: updatedPlayers });
