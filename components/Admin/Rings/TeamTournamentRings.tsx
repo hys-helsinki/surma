@@ -294,8 +294,8 @@ const Ring = ({
                         className="secondary"
                         onClick={() =>
                           push({
-                            hunterId: "",
-                            targetId: ""
+                            huntingTeamId: "",
+                            targetTeamId: ""
                           })
                         }
                       >
