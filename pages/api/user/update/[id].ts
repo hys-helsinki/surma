@@ -9,17 +9,16 @@ const isCurrentUserAuthorized = async (playerId, req, res) => {
 
   const currentPlayer = await prisma.player.findFirst({
     where: {
-      id: playerId,
-      userId: session.user.id
+      id: playerId
     }
   });
-  // TODO add tournamentId to where clause
   const umpire = await prisma.umpire.findUnique({
     where: {
-      userId: session.user.id
+      userId: session.user.id,
+      tournamentId: currentPlayer.tournamentId
     }
   });
-  return currentPlayer || umpire;
+  return currentPlayer.userId === session.user.id || umpire;
 };
 
 export default async function update(
