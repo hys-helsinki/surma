@@ -18,6 +18,8 @@ const AssignmentCard = ({
   setAssignments,
   setPlayers,
   assignments,
+  setRings,
+  rings,
   teams,
   setPlayerRings
 }) => {
@@ -37,6 +39,18 @@ const AssignmentCard = ({
         );
         setPlayers(responseData.players);
         setPlayerRings(responseData.playerRings);
+        setRings(
+          rings.map((ring) =>
+            assignment.teamAssignmentRingId == ring.id
+              ? {
+                  ...ring,
+                  assignments: assignments.filter(
+                    (assignment) => assignment.id !== id
+                  )
+                }
+              : { ...ring }
+          )
+        );
       }
     }
     setIsDeletingAssignment(false);
@@ -125,8 +139,13 @@ const Ring = ({
       setTeamRings(
         rings.map((r) =>
           ring.id == r.id
-            ? { ...ring, assignments: responseData.savedAssignments }
-            : { ring }
+            ? {
+                ...r,
+                assignments: assignments.concat(
+                  responseData.savedTeamAssignments
+                )
+              }
+            : { ...r }
         )
       );
     } catch (e) {
@@ -213,6 +232,8 @@ const Ring = ({
               teams={teams}
               setPlayerRings={setPlayerRings}
               key={assignment.id}
+              setRings={setTeamRings}
+              rings={rings}
             />
           ))}
           <Formik

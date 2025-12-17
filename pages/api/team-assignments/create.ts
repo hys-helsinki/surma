@@ -55,8 +55,9 @@ export default async function handler(
     }
   });
 
-  savedTeamAssignments.forEach(async (savedTeamAssignment) => {
-    let playerAssignments = [];
+  let playerAssignments = [];
+
+  savedTeamAssignments.forEach((savedTeamAssignment) => {
     const hunterPlayers = teams.find(
       (team) => team.id === savedTeamAssignment.huntingTeamId
     ).players;
@@ -75,10 +76,10 @@ export default async function handler(
         });
       });
     });
+  });
 
-    await prisma.assignment.createMany({
-      data: playerAssignments
-    });
+  await prisma.assignment.createMany({
+    data: playerAssignments
   });
 
   const updatedPlayers = await prisma.player.findMany({

@@ -90,7 +90,8 @@ export default async function handler(
   const updatedPlayers = await prisma.player.findMany({
     include: {
       user: true,
-      targets: true
+      targets: true,
+      team: true
     }
   });
 
@@ -100,5 +101,10 @@ export default async function handler(
     }
   });
 
-  res.json({ updatedRing, players: updatedPlayers, playerRings });
+  res.json({
+    deletedTeamAssignment,
+    updatedRing,
+    players: updatedPlayers,
+    playerRings
+  });
 }
