@@ -325,7 +325,7 @@ const Ring = ({
                     </Box>
                   )}
                 </FieldArray>
-                <Box width={{ xs: "100%", md: "60%" }}>
+                <Box>
                   <LoadingButton type="submit" loading={isCreatingAssignment}>
                     Tallenna toimeksiannot
                   </LoadingButton>
