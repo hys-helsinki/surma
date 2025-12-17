@@ -1,11 +1,6 @@
 import { Box } from "@mui/material";
 import { getPlayerFullNameById } from "../../utils";
-import { Player, Assignment, User, AssignmentRing } from "@prisma/client";
-
-interface PlayerWithUser extends Player {
-  user: User;
-  targets: Assignment[];
-}
+import { Assignment, AssignmentRing } from "@prisma/client";
 
 interface RingWithAssignments extends AssignmentRing {
   assignments: Assignment[];
@@ -13,10 +8,12 @@ interface RingWithAssignments extends AssignmentRing {
 
 const PlayersWithTargets = ({
   players,
-  rings
+  rings,
+  tournament
 }: {
-  players: PlayerWithUser[];
+  players: any[]; // Katson tyypitykset kuntoon myöhemmin
   rings: RingWithAssignments[];
+  tournament: any;
 }) => {
   const searchWantedPlayers = () => {
     const detectivePlayerIDs = players
@@ -50,12 +47,21 @@ const PlayersWithTargets = ({
     }
     return;
   };
+
+  const sortedPlayers = tournament.teamGame
+    ? players.sort(
+        (a, b) =>
+          a.team.name.localeCompare(b.team.name) ||
+          a.user.firstName.localeCompare(b.user.firstName)
+      )
+    : players.sort((a, b) => a.user.firstName.localeCompare(b.user.firstName));
   return (
     <>
       <h2>Pelaajien kohteet</h2>
-      {players.map((player) => (
+      {sortedPlayers.map((player) => (
         <Box key={player.id}>
           <p>
+            {tournament.teamGame && `${player.team.name}: `}
             {player.user.firstName} {player.user.lastName} ({player.alias}){" "}
             {displayPlayerState(player)}
           </p>
