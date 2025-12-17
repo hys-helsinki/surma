@@ -363,13 +363,17 @@ export const TeamTournamentRings = ({
       colorCode: playerColors[index]
     }));
 
+  const ringsWithNonEmptyAssignments = teamRings.filter(
+    (ring) => ring.assignments !== undefined
+  );
+
   return (
     <Box>
-      {teamRings.map((ring) => (
+      {ringsWithNonEmptyAssignments.map((ring) => (
         <Ring
           key={ring.id}
           ring={ring}
-          rings={teamRings}
+          rings={ringsWithNonEmptyAssignments}
           setTeamRings={setTeamRings}
           teams={teamsWithColors}
           tournament={tournament}

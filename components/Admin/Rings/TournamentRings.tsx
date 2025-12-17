@@ -9,7 +9,6 @@ import CreateRingForm from "./CreateRingForm";
 import { FieldArray, Form, Formik } from "formik";
 import LoadingButton from "@mui/lab/LoadingButton";
 import { playerColors } from "../../../lib/constants";
-import PlayersWithTargets from "./PlayersWithTargets";
 import { getPlayerFullNameById } from "../../utils";
 import StyledTextField from "./StyledTextField";
 
@@ -289,7 +288,7 @@ const Ring = ({
                     </Box>
                   )}
                 </FieldArray>
-                <Box width={{ xs: "100%", md: "60%" }}>
+                <Box>
                   <LoadingButton type="submit" loading={isCreatingAssignment}>
                     Tallenna toimeksiannot
                   </LoadingButton>
@@ -329,15 +328,19 @@ export const TournamentRings = ({
     (player) => player.state !== "DEAD"
   );
 
+  const ringsWithNonEmptyAssignments = rings.filter(
+    (ring) => ring.assignments !== undefined
+  );
+
   return (
     <Box>
-      {rings.map((ring) => (
+      {ringsWithNonEmptyAssignments.map((ring) => (
         <Ring
           players={activePlayers}
           setPlayers={setPlayers}
           ring={ring}
           tournament={tournament}
-          rings={rings}
+          rings={ringsWithNonEmptyAssignments}
           setRings={setRings}
           key={ring.id}
         />

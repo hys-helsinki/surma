@@ -61,6 +61,11 @@ export default async function handler(
   });
 
   const playerRings = await prisma.assignmentRing.findMany({
+    where: {
+      assignments: {
+        some: {}
+      }
+    },
     include: {
       assignments: true
     }
