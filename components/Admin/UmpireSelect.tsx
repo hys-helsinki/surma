@@ -1,5 +1,5 @@
 import { LoadingButton } from "@mui/lab";
-import { Grid, Snackbar } from "@mui/material";
+import { Box, Grid, Snackbar } from "@mui/material";
 import { Field, Form, Formik } from "formik";
 import { useState } from "react";
 
@@ -44,7 +44,7 @@ const UmpireSelect = ({
 
   return (
     <Grid container>
-      <Grid item xs={12} md={3}>
+      <Grid item xs={12} md={6}>
         <h2> Pelaajien tuomarit</h2>
         <Formik
           enableReinitialize={true}
@@ -73,9 +73,11 @@ const UmpireSelect = ({
                 </Field>
               </div>
             ))}
-            <LoadingButton type="submit" loading={isLoading}>
-              Tallenna tuomarit
-            </LoadingButton>
+            <Box width={{ xs: "100%", md: "60%" }}>
+              <LoadingButton type="submit" loading={isLoading}>
+                Tallenna tuomarit
+              </LoadingButton>
+            </Box>
             <Snackbar
               open={showSuccessText}
               onClose={() => setShowSuccessText(false)}
