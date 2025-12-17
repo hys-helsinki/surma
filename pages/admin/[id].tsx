@@ -93,7 +93,10 @@ export const getServerSideProps: GetServerSideProps = async ({
 
   let playerRings = await prisma.assignmentRing.findMany({
     where: {
-      tournamentId: params.id as string
+      tournamentId: params.id as string,
+      assignments: {
+        some: {}
+      }
     },
     include: {
       assignments: true
@@ -102,7 +105,10 @@ export const getServerSideProps: GetServerSideProps = async ({
 
   let teamRings = await prisma.teamAssignmentRing.findMany({
     where: {
-      tournamentId: params.id as string
+      tournamentId: params.id as string,
+      assignments: {
+        some: {}
+      }
     },
     include: {
       assignments: true
