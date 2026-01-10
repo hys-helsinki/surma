@@ -84,7 +84,7 @@ const Rings = ({
           />
         )}
       </Grid>
-      <Grid item xs={12} md={4}>
+      <Grid item xs={12} md={7}>
         <PlayersWithTargets
           players={players}
           rings={playerRings}
