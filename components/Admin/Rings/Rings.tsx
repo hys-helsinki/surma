@@ -7,8 +7,8 @@ import {
   RadioGroup
 } from "@mui/material";
 import PlayersWithTargets from "./PlayersWithTargets";
-import { TournamentRings } from "./TournamentRings";
-import { TeamTournamentRings } from "./TeamTournamentRings";
+import { PlayerRings } from "./PlayerRings";
+import { TeamRings } from "./TeamRings";
 
 const Rings = ({
   players,
@@ -66,7 +66,7 @@ const Rings = ({
           </FormControl>
         )}
         {tournament.teamGame && view == "team" ? (
-          <TeamTournamentRings
+          <TeamRings
             tournament={tournament}
             teamRings={teamRings}
             teams={teams}
@@ -75,7 +75,7 @@ const Rings = ({
             setPlayerRings={setPlayerRings}
           />
         ) : (
-          <TournamentRings
+          <PlayerRings
             tournament={tournament}
             players={players}
             setPlayers={setPlayers}

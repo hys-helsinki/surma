@@ -1,47 +1,49 @@
 import { useState } from "react";
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
-import IconButton from "@mui/material/IconButton";
-import { Button, Grid } from "@mui/material";
-import { Tournament, Team } from "@prisma/client";
-import { LoadingButton } from "@mui/lab";
-import CreateTeamRingForm from "./CreateTeamRingForm";
-
 import KeyboardArrowUpRoundedIcon from "@mui/icons-material/KeyboardArrowUpRounded";
 import KeyboardArrowDownRoundedIcon from "@mui/icons-material/KeyboardArrowDownRounded";
-import { Box, Card, Autocomplete } from "@mui/material";
+import IconButton from "@mui/material/IconButton";
+import { Box, Button, Grid, Card, Autocomplete } from "@mui/material";
+import { Player, User, Tournament, Assignment } from "@prisma/client";
+import CreateRingForm from "./CreateRingForm";
 import { FieldArray, Form, Formik } from "formik";
-import StyledTextField from "./StyledTextField";
+import LoadingButton from "@mui/lab/LoadingButton";
 import { playerColors } from "../../../lib/constants";
+import { getPlayerFullNameById } from "../../utils";
+import StyledTextField from "./StyledTextField";
+
+interface PlayerWithUser extends Player {
+  user: User;
+  targets: Assignment[];
+}
 
 const AssignmentCard = ({
   assignment,
   setAssignments,
   setPlayers,
   assignments,
+  players,
   setRings,
-  rings,
-  teams,
-  setPlayerRings
+  rings
 }) => {
   const [isDeletingAssignment, setIsDeletingAssignment] = useState(false);
 
   const deleteAssignment = async (id: string) => {
     setIsDeletingAssignment(true);
     if (window.confirm(`Haluatko varmasti poistaa toimeksiannon?`)) {
-      const res = await fetch("/api/team-assignments/delete", {
+      const res = await fetch("/api/tournament/assignments", {
         method: "DELETE",
         body: id
       });
       const responseData = await res.json();
-      if (responseData.deletedTeamAssignment) {
+      if (responseData.deletedAssignment) {
         setAssignments(
           assignments.filter((assignment) => assignment.id !== id)
         );
         setPlayers(responseData.players);
-        setPlayerRings(responseData.playerRings);
         setRings(
           rings.map((ring) =>
-            assignment.teamAssignmentRingId == ring.id
+            assignment.ringId == ring.id
               ? {
                   ...ring,
                   assignments: assignments.filter(
@@ -63,21 +65,18 @@ const AssignmentCard = ({
         mr: 2,
         my: 2,
         backgroundImage: `linear-gradient(${
-          teams.find((team) => assignment.huntingTeamId === team.id).colorCode
-        }, ${
-          teams.find((team) => assignment.targetTeamId === team.id).colorCode
-        })`,
-        backgroundColor: "whitesmoke",
+          players.find((p) => assignment.hunterId === p.id).colorCode
+        }, ${players.find((p) => assignment.targetId === p.id).colorCode})`,
         width: "100%"
       }}
     >
       <p>
         <strong>Metsästäjä: </strong>
-        {teams.find((team) => team.id === assignment.huntingTeamId).name}
+        {getPlayerFullNameById(assignment.hunterId, players)}
       </p>
       <p>
         <strong>Kohde: </strong>
-        {teams.find((team) => team.id === assignment.targetTeamId).name}
+        {getPlayerFullNameById(assignment.targetId, players)}
       </p>
       <LoadingButton
         onClick={() => deleteAssignment(assignment.id)}
@@ -94,19 +93,17 @@ const AssignmentCard = ({
 const Ring = ({
   ring,
   rings,
-  setTeamRings,
-  teams,
+  setRings,
+  players,
   setPlayers,
-  tournament,
-  setPlayerRings
+  tournament
 }: {
   ring: any;
-  rings: any;
-  setTeamRings: any;
-  teams: any;
+  rings: any[];
+  setRings: any;
+  players: PlayerWithUser[];
   setPlayers: any;
   tournament: any;
-  setPlayerRings: any;
 }) => {
   const [showRing, setShowRing] = useState(false);
   const [assignments, setAssignments] = useState(ring.assignments);
@@ -116,38 +113,33 @@ const Ring = ({
   const createAssignments = async (values) => {
     setIsCreatingAssignment(true);
     const newAssignments = values.assignments
-      .filter((a) => a.huntingTeamId !== "" && a.targetTeamId !== "")
+      .filter((a) => a.hunterId !== "" && a.targetId !== "")
       .map((a) => ({
         ...a,
-        teamAssignmentRingId: ring.id
+        ringId: ring.id
       }));
-
     if (newAssignments.length === 0) {
       setIsCreatingAssignment(false);
       return;
     }
     try {
-      const res = await fetch("/api/team-assignments/create", {
+      const res = await fetch("/api/tournament/assignments", {
         method: "POST",
         body: JSON.stringify(newAssignments)
       });
       const responseData = await res.json();
-      console.log(responseData);
-      setAssignments(assignments.concat(responseData.savedTeamAssignments));
-      setPlayers(responseData.players);
-      setPlayerRings(responseData.playerRings);
-      setTeamRings(
+      setAssignments(assignments.concat(responseData.savedAssignments));
+      setRings(
         rings.map((r) =>
           ring.id == r.id
             ? {
-                ...r,
-                assignments: assignments.concat(
-                  responseData.savedTeamAssignments
-                )
+                ...ring,
+                assignments: r.assignments.concat(responseData.savedAssignments)
               }
             : { ...r }
         )
       );
+      setPlayers(responseData.players);
     } catch (e) {
       console.log(e);
     }
@@ -157,38 +149,24 @@ const Ring = ({
   const deleteRing = async (id) => {
     setIsDeletingRing(true);
     if (window.confirm(`Haluatko varmasti poistaa ringin ${ring.name}?`)) {
-      const res = await fetch("/api/team-rings/delete", {
+      const res = await fetch("/api/tournament/rings", {
         method: "DELETE",
         body: JSON.stringify({ ringId: id, tournamentId: tournament.id })
       });
       const responseData = await res.json();
       if (responseData.deletedRing) {
-        setTeamRings(
+        setRings(
           rings.filter((ring) => ring.id !== responseData.deletedRing.id)
         );
         setPlayers(responseData.players);
-        setPlayerRings(responseData.playerRings);
       }
     }
     setIsDeletingRing(false);
   };
 
-  const initialValues = {
-    name: "",
-    assignments: [
-      {
-        huntingTeamId: "",
-        targetTeamId: ""
-      }
-    ]
-  };
-
-  const teamsWithIdAndName: {
-    id: string;
-    name: string;
-  }[] = teams.map((team) => ({
-    id: team.id,
-    name: team.name
+  const playersWithIDAndName = players.map((player) => ({
+    id: player.id,
+    name: `${player.user.firstName} ${player.user.lastName}`
   }));
 
   return (
@@ -229,15 +207,21 @@ const Ring = ({
               setAssignments={setAssignments}
               setPlayers={setPlayers}
               assignments={assignments}
-              teams={teams}
-              setPlayerRings={setPlayerRings}
+              players={players}
               key={assignment.id}
-              setRings={setTeamRings}
+              setRings={setRings}
               rings={rings}
             />
           ))}
           <Formik
-            initialValues={initialValues}
+            initialValues={{
+              assignments: [
+                {
+                  hunterId: "",
+                  targetId: ""
+                }
+              ]
+            }}
             onSubmit={async (values, { resetForm }) => {
               await createAssignments(values);
               resetForm();
@@ -252,58 +236,56 @@ const Ring = ({
                       {values.assignments.map((_, index) => (
                         <Box sx={{ marginTop: 2 }} key={index}>
                           <Autocomplete
-                            options={teamsWithIdAndName}
+                            options={playersWithIDAndName}
                             getOptionLabel={(player) => player.name}
                             onChange={(e, value) => {
                               setFieldValue(
-                                `assignments[${index}].huntingTeamId`,
+                                `assignments[${index}].hunterId`,
                                 value ? value.id : ""
                               );
                             }}
+                            value={
+                              playersWithIDAndName.find(
+                                (p) =>
+                                  p.id === values.assignments[index].hunterId
+                              ) || null
+                            }
                             isOptionEqualToValue={(option, value) =>
                               option.id === value.id
-                            }
-                            value={
-                              teamsWithIdAndName.find(
-                                (p) =>
-                                  p.id ===
-                                  values.assignments[index].huntingTeamId
-                              ) || null
                             }
                             renderInput={(params) => (
                               <StyledTextField
                                 {...params}
                                 label="Metsästäjä"
-                                name={`assignments[${index}].huntingTeamId`}
+                                name={`assignments[${index}].hunterId`}
                                 sx={{ my: 0.6 }}
                               />
                             )}
                           />
 
                           <Autocomplete
-                            options={teamsWithIdAndName}
+                            options={playersWithIDAndName}
                             getOptionLabel={(player) => player.name}
                             onChange={(e, value) => {
                               setFieldValue(
-                                `assignments[${index}].targetTeamId`,
+                                `assignments[${index}].targetId`,
                                 value ? value.id : ""
                               );
                             }}
+                            value={
+                              playersWithIDAndName.find(
+                                (p) =>
+                                  p.id === values.assignments[index].targetId
+                              ) || null
+                            }
                             isOptionEqualToValue={(option, value) =>
                               option.id === value.id
-                            }
-                            value={
-                              teamsWithIdAndName.find(
-                                (p) =>
-                                  p.id ===
-                                  values.assignments[index].targetTeamId
-                              ) || null
                             }
                             renderInput={(params) => (
                               <StyledTextField
                                 {...params}
                                 label="Kohde"
-                                name={`assignments[${index}].targetTeamId`}
+                                name={`assignments[${index}].targetId`}
                               />
                             )}
                           />
@@ -315,8 +297,8 @@ const Ring = ({
                         className="secondary"
                         onClick={() =>
                           push({
-                            huntingTeamId: "",
-                            targetTeamId: ""
+                            hunterId: "",
+                            targetId: ""
                           })
                         }
                       >
@@ -339,31 +321,33 @@ const Ring = ({
   );
 };
 
-export const TeamTournamentRings = ({
+export const PlayerRings = ({
   tournament,
-  teamRings,
-  teams,
-  setTeamRings,
+  players,
   setPlayers,
-  setPlayerRings
+  rings,
+  setRings
 }: {
   tournament: Tournament;
-  teamRings: any[];
-  teams: Team[];
-  setTeamRings;
-  setPlayers;
-  setPlayerRings;
+  players: PlayerWithUser[];
+  setPlayers: any;
+  rings: any;
+  setRings: any;
 }): JSX.Element => {
   const [showForm, setShowForm] = useState(false);
 
-  const teamsWithColors = teams
-    .sort((a, b) => a.name.localeCompare(b.name))
-    .map((team, index) => ({
-      ...team,
+  const sortedPlayersWithColors = players
+    .sort((a, b) => a.user.firstName.localeCompare(b.user.firstName))
+    .map((player, index) => ({
+      ...player,
       colorCode: playerColors[index]
     }));
 
-  const ringsWithNonEmptyAssignments = teamRings.filter(
+  const activePlayers = sortedPlayersWithColors.filter(
+    (player) => player.state !== "DEAD"
+  );
+
+  const ringsWithNonEmptyAssignments = rings.filter(
     (ring) => ring.assignments !== undefined
   );
 
@@ -371,27 +355,25 @@ export const TeamTournamentRings = ({
     <Box>
       {ringsWithNonEmptyAssignments.map((ring) => (
         <Ring
-          key={ring.id}
-          ring={ring}
-          rings={ringsWithNonEmptyAssignments}
-          setTeamRings={setTeamRings}
-          teams={teamsWithColors}
-          tournament={tournament}
+          players={activePlayers}
           setPlayers={setPlayers}
-          setPlayerRings={setPlayerRings}
+          ring={ring}
+          tournament={tournament}
+          rings={ringsWithNonEmptyAssignments}
+          setRings={setRings}
+          key={ring.id}
         />
       ))}
       <button onClick={() => setShowForm(!showForm)}>
         {!showForm ? "Luo uusi rinki" : "Peruuta"}
       </button>
       {showForm && (
-        <CreateTeamRingForm
-          teams={teams}
+        <CreateRingForm
+          players={activePlayers}
           setPlayers={setPlayers}
           tournament={tournament}
           setShowForm={setShowForm}
-          setTeamRings={setTeamRings}
-          setPlayerRings={setPlayerRings}
+          setRings={setRings}
         />
       )}
     </Box>
