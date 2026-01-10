@@ -1,5 +1,5 @@
 import LoadingButton from "@mui/lab/LoadingButton";
-import { Box, Modal } from "@mui/material";
+import { Box, Modal, Snackbar } from "@mui/material";
 import { Assignment, Player, Team, User } from "@prisma/client";
 import { Formik, Form, Field } from "formik";
 import { getPlayerFullNameById } from "../utils";
@@ -43,6 +43,8 @@ const WantedModal = ({
   tournament;
 }) => {
   const [isLoading, setIsLoading] = useState(false);
+  const [showSuccessText, setShowSuccessText] = useState(false);
+
   const detectivePlayers = players
     .filter((player) => player.state === "DETECTIVE")
     .sort((a, b) => a.user.firstName.localeCompare(b.user.firstName));
@@ -71,6 +73,7 @@ const WantedModal = ({
       const responseData = await res.json();
       setPlayers(responseData.players);
       setRings((prevRings) => prevRings.concat(responseData.createdRing));
+      setShowSuccessText(true);
       setOpenModal(false);
     } catch (e) {
       console.log(e);
@@ -79,67 +82,76 @@ const WantedModal = ({
   };
 
   return (
-    <Modal open={open}>
-      <Box sx={style}>
-        <Formik
-          initialValues={{ selectedPlayers: [] }}
-          onSubmit={(values) => handleMakeWanted(values)}
-        >
-          {({ values, setFieldValue }) => {
-            const allSelected =
-              values.selectedPlayers.length === players.length;
+    <>
+      <Modal open={open}>
+        <Box sx={style}>
+          <Formik
+            initialValues={{ selectedPlayers: [] }}
+            onSubmit={(values) => handleMakeWanted(values)}
+          >
+            {({ values, setFieldValue }) => {
+              const allSelected =
+                values.selectedPlayers.length === detectivePlayers.length;
 
-            const handleSelectAll = () => {
-              if (allSelected) {
-                setFieldValue("selectedPlayers", []);
-              } else {
-                const allIds = players.map((p) => String(p.id));
-                setFieldValue("selectedPlayers", allIds);
-              }
-            };
-            return (
-              <Form>
-                <p>
-                  Keille etsiville annat kohteeksi pelaajan {wantedPlayerName}
-                </p>
-                <Box>
-                  <button type="button" onClick={handleSelectAll}>
-                    {allSelected ? "Tyhjennä" : "Valitse kaikki"}
-                  </button>
-                </Box>
-                {detectivePlayers.map((player) => (
-                  <Box
-                    sx={{
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "left"
-                    }}
-                    key={player.id}
-                  >
-                    <Field
-                      type="checkbox"
-                      name="selectedPlayers"
-                      value={player.id}
-                      style={{ width: "unset", marginRight: "1rem" }}
-                    />
-                    <label key={player.id}>
-                      <p>
-                        {player.user.firstName} {player.user.lastName}
-                      </p>
-                    </label>
+              const handleSelectAll = () => {
+                if (allSelected) {
+                  setFieldValue("selectedPlayers", []);
+                } else {
+                  const allIds = detectivePlayers.map((p) => String(p.id));
+                  setFieldValue("selectedPlayers", allIds);
+                }
+              };
+              return (
+                <Form>
+                  <p>
+                    Keille etsiville annat kohteeksi pelaajan {wantedPlayerName}
+                    ?
+                  </p>
+                  <Box>
+                    <button type="button" onClick={handleSelectAll}>
+                      {allSelected ? "Tyhjennä" : "Valitse kaikki"}
+                    </button>
                   </Box>
-                ))}
+                  {detectivePlayers.map((player) => (
+                    <Box
+                      sx={{
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "left"
+                      }}
+                      key={player.id}
+                    >
+                      <Field
+                        type="checkbox"
+                        name="selectedPlayers"
+                        value={player.id}
+                        style={{ width: "unset", marginRight: "1rem" }}
+                      />
+                      <label key={player.id}>
+                        <p>
+                          {player.user.firstName} {player.user.lastName}
+                        </p>
+                      </label>
+                    </Box>
+                  ))}
 
-                <LoadingButton type="submit" loading={isLoading}>
-                  Etsintäkuuluta
-                </LoadingButton>
-                <button onClick={() => setOpenModal(false)}>Peruuta</button>
-              </Form>
-            );
-          }}
-        </Formik>
-      </Box>
-    </Modal>
+                  <LoadingButton type="submit" loading={isLoading}>
+                    Etsintäkuuluta
+                  </LoadingButton>
+                  <button onClick={() => setOpenModal(false)}>Peruuta</button>
+                </Form>
+              );
+            }}
+          </Formik>
+        </Box>
+      </Modal>
+      <Snackbar
+        open={showSuccessText}
+        onClose={() => setShowSuccessText(false)}
+        autoHideDuration={4000}
+        message="Etsintäkuuluttaminen onnistui!"
+      />
+    </>
   );
 };
 
