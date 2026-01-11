@@ -62,9 +62,9 @@ export default async function handler(
       (team) => team.id === savedTeamAssignment.huntingTeamId
     ).players;
 
-    const targetPlayers = teams.find(
-      (team) => team.id === savedTeamAssignment.targetTeamId
-    ).players;
+    const targetPlayers = teams
+      .find((team) => team.id === savedTeamAssignment.targetTeamId)
+      .players.filter((player) => player.state === "ACTIVE");
 
     hunterPlayers.forEach((hunter) => {
       targetPlayers.forEach((target) => {

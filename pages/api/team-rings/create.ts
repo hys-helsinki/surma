@@ -51,9 +51,9 @@ export default async function handler(
     let playerAssignments = [];
 
     createdRing.assignments.forEach((assignment) => {
-      const hunterPlayers = teams
-        .find((team) => team.id === assignment.huntingTeamId)
-        .players.filter((player) => player.state === "ACTIVE");
+      const hunterPlayers = teams.find(
+        (team) => team.id === assignment.huntingTeamId
+      ).players;
 
       const targetPlayers = teams
         .find((team) => team.id === assignment.targetTeamId)
