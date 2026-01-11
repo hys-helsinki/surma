@@ -39,17 +39,25 @@ const AssignmentCard = ({
         );
         setPlayers(responseData.players);
         setPlayerRings(responseData.playerRings);
-        setRings(
-          rings.map((ring) =>
-            assignment.teamAssignmentRingId == ring.id
-              ? {
-                  ...ring,
-                  assignments: assignments.filter(
-                    (assignment) => assignment.id !== id
-                  )
-                }
-              : { ...ring }
+        const updatedRing = rings.find(
+          (r) => r.id == assignment.teamAssignmentRingId
+        );
+        const assignmentsUpdated = {
+          ...updatedRing,
+          assignments: updatedRing.assignments.filter(
+            (assignment) => assignment.id !== id
           )
+        };
+        setRings(
+          assignmentsUpdated.assignments.length === 0
+            ? rings.filter(
+                (ring) => ring.id !== assignment.teamAssignmentRingId
+              )
+            : rings.map((ring) =>
+                ring.id === assignment.teamAssignmentRingId
+                  ? assignmentsUpdated
+                  : ring
+              )
         );
       }
     }
@@ -132,7 +140,6 @@ const Ring = ({
         body: JSON.stringify(newAssignments)
       });
       const responseData = await res.json();
-      console.log(responseData);
       setAssignments(assignments.concat(responseData.savedTeamAssignments));
       setPlayers(responseData.players);
       setPlayerRings(responseData.playerRings);
@@ -363,17 +370,13 @@ export const TeamRings = ({
       colorCode: playerColors[index]
     }));
 
-  const ringsWithNonEmptyAssignments = teamRings.filter(
-    (ring) => ring.assignments !== undefined
-  );
-
   return (
     <Box>
-      {ringsWithNonEmptyAssignments.map((ring) => (
+      {teamRings.map((ring) => (
         <Ring
           key={ring.id}
           ring={ring}
-          rings={ringsWithNonEmptyAssignments}
+          rings={teamRings}
           setTeamRings={setTeamRings}
           teams={teamsWithColors}
           tournament={tournament}

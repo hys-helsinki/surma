@@ -56,6 +56,15 @@ export default async function handler(
       }
     });
 
+    // Poistetaan tyhjät ringit
+    await prisma.assignmentRing.deleteMany({
+      where: {
+        assignments: {
+          none: {}
+        }
+      }
+    });
+
     const updatedPlayers = await prisma.player.findMany({
       include: {
         user: true,

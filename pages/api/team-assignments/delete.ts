@@ -58,15 +58,6 @@ export default async function handler(
     }
   });
 
-  const updatedRing = await prisma.teamAssignmentRing.findUnique({
-    where: {
-      id: deletedTeamAssignment.teamAssignmentRingId
-    },
-    include: {
-      assignments: true
-    }
-  });
-
   const hunterIds = deletedTeamAssignment.huntingTeam.players.map((p) => p.id);
   const targetIds = deletedTeamAssignment.targetTeam.players.map((p) => p.id);
 
@@ -84,6 +75,23 @@ export default async function handler(
           }
         }
       ]
+    }
+  });
+
+  // Poistetaan tyhjät ringit
+  await prisma.assignmentRing.deleteMany({
+    where: {
+      assignments: {
+        none: {}
+      }
+    }
+  });
+
+  await prisma.teamAssignmentRing.deleteMany({
+    where: {
+      assignments: {
+        none: {}
+      }
     }
   });
 
@@ -108,7 +116,6 @@ export default async function handler(
 
   res.json({
     deletedTeamAssignment,
-    updatedRing,
     players: updatedPlayers,
     playerRings
   });

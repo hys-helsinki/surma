@@ -11,6 +11,7 @@ import LoadingButton from "@mui/lab/LoadingButton";
 import { playerColors } from "../../../lib/constants";
 import { getPlayerFullNameById } from "../../utils";
 import StyledTextField from "./StyledTextField";
+import { update } from "lodash";
 
 interface PlayerWithUser extends Player {
   user: User;
@@ -41,17 +42,19 @@ const AssignmentCard = ({
           assignments.filter((assignment) => assignment.id !== id)
         );
         setPlayers(responseData.players);
-        setRings(
-          rings.map((ring) =>
-            assignment.ringId == ring.id
-              ? {
-                  ...ring,
-                  assignments: assignments.filter(
-                    (assignment) => assignment.id !== id
-                  )
-                }
-              : { ...ring }
+        const updatedRing = rings.find((r) => r.id == assignment.ringId);
+        const assignmentsUpdated = {
+          ...updatedRing,
+          assignments: updatedRing.assignments.filter(
+            (assignment) => assignment.id !== id
           )
+        };
+        setRings(
+          assignmentsUpdated.assignments.length === 0
+            ? rings.filter((ring) => ring.id !== assignment.ringId)
+            : rings.map((ring) =>
+                ring.id === assignment.ringId ? assignmentsUpdated : ring
+              )
         );
       }
     }
@@ -347,19 +350,15 @@ export const PlayerRings = ({
     (player) => player.state !== "DEAD"
   );
 
-  const ringsWithNonEmptyAssignments = rings.filter(
-    (ring) => ring.assignments !== undefined
-  );
-
   return (
     <Box>
-      {ringsWithNonEmptyAssignments.map((ring) => (
+      {rings.map((ring) => (
         <Ring
           players={activePlayers}
           setPlayers={setPlayers}
           ring={ring}
           tournament={tournament}
-          rings={ringsWithNonEmptyAssignments}
+          rings={rings}
           setRings={setRings}
           key={ring.id}
         />
