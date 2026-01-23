@@ -1,26 +1,19 @@
 import { LoadingButton } from "@mui/lab";
 import { Autocomplete, Box } from "@mui/material";
-import { Player, User } from "@prisma/client";
 import { Field, FieldArray, Form, Formik } from "formik";
 import { useState } from "react";
 import StyledTextField from "./StyledTextField";
+import { RingComponentProps } from "../../../types/umpirepage";
 
 const CreateTeamRingForm = ({
   teams,
   setPlayers,
   tournament,
-  setShowForm,
   setTeamRings,
   setPlayerRings
-}: {
-  teams: any;
-  setPlayers: any;
-  tournament: any;
-  setShowForm: any;
-  setTeamRings: any;
-  setPlayerRings: any;
-}) => {
+}: RingComponentProps) => {
   const [loading, setLoading] = useState(false);
+  const [showForm, setShowForm] = useState(false);
   const createRing = async (values) => {
     setLoading(true);
 
@@ -73,96 +66,104 @@ const CreateTeamRingForm = ({
   }));
 
   return (
-    <Box width={{ xs: "100%", md: "80%" }}>
-      <Formik
-        initialValues={initialValues}
-        onSubmit={(values) => createRing(values)}
-        enableReinitialize
-      >
-        {({ values, setFieldValue }) => (
-          <Form>
-            <label>Ringin nimi</label>
-            <Field name="name" />
-            <FieldArray name="assignments">
-              {({ push }) => (
-                <Box>
-                  {values.assignments.map((_, index) => (
-                    <Box sx={{ marginTop: 2 }} key={index}>
-                      <Autocomplete
-                        options={teamsWithIdAndName}
-                        getOptionLabel={(team) => team.name}
-                        value={
-                          teamsWithIdAndName.find(
-                            (p) =>
-                              p.id === values.assignments[index].huntingTeamId
-                          ) || { name: "", id: "" }
-                        }
-                        onChange={(e, value) => {
-                          setFieldValue(
-                            `assignments[${index}].huntingTeamId`,
-                            value ? value.id : ""
-                          );
-                        }}
-                        isOptionEqualToValue={(option, value) =>
-                          option.id === value.id || value.id === ""
-                        }
-                        renderInput={(params) => (
-                          <StyledTextField
-                            {...params}
-                            label="Metsästäjä"
-                            name={`assignments[${index}].huntingTeamId`}
-                            sx={{ my: 0.6 }}
+    <>
+      <button onClick={() => setShowForm(!showForm)}>
+        {!showForm ? "Luo uusi rinki" : "Peruuta"}
+      </button>
+      {showForm && (
+        <Box width={{ xs: "100%", md: "80%" }}>
+          <Formik
+            initialValues={initialValues}
+            onSubmit={(values) => createRing(values)}
+            enableReinitialize
+          >
+            {({ values, setFieldValue }) => (
+              <Form>
+                <label>Ringin nimi</label>
+                <Field name="name" />
+                <FieldArray name="assignments">
+                  {({ push }) => (
+                    <Box>
+                      {values.assignments.map((_, index) => (
+                        <Box sx={{ marginTop: 2 }} key={index}>
+                          <Autocomplete
+                            options={teamsWithIdAndName}
+                            getOptionLabel={(team) => team.name}
+                            value={
+                              teamsWithIdAndName.find(
+                                (p) =>
+                                  p.id ===
+                                  values.assignments[index].huntingTeamId
+                              ) || { name: "", id: "" }
+                            }
+                            onChange={(e, value) => {
+                              setFieldValue(
+                                `assignments[${index}].huntingTeamId`,
+                                value ? value.id : ""
+                              );
+                            }}
+                            isOptionEqualToValue={(option, value) =>
+                              option.id === value.id || value.id === ""
+                            }
+                            renderInput={(params) => (
+                              <StyledTextField
+                                {...params}
+                                label="Metsästäjä"
+                                name={`assignments[${index}].huntingTeamId`}
+                                sx={{ my: 0.6 }}
+                              />
+                            )}
                           />
-                        )}
-                      />
 
-                      <Autocomplete
-                        options={teamsWithIdAndName}
-                        getOptionLabel={(team) => team.name}
-                        onChange={(e, value) => {
-                          setFieldValue(
-                            `assignments[${index}].targetTeamId`,
-                            value ? value.id : ""
-                          );
-                        }}
-                        isOptionEqualToValue={(option, value) =>
-                          option.id === value.id
-                        }
-                        renderInput={(params) => (
-                          <StyledTextField
-                            {...params}
-                            label="Kohde"
-                            name={`assignments[${index}].targetTeamId`}
+                          <Autocomplete
+                            options={teamsWithIdAndName}
+                            getOptionLabel={(team) => team.name}
+                            onChange={(e, value) => {
+                              setFieldValue(
+                                `assignments[${index}].targetTeamId`,
+                                value ? value.id : ""
+                              );
+                            }}
+                            isOptionEqualToValue={(option, value) =>
+                              option.id === value.id
+                            }
+                            renderInput={(params) => (
+                              <StyledTextField
+                                {...params}
+                                label="Kohde"
+                                name={`assignments[${index}].targetTeamId`}
+                              />
+                            )}
                           />
-                        )}
-                      />
+                        </Box>
+                      ))}
+
+                      <button
+                        type="button"
+                        className="secondary"
+                        onClick={() =>
+                          push({
+                            huntingTeamId:
+                              values.assignments[values.assignments.length - 1]
+                                .targetTeamId,
+                            targetTeamId: ""
+                          })
+                        }
+                      >
+                        + Lisää
+                      </button>
                     </Box>
-                  ))}
-
-                  <button
-                    type="button"
-                    className="secondary"
-                    onClick={() =>
-                      push({
-                        huntingTeamId:
-                          values.assignments[values.assignments.length - 1]
-                            .targetTeamId,
-                        targetTeamId: ""
-                      })
-                    }
-                  >
-                    + Lisää
-                  </button>
-                </Box>
-              )}
-            </FieldArray>
-            <LoadingButton type="submit" loading={loading}>
-              Tallenna rinki
-            </LoadingButton>
-          </Form>
-        )}
-      </Formik>
-    </Box>
+                  )}
+                </FieldArray>
+                <LoadingButton type="submit" loading={loading}>
+                  Tallenna rinki
+                </LoadingButton>
+              </Form>
+            )}
+          </Formik>
+        </Box>
+      )}
+    </>
   );
 };
 

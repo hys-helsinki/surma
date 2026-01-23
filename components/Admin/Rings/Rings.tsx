@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { Dispatch, SetStateAction, useState } from "react";
 import {
   Grid,
   FormControlLabel,
@@ -9,6 +9,7 @@ import {
 import PlayersWithTargets from "./PlayersWithTargets";
 import { PlayerRings } from "./PlayerRings";
 import { TeamRings } from "./TeamRings";
+import { RingComponentProps } from "../../../types/umpirepage";
 
 const Rings = ({
   players,
@@ -19,7 +20,7 @@ const Rings = ({
   setTeamRings,
   teams,
   tournament
-}) => {
+}: RingComponentProps) => {
   const [view, setView] = useState("team");
 
   return (
@@ -79,15 +80,15 @@ const Rings = ({
             tournament={tournament}
             players={players}
             setPlayers={setPlayers}
-            rings={playerRings}
-            setRings={setPlayerRings}
+            playerRings={playerRings}
+            setPlayerRings={setPlayerRings}
           />
         )}
       </Grid>
       <Grid item xs={12} md={7}>
         <PlayersWithTargets
           players={players}
-          rings={playerRings}
+          playerRings={playerRings}
           tournament={tournament}
         />
       </Grid>

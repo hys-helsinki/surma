@@ -1,30 +1,33 @@
-import { useState } from "react";
+import { Dispatch, SetStateAction, useState } from "react";
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 import KeyboardArrowUpRoundedIcon from "@mui/icons-material/KeyboardArrowUpRounded";
 import KeyboardArrowDownRoundedIcon from "@mui/icons-material/KeyboardArrowDownRounded";
 import IconButton from "@mui/material/IconButton";
 import { Box, Button, Card, Autocomplete } from "@mui/material";
-import { Player, User, Tournament, Assignment } from "@prisma/client";
+import { Assignment } from "@prisma/client";
 import CreateRingForm from "./CreateRingForm";
 import { FieldArray, Form, Formik } from "formik";
 import LoadingButton from "@mui/lab/LoadingButton";
 import { playerColors } from "../../../lib/constants";
 import { getPlayerFullNameById } from "../../utils";
 import StyledTextField from "./StyledTextField";
-
-interface PlayerWithUser extends Player {
-  user: User;
-  targets: Assignment[];
-}
+import {
+  RingComponentProps,
+  RingWithAssignments
+} from "../../../types/umpirepage";
 
 const AssignmentCard = ({
   assignment,
+  assignments,
   setAssignments,
   setPlayers,
-  assignments,
   players,
-  setRings,
-  rings
+  setPlayerRings,
+  playerRings
+}: RingComponentProps & {
+  assignment: Assignment;
+  assignments: Assignment[];
+  setAssignments: Dispatch<SetStateAction<Assignment[]>>;
 }) => {
   const [isDeletingAssignment, setIsDeletingAssignment] = useState(false);
 
@@ -41,17 +44,17 @@ const AssignmentCard = ({
           assignments.filter((assignment) => assignment.id !== id)
         );
         setPlayers(responseData.players);
-        const updatedRing = rings.find((r) => r.id == assignment.ringId);
+        const updatedRing = playerRings.find((r) => r.id == assignment.ringId);
         const assignmentsUpdated = {
           ...updatedRing,
           assignments: updatedRing.assignments.filter(
             (assignment) => assignment.id !== id
           )
         };
-        setRings(
+        setPlayerRings(
           assignmentsUpdated.assignments.length === 0
-            ? rings.filter((ring) => ring.id !== assignment.ringId)
-            : rings.map((ring) =>
+            ? playerRings.filter((ring) => ring.id !== assignment.ringId)
+            : playerRings.map((ring) =>
                 ring.id === assignment.ringId ? assignmentsUpdated : ring
               )
         );
@@ -94,21 +97,16 @@ const AssignmentCard = ({
 
 const Ring = ({
   ring,
-  rings,
-  setRings,
+  playerRings,
+  setPlayerRings,
   players,
   setPlayers,
   tournament
-}: {
-  ring: any;
-  rings: any[];
-  setRings: any;
-  players: PlayerWithUser[];
-  setPlayers: any;
-  tournament: any;
-}) => {
+}: RingComponentProps & { ring: RingWithAssignments }) => {
   const [showRing, setShowRing] = useState(false);
-  const [assignments, setAssignments] = useState(ring.assignments);
+  const [assignments, setAssignments] = useState<Assignment[]>(
+    ring.assignments
+  );
   const [isDeletingRing, setIsDeletingRing] = useState(false);
   const [isCreatingAssignment, setIsCreatingAssignment] = useState(false);
 
@@ -131,8 +129,8 @@ const Ring = ({
       });
       const responseData = await res.json();
       setAssignments(assignments.concat(responseData.savedAssignments));
-      setRings(
-        rings.map((r) =>
+      setPlayerRings(
+        playerRings.map((r) =>
           ring.id == r.id
             ? {
                 ...ring,
@@ -157,8 +155,8 @@ const Ring = ({
       });
       const responseData = await res.json();
       if (responseData.deletedRing) {
-        setRings(
-          rings.filter((ring) => ring.id !== responseData.deletedRing.id)
+        setPlayerRings(
+          playerRings.filter((ring) => ring.id !== responseData.deletedRing.id)
         );
         setPlayers(responseData.players);
       }
@@ -211,8 +209,8 @@ const Ring = ({
               assignments={assignments}
               players={players}
               key={assignment.id}
-              setRings={setRings}
-              rings={rings}
+              setPlayerRings={setPlayerRings}
+              playerRings={playerRings}
             />
           ))}
           <Formik
@@ -328,17 +326,9 @@ export const PlayerRings = ({
   tournament,
   players,
   setPlayers,
-  rings,
-  setRings
-}: {
-  tournament: Tournament;
-  players: PlayerWithUser[];
-  setPlayers: any;
-  rings: any;
-  setRings: any;
-}): JSX.Element => {
-  const [showForm, setShowForm] = useState(false);
-
+  playerRings,
+  setPlayerRings
+}: RingComponentProps): JSX.Element => {
   const sortedPlayersWithColors = players
     .sort((a, b) => a.user.firstName.localeCompare(b.user.firstName))
     .map((player, index) => ({
@@ -352,29 +342,23 @@ export const PlayerRings = ({
 
   return (
     <Box>
-      {rings.map((ring) => (
+      {playerRings.map((ring) => (
         <Ring
           players={activePlayers}
           setPlayers={setPlayers}
           ring={ring}
           tournament={tournament}
-          rings={rings}
-          setRings={setRings}
+          playerRings={playerRings}
+          setPlayerRings={setPlayerRings}
           key={ring.id}
         />
       ))}
-      <button onClick={() => setShowForm(!showForm)}>
-        {!showForm ? "Luo uusi rinki" : "Peruuta"}
-      </button>
-      {showForm && (
-        <CreateRingForm
-          players={activePlayers}
-          setPlayers={setPlayers}
-          tournament={tournament}
-          setShowForm={setShowForm}
-          setRings={setRings}
-        />
-      )}
+      <CreateRingForm
+        players={activePlayers}
+        setPlayers={setPlayers}
+        tournament={tournament}
+        setPlayerRings={setPlayerRings}
+      />
     </Box>
   );
 };

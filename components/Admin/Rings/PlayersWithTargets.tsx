@@ -1,20 +1,12 @@
 import { Box } from "@mui/material";
 import { getPlayerFullNameById } from "../../utils";
-import { Assignment, AssignmentRing } from "@prisma/client";
-
-interface RingWithAssignments extends AssignmentRing {
-  assignments: Assignment[];
-}
+import { RingComponentProps } from "../../../types/umpirepage";
 
 const PlayersWithTargets = ({
   players,
-  rings,
+  playerRings,
   tournament
-}: {
-  players: any[]; // Katson tyypitykset kuntoon myöhemmin
-  rings: RingWithAssignments[];
-  tournament: any;
-}) => {
+}: RingComponentProps) => {
   const searchWantedPlayers = () => {
     const detectivePlayerIDs = players
       .filter((player) => player.state === "DETECTIVE")
@@ -23,7 +15,7 @@ const PlayersWithTargets = ({
 
     let wantedPlayerIDs = new Set<string>();
 
-    rings.forEach((ring) => {
+    playerRings.forEach((ring) => {
       ring.assignments.forEach((assignment) => {
         if (detectivePlayerIDs.includes(assignment.hunterId)) {
           wantedPlayerIDs.add(assignment.targetId);

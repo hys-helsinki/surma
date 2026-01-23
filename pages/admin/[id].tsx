@@ -12,6 +12,14 @@ import Settings from "../../components/UmpirePage/Settings";
 import LoadingSpinner from "../../components/Common/LoadingSpinner";
 import { useRouterLoading } from "../../lib/hooks";
 import Rings from "../../components/Admin/Rings/Rings";
+import { Tournament } from "@prisma/client";
+import {
+  RingWithAssignments,
+  UmpirePagePlayer,
+  UmpirePageUser,
+  TeamRingWithAssignments,
+  UmpirePageTeam
+} from "../../types/umpirepage";
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -135,17 +143,26 @@ export const getServerSideProps: GetServerSideProps = async ({
   };
 };
 
-export default function Tournament({
+export default function UmpirePage({
   tournament,
   users,
   players: playerList,
-  playerRings,
+  playerRings: playerRingList,
   teamRings: teamRingList,
   teams
+}: {
+  tournament: Tournament;
+  users: UmpirePageUser[];
+  players: UmpirePagePlayer[];
+  playerRings: RingWithAssignments[];
+  teamRings: TeamRingWithAssignments[];
+  teams: UmpirePageTeam[];
 }) {
-  const [rings, setRings] = useState<any[]>(playerRings);
-  const [teamRings, setTeamRings] = useState<any[]>(teamRingList);
-  const [players, setPlayers] = useState(playerList);
+  const [playerRings, setRings] =
+    useState<RingWithAssignments[]>(playerRingList);
+  const [teamRings, setTeamRings] =
+    useState<TeamRingWithAssignments[]>(teamRingList);
+  const [players, setPlayers] = useState<UmpirePagePlayer[]>(playerList);
   const [value, setValue] = useState(0);
 
   const isLoading = useRouterLoading();
@@ -208,7 +225,7 @@ export default function Tournament({
         <TabPanel value={value} index={1}>
           <Rings
             players={players}
-            playerRings={rings}
+            playerRings={playerRings}
             teamRings={teamRings}
             setTeamRings={setTeamRings}
             tournament={tournament}
