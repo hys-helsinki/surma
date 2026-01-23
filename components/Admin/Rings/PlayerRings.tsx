@@ -3,7 +3,7 @@ import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 import KeyboardArrowUpRoundedIcon from "@mui/icons-material/KeyboardArrowUpRounded";
 import KeyboardArrowDownRoundedIcon from "@mui/icons-material/KeyboardArrowDownRounded";
 import IconButton from "@mui/material/IconButton";
-import { Box, Button, Grid, Card, Autocomplete } from "@mui/material";
+import { Box, Button, Card, Autocomplete } from "@mui/material";
 import { Player, User, Tournament, Assignment } from "@prisma/client";
 import CreateRingForm from "./CreateRingForm";
 import { FieldArray, Form, Formik } from "formik";
@@ -11,7 +11,6 @@ import LoadingButton from "@mui/lab/LoadingButton";
 import { playerColors } from "../../../lib/constants";
 import { getPlayerFullNameById } from "../../utils";
 import StyledTextField from "./StyledTextField";
-import { update } from "lodash";
 
 interface PlayerWithUser extends Player {
   user: User;
@@ -241,20 +240,20 @@ const Ring = ({
                           <Autocomplete
                             options={playersWithIDAndName}
                             getOptionLabel={(player) => player.name}
+                            value={
+                              playersWithIDAndName.find(
+                                (p) =>
+                                  p.id === values.assignments[index].hunterId
+                              ) || { name: "", id: "" }
+                            }
                             onChange={(e, value) => {
                               setFieldValue(
                                 `assignments[${index}].hunterId`,
                                 value ? value.id : ""
                               );
                             }}
-                            value={
-                              playersWithIDAndName.find(
-                                (p) =>
-                                  p.id === values.assignments[index].hunterId
-                              ) || null
-                            }
                             isOptionEqualToValue={(option, value) =>
-                              option.id === value.id
+                              option.id === value.id || value.id === ""
                             }
                             renderInput={(params) => (
                               <StyledTextField
@@ -269,26 +268,27 @@ const Ring = ({
                           <Autocomplete
                             options={playersWithIDAndName}
                             getOptionLabel={(player) => player.name}
+                            value={
+                              playersWithIDAndName.find(
+                                (p) =>
+                                  p.id === values.assignments[index].targetId
+                              ) || { name: "", id: "" }
+                            }
                             onChange={(e, value) => {
                               setFieldValue(
                                 `assignments[${index}].targetId`,
                                 value ? value.id : ""
                               );
                             }}
-                            value={
-                              playersWithIDAndName.find(
-                                (p) =>
-                                  p.id === values.assignments[index].targetId
-                              ) || null
-                            }
                             isOptionEqualToValue={(option, value) =>
-                              option.id === value.id
+                              option.id === value.id || value.id === ""
                             }
                             renderInput={(params) => (
                               <StyledTextField
                                 {...params}
                                 label="Kohde"
                                 name={`assignments[${index}].targetId`}
+                                sx={{ my: 0.6 }}
                               />
                             )}
                           />

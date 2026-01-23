@@ -1,11 +1,10 @@
 import { useState } from "react";
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 import IconButton from "@mui/material/IconButton";
-import { Button, Grid } from "@mui/material";
+import { Button } from "@mui/material";
 import { Tournament, Team } from "@prisma/client";
 import { LoadingButton } from "@mui/lab";
 import CreateTeamRingForm from "./CreateTeamRingForm";
-
 import KeyboardArrowUpRoundedIcon from "@mui/icons-material/KeyboardArrowUpRounded";
 import KeyboardArrowDownRoundedIcon from "@mui/icons-material/KeyboardArrowDownRounded";
 import { Box, Card, Autocomplete } from "@mui/material";
@@ -260,7 +259,14 @@ const Ring = ({
                         <Box sx={{ marginTop: 2 }} key={index}>
                           <Autocomplete
                             options={teamsWithIdAndName}
-                            getOptionLabel={(player) => player.name}
+                            getOptionLabel={(team) => team.name}
+                            value={
+                              teamsWithIdAndName.find(
+                                (p) =>
+                                  p.id ===
+                                  values.assignments[index].huntingTeamId
+                              ) || { name: "", id: "" }
+                            }
                             onChange={(e, value) => {
                               setFieldValue(
                                 `assignments[${index}].huntingTeamId`,
@@ -268,14 +274,7 @@ const Ring = ({
                               );
                             }}
                             isOptionEqualToValue={(option, value) =>
-                              option.id === value.id
-                            }
-                            value={
-                              teamsWithIdAndName.find(
-                                (p) =>
-                                  p.id ===
-                                  values.assignments[index].huntingTeamId
-                              ) || null
+                              option.id === value.id || value.id === ""
                             }
                             renderInput={(params) => (
                               <StyledTextField
@@ -289,7 +288,14 @@ const Ring = ({
 
                           <Autocomplete
                             options={teamsWithIdAndName}
-                            getOptionLabel={(player) => player.name}
+                            getOptionLabel={(team) => team.name}
+                            value={
+                              teamsWithIdAndName.find(
+                                (p) =>
+                                  p.id ===
+                                  values.assignments[index].targetTeamId
+                              ) || { name: "", id: "" }
+                            }
                             onChange={(e, value) => {
                               setFieldValue(
                                 `assignments[${index}].targetTeamId`,
@@ -297,20 +303,14 @@ const Ring = ({
                               );
                             }}
                             isOptionEqualToValue={(option, value) =>
-                              option.id === value.id
-                            }
-                            value={
-                              teamsWithIdAndName.find(
-                                (p) =>
-                                  p.id ===
-                                  values.assignments[index].targetTeamId
-                              ) || null
+                              option.id === value.id || value.id === ""
                             }
                             renderInput={(params) => (
                               <StyledTextField
                                 {...params}
                                 label="Kohde"
                                 name={`assignments[${index}].targetTeamId`}
+                                sx={{ my: 0.6 }}
                               />
                             )}
                           />
