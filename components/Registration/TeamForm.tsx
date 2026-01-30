@@ -1,4 +1,4 @@
-import { Box, Container, Grid } from "@mui/material";
+import { Alert, Box, Container, Grid, Snackbar } from "@mui/material";
 import { FieldArray, Form, Formik } from "formik";
 import * as Yup from "yup";
 import TextInput from "./TextInput";
@@ -6,12 +6,13 @@ import { LoadingButton } from "@mui/lab";
 import { Tournament } from "@prisma/client";
 import { useState } from "react";
 import GdprModal from "../GdprModal";
-import { useRouter } from "next/router";
 import { TEAM_MAX_PLAYERS } from "../../lib/constants";
 
 const TeamForm = ({ tournament }: { tournament: Tournament }) => {
   const [isLoading, setIsLoading] = useState(false);
-  const router = useRouter();
+  const [registrationOk, setRegistrationOk] = useState(false);
+  const [showError, setShowError] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
 
   const submitForm = async (values) => {
     setIsLoading(true);
@@ -30,12 +31,31 @@ const TeamForm = ({ tournament }: { tournament: Tournament }) => {
         method: "POST",
         body: JSON.stringify(formdata)
       });
-      router.push("/");
-      setIsLoading(false);
+      const responseObject = await response.json();
+      if (response.status === 200) {
+        setRegistrationOk(true);
+        setIsLoading(false);
+      } else if (response.status === 400) {
+        if (responseObject.code === "P2002") {
+          setErrorMessage(
+            "Jokin annetuista sähköposteista ei kelpaa. Kokeile toista osoitetta"
+          );
+          setShowError(true);
+        } else {
+          setErrorMessage("Jotain meni pieleen. Ota yhteyttä tuomaristoon");
+          setShowError(true);
+          console.log(responseObject.code);
+          console.log(responseObject.message);
+        }
+      } else {
+        setErrorMessage("Jotain meni pieleen. Ota yhteyttä tuomaristoon");
+        setShowError(true);
+        console.log(responseObject.message);
+      }
     } catch (error) {
-      setIsLoading(false);
       console.log(error);
     }
+    setIsLoading(false);
   };
 
   const initialValues = {
@@ -117,7 +137,11 @@ const TeamForm = ({ tournament }: { tournament: Tournament }) => {
                       values.users.map((user, index) => (
                         <Box sx={{ my: 3 }} key={index}>
                           <h2>Pelaaja {index + 1}</h2>
-                          <Grid container spacing={{ xs: 0, md: 2 }} className="firstAndLastName">
+                          <Grid
+                            container
+                            spacing={{ xs: 0, md: 2 }}
+                            className="firstAndLastName"
+                          >
                             <Grid item xs={12} md={6}>
                               <TextInput
                                 label="Etunimi"
@@ -174,11 +198,21 @@ const TeamForm = ({ tournament }: { tournament: Tournament }) => {
                 )}
               </FieldArray>
               <LoadingButton loading={isLoading} type="submit">
-                Luo käyttäjät
+                Ilmoittaudu
               </LoadingButton>
             </Form>
           )}
         </Formik>
+        <Snackbar open={showError} onClose={() => setShowError(false)}>
+          <Alert
+            severity="error"
+            variant="filled"
+            sx={{ width: "100%" }}
+            onClose={() => setShowError(false)}
+          >
+            {errorMessage}
+          </Alert>
+        </Snackbar>
       </Box>
     </Container>
   );
