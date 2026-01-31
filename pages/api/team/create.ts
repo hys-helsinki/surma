@@ -37,7 +37,7 @@ export default async function create(
 
       try {
         const emailContent = `Joukkueen nimi: ${
-          teamData.teamName
+          team.name
         }\nPelaajat: ${team.users.map(
           (user) =>
             `\n${user.firstName} ${user.lastName}\n(${process.env.BASE_URL}/tournaments/${tournamentId}/users/${user.id})`
@@ -51,6 +51,32 @@ export default async function create(
         );
       } catch (e) {
         console.log("Sending email for umpires failed");
+        console.log(e);
+      }
+      try {
+        const emailContent = `
+          Tervetuloa mukaan Helsingin yliopiston salamurhaajien turnaukseen ${
+            tournament.name
+          }! Voit nyt kirjautua Surmaan sähköpostilla, johon tämä viesti tuli, ja täyttää loput pelaajakohtaiset tietosi. Alla vielä kertauksena joukkueesi tiedot\n\n
+          Joukkueesi nimi: ${team.name}\n
+          Pelaajat: ${team.users.map(
+            (user) => `\n${user.firstName} ${user.lastName}\n`
+          )}\n
+          Tämä on automaattinen vahvistusviesti. Älä vastaa tähän viestiin. Tuomaristo vastaa peliin liittyviin viesteihin osoitteessa tuomaristo@salamurhaajat.net.
+        `;
+
+        team.users
+          .map((u) => u.email)
+          .forEach((email) => {
+            sendEmail(
+              "surma@salamurhaajat.net",
+              email,
+              `Vahvistusviesti ilmoittautumisesta`,
+              emailContent
+            );
+          });
+      } catch (e) {
+        console.log("Sending confirmation email for players failed");
         console.log(e);
       }
 
