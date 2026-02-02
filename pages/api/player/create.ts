@@ -52,6 +52,7 @@ export default async function create(
         safetyNotes: playerData.safetyNotes,
         calendar: playerData.calendar,
         title: playerData.title,
+        lastVisit: new Date(),
         team
       }
     });
