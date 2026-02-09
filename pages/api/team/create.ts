@@ -83,7 +83,9 @@ export default async function create(
       res.status(200).json(team);
     } catch (e) {
       if (e instanceof Prisma.PrismaClientKnownRequestError) {
-        res.status(400).json({ message: e, code: e.code });
+        if (e.code === "P2002") {
+          res.status(400).json({ message: "Invalid email" });
+        }
       } else {
         res.status(500).json({ message: e });
       }

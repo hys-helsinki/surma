@@ -36,17 +36,10 @@ const TeamForm = ({ tournament }: { tournament: Tournament }) => {
         setRegistrationOk(true);
         setIsLoading(false);
       } else if (response.status === 400) {
-        if (responseObject.code === "P2002") {
-          setErrorMessage(
-            "Jokin annetuista sähköposteista ei kelpaa. Kokeile toista osoitetta"
-          );
-          setShowError(true);
-        } else {
-          setErrorMessage("Jotain meni pieleen. Ota yhteyttä tuomaristoon");
-          setShowError(true);
-          console.log(responseObject.code);
-          console.log(responseObject.message);
-        }
+        setErrorMessage(
+          "Jokin annetuista sähköposteista ei kelpaa. Kokeile toista osoitetta"
+        );
+        setShowError(true);
       } else {
         setErrorMessage("Jotain meni pieleen. Ota yhteyttä tuomaristoon");
         setShowError(true);
