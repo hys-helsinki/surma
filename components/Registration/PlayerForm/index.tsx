@@ -13,9 +13,7 @@ export default function PlayerForm({
   setShowError
 }) {
   const { data, status } = useSession();
-  const [fileInputState, setFileInputState] = useState("");
-  const [selectedFile, setSelectedFile] = useState();
-  const [selectedFileName, setSelectedFileName] = useState("");
+  const [selectedFileData, setSelectedFileData] = useState();
   const [isLoading, setIsLoading] = useState(false);
   const [formErrorMessage, setFormErrorMessage] = useState("");
   const [showFormError, setShowFormError] = useState(false);
@@ -37,36 +35,22 @@ export default function PlayerForm({
   const dates = getTournamentDates(start, end);
 
   const uploadImage = async (id: string) => {
-    if (!selectedFile) return;
-    const reader = new FileReader();
-    try {
-      reader.readAsDataURL(selectedFile);
-    } catch (error) {
-      console.log(error);
-      setErrorMessage(
-        "Kuvatiedoston lukeminen epäonnistui. Kokeile toista tiedostoa"
-      );
+    if (!selectedFileData) return;
+    const response = await fetch("/api/upload", {
+      method: "POST",
+      body: JSON.stringify({
+        url: selectedFileData,
+        publicId: id,
+        tournamentId
+      })
+    });
+    const responseObject = await response.json();
+    if (response.status === 200) {
+      setImageUrl(responseObject.image.url);
+    } else {
+      setErrorMessage("Kuvan lataaminen palvelimelle epäonnistui");
       setShowError(true);
-      setIsLoading(false);
-      return;
     }
-    reader.onload = async () => {
-      const response = await fetch("/api/upload", {
-        method: "POST",
-        body: JSON.stringify({
-          url: reader.result,
-          publicId: id,
-          tournamentId
-        })
-      });
-      const responseObject = await response.json();
-      if (response.status === 200) {
-        setImageUrl(responseObject.image.url);
-      } else {
-        setErrorMessage("Kuvan lataaminen palvelimelle epäonnistui");
-        setShowError(true);
-      }
-    };
   };
 
   const handleSubmit = async (values) => {
@@ -151,13 +135,7 @@ export default function PlayerForm({
               salamurhaamiseen.
             </p>
           </Box>
-          <ImageUploadForm
-            setSelectedFile={setSelectedFile}
-            setSelectedFileName={setSelectedFileName}
-            setFileInputState={setFileInputState}
-            selectedFileName={selectedFileName}
-            fileInputState={fileInputState}
-          />
+          <ImageUploadForm setSelectedFileData={setSelectedFileData} />
           <PlayerDetailsForm
             dates={dates}
             handleSubmit={handleSubmit}
