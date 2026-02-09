@@ -7,6 +7,8 @@ import TournamentTable from "../components/TournamentTable";
 import { authConfig } from "./api/auth/[...nextauth]";
 import prisma from "../lib/prisma";
 import { unstable_getServerSession } from "next-auth/next";
+import { useRouterLoading } from "../lib/hooks";
+import LoadingSpinner from "../components/Common/LoadingSpinner";
 
 export async function getServerSideProps(context) {
   const session = await unstable_getServerSession(
@@ -59,6 +61,9 @@ export async function getServerSideProps(context) {
 }
 
 export default function Home({ tournaments }) {
+  const isLoading = useRouterLoading();
+
+  if (isLoading) return <LoadingSpinner />;
   return (
     <div
       className={`${styles.center} ${styles.main}`}
