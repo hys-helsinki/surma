@@ -2,7 +2,7 @@ import { useContext, useState } from "react";
 import ImageUploadForm from "../../Registration/PlayerForm/ImageUploadForm";
 import ImageComponent from "./ImageComponent";
 import { useRouter } from "next/router";
-import { Box } from "@mui/material";
+import { Alert, Box, Snackbar } from "@mui/material";
 import { UserContext } from "../../UserProvider";
 import { LoadingButton } from "@mui/lab";
 
@@ -15,46 +15,47 @@ const states = {
 
 const Info = ({
   imageUrl,
+  setImageUrl,
   showAlias,
   showStatus,
   showImageForm
 }: {
+  setImageUrl;
   imageUrl: string;
   showAlias: boolean;
   showStatus: boolean;
   showImageForm: boolean;
 }) => {
-  const [fileInputState, setFileInputState] = useState("");
   const user = useContext(UserContext);
-  const [selectedFile, setSelectedFile] = useState();
-  const [selectedFileName, setSelectedFileName] = useState("");
   const [updateImage, setUpdateImage] = useState(false);
   const [showPicture, setShowPicture] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const router = useRouter();
+  const [selectedFileData, setSelectedFileData] = useState();
+  const [showError, setShowError] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
 
   const uploadImage = async (event) => {
     event.preventDefault();
-    if (!selectedFile) return;
+    if (!selectedFileData) return;
     try {
       setIsLoading(true);
-      const reader = new FileReader();
-      reader.readAsDataURL(selectedFile);
-      reader.onloadend = async () => {
-        await fetch("/api/upload", {
-          method: "POST",
-          body: JSON.stringify({
-            url: reader.result,
-            publicId: user.player.id,
-            tournamentId: user.tournamentId
-          })
-        });
-        setFileInputState("");
-        setSelectedFileName("");
-        setSelectedFile(null);
-        setIsLoading(false);
-        router.reload();
-      };
+
+      const response = await fetch("/api/upload", {
+        method: "POST",
+        body: JSON.stringify({
+          url: selectedFileData,
+          publicId: user.player.id,
+          tournamentId: user.tournamentId
+        })
+      });
+
+      const responseObject = await response.json();
+      if (response.status === 200) {
+        setImageUrl(responseObject.image.url);
+      } else {
+        setErrorMessage("Kuvan lataaminen palvelimelle epäonnistui");
+        setShowError(true);
+      }
     } catch (error) {
       setIsLoading(false);
       console.log(error);
@@ -112,15 +113,9 @@ const Info = ({
         <p style={{ marginLeft: "1rem" }}>{"Ei kuvaa :("}</p>
       ) : (
         <div style={{ margin: "10px" }}>
-          <ImageUploadForm
-            setSelectedFile={setSelectedFile}
-            setSelectedFileName={setSelectedFileName}
-            setFileInputState={setFileInputState}
-            selectedFileName={selectedFileName}
-            fileInputState={fileInputState}
-          />
+          <ImageUploadForm setSelectedFileData={setSelectedFileData} />
           <div style={{ display: "flex", alignItems: "center" }}>
-            {selectedFile && (
+            {selectedFileData && (
               <LoadingButton
                 onClick={async (e) => await uploadImage(e)}
                 sx={{
@@ -142,6 +137,16 @@ const Info = ({
               </button>
             )}
           </div>
+          <Snackbar open={showError} onClose={() => setShowError(false)}>
+            <Alert
+              severity="error"
+              variant="filled"
+              sx={{ width: "100%" }}
+              onClose={() => setShowError(false)}
+            >
+              {errorMessage}
+            </Alert>
+          </Snackbar>
         </div>
       )}
     </Box>

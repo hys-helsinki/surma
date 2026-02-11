@@ -235,6 +235,7 @@ export default function User({
             setUser={setUser}
             tournament={tournament}
             imageUrl={imageUrl}
+            setImageUrl={setImageUrl}
             currentUserIsUmpire={currentUserIsUmpire}
             currentUserId={currentUser.id}
             umpires={umpires}
@@ -244,6 +245,7 @@ export default function User({
             setUser={setUser}
             tournament={tournament}
             imageUrl={imageUrl}
+            setImageUrl={setImageUrl}
             currentUserIsUmpire={currentUserIsUmpire}
             currentUserId={currentUser.id}
             umpires={umpires}

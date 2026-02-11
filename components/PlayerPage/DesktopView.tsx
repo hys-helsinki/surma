@@ -13,6 +13,7 @@ interface UmpireWithUser extends Umpire {
 const DesktopView = ({
   tournament,
   imageUrl,
+  setImageUrl,
   currentUserIsUmpire,
   currentUserIsHunter = false,
   currentUserIsDetective = false,
@@ -22,6 +23,7 @@ const DesktopView = ({
 }: {
   tournament: Tournament;
   imageUrl: string;
+  setImageUrl: Dispatch<any>;
   currentUserIsUmpire: boolean;
   currentUserIsHunter?: boolean;
   currentUserIsDetective?: boolean;
@@ -37,6 +39,7 @@ const DesktopView = ({
         <Grid item xs={12} md={6}>
           <Info
             imageUrl={imageUrl}
+            setImageUrl={setImageUrl}
             showAlias={
               currentUserIsDetective ||
               currentUserIsUmpire ||
