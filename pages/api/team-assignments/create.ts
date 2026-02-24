@@ -36,8 +36,8 @@ export default async function handler(
       res
     ))
   ) {
-    console.log("Unauthorized assigment create attempt!");
-    res.status(403).end();
+    console.log("Unauthorized assignment create attempt!");
+    return res.status(403).end();
   }
   const savedTeamAssignments = await prisma.teamAssignment.createManyAndReturn({
     data: newTeamAssignments
@@ -60,11 +60,11 @@ export default async function handler(
   savedTeamAssignments.forEach((savedTeamAssignment) => {
     const hunterPlayers = teams.find(
       (team) => team.id === savedTeamAssignment.huntingTeamId
-    ).players;
+    )?.players;
 
     const targetPlayers = teams
       .find((team) => team.id === savedTeamAssignment.targetTeamId)
-      .players.filter((player) => player.state === "ACTIVE");
+      ?.players.filter((player) => player.state === "ACTIVE");
 
     hunterPlayers.forEach((hunter) => {
       targetPlayers.forEach((target) => {

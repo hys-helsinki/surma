@@ -131,7 +131,7 @@ const Ring = ({
       setAssignments(assignments.concat(responseData.savedAssignments));
       setPlayerRings(
         playerRings.map((r) =>
-          ring.id == r.id
+          ring.id === r.id
             ? {
                 ...ring,
                 assignments: r.assignments.concat(responseData.savedAssignments)
@@ -279,7 +279,7 @@ const Ring = ({
                               );
                             }}
                             isOptionEqualToValue={(option, value) =>
-                              option.id === value.id || value.id === ""
+                              option.id === value?.id || value?.id === ""
                             }
                             renderInput={(params) => (
                               <StyledTextField

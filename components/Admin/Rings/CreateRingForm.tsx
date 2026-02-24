@@ -118,7 +118,13 @@ const CreateRingForm = ({
                               );
                             }}
                             isOptionEqualToValue={(option, value) =>
-                              option.id === value.id
+                              option.id === value?.id || value?.id === ""
+                            }
+                            value={
+                              playersWithIDAndName.find(
+                                (p) =>
+                                  p.id === values.assignments[index].targetId
+                              ) || { name: "", id: "" }
                             }
                             renderInput={(params) => (
                               <StyledTextField

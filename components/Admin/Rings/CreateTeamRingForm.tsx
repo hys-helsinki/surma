@@ -125,7 +125,14 @@ const CreateTeamRingForm = ({
                               );
                             }}
                             isOptionEqualToValue={(option, value) =>
-                              option.id === value.id
+                              option.id === value?.id || value?.id === ""
+                            }
+                            value={
+                              teamsWithIdAndName.find(
+                                (p) =>
+                                  p.id ===
+                                  values.assignments[index].targetTeamId
+                              ) || { name: "", id: "" }
                             }
                             renderInput={(params) => (
                               <StyledTextField

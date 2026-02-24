@@ -1,4 +1,4 @@
-import { Dispatch, SetStateAction, useState } from "react";
+import { useState } from "react";
 import {
   Grid,
   FormControlLabel,
@@ -66,7 +66,7 @@ const Rings = ({
             </RadioGroup>
           </FormControl>
         )}
-        {tournament.teamGame && view == "team" ? (
+        {tournament.teamGame && view === "team" ? (
           <TeamRings
             tournament={tournament}
             teamRings={teamRings}

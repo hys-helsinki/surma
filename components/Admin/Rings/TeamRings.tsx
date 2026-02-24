@@ -303,7 +303,7 @@ const Ring = ({
                               );
                             }}
                             isOptionEqualToValue={(option, value) =>
-                              option.id === value.id || value.id === ""
+                              option.id === value?.id || value?.id === ""
                             }
                             renderInput={(params) => (
                               <StyledTextField

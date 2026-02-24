@@ -76,8 +76,8 @@ export default async function handler(
   } else if (req.method === "POST") {
     const newAssignments = JSON.parse(req.body);
     if (!(await isCreateAuthorized(newAssignments[0].ringId, req, res))) {
-      console.log("Unauthorized assigment create attempt!");
-      res.status(403).end();
+      console.log("Unauthorized assignment create attempt!");
+      return res.status(403).end();
     }
 
     const savedAssignments = await prisma.assignment.createManyAndReturn({
