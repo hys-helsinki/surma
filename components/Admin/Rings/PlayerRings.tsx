@@ -238,6 +238,7 @@ const Ring = ({
                           <Autocomplete
                             options={playersWithIDAndName}
                             getOptionLabel={(player) => player.name}
+                            getOptionKey={(player) => player.id}
                             value={
                               playersWithIDAndName.find(
                                 (p) =>
@@ -266,6 +267,7 @@ const Ring = ({
                           <Autocomplete
                             options={playersWithIDAndName}
                             getOptionLabel={(player) => player.name}
+                            getOptionKey={(player) => player.id}
                             value={
                               playersWithIDAndName.find(
                                 (p) =>

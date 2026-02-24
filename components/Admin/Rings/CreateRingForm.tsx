@@ -83,6 +83,7 @@ const CreateRingForm = ({
                           <Autocomplete
                             options={playersWithIDAndName}
                             getOptionLabel={(player) => player.name}
+                            getOptionKey={(player) => player.id}
                             value={
                               playersWithIDAndName.find(
                                 (p) =>
@@ -111,6 +112,7 @@ const CreateRingForm = ({
                           <Autocomplete
                             options={playersWithIDAndName}
                             getOptionLabel={(player) => player.name}
+                            getOptionKey={(player) => player.id}
                             onChange={(e, value) => {
                               setFieldValue(
                                 `assignments[${index}].targetId`,
