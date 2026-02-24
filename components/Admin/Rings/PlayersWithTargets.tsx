@@ -40,12 +40,16 @@ const PlayersWithTargets = ({
     return;
   };
 
+  const playersWithTeams = players.filter((p) => p.team);
+
   const sortedPlayers = tournament.teamGame
-    ? players.sort(
-        (a, b) =>
-          a.team?.name.localeCompare(b.team?.name) ||
-          a.user.firstName.localeCompare(b.user.firstName)
-      )
+    ? playersWithTeams
+        .sort(
+          (a, b) =>
+            a.team?.name.localeCompare(b.team?.name) ||
+            a.user.firstName.localeCompare(b.user.firstName)
+        )
+        .concat(players.filter((p) => !p.team))
     : players.sort((a, b) => a.user.firstName.localeCompare(b.user.firstName));
   return (
     <>
