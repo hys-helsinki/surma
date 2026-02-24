@@ -43,7 +43,7 @@ const PlayersWithTargets = ({
   const sortedPlayers = tournament.teamGame
     ? players.sort(
         (a, b) =>
-          a.team.name.localeCompare(b.team.name) ||
+          a.team?.name.localeCompare(b.team?.name) ||
           a.user.firstName.localeCompare(b.user.firstName)
       )
     : players.sort((a, b) => a.user.firstName.localeCompare(b.user.firstName));
@@ -53,7 +53,7 @@ const PlayersWithTargets = ({
       {sortedPlayers.map((player) => (
         <Box key={player.id}>
           <p>
-            {tournament.teamGame && `${player.team.name}: `}
+            {tournament.teamGame && `${player.team ? player.team.name : "-"}: `}
             {player.user.firstName} {player.user.lastName} ({player.alias}){" "}
             {displayPlayerState(player)}
           </p>
