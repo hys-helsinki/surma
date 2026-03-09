@@ -69,7 +69,7 @@ const Info = ({
           flexDirection: "column",
           justifyContent: "center",
           alignItems: "center",
-          padding: "0 1rem 0 1rem"
+          padding: "0 1rem"
         }}
       >
         <h1>

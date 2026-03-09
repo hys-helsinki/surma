@@ -4,21 +4,23 @@ import { unstable_getServerSession } from "next-auth";
 import { authConfig } from "../../auth/[...nextauth]";
 import _ from "lodash";
 
-const isCurrentUserAuthorized = async (playerId, req, res) => {
+const isCurrentUserAuthorized = async (userId, req, res) => {
   const session = await unstable_getServerSession(req, res, authConfig);
 
-  const currentPlayer = await prisma.player.findFirst({
+  const currentUser = await prisma.user.findFirst({
     where: {
-      id: playerId
+      id: userId
     }
   });
+  if (!currentUser) return false;
+
   const umpire = await prisma.umpire.findUnique({
     where: {
       userId: session.user.id,
-      tournamentId: currentPlayer.tournamentId
+      tournamentId: currentUser.tournamentId
     }
   });
-  return currentPlayer.userId === session.user.id || umpire;
+  return currentUser.id === session.user.id || umpire;
 };
 
 export default async function update(
