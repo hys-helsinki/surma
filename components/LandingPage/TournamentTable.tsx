@@ -1,4 +1,3 @@
-import styles from "../../styles/Home.module.css";
 import Link from "next/link";
 import { NoSsr } from "@mui/base/NoSsr";
 import { Box, Grid } from "@mui/material";
@@ -41,12 +40,12 @@ const TournamentTable = ({ tournaments }) => {
             container
             key={tournament.id}
             sx={{
-              borderTop: index > 0 && "0.5px solid white"
+              borderTop: index > 0 ? "0.5px solid white" : undefined
             }}
           >
             <Grid item xs={6} md={4}>
               <h3>Nimi</h3>
-              <p>Syysturnaus 2025: Ruskan salaisuudet</p>
+              <p>{tournament.name}</p>
             </Grid>
             <Grid item xs={6} md={4}>
               <h3>Turnaus käynnissä</h3>
