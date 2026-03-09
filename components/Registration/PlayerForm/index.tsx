@@ -46,7 +46,7 @@ export default function PlayerForm({
     });
     const responseObject = await response.json();
     if (response.status === 200) {
-      setImageUrl(responseObject.image.url);
+      setImageUrl(responseObject.url);
     } else {
       setErrorMessage("Kuvan lataaminen palvelimelle epäonnistui");
       setShowError(true);

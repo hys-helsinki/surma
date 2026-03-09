@@ -18,6 +18,9 @@ export default async function create(
         }
       });
 
+      if (!tournament)
+        return res.status(400).json({ message: "Tournament not found" });
+
       const team = await prisma.team.create({
         data: {
           tournament: { connect: { id: tournamentId } },
@@ -35,24 +38,20 @@ export default async function create(
         }
       });
 
-      try {
-        const emailContent = `Joukkueen nimi: ${
-          team.name
-        }\nPelaajat: ${team.users.map(
-          (user) =>
-            `\n${user.firstName} ${user.lastName}\n(${process.env.BASE_URL}/tournaments/${tournamentId}/users/${user.id})`
-        )}`;
+      const emailContent = `Joukkueen nimi: ${
+        team.name
+      }\nPelaajat: ${team.users.map(
+        (user) =>
+          `\n${user.firstName} ${user.lastName}\n(${process.env.BASE_URL}/tournaments/${tournamentId}/users/${user.id})`
+      )}`;
 
-        sendEmail(
-          "surma@salamurhaajat.net",
-          "tuomaristo@salamurhaajat.net",
-          `${tournament.name}: Uusi ilmoittautuminen (${teamData.teamName})`,
-          emailContent
-        );
-      } catch (e) {
-        console.log("Sending email for umpires failed");
-        console.log(e);
-      }
+      sendEmail(
+        "surma@salamurhaajat.net",
+        "tuomaristo@salamurhaajat.net",
+        `${tournament.name}: Uusi ilmoittautuminen (${teamData.teamName})`,
+        emailContent
+      );
+
       try {
         const emailContent = `
           Tervetuloa mukaan Helsingin yliopiston salamurhaajien turnaukseen ${
@@ -84,10 +83,14 @@ export default async function create(
     } catch (e) {
       if (e instanceof Prisma.PrismaClientKnownRequestError) {
         if (e.code === "P2002") {
-          res.status(400).json({ message: "Invalid email" });
+          res.status(409).json({ message: "Email already exists" });
+        } else {
+          res.status(500).json({ message: e.message });
         }
       } else {
-        res.status(500).json({ message: e });
+        res
+          .status(500)
+          .json({ message: e instanceof Error ? e.message : "Unknown error" });
       }
     }
   }

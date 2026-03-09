@@ -1,7 +1,6 @@
 import { useContext, useState } from "react";
 import ImageUploadForm from "../../Registration/PlayerForm/ImageUploadForm";
 import ImageComponent from "./ImageComponent";
-import { useRouter } from "next/router";
 import { Alert, Box, Snackbar } from "@mui/material";
 import { UserContext } from "../../UserProvider";
 import { LoadingButton } from "@mui/lab";
@@ -51,14 +50,15 @@ const Info = ({
 
       const responseObject = await response.json();
       if (response.status === 200) {
-        setImageUrl(responseObject.image.url);
+        setImageUrl(responseObject.url);
       } else {
         setErrorMessage("Kuvan lataaminen palvelimelle epäonnistui");
         setShowError(true);
       }
     } catch (error) {
-      setIsLoading(false);
       console.log(error);
+    } finally {
+      setIsLoading(false);
     }
   };
 

@@ -38,10 +38,9 @@ export default async function upload(
         folder: `surma/${tournamentId}`,
         public_id: imageData.publicId
       });
-      const uploadedImage = await cloudinary.api.resource(
-        `surma/${tournamentId}/${imageData.publicId}` as string
-      );
-      res.status(200).json({ image: uploadedImage });
+
+      const uploadedImageUrl = uploadedResponse.url;
+      res.status(200).json({ url: uploadedImageUrl });
     } catch (error) {
       console.log("Error on Cloudinary upload:", error);
       res.status(500).json({ error: "something went wrong" });

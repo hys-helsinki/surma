@@ -35,7 +35,7 @@ const TeamForm = ({ tournament }: { tournament: Tournament }) => {
       if (response.status === 200) {
         setRegistrationOk(true);
         setIsLoading(false);
-      } else if (response.status === 400) {
+      } else if (response.status === 409) {
         setErrorMessage(
           "Jokin annetuista sähköposteista ei kelpaa. Kokeile toista osoitetta"
         );
@@ -47,9 +47,9 @@ const TeamForm = ({ tournament }: { tournament: Tournament }) => {
       }
     } catch (error) {
       console.log(error);
+    } finally {
+      setIsLoading(false);
     }
-    setIsLoading(false);
-    setRegistrationOk(true);
   };
 
   const initialValues = {
