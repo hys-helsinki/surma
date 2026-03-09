@@ -30,6 +30,23 @@ const updateTeamGameRings = async (killedPlayerId: string) => {
         targetId: killedPlayerId
       }
     });
+
+    // Poistetaan tyhjät ringit, joita saattaa jäädä kantaan näiden muiden poistojen jälkeen
+    await prisma.assignmentRing.deleteMany({
+      where: {
+        assignments: {
+          none: {}
+        }
+      }
+    });
+
+    await prisma.teamAssignmentRing.deleteMany({
+      where: {
+        assignments: {
+          none: {}
+        }
+      }
+    });
   }
 };
 
@@ -76,6 +93,14 @@ const updateSoloGameRings = async (killedPlayerId: string) => {
           targetId: killedPlayerId
         }
       ]
+    }
+  });
+
+  await prisma.assignmentRing.deleteMany({
+    where: {
+      assignments: {
+        none: {}
+      }
     }
   });
 };

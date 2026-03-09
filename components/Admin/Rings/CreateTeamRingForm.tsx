@@ -5,10 +5,11 @@ import { useState } from "react";
 import StyledTextField from "./StyledTextField";
 import { RingComponentProps } from "../../../types/umpirepage";
 
-const CreateRingForm = ({
-  players,
+const CreateTeamRingForm = ({
+  teams,
   setPlayers,
   tournament,
+  setTeamRings,
   setPlayerRings
 }: RingComponentProps) => {
   const [loading, setLoading] = useState(false);
@@ -17,8 +18,9 @@ const CreateRingForm = ({
     setLoading(true);
 
     if (
-      values.assignments.filter((a) => a.hunterId !== "" && a.targetId !== "")
-        .length === 0
+      values.assignments.filter(
+        (a) => a.huntingTeamId !== "" && a.targetTeamId !== ""
+      ).length === 0
     ) {
       setLoading(false);
       return;
@@ -30,13 +32,14 @@ const CreateRingForm = ({
       tournamentId: tournament.id
     };
     try {
-      const res = await fetch("/api/tournament/rings", {
+      const res = await fetch("/api/team-rings/create", {
         method: "POST",
         body: JSON.stringify(newRing)
       });
       const responseData = await res.json();
       setPlayers(responseData.players);
-      setPlayerRings((prevRings) => prevRings.concat(responseData.createdRing));
+      setTeamRings((prevRings) => prevRings.concat(responseData.createdRing));
+      setPlayerRings(responseData.playerRings);
       setShowForm(false);
     } catch (e) {
       console.log(e);
@@ -48,15 +51,18 @@ const CreateRingForm = ({
     name: "",
     assignments: [
       {
-        hunterId: "",
-        targetId: ""
+        huntingTeamId: "",
+        targetTeamId: ""
       }
     ]
   };
 
-  const playersWithIDAndName = players.map((player) => ({
-    id: player.id,
-    name: `${player.user.firstName} ${player.user.lastName}`
+  const teamsWithIdAndName: {
+    id: string;
+    name: string;
+  }[] = teams.map((team) => ({
+    id: team.id,
+    name: team.name
   }));
 
   return (
@@ -81,18 +87,19 @@ const CreateRingForm = ({
                       {values.assignments.map((_, index) => (
                         <Box sx={{ marginTop: 2 }} key={index}>
                           <Autocomplete
-                            options={playersWithIDAndName}
-                            getOptionLabel={(player) => player.name}
-                            getOptionKey={(player) => player.id}
+                            options={teamsWithIdAndName}
+                            getOptionLabel={(team) => team.name}
+                            getOptionKey={(team) => team.id}
                             value={
-                              playersWithIDAndName.find(
+                              teamsWithIdAndName.find(
                                 (p) =>
-                                  p.id === values.assignments[index].hunterId
+                                  p.id ===
+                                  values.assignments[index].huntingTeamId
                               ) || { name: "", id: "" }
                             }
                             onChange={(e, value) => {
                               setFieldValue(
-                                `assignments[${index}].hunterId`,
+                                `assignments[${index}].huntingTeamId`,
                                 value ? value.id : ""
                               );
                             }}
@@ -103,19 +110,19 @@ const CreateRingForm = ({
                               <StyledTextField
                                 {...params}
                                 label="Metsästäjä"
-                                name={`assignments[${index}].hunterId`}
+                                name={`assignments[${index}].huntingTeamId`}
                                 sx={{ my: 0.6 }}
                               />
                             )}
                           />
 
                           <Autocomplete
-                            options={playersWithIDAndName}
-                            getOptionLabel={(player) => player.name}
-                            getOptionKey={(player) => player.id}
+                            options={teamsWithIdAndName}
+                            getOptionLabel={(team) => team.name}
+                            getOptionKey={(team) => team.id}
                             onChange={(e, value) => {
                               setFieldValue(
-                                `assignments[${index}].targetId`,
+                                `assignments[${index}].targetTeamId`,
                                 value ? value.id : ""
                               );
                             }}
@@ -123,16 +130,17 @@ const CreateRingForm = ({
                               option.id === value?.id || value?.id === ""
                             }
                             value={
-                              playersWithIDAndName.find(
+                              teamsWithIdAndName.find(
                                 (p) =>
-                                  p.id === values.assignments[index].targetId
+                                  p.id ===
+                                  values.assignments[index].targetTeamId
                               ) || { name: "", id: "" }
                             }
                             renderInput={(params) => (
                               <StyledTextField
                                 {...params}
                                 label="Kohde"
-                                name={`assignments[${index}].targetId`}
+                                name={`assignments[${index}].targetTeamId`}
                               />
                             )}
                           />
@@ -144,10 +152,10 @@ const CreateRingForm = ({
                         className="secondary"
                         onClick={() =>
                           push({
-                            hunterId:
+                            huntingTeamId:
                               values.assignments[values.assignments.length - 1]
-                                .targetId,
-                            targetId: ""
+                                .targetTeamId,
+                            targetTeamId: ""
                           })
                         }
                       >
@@ -168,4 +176,4 @@ const CreateRingForm = ({
   );
 };
 
-export default CreateRingForm;
+export default CreateTeamRingForm;

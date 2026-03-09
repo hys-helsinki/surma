@@ -10,6 +10,7 @@ import {
 } from "@prisma/client";
 import Link from "next/link";
 import { Dispatch, SetStateAction, useState } from "react";
+import WantedModal from "./WantedModal";
 
 interface PlayerWithUser extends Player {
   user: User;
@@ -35,7 +36,7 @@ const PlayerRow = ({
   setRings: Dispatch<SetStateAction<any>>;
 }) => {
   const [isStateButtonLoading, setIsStateButtonLoading] = useState("");
-  const [isWantedLoading, setIsWantedLoading] = useState(false);
+  const [openModal, setOpenModal] = useState(false);
 
   const handlePlayerStatusChange = async (playerState: string, id: string) => {
     setIsStateButtonLoading(playerState);
@@ -68,29 +69,6 @@ const PlayerRow = ({
     setIsStateButtonLoading("");
   };
 
-  const handleMakeWanted = async (id: string) => {
-    setIsWantedLoading(true);
-    const searchedPlayer = players.find((player) => player.id === id);
-    try {
-      if (
-        window.confirm(
-          `Haluatko varmasti etsintäkuuluttaa pelaajan ${searchedPlayer.user.firstName} ${searchedPlayer.user.lastName}? Etsintäkuuluttaminen antaa pelaajan kohteeksi kaikille etsiville.`
-        )
-      ) {
-        const res = await fetch(`/api/player/${id}/wanted`, {
-          method: "POST"
-        });
-
-        const { wantedRing, players } = await res.json();
-        setRings((prevRings) => prevRings.concat(wantedRing));
-        setPlayers(players);
-      }
-    } catch (e) {
-      console.log(e);
-    }
-    setIsWantedLoading(false);
-  };
-
   return (
     <tr key={player.id}>
       <td style={{ width: "50%" }}>
@@ -117,9 +95,9 @@ const PlayerRow = ({
       {player.state == "ACTIVE" && (
         <td>
           <LoadingButton
-            onClick={() => handleMakeWanted(player.id)}
+            onClick={() => setOpenModal(true)}
             style={{ margin: "0 5px 0 0" }}
-            loading={isWantedLoading}
+            loading={false}
           >
             Etsintäkuuluta
           </LoadingButton>
@@ -147,6 +125,15 @@ const PlayerRow = ({
           </LoadingButton>
         </td>
       )}
+      <WantedModal
+        players={players}
+        wantedPlayerId={player.id}
+        open={openModal}
+        setRings={setRings}
+        setPlayers={setPlayers}
+        setOpenModal={setOpenModal}
+        tournament={tournament}
+      />
     </tr>
   );
 };

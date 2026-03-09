@@ -28,24 +28,24 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
-  const newTeamAssignment = JSON.parse(req.body);
+  const newTeamAssignments = JSON.parse(req.body);
   if (
     !(await isCreateAuthorized(
-      newTeamAssignment.teamAssignmentRingId,
+      newTeamAssignments[0].teamAssignmentRingId,
       req,
       res
     ))
   ) {
-    console.log("Unauthorized assigment create attempt!");
-    res.status(403).end();
+    console.log("Unauthorized assignment create attempt!");
+    return res.status(403).end();
   }
-  const savedTeamAssigment = await prisma.teamAssignment.create({
-    data: newTeamAssignment
+  const savedTeamAssignments = await prisma.teamAssignment.createManyAndReturn({
+    data: newTeamAssignments
   });
 
   const assignment = await prisma.assignment.findFirst({
     where: {
-      teamAssignmentRingId: savedTeamAssigment.teamAssignmentRingId
+      teamAssignmentRingId: savedTeamAssignments[0].teamAssignmentRingId
     }
   });
 
@@ -57,21 +57,23 @@ export default async function handler(
 
   let playerAssignments = [];
 
-  const hunterPlayers = teams.find(
-    (team) => team.id === savedTeamAssigment.huntingTeamId
-  ).players;
+  savedTeamAssignments.forEach((savedTeamAssignment) => {
+    const hunterPlayers = teams.find(
+      (team) => team.id === savedTeamAssignment.huntingTeamId
+    )?.players;
 
-  const targetPlayers = teams.find(
-    (team) => team.id === savedTeamAssigment.targetTeamId
-  ).players;
+    const targetPlayers = teams
+      .find((team) => team.id === savedTeamAssignment.targetTeamId)
+      ?.players.filter((player) => player.state === "ACTIVE");
 
-  hunterPlayers.forEach((hunter) => {
-    targetPlayers.forEach((target) => {
-      playerAssignments.push({
-        hunterId: hunter.id,
-        targetId: target.id,
-        teamAssignmentRingId: savedTeamAssigment.teamAssignmentRingId,
-        ringId: assignment.ringId
+    hunterPlayers.forEach((hunter) => {
+      targetPlayers.forEach((target) => {
+        playerAssignments.push({
+          hunterId: hunter.id,
+          targetId: target.id,
+          teamAssignmentRingId: savedTeamAssignment.teamAssignmentRingId,
+          ringId: assignment.ringId
+        });
       });
     });
   });
@@ -80,5 +82,24 @@ export default async function handler(
     data: playerAssignments
   });
 
-  res.json(savedTeamAssigment);
+  const updatedPlayers = await prisma.player.findMany({
+    include: {
+      user: true,
+      targets: true,
+      team: true
+    }
+  });
+
+  const playerRings = await prisma.assignmentRing.findMany({
+    where: {
+      assignments: {
+        some: {}
+      }
+    },
+    include: {
+      assignments: true
+    }
+  });
+
+  res.json({ savedTeamAssignments, players: updatedPlayers, playerRings });
 }
