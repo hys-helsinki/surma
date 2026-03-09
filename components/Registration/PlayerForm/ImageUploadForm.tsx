@@ -18,7 +18,7 @@ const ImageUploadForm = ({
       setSelectedFileName("");
       return;
     }
-    if (file.size > 10000000) {
+    if (file.size > 4000000) {
       setShowImageFileTooBigMessage(true);
       return;
     }
@@ -30,7 +30,7 @@ const ImageUploadForm = ({
   return (
     <Box sx={{ mb: 2 }}>
       <form>
-        <label htmlFor="image">Valitse kuva itsestäsi (max. 10 Mt)</label>
+        <label htmlFor="image">Valitse kuva itsestäsi (max. 4 Mt)</label>
         <input
           type="file"
           name="image"
@@ -49,7 +49,7 @@ const ImageUploadForm = ({
         open={showImageFileTooBigMessage}
         onClose={() => setShowImageFileTooBigMessage(false)}
         autoHideDuration={4000}
-        message="Kuva liian suuri (yli 10 Mt)"
+        message="Kuva liian suuri (yli 4 Mt)"
       />
     </Box>
   );
