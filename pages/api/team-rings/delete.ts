@@ -43,5 +43,33 @@ export default async function handler(
     }
   });
 
-  res.json(deletedRing);
+  await prisma.assignmentRing.deleteMany({
+    where: {
+      assignments: {
+        none: {}
+      },
+      name: deletedRing.name
+    }
+  });
+
+  const updatedPlayers = await prisma.player.findMany({
+    include: {
+      user: true,
+      targets: true,
+      team: true
+    }
+  });
+
+  const playerRings = await prisma.assignmentRing.findMany({
+    where: {
+      assignments: {
+        some: {}
+      }
+    },
+    include: {
+      assignments: true
+    }
+  });
+
+  res.json({ deletedRing, players: updatedPlayers, playerRings });
 }

@@ -1,23 +1,12 @@
 import { Box } from "@mui/material";
 import { getPlayerFullNameById } from "../../utils";
-import { Player, Assignment, User, AssignmentRing } from "@prisma/client";
-
-interface PlayerWithUser extends Player {
-  user: User;
-  targets: Assignment[];
-}
-
-interface RingWithAssignments extends AssignmentRing {
-  assignments: Assignment[];
-}
+import { RingComponentProps } from "../../../types/umpirepage";
 
 const PlayersWithTargets = ({
   players,
-  rings
-}: {
-  players: PlayerWithUser[];
-  rings: RingWithAssignments[];
-}) => {
+  playerRings,
+  tournament
+}: RingComponentProps) => {
   const searchWantedPlayers = () => {
     const detectivePlayerIDs = players
       .filter((player) => player.state === "DETECTIVE")
@@ -26,7 +15,7 @@ const PlayersWithTargets = ({
 
     let wantedPlayerIDs = new Set<string>();
 
-    rings.forEach((ring) => {
+    playerRings.forEach((ring) => {
       ring.assignments.forEach((assignment) => {
         if (detectivePlayerIDs.includes(assignment.hunterId)) {
           wantedPlayerIDs.add(assignment.targetId);
@@ -50,12 +39,25 @@ const PlayersWithTargets = ({
     }
     return;
   };
+
+  const playersWithTeams = players.filter((p) => p.team);
+
+  const sortedPlayers = tournament.teamGame
+    ? playersWithTeams
+        .sort(
+          (a, b) =>
+            a.team?.name.localeCompare(b.team?.name) ||
+            a.user.firstName.localeCompare(b.user.firstName)
+        )
+        .concat(players.filter((p) => !p.team))
+    : players.sort((a, b) => a.user.firstName.localeCompare(b.user.firstName));
   return (
     <>
       <h2>Pelaajien kohteet</h2>
-      {players.map((player) => (
+      {sortedPlayers.map((player) => (
         <Box key={player.id}>
           <p>
+            {tournament.teamGame && `${player.team ? player.team.name : "-"}: `}
             {player.user.firstName} {player.user.lastName} ({player.alias}){" "}
             {displayPlayerState(player)}
           </p>
