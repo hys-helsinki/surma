@@ -1,19 +1,25 @@
 import { Box, Tabs, Tab } from "@mui/material";
 import { GetServerSideProps } from "next";
 import { unstable_getServerSession } from "next-auth";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { AuthenticationRequired } from "../../components/AuthenticationRequired";
-import { TournamentRings } from "../../components/Admin/Rings/TournamentRings";
-import { TeamTournamentRings } from "../../components/Admin/Rings/TeamTournamentRings";
 import prisma from "../../lib/prisma";
 import { authConfig } from "../api/auth/[...nextauth]";
 import PlayerTable from "../../components/Admin/PlayerTable";
 import TeamTable from "../../components/Admin/TeamTable";
 import UmpireSelect from "../../components/Admin/UmpireSelect";
 import Settings from "../../components/UmpirePage/Settings";
-import { useRouter } from "next/router";
 import LoadingSpinner from "../../components/Common/LoadingSpinner";
 import { useRouterLoading } from "../../lib/hooks";
+import Rings from "../../components/Admin/Rings/Rings";
+import { Tournament } from "@prisma/client";
+import {
+  RingWithAssignments,
+  UmpirePagePlayer,
+  UmpirePageUser,
+  TeamRingWithAssignments,
+  UmpirePageTeam
+} from "../../types/umpirepage";
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -93,27 +99,23 @@ export const getServerSideProps: GetServerSideProps = async ({
     }
   });
 
-  let ringList = [];
+  let playerRings = await prisma.assignmentRing.findMany({
+    where: {
+      tournamentId: params.id as string
+    },
+    include: {
+      assignments: true
+    }
+  });
 
-  if (tournament.teamGame) {
-    ringList = await prisma.teamAssignmentRing.findMany({
-      where: {
-        tournamentId: params.id as string
-      },
-      include: {
-        assignments: true
-      }
-    });
-  } else {
-    ringList = await prisma.assignmentRing.findMany({
-      where: {
-        tournamentId: params.id as string
-      },
-      include: {
-        assignments: true
-      }
-    });
-  }
+  let teamRings = await prisma.teamAssignmentRing.findMany({
+    where: {
+      tournamentId: params.id as string
+    },
+    include: {
+      assignments: true
+    }
+  });
 
   let teams = await prisma.team.findMany({
     where: {
@@ -133,22 +135,34 @@ export const getServerSideProps: GetServerSideProps = async ({
   users = JSON.parse(JSON.stringify(users));
   players = JSON.parse(JSON.stringify(players));
   teams = JSON.parse(JSON.stringify(teams));
-  ringList = JSON.parse(JSON.stringify(ringList));
+  playerRings = JSON.parse(JSON.stringify(playerRings));
+  teamRings = JSON.parse(JSON.stringify(teamRings));
 
   return {
-    props: { tournament, users, players, ringList, teams }
+    props: { tournament, users, players, playerRings, teamRings, teams }
   };
 };
 
-export default function Tournament({
+export default function UmpirePage({
   tournament,
   users,
   players: playerList,
-  ringList,
+  playerRings: playerRingList,
+  teamRings: teamRingList,
   teams
+}: {
+  tournament: Tournament;
+  users: UmpirePageUser[];
+  players: UmpirePagePlayer[];
+  playerRings: RingWithAssignments[];
+  teamRings: TeamRingWithAssignments[];
+  teams: UmpirePageTeam[];
 }) {
-  const [rings, setRings] = useState<any[]>(ringList);
-  const [players, setPlayers] = useState(playerList);
+  const [playerRings, setRings] =
+    useState<RingWithAssignments[]>(playerRingList);
+  const [teamRings, setTeamRings] =
+    useState<TeamRingWithAssignments[]>(teamRingList);
+  const [players, setPlayers] = useState<UmpirePagePlayer[]>(playerList);
   const [value, setValue] = useState(0);
 
   const isLoading = useRouterLoading();
@@ -209,22 +223,16 @@ export default function Tournament({
           />
         </TabPanel>
         <TabPanel value={value} index={1}>
-          {tournament.teamGame ? (
-            <TeamTournamentRings
-              tournament={tournament}
-              rings={rings}
-              teams={teams}
-              setRings={setRings}
-            />
-          ) : (
-            <TournamentRings
-              tournament={tournament}
-              players={players}
-              setPlayers={setPlayers}
-              rings={rings}
-              setRings={setRings}
-            />
-          )}
+          <Rings
+            players={players}
+            playerRings={playerRings}
+            teamRings={teamRings}
+            setTeamRings={setTeamRings}
+            tournament={tournament}
+            setPlayers={setPlayers}
+            setPlayerRings={setRings}
+            teams={teams}
+          />
         </TabPanel>
         <TabPanel value={value} index={3}>
           <Settings tournament={tournament} umpireUsers={umpires} />
