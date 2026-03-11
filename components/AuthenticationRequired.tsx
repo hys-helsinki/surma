@@ -12,9 +12,7 @@ export const AuthenticationRequired = (props): JSX.Element => {
       <>
         Et ole kirjautunut sisään.
         <br />
-        <button onClick={() => signIn("email", { callbackUrl: "/personal" })}>
-          Kirjaudu sisään
-        </button>
+        <button onClick={() => signIn()}>Kirjaudu sisään</button>
       </>
     );
   }
