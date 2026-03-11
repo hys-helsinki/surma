@@ -1,4 +1,4 @@
-import { Box, Container, Grid } from "@mui/material";
+import { Alert, Box, Container, Grid, Snackbar } from "@mui/material";
 import { Form, Formik } from "formik";
 import * as Yup from "yup";
 import TextInput from "./TextInput";
@@ -10,6 +10,8 @@ import GdprModal from "../GdprModal";
 
 const UserForm = ({ tournament }: { tournament: Tournament }) => {
   const [isLoading, setIsLoading] = useState(false);
+  const [showError, setShowError] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
 
   const submitForm = async (values: {
     firstName: string;
@@ -18,12 +20,31 @@ const UserForm = ({ tournament }: { tournament: Tournament }) => {
   }) => {
     setIsLoading(true);
     const formdata = { tournamentId: tournament.id, ...values };
-    const response = await fetch("/api/user/create", {
-      method: "POST",
-      body: JSON.stringify(formdata)
-    });
-    const createdUser = await response.json();
-    signIn("email", { callbackUrl: `/personal`, email: createdUser.email });
+    try {
+      const response = await fetch("/api/user/create", {
+        method: "POST",
+        body: JSON.stringify(formdata)
+      });
+      const responseObject = await response.json();
+      if (response.status === 201) {
+        signIn("email", {
+          callbackUrl: `/personal`,
+          email: responseObject.email
+        });
+      } else if (response.status === 409) {
+        setErrorMessage(
+          "Annettu sähköpostiosoite ei kelpaa. Kokeile toista osoitetta"
+        );
+        setShowError(true);
+      } else {
+        setErrorMessage("Jotain meni pieleen. Ota yhteyttä tuomaristoon");
+        setShowError(true);
+      }
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -89,6 +110,16 @@ const UserForm = ({ tournament }: { tournament: Tournament }) => {
             </LoadingButton>
           </Form>
         </Formik>
+        <Snackbar open={showError} onClose={() => setShowError(false)}>
+          <Alert
+            severity="error"
+            variant="filled"
+            sx={{ width: "100%" }}
+            onClose={() => setShowError(false)}
+          >
+            {errorMessage}
+          </Alert>
+        </Snackbar>
       </Box>
     </Container>
   );
