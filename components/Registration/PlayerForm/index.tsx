@@ -1,18 +1,22 @@
-import { useRouter } from "next/router";
 import { useState } from "react";
 import { useSession } from "next-auth/react";
-import { Box, Container } from "@mui/material";
+import { Alert, Box, Container, Snackbar } from "@mui/material";
 import PlayerDetailsForm from "./PlayerDetailsForm";
 import ImageUploadForm from "./ImageUploadForm";
 import { getTournamentDates } from "../../utils";
 
-export default function PlayerForm({ tournament }) {
+export default function PlayerForm({
+  tournament,
+  setUser,
+  setImageUrl,
+  setErrorMessage,
+  setShowError
+}) {
   const { data, status } = useSession();
-  const [fileInputState, setFileInputState] = useState("");
-  const [selectedFile, setSelectedFile] = useState();
-  const [selectedFileName, setSelectedFileName] = useState("");
+  const [selectedFileData, setSelectedFileData] = useState();
   const [isLoading, setIsLoading] = useState(false);
-  const router = useRouter();
+  const [formErrorMessage, setFormErrorMessage] = useState("");
+  const [showFormError, setShowFormError] = useState(false);
 
   const tournamentId = tournament.id;
 
@@ -31,26 +35,22 @@ export default function PlayerForm({ tournament }) {
   const dates = getTournamentDates(start, end);
 
   const uploadImage = async (id: string) => {
-    if (!selectedFile) return;
-    const reader = new FileReader();
-    try {
-      reader.readAsDataURL(selectedFile);
-    } catch (error) {
-      console.log(error);
-      setIsLoading(false);
+    if (!selectedFileData) return;
+    const response = await fetch("/api/upload", {
+      method: "POST",
+      body: JSON.stringify({
+        url: selectedFileData,
+        publicId: id,
+        tournamentId
+      })
+    });
+    const responseObject = await response.json();
+    if (response.status === 200) {
+      setImageUrl(responseObject.url);
+    } else {
+      setErrorMessage("Kuvan lataaminen palvelimelle epäonnistui");
+      setShowError(true);
     }
-    reader.onload = async () => {
-      await fetch("/api/upload", {
-        method: "POST",
-        body: JSON.stringify({
-          url: reader.result,
-          publicId: id,
-          tournamentId
-        })
-      });
-      setIsLoading(false);
-      router.reload();
-    };
   };
 
   const handleSubmit = async (values) => {
@@ -95,12 +95,20 @@ export default function PlayerForm({ tournament }) {
         method: "POST",
         body: JSON.stringify(playerData)
       });
-      const createdPlayer = await response.json();
-      await uploadImage(createdPlayer.id);
+      const responseObject = await response.json();
+      if (response.status === 200) {
+        await uploadImage(responseObject.player.id);
+        setUser((prev) => ({ ...prev, player: responseObject.player }));
+      } else {
+        setFormErrorMessage("Jotain meni pieleen. Ota yhteyttä tuomaristoon");
+        setShowFormError(true);
+        console.log(responseObject.message);
+      }
     } catch (error) {
-      setIsLoading(false);
       console.log(error);
     }
+
+    setIsLoading(false);
   };
 
   return (
@@ -127,13 +135,7 @@ export default function PlayerForm({ tournament }) {
               salamurhaamiseen.
             </p>
           </Box>
-          <ImageUploadForm
-            setSelectedFile={setSelectedFile}
-            setSelectedFileName={setSelectedFileName}
-            setFileInputState={setFileInputState}
-            selectedFileName={selectedFileName}
-            fileInputState={fileInputState}
-          />
+          <ImageUploadForm setSelectedFileData={setSelectedFileData} />
           <PlayerDetailsForm
             dates={dates}
             handleSubmit={handleSubmit}
@@ -143,6 +145,16 @@ export default function PlayerForm({ tournament }) {
       ) : (
         <p>Ilmoittautuminen ei ole auki</p>
       )}
+      <Snackbar open={showFormError} onClose={() => setShowFormError(false)}>
+        <Alert
+          severity="error"
+          variant="filled"
+          sx={{ width: "100%" }}
+          onClose={() => setShowFormError(false)}
+        >
+          {formErrorMessage}
+        </Alert>
+      </Snackbar>
     </Container>
   );
 }

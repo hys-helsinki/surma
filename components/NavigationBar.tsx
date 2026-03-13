@@ -263,7 +263,7 @@ const NavigationBar = () => {
           </Box>
           {status !== "loading" && !data && (
             <Button
-              onClick={() => signIn("email", { callbackUrl: "/personal" })}
+              onClick={() => signIn()}
               sx={{
                 color: "black",
                 backgroundColor: "white",

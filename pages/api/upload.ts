@@ -38,7 +38,9 @@ export default async function upload(
         folder: `surma/${tournamentId}`,
         public_id: imageData.publicId
       });
-      res.status(200).send(uploadedResponse);
+
+      const uploadedImageUrl = uploadedResponse.url;
+      res.status(200).json({ url: uploadedImageUrl });
     } catch (error) {
       console.log("Error on Cloudinary upload:", error);
       res.status(500).json({ error: "something went wrong" });

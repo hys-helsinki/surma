@@ -172,13 +172,14 @@ export const getServerSideProps: GetServerSideProps = async ({
 export default function Target({
   user: u,
   tournament,
-  imageUrl,
+  imageUrl: image,
   currentUserIsUmpire,
   currentUserIsDetective,
   umpires,
   currentUser
 }): JSX.Element {
   const [user, setUser] = useState(u);
+  const [imageUrl, setImageUrl] = useState(image);
   const theme = useTheme();
   const isMobileView = useMediaQuery(theme.breakpoints.down("md"));
 
@@ -194,6 +195,7 @@ export default function Target({
             setUser={setUser}
             tournament={tournament}
             imageUrl={imageUrl}
+            setImageUrl={setImageUrl}
             currentUserIsUmpire={currentUserIsUmpire}
             umpires={umpires}
             currentUserIsHunter={true}
@@ -205,6 +207,7 @@ export default function Target({
             setUser={setUser}
             tournament={tournament}
             imageUrl={imageUrl}
+            setImageUrl={setImageUrl}
             currentUserIsUmpire={currentUserIsUmpire}
             umpires={umpires}
             currentUserIsHunter={true}

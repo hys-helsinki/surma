@@ -1,6 +1,12 @@
 import { GetServerSideProps } from "next";
 import prisma from "../../../../lib/prisma";
-import { Alert, Button, useMediaQuery, useTheme } from "@mui/material";
+import {
+  Alert,
+  Button,
+  Snackbar,
+  useMediaQuery,
+  useTheme
+} from "@mui/material";
 import { AuthenticationRequired } from "../../../../components/AuthenticationRequired";
 import { unstable_getServerSession } from "next-auth";
 import { authConfig } from "../../../api/auth/[...nextauth]";
@@ -9,9 +15,8 @@ import DesktopView from "../../../../components/PlayerPage/DesktopView";
 import MobileView from "../../../../components/PlayerPage/MobileView";
 import PlayerForm from "../../../../components/Registration/PlayerForm";
 import { useSession } from "next-auth/react";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { UserProvider } from "../../../../components/UserProvider";
-import { useRouter } from "next/router";
 import LoadingSpinner from "../../../../components/Common/LoadingSpinner";
 import { useRouterLoading } from "../../../../lib/hooks";
 
@@ -147,7 +152,7 @@ export const getServerSideProps: GetServerSideProps = async ({
 export default function User({
   user: u,
   tournament,
-  imageUrl,
+  imageUrl: image,
   currentUserIsUmpire,
   umpires,
   currentUser
@@ -156,6 +161,9 @@ export default function User({
   const [confirmed, setConfirmed] = useState(
     user.player ? user.player.confirmed : false
   );
+  const [imageUrl, setImageUrl] = useState(image);
+  const [showError, setShowError] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
   const session = useSession();
   const theme = useTheme();
   const isMobileView = useMediaQuery(theme.breakpoints.down("md"));
@@ -179,7 +187,15 @@ export default function User({
   }
 
   if (!Boolean(user.player)) {
-    return <PlayerForm tournament={tournament} />;
+    return (
+      <PlayerForm
+        tournament={tournament}
+        setUser={setUser}
+        setImageUrl={setImageUrl}
+        setErrorMessage={setErrorMessage}
+        setShowError={setShowError}
+      />
+    );
   }
 
   const handleConfirmRegistration = async () => {
@@ -219,6 +235,7 @@ export default function User({
             setUser={setUser}
             tournament={tournament}
             imageUrl={imageUrl}
+            setImageUrl={setImageUrl}
             currentUserIsUmpire={currentUserIsUmpire}
             currentUserId={currentUser.id}
             umpires={umpires}
@@ -228,11 +245,22 @@ export default function User({
             setUser={setUser}
             tournament={tournament}
             imageUrl={imageUrl}
+            setImageUrl={setImageUrl}
             currentUserIsUmpire={currentUserIsUmpire}
             currentUserId={currentUser.id}
             umpires={umpires}
           />
         )}
+        <Snackbar open={showError} onClose={() => setShowError(false)}>
+          <Alert
+            severity="error"
+            variant="filled"
+            sx={{ width: "100%" }}
+            onClose={() => setShowError(false)}
+          >
+            {errorMessage}
+          </Alert>
+        </Snackbar>
       </UserProvider>
     </AuthenticationRequired>
   );

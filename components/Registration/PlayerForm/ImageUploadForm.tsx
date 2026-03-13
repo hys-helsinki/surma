@@ -1,30 +1,46 @@
-import { Box, Snackbar } from "@mui/material";
+import { Alert, Box, Snackbar } from "@mui/material";
 import { useState } from "react";
 
-const ImageUploadForm = ({
-  setSelectedFile,
-  setSelectedFileName,
-  setFileInputState,
-  selectedFileName,
-  fileInputState
-}) => {
-  const [showImageFileTooBigMessage, setShowImageFileTooBigMessage] =
-    useState(false);
+const ImageUploadForm = ({ setSelectedFileData }) => {
+  const [showError, setShowError] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
+  const [fileInputState, setFileInputState] = useState("");
+  const [selectedFileName, setSelectedFileName] = useState("");
+
   const handleFileInputChange = (event) => {
     const file = event.target.files[0];
     if (file == undefined) {
       setFileInputState("");
-      setSelectedFile(null);
+      setSelectedFileData(null);
       setSelectedFileName("");
       return;
     }
     if (file.size > 4000000) {
-      setShowImageFileTooBigMessage(true);
+      setErrorMessage("Kuva liian suuri (yli 4 Mt)");
+      setShowError(true);
       return;
     }
-    setSelectedFile(file);
+
     setSelectedFileName(file.name);
     setFileInputState(event.target.value);
+
+    const reader = new FileReader();
+    try {
+      reader.readAsDataURL(file);
+    } catch (error) {
+      console.log(error);
+      setErrorMessage(
+        "Kuvatiedoston lukeminen epäonnistui. Kokeile toista tiedostoa"
+      );
+      setShowError(true);
+      setFileInputState("");
+      setSelectedFileName("");
+      return;
+    }
+
+    reader.onload = () => {
+      setSelectedFileData(reader.result);
+    };
   };
 
   return (
@@ -45,12 +61,16 @@ const ImageUploadForm = ({
           <i>Valittu tiedosto: {selectedFileName}</i>
         </p>
       ) : null}
-      <Snackbar
-        open={showImageFileTooBigMessage}
-        onClose={() => setShowImageFileTooBigMessage(false)}
-        autoHideDuration={4000}
-        message="Kuva liian suuri (yli 4 Mt)"
-      />
+      <Snackbar open={showError} onClose={() => setShowError(false)}>
+        <Alert
+          severity="error"
+          variant="filled"
+          sx={{ width: "100%" }}
+          onClose={() => setShowError(false)}
+        >
+          {errorMessage}
+        </Alert>
+      </Snackbar>
     </Box>
   );
 };

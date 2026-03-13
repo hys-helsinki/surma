@@ -34,6 +34,7 @@ const TabPanel = (props: TabPanelProps) => {
 const MobileView = ({
   tournament,
   imageUrl,
+  setImageUrl,
   currentUserIsUmpire,
   currentUserIsHunter = false,
   currentUserIsDetective = false,
@@ -43,6 +44,7 @@ const MobileView = ({
 }: {
   tournament: Tournament;
   imageUrl: string;
+  setImageUrl: Dispatch<any>;
   currentUserIsUmpire: boolean;
   currentUserIsHunter?: boolean;
   currentUserIsDetective?: boolean;
@@ -62,6 +64,7 @@ const MobileView = ({
     <Box sx={{ width: "100%", marginBottom: "2rem" }}>
       <Info
         imageUrl={imageUrl}
+        setImageUrl={setImageUrl}
         showAlias={
           currentUserIsDetective ||
           currentUserIsUmpire ||
