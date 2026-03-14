@@ -1,5 +1,6 @@
 import { signIn, useSession } from "next-auth/react";
 import LoadingSpinner from "./Common/LoadingSpinner";
+import { JSX } from "react";
 
 export const AuthenticationRequired = (props): JSX.Element => {
   const { data: session, status } = useSession();

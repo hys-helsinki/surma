@@ -1,6 +1,6 @@
 import { GetServerSideProps } from "next";
 import prisma from "../../../../lib/prisma";
-import React, { useState } from "react";
+import React, { JSX, useState } from "react";
 import { useMediaQuery, useTheme } from "@mui/material";
 import { AuthenticationRequired } from "../../../../components/AuthenticationRequired";
 import { Session, unstable_getServerSession } from "next-auth";

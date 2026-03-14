@@ -1,5 +1,5 @@
 import { Box } from "@mui/material";
-import { useContext } from "react";
+import { JSX, useContext } from "react";
 import { UserContext } from "../../UserProvider";
 
 const ContactDetails = ({

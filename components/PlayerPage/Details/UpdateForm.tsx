@@ -1,7 +1,7 @@
 import { Field, Form, Formik } from "formik";
 import TextInput from "../../Registration/TextInput";
 import LoadingButton from "@mui/lab/LoadingButton";
-import { Dispatch, SetStateAction, useContext, useState } from "react";
+import { Dispatch, JSX, SetStateAction, useContext, useState } from "react";
 import { UserContext, UserWithPlayer } from "../../UserProvider";
 
 type FormData = {

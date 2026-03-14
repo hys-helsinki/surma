@@ -1,5 +1,5 @@
 import { Box, Button } from "@mui/material";
-import { useContext, useState } from "react";
+import { JSX, useContext, useState } from "react";
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import { Umpire, User } from "@prisma/client";

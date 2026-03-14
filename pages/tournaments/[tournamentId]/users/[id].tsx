@@ -15,7 +15,7 @@ import DesktopView from "../../../../components/PlayerPage/DesktopView";
 import MobileView from "../../../../components/PlayerPage/MobileView";
 import PlayerForm from "../../../../components/Registration/PlayerForm";
 import { useSession } from "next-auth/react";
-import { useState } from "react";
+import { JSX, useState } from "react";
 import { UserProvider } from "../../../../components/UserProvider";
 import LoadingSpinner from "../../../../components/Common/LoadingSpinner";
 import { useRouterLoading } from "../../../../lib/hooks";
