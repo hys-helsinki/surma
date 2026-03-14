@@ -1,1 +1,12 @@
-{}
+{
+  "common": {
+    "appName": "Surma"
+  },
+  "navigation": {
+    "targets": "Kohteet",
+    "myPage": "Oma sivu",
+    "admin": "Ylläpito",
+    "tournamentRules": "Turnaussäännöt",
+    "signIn": "Kirjaudu sisään"
+  }
+}

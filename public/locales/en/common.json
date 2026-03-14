@@ -1,1 +1,12 @@
-{}
+{
+  "common": {
+    "appName": "Surma"
+  },
+  "navigation": {
+    "targets": "Targets",
+    "myPage": "My page",
+    "admin": "Admin",
+    "tournamentRules": "Tournament rules",
+    "signIn": "Sign in"
+  }
+}

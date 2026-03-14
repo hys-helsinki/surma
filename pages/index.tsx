@@ -8,6 +8,7 @@ import prisma from "../lib/prisma";
 import { getServerSession } from "next-auth/next";
 import { useRouterLoading } from "../lib/hooks";
 import LoadingSpinner from "../components/Common/LoadingSpinner";
+import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 
 export async function getServerSideProps(context) {
   const session = await getServerSession(context.req, context.res, authConfig);
@@ -51,7 +52,10 @@ export async function getServerSideProps(context) {
   });
   tournaments = JSON.parse(JSON.stringify(tournaments));
   return {
-    props: { tournaments }
+    props: {
+      tournaments,
+      ...(await serverSideTranslations(context.locale, ["common"]))
+    }
   };
 }
 
