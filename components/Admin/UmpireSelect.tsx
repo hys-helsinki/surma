@@ -43,7 +43,7 @@ const UmpireSelect = ({
 
   return (
     <Grid container>
-      <Grid item xs={12} md={6}>
+      <Grid size={{ xs: 12, md: 6 }}>
         <h2> Pelaajien tuomarit</h2>
         <Formik
           enableReinitialize={true}

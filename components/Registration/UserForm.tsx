@@ -95,10 +95,10 @@ const UserForm = ({ tournament }: { tournament: Tournament }) => {
             }}
           >
             <Grid container spacing={{ xs: 0, md: 2 }}>
-              <Grid item xs={12} md={6}>
+              <Grid size={{ xs: 12, md: 6 }}>
                 <TextInput label="Etunimi" name="firstName" type="text" />
               </Grid>
-              <Grid item xs={12} md={6}>
+              <Grid size={{ xs: 12, md: 6 }}>
                 <TextInput label="Sukunimi" name="lastName" type="text" />
               </Grid>
             </Grid>

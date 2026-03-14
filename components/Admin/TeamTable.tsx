@@ -131,7 +131,7 @@ const TeamTable = ({
 
   return (
     <Grid sx={{ marginBottom: "30px" }} container>
-      <Grid item xs={12} lg={7}>
+      <Grid size={{ xs: 12, lg: 7 }}>
         {unfinishedRegistrations.length > 0 && (
           <div style={{ marginBottom: "30px" }}>
             <h2>Keskeneräiset ilmoittautumiset</h2>

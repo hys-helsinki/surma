@@ -25,7 +25,7 @@ const Rings = ({
 
   return (
     <Grid container>
-      <Grid item xs={12} md={4} mr={2}>
+      <Grid size={{ xs: 12, md: 4 }} mr={2}>
         <h2>Ringit</h2>
         {tournament.teamGame && (
           <FormControl>
@@ -85,7 +85,7 @@ const Rings = ({
           />
         )}
       </Grid>
-      <Grid item xs={12} md={7}>
+      <Grid size={{ xs: 12, md: 7 }}>
         <PlayersWithTargets
           players={players}
           playerRings={playerRings}
