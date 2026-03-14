@@ -1,5 +1,4 @@
-import LoadingButton from "@mui/lab/LoadingButton";
-import { Grid } from "@mui/material";
+import { Grid, Button } from "@mui/material";
 import {
   Assignment,
   AssignmentRing,
@@ -83,46 +82,46 @@ const PlayerRow = ({
       </td>
       {player.state == "ACTIVE" && (
         <td>
-          <LoadingButton
+          <Button
             onClick={() => handlePlayerStatusChange("DEAD", player.id)}
             style={{ margin: "0 5px 0 0" }}
             loading={isStateButtonLoading == "DEAD"}
           >
             Tapa
-          </LoadingButton>
+          </Button>
         </td>
       )}
       {player.state == "ACTIVE" && (
         <td>
-          <LoadingButton
+          <Button
             onClick={() => setOpenModal(true)}
             style={{ margin: "0 5px 0 0" }}
             loading={false}
           >
             Etsintäkuuluta
-          </LoadingButton>
+          </Button>
         </td>
       )}
       {player.state == "DEAD" && (
         <td>
-          <LoadingButton
+          <Button
             onClick={() => handlePlayerStatusChange("DETECTIVE", player.id)}
             style={{ margin: "0 5px 0 0" }}
             loading={isStateButtonLoading == "DETECTIVE"}
           >
             Etsiväksi
-          </LoadingButton>
+          </Button>
         </td>
       )}
       {player.state != "ACTIVE" && (
         <td>
-          <LoadingButton
+          <Button
             onClick={() => handlePlayerStatusChange("ACTIVE", player.id)}
             style={{ margin: "0 5px 0 0" }}
             loading={isStateButtonLoading == "ACTIVE"}
           >
             Herätä henkiin
-          </LoadingButton>
+          </Button>
         </td>
       )}
       <WantedModal

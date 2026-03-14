@@ -1,5 +1,4 @@
-import { LoadingButton } from "@mui/lab";
-import { Grid } from "@mui/material";
+import { Button, Grid } from "@mui/material";
 import { Player, Team, Tournament, User } from "@prisma/client";
 import Link from "next/link";
 import React, { useState } from "react";
@@ -64,46 +63,46 @@ const PlayerRow = ({ player: p, tournament, setRings }) => {
       <td style={{ width: "15%" }}>{player.state}</td>
       {player.state == "ACTIVE" && (
         <td>
-          <LoadingButton
+          <Button
             onClick={() => handlePlayerStatusChange("DEAD", player.id)}
             style={{ margin: 0 }}
             loading={isStateButtonLoading == "DEAD"}
           >
             Tapa
-          </LoadingButton>
+          </Button>
         </td>
       )}
       {player.state == "ACTIVE" && (
         <td>
-          <LoadingButton
+          <Button
             onClick={() => handleMakeWanted(player.id)}
             style={{ margin: 0 }}
             loading={isWantedLoading}
           >
             Etsintäkuuluta
-          </LoadingButton>
+          </Button>
         </td>
       )}
       {player.state == "DEAD" && (
         <td>
-          <LoadingButton
+          <Button
             onClick={() => handlePlayerStatusChange("DETECTIVE", player.id)}
             style={{ margin: 0 }}
             loading={isStateButtonLoading == "DETECTIVE"}
           >
             Etsiväksi
-          </LoadingButton>
+          </Button>
         </td>
       )}
       {player.state != "ACTIVE" && (
         <td>
-          <LoadingButton
+          <Button
             onClick={() => handlePlayerStatusChange("ACTIVE", player.id)}
             style={{ margin: 0 }}
             loading={isStateButtonLoading == "ACTIVE"}
           >
             Herätä henkiin
-          </LoadingButton>
+          </Button>
         </td>
       )}
     </tr>

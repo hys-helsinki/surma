@@ -1,5 +1,4 @@
-import { Box } from "@mui/material";
-import LoadingButton from "@mui/lab/LoadingButton";
+import { Box, Button } from "@mui/material";
 import { Field, Form, Formik } from "formik";
 import * as Yup from "yup";
 import Link from "next/link";
@@ -125,9 +124,9 @@ const PlayerDetailsForm = ({
         ))}
 
         <BottomText />
-        <LoadingButton loading={isLoading} type="submit">
+        <Button loading={isLoading} type="submit">
           Ilmoittaudu
-        </LoadingButton>
+        </Button>
       </Form>
     </Formik>
   );

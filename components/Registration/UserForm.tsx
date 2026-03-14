@@ -1,8 +1,7 @@
-import { Alert, Box, Container, Grid, Snackbar } from "@mui/material";
+import { Alert, Box, Container, Grid, Snackbar, Button } from "@mui/material";
 import { Form, Formik } from "formik";
 import * as Yup from "yup";
 import TextInput from "./TextInput";
-import { LoadingButton } from "@mui/lab";
 import { useState } from "react";
 import { signIn } from "next-auth/react";
 import { Tournament } from "@prisma/client";
@@ -105,9 +104,9 @@ const UserForm = ({ tournament }: { tournament: Tournament }) => {
             </Grid>
             <TextInput label="Sähköpostiosoite" name="email" type="email" />
             <TextInput label="Puhelinnumero" name="phone" type="text" />
-            <LoadingButton loading={isLoading} type="submit">
+            <Button loading={isLoading} type="submit">
               Luo käyttäjä
-            </LoadingButton>
+            </Button>
           </Form>
         </Formik>
         <Snackbar open={showError} onClose={() => setShowError(false)}>

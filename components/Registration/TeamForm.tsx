@@ -1,8 +1,7 @@
-import { Alert, Box, Container, Grid, Snackbar } from "@mui/material";
+import { Alert, Box, Container, Grid, Snackbar, Button } from "@mui/material";
 import { FieldArray, Form, Formik } from "formik";
 import * as Yup from "yup";
 import TextInput from "./TextInput";
-import { LoadingButton } from "@mui/lab";
 import { Tournament } from "@prisma/client";
 import { useState } from "react";
 import GdprModal from "../GdprModal";
@@ -208,9 +207,9 @@ const TeamForm = ({ tournament }: { tournament: Tournament }) => {
                       </div>
                     )}
                   </FieldArray>
-                  <LoadingButton loading={isLoading} type="submit">
+                  <Button loading={isLoading} type="submit">
                     Ilmoittaudu
-                  </LoadingButton>
+                  </Button>
                 </Form>
               )}
             </Formik>

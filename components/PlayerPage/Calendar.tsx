@@ -2,9 +2,9 @@ import { Dispatch, JSX, useContext, useEffect, useState } from "react";
 import { getCurrentWeek, getTournamentDates, splitCalendar } from "../utils";
 import { Formik, Form, Field } from "formik";
 import Markdown from "../Common/Markdown";
-import { LoadingButton } from "@mui/lab";
 import { Tournament } from "@prisma/client";
 import { UserContext } from "../UserProvider";
+import { Button } from "@mui/material";
 
 export const Calendar = ({
   tournament,
@@ -119,18 +119,18 @@ export const Calendar = ({
               Kalenteri tukee
               [Markdown-syntaksia](https://www.markdownguide.org/basic-syntax/)
             </Markdown>
-            <LoadingButton loading={isLoading} type="submit">
+            <Button loading={isLoading} type="submit">
               Tallenna muokkaukset
-            </LoadingButton>
+            </Button>
             {dates.map((date: string, index) => (
               <div key={index}>
                 <label>{date}</label>
                 <Field name={`calendar${index}`} as="textarea" />
               </div>
             ))}
-            <LoadingButton loading={isLoading} type="submit">
+            <Button loading={isLoading} type="submit">
               Tallenna muokkaukset
-            </LoadingButton>
+            </Button>
           </Form>
         </Formik>
       )}

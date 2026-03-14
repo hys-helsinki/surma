@@ -7,7 +7,6 @@ import { Box, Button, Card, Autocomplete } from "@mui/material";
 import { Assignment } from "@prisma/client";
 import CreateRingForm from "./CreateRingForm";
 import { FieldArray, Form, Formik } from "formik";
-import LoadingButton from "@mui/lab/LoadingButton";
 import { playerColors } from "../../../lib/constants";
 import { getPlayerFullNameById } from "../../utils";
 import StyledTextField from "./StyledTextField";
@@ -83,14 +82,14 @@ const AssignmentCard = ({
         <strong>Kohde: </strong>
         {getPlayerFullNameById(assignment.targetId, players)}
       </p>
-      <LoadingButton
+      <Button
         onClick={() => deleteAssignment(assignment.id)}
         loading={isDeletingAssignment}
         sx={{ margin: "10px" }}
         variant="contained"
       >
         Poista toimeksianto
-      </LoadingButton>
+      </Button>
     </Card>
   );
 };
@@ -311,9 +310,9 @@ const Ring = ({
                   )}
                 </FieldArray>
                 <Box>
-                  <LoadingButton type="submit" loading={isCreatingAssignment}>
+                  <Button type="submit" loading={isCreatingAssignment}>
                     Tallenna toimeksiannot
-                  </LoadingButton>
+                  </Button>
                 </Box>
               </Form>
             )}

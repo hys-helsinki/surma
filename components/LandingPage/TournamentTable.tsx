@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { NoSsr } from "@mui/base/NoSsr";
+import { NoSsr } from "@mui/material";
 import { Box, Grid } from "@mui/material";
 
 const TournamentTable = ({ tournaments }) => {

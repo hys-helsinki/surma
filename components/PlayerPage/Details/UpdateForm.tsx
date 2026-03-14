@@ -1,8 +1,8 @@
 import { Field, Form, Formik } from "formik";
 import TextInput from "../../Registration/TextInput";
-import LoadingButton from "@mui/lab/LoadingButton";
 import { Dispatch, JSX, SetStateAction, useContext, useState } from "react";
 import { UserContext, UserWithPlayer } from "../../UserProvider";
+import { Button } from "@mui/material";
 
 type FormData = {
   address: string;
@@ -75,9 +75,9 @@ export const UpdateForm = ({
           <label>Ulkonäkö, kulkuvälineet ja muut lisätiedot:</label>
           <Field name="other" as="textarea" />
         </div>
-        <LoadingButton loading={isLoading} type="submit">
+        <Button loading={isLoading} type="submit">
           Tallenna
-        </LoadingButton>
+        </Button>
       </Form>
     </Formik>
   );
