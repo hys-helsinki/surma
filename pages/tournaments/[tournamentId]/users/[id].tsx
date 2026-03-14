@@ -10,7 +10,6 @@ import {
 import { AuthenticationRequired } from "../../../../components/AuthenticationRequired";
 import { getServerSession } from "next-auth";
 import { authConfig } from "../../../api/auth/[...nextauth]";
-import { v2 as cloudinary } from "cloudinary";
 import DesktopView from "../../../../components/PlayerPage/DesktopView";
 import MobileView from "../../../../components/PlayerPage/MobileView";
 import PlayerForm from "../../../../components/Registration/PlayerForm";
@@ -119,15 +118,16 @@ export const getServerSideProps: GetServerSideProps = async ({
     }
   });
 
-  let imageUrl = "";
-  try {
-    const result = await cloudinary.api.resource(
-      `surma/${user.tournamentId}/${user.player.id}` as string
-    );
-    imageUrl = result.url;
-  } catch (error) {
-    console.log(error);
-  }
+  // let imageUrl = "";
+  // try {
+  //   const result = await cloudinary.api.resource(
+  //     `surma/${user.tournamentId}/${user.player.id}` as string
+  //   );
+  //   imageUrl = result.url;
+  // } catch (error) {
+  //   console.log(error);
+  // }
+  const imageUrl = `surma/${user.tournamentId}/${user.player.id}`;
 
   user = JSON.parse(JSON.stringify(user));
   currentUser = JSON.parse(JSON.stringify(currentUser));

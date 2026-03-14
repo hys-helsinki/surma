@@ -5,7 +5,6 @@ import { useMediaQuery, useTheme } from "@mui/material";
 import { AuthenticationRequired } from "../../../../components/AuthenticationRequired";
 import { Session, getServerSession } from "next-auth";
 import { authConfig } from "../../../api/auth/[...nextauth]";
-import { v2 as cloudinary } from "cloudinary";
 import DesktopView from "../../../../components/PlayerPage/DesktopView";
 import MobileView from "../../../../components/PlayerPage/MobileView";
 import { Tournament } from "@prisma/client";
@@ -92,6 +91,7 @@ export const getServerSideProps: GetServerSideProps = async ({
       id: true,
       firstName: true,
       lastName: true,
+      tournamentId: true,
       player: {
         select: {
           id: true,
@@ -140,15 +140,17 @@ export const getServerSideProps: GetServerSideProps = async ({
     }
   });
 
-  let imageUrl = "";
-  try {
-    const result = await cloudinary.api.resource(
-      `surma/${tournament.id}/${user.player.id}` as string
-    );
-    imageUrl = result.url;
-  } catch (error) {
-    console.log(error);
-  }
+  // let imageUrl = "";
+  // try {
+  //   const result = await cloudinary.api.resource(
+  //     `surma/${tournament.id}/${user.player.id}` as string
+  //   );
+  //   imageUrl = result.url;
+  // } catch (error) {
+  //   console.log(error);
+  // }
+
+  const imageUrl = `surma/${user.tournamentId}/${user.player.id}`;
 
   tournament = JSON.parse(JSON.stringify(tournament));
 

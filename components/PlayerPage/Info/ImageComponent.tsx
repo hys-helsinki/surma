@@ -1,5 +1,4 @@
-import Image from "next/image";
-import { useState } from "react";
+import { CldImage } from "next-cloudinary";
 
 const ImageComponent = ({
   imageUrl,
@@ -8,10 +7,6 @@ const ImageComponent = ({
   imageUrl: string;
   showPicture: boolean;
 }) => {
-  const imageLoader = ({ src }) => {
-    return imageUrl;
-  };
-
   return (
     <div>
       {showPicture ? (
@@ -23,18 +18,16 @@ const ImageComponent = ({
             alignItems: "center"
           }}
         >
-          <Image
-            loader={imageLoader}
-            unoptimized
+          <CldImage
+            width="500"
+            height="500"
             src={imageUrl}
-            alt="profile picture"
-            sizes="100vw"
-            width={500}
-            height={500}
+            sizes="(max-width: 768px) 100vw, 33vw"
+            alt="Profile picture"
             style={{
               objectFit: "contain"
             }}
-          ></Image>
+          />
         </div>
       ) : null}
     </div>
