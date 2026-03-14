@@ -1,46 +1,38 @@
-import { SES, SendRawEmailCommand } from "@aws-sdk/client-ses";
-import nodemailer from "nodemailer";
+import { SESv2Client, SendEmailCommand } from "@aws-sdk/client-sesv2";
 import { defaultProvider } from "@aws-sdk/credential-provider-node";
+import nodemailer from "nodemailer";
 
-export default function sendEmail(
+export default async function sendEmail(
   from: String,
   to: String,
   subject: String,
   payload: String
 ) {
-  const ses = new SES({
-    apiVersion: "2010-12-01",
+  const sesClient = new SESv2Client({
     region: "eu-north-1",
-    credentialDefaultProvider: defaultProvider
+    credentials: defaultProvider()
   });
 
-  // TODO: would this be better as singleton?
-  let transporter = nodemailer.createTransport({
-    SES: { ses, aws: { SendRawEmailCommand } }
+  const transporter = nodemailer.createTransport({
+    SES: { sesClient, SendEmailCommand }
   });
 
-  transporter.sendMail(
-    {
+  try {
+    await transporter.sendMail({
       from,
       to,
       subject,
       text: payload,
       ses: {
-        // optional extra arguments for SendRawEmail
-        Tags: [
+        EmailTags: [
           {
             Name: "test_tag",
             Value: "test_tag_value"
           }
         ]
       }
-    },
-    (err, info) => {
-      console.log(err);
-      if (info) {
-        console.log(info.envelope);
-        console.log(info.messageId);
-      }
-    }
-  );
+    });
+  } catch (err) {
+    console.log(err);
+  }
 }

@@ -13,7 +13,7 @@
     "test": "npx playwright test"
   },
   "dependencies": {
-    "@aws-sdk/client-ses": "^3.145.0",
+    "@aws-sdk/client-sesv2": "^3.1009.0",
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.1",
     "@mui/icons-material": "^7.0.0",
