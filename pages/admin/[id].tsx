@@ -1,6 +1,6 @@
 import { Box, Tabs, Tab } from "@mui/material";
 import { GetServerSideProps } from "next";
-import { unstable_getServerSession } from "next-auth";
+import { getServerSession } from "next-auth";
 import { useState } from "react";
 import { AuthenticationRequired } from "../../components/AuthenticationRequired";
 import prisma from "../../lib/prisma";
@@ -43,11 +43,7 @@ const TabPanel = (props: TabPanelProps) => {
 };
 
 const isCurrentUserAuthorized = async (tournamentId, context) => {
-  const session = await unstable_getServerSession(
-    context.req,
-    context.res,
-    authConfig
-  );
+  const session = await getServerSession(context.req, context.res, authConfig);
 
   const umpire = await prisma.umpire.findFirst({
     where: {

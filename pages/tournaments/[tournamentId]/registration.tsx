@@ -3,7 +3,7 @@ import prisma from "../../../lib/prisma";
 import UserForm from "../../../components/Registration/UserForm";
 import TeamForm from "../../../components/Registration/TeamForm";
 import { Tournament } from "@prisma/client";
-import { unstable_getServerSession } from "next-auth/next";
+import { getServerSession } from "next-auth/next";
 import { authConfig } from "../../api/auth/[...nextauth]";
 import { useRouter } from "next/router";
 import { useState, useEffect } from "react";
@@ -15,7 +15,7 @@ export const getServerSideProps: GetServerSideProps = async ({
   req,
   res
 }) => {
-  const session = await unstable_getServerSession(req, res, authConfig);
+  const session = await getServerSession(req, res, authConfig);
 
   if (session) {
     const user = await prisma.user.findUnique({
