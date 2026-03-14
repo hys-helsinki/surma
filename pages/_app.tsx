@@ -2,6 +2,7 @@ import Head from "next/head";
 import "../styles/globals.css";
 import { SessionProvider } from "next-auth/react";
 import NavigationBar from "../components/NavigationBar";
+import { appWithTranslation } from "next-i18next";
 
 function MyApp({ Component, pageProps: { session, ...pageProps } }) {
   return (
@@ -16,4 +17,4 @@ function MyApp({ Component, pageProps: { session, ...pageProps } }) {
   );
 }
 
-export default MyApp;
+export default appWithTranslation(MyApp);
