@@ -3,10 +3,9 @@ import { Field, Form, Formik } from "formik";
 import * as Yup from "yup";
 import Link from "next/link";
 import TextInput from "../TextInput";
-import GdprModal from "../../GdprModal";
-
 import { PlayerTitle } from "../../../lib/constants";
 import Markdown from "../../Common/Markdown";
+import GdprModal from "../../GdprModal";
 
 const BottomText = () => {
   return (

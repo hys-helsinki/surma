@@ -1,5 +1,4 @@
-import { Box, Typography } from "@mui/material/";
-import Modal from "@mui/material/Modal";
+import { Box, Typography, Modal } from "@mui/material";
 import { useState } from "react";
 import styles from "../styles/Home.module.css";
 import { useRouter } from "next/router";
@@ -18,7 +17,7 @@ const style = {
   overflow: "scroll"
 };
 
-export default function GDPRModal({ text }) {
+export default function GdprModal({ text }) {
   const [open, setOpen] = useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
