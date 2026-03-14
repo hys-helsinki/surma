@@ -118,7 +118,9 @@ export const getServerSideProps: GetServerSideProps = async ({
     }
   });
 
-  const imageUrl = `surma/${user.tournamentId}/${user.player.id}`;
+  const imageUrl = user.player
+    ? `surma/${user.tournamentId}/${user.player.id}`
+    : "";
 
   user = JSON.parse(JSON.stringify(user));
   currentUser = JSON.parse(JSON.stringify(currentUser));
