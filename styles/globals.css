@@ -97,7 +97,7 @@ button[type="submit"] {
 }
 
 button:hover,
-.MuiLoadingButton-root:hover {
+button.playerTableStateButton:hover {
   background-color: #a50000;
   color: white;
   font-weight: bold;
@@ -122,4 +122,13 @@ a {
 
 .rdtPicker {
   color: black;
+}
+
+button.playerTableStateButton {
+  background-color: white;
+  color: black;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: bold;
 }

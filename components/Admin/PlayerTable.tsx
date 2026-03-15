@@ -1,25 +1,13 @@
-import { Grid, Button } from "@mui/material";
-import {
-  Assignment,
-  AssignmentRing,
-  Player,
-  Team,
-  Tournament,
-  User
-} from "@prisma/client";
+import { Grid, Button, Box } from "@mui/material";
+import { Tournament } from "@prisma/client";
 import Link from "next/link";
 import { Dispatch, SetStateAction, useState } from "react";
 import WantedModal from "./WantedModal";
-
-interface PlayerWithUser extends Player {
-  user: User;
-  targets: Assignment[];
-  team?: Team;
-}
-
-interface RingWithAssignments extends AssignmentRing {
-  assignments: Assignment[];
-}
+import {
+  RingWithAssignments,
+  UmpirePagePlayer,
+  UmpirePageUser
+} from "../../types/umpirepage";
 
 const PlayerRow = ({
   player,
@@ -28,11 +16,11 @@ const PlayerRow = ({
   tournament,
   setRings
 }: {
-  player: PlayerWithUser;
-  players: PlayerWithUser[];
-  setPlayers: Dispatch<SetStateAction<PlayerWithUser[]>>;
+  player: UmpirePagePlayer;
+  players: UmpirePagePlayer[];
+  setPlayers: Dispatch<SetStateAction<UmpirePagePlayer[]>>;
   tournament: Tournament;
-  setRings: Dispatch<SetStateAction<any>>;
+  setRings: Dispatch<SetStateAction<RingWithAssignments[]>>;
 }) => {
   const [isStateButtonLoading, setIsStateButtonLoading] = useState("");
   const [openModal, setOpenModal] = useState(false);
@@ -56,7 +44,7 @@ const PlayerRow = ({
           updatedPlayerList,
           rings
         }: {
-          updatedPlayerList: PlayerWithUser[];
+          updatedPlayerList: UmpirePagePlayer[];
           rings: RingWithAssignments[];
         } = await res.json();
         setPlayers(updatedPlayerList);
@@ -69,8 +57,8 @@ const PlayerRow = ({
   };
 
   return (
-    <tr key={player.id}>
-      <td style={{ width: "50%" }}>
+    <Grid container key={player.id} sx={{ mb: 1 }}>
+      <Grid size={{ xs: 12, md: 4 }}>
         <Link
           href={`/tournaments/${tournament.id}/users/${player.user.id}`}
           passHref
@@ -79,50 +67,74 @@ const PlayerRow = ({
             {player.user.firstName} {player.user.lastName} ({player.alias})
           </p>
         </Link>
-      </td>
+      </Grid>
       {player.state == "ACTIVE" && (
-        <td>
+        <Grid
+          size={{ xs: 3, md: 2 }}
+          sx={{
+            display: "flex",
+            alignItems: "center"
+          }}
+        >
           <Button
             onClick={() => handlePlayerStatusChange("DEAD", player.id)}
-            style={{ margin: "0 5px 0 0" }}
             loading={isStateButtonLoading == "DEAD"}
+            className="playerTableStateButton"
           >
             Tapa
           </Button>
-        </td>
+        </Grid>
       )}
       {player.state == "ACTIVE" && (
-        <td>
+        <Grid
+          size={{ xs: 5, md: 2 }}
+          sx={{
+            display: "flex",
+            alignItems: "center"
+          }}
+        >
           <Button
             onClick={() => setOpenModal(true)}
-            style={{ margin: "0 5px 0 0" }}
             loading={false}
+            className="playerTableStateButton"
           >
             Etsintäkuuluta
           </Button>
-        </td>
+        </Grid>
       )}
       {player.state == "DEAD" && (
-        <td>
+        <Grid
+          size={{ xs: 4, md: 2 }}
+          sx={{
+            display: "flex",
+            alignItems: "center"
+          }}
+        >
           <Button
             onClick={() => handlePlayerStatusChange("DETECTIVE", player.id)}
-            style={{ margin: "0 5px 0 0" }}
             loading={isStateButtonLoading == "DETECTIVE"}
+            className="playerTableStateButton"
           >
             Etsiväksi
           </Button>
-        </td>
+        </Grid>
       )}
       {player.state != "ACTIVE" && (
-        <td>
+        <Grid
+          size={{ xs: 3, md: 2 }}
+          sx={{
+            display: "flex",
+            alignItems: "center"
+          }}
+        >
           <Button
             onClick={() => handlePlayerStatusChange("ACTIVE", player.id)}
-            style={{ margin: "0 5px 0 0" }}
             loading={isStateButtonLoading == "ACTIVE"}
+            className="playerTableStateButton"
           >
             Herätä henkiin
           </Button>
-        </td>
+        </Grid>
       )}
       <WantedModal
         players={players}
@@ -133,7 +145,7 @@ const PlayerRow = ({
         setOpenModal={setOpenModal}
         tournament={tournament}
       />
-    </tr>
+    </Grid>
   );
 };
 
@@ -144,11 +156,11 @@ const PlayerTable = ({
   setRings,
   users
 }: {
-  players: PlayerWithUser[];
-  setPlayers: any;
+  players: UmpirePagePlayer[];
+  setPlayers: Dispatch<SetStateAction<UmpirePagePlayer[]>>;
   tournament: Tournament;
-  setRings: any;
-  users: any[];
+  setRings: Dispatch<SetStateAction<RingWithAssignments[]>>;
+  users: UmpirePageUser[];
 }) => {
   if (players.length === 0) return <p>Ei pelaajia</p>;
 
@@ -169,74 +181,60 @@ const PlayerTable = ({
     .sort((a, b) => a.firstName.localeCompare(b.firstName));
 
   return (
-    <Grid sx={{ marginBottom: "30px" }} container>
-      <Grid size={{ xs: 12, lg: 7 }}>
-        {unfinishedRegistrations.length > 0 && (
-          <div style={{ marginBottom: "30px" }}>
-            <h2>Keskeneräiset ilmoittautumiset</h2>
-            {unfinishedRegistrations.map((user) => (
-              <div key={user.id}>
-                <Link href={`/tournaments/${tournament.id}/users/${user.id}`}>
-                  {user.firstName} {user.lastName}
-                </Link>
-              </div>
-            ))}
-          </div>
-        )}
-        <h2>Pelaajat</h2>
-        <div style={{ overflowX: "auto" }}>
-          <table width="100%">
-            <tbody>
-              <tr>
-                <td>
-                  <b>Elossa ({activePlayers.length})</b>
-                </td>
-              </tr>
-              {activePlayers.map((player) => (
-                <PlayerRow
-                  key={player.id}
-                  player={player}
-                  tournament={tournament}
-                  setRings={setRings}
-                  players={players}
-                  setPlayers={setPlayers}
-                />
-              ))}
-              <tr>
-                <td>
-                  <b>Kuolleet ({deadPlayers.length})</b>
-                </td>
-              </tr>
-              {deadPlayers.map((player) => (
-                <PlayerRow
-                  key={player.id}
-                  player={player}
-                  tournament={tournament}
-                  setRings={setRings}
-                  players={players}
-                  setPlayers={setPlayers}
-                />
-              ))}
-              <tr>
-                <td>
-                  <b>Etsivät ({detectivePlayers.length})</b>
-                </td>
-              </tr>
-              {detectivePlayers.map((player) => (
-                <PlayerRow
-                  key={player.id}
-                  player={player}
-                  tournament={tournament}
-                  setRings={setRings}
-                  players={players}
-                  setPlayers={setPlayers}
-                />
-              ))}
-            </tbody>
-          </table>
+    <Box>
+      {unfinishedRegistrations.length > 0 && (
+        <div style={{ marginBottom: "30px" }}>
+          <h2>Keskeneräiset ilmoittautumiset</h2>
+          {unfinishedRegistrations.map((user) => (
+            <div key={user.id}>
+              <Link href={`/tournaments/${tournament.id}/users/${user.id}`}>
+                {user.firstName} {user.lastName}
+              </Link>
+            </div>
+          ))}
         </div>
-      </Grid>
-    </Grid>
+      )}
+      <h2>Pelaajat</h2>
+      <Box sx={{ borderBottom: "1px solid", my: 2 }}>
+        <b>Elossa ({activePlayers.length})</b>
+        {activePlayers.map((player) => (
+          <PlayerRow
+            key={player.id}
+            player={player}
+            tournament={tournament}
+            setRings={setRings}
+            players={players}
+            setPlayers={setPlayers}
+          />
+        ))}
+      </Box>
+      <Box sx={{ borderBottom: "1px solid", my: 2 }}>
+        <b>Kuolleet ({deadPlayers.length})</b>
+        {deadPlayers.map((player) => (
+          <PlayerRow
+            key={player.id}
+            player={player}
+            tournament={tournament}
+            setRings={setRings}
+            players={players}
+            setPlayers={setPlayers}
+          />
+        ))}
+      </Box>
+      <Box sx={{ borderBottom: "1px solid", my: 2 }}>
+        <b>Etsivät ({detectivePlayers.length})</b>
+        {detectivePlayers.map((player) => (
+          <PlayerRow
+            key={player.id}
+            player={player}
+            tournament={tournament}
+            setRings={setRings}
+            players={players}
+            setPlayers={setPlayers}
+          />
+        ))}
+      </Box>
+    </Box>
   );
 };
 

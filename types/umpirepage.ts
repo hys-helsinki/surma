@@ -15,10 +15,14 @@ interface PlayerWithUser extends Player {
   user: User;
 }
 
+interface UmpireWithUser extends Umpire {
+  user: User;
+}
+
 export interface UmpirePagePlayer extends Player {
   user: User;
   targets: Assignment[];
-  umpire: Umpire;
+  umpire: UmpireWithUser;
   team: Team;
   colorCode?: string;
 }
