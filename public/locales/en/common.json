@@ -8,5 +8,30 @@
     "admin": "Admin",
     "tournamentRules": "Tournament rules",
     "signIn": "Sign in"
+  },
+  "landingPage": {
+    "title": "Open assassination tournaments",
+    "infoAccordion": {
+      "whatIsSurmaTitle": "What is Surma?",
+      "whatIsSurmaContent": "Surma is a program designed for organizing fun assassination tournaments, maintained and developed by active members of the University of Helsinki assassination game players association, which is ",
+      "hysinOrgLink": "the hys-helsinki organization on GitHub",
+      "whatIsSurmaContent2": ". Surma is used to manage assassination tournaments: players share information with each other through Surma during the tournament.",
+      "whatIsAssassinationTournamentTitle": "What is an assassination tournament?",
+      "whatIsAssassinationTournamentContent1": "In an assassination tournament, players live their everyday lives while trying to get into situations unnoticed by others, where they can apply playful weapon substitutes to other players as allowed by the rules. The tournament is played among participants in murder chains: player A's goal is to assassinate the target, player B; player B hunts player C, and so on up to player N, who waits for player A. If A successfully kills B in a way allowed by the rules, A and B contact the referee and report what happened for scoring purposes. Now B drops out of the game, and A starts hunting C as their new target. The game is played around the clock until a predetermined time limit, at which point the game winner is determined by points. To make the game easier, players share, among other things, their calendars and home addresses with each other in Surma.",
+      "whatIsAssassinationTournamentContent2": "Participation in an assassination tournament begins by registering for the game through Surma, after which Surma and the tournament referee send additional instructions by email. ",
+      "whatIsAssassinationTournamentContent3": "Read more about player data and how it is handled in ",
+      "privacyPolicyLink": "Surma's privacy policy",
+      "whatIsAssassinationTournamentContent4": "Read more about assassination tournaments and their rules on ",
+      "hysinRulesLink": "HYS's website"
+    },
+    "tournamentTable": {
+      "name": "Name",
+      "tournamentRunning": "Tournament running",
+      "registration": "Registration",
+      "registerLink": "Register here!",
+      "registrationNotOpen": "Registration is not open",
+      "noTournamentsMessage": "There are currently no upcoming tournaments scheduled, so please come back later. You can also get information about upcoming tournaments from ",
+      "hysinEventsLink": "the University of Helsinki assassination game players' (HYS) website."
+    }
   }
 }

@@ -8,5 +8,30 @@
     "admin": "Ylläpito",
     "tournamentRules": "Turnaussäännöt",
     "signIn": "Kirjaudu sisään"
+  },
+  "landingPage": {
+    "title": "Avoimet salamurhaturnaukset",
+    "infoAccordion": {
+      "whatIsSurmaTitle": "Mikä on Surma?",
+      "whatIsSurmaContent": "Surma on leikkisten salamurhaturnausten järjestämiseen tarkoitettu ohjelma, jota ylläpitää ja kehittää Helsingin yliopiston salamurhapelaajat ry:n aktiivit eli ",
+      "hysinOrgLink": "GitHubin hys-helsinki -organisaatio",
+      "whatIsSurmaContent2": ". Surmaa käytetään salamurhaturnauksien ylläpitämiseen: pelaajat jakavat tietoja toisilleen Surman kautta turnauksen ajan.",
+      "whatIsAssassinationTournamentTitle": "Mikä on salamurhaturnaus?",
+      "whatIsAssassinationTournamentContent1": "Salamurhaturnauksessa pelaajat elävät arkista elämäänsä samalla kun he pyrkivät hankkiutumaan muiden ihmisten huomaamatta olosuhteisiin, joissa voivat soveltaa toisiin pelaajiin sääntöjen sallimaa kirjoa leikkimielisiä aseenkorvikkeita. Turnausta pelataan osallistujien kesken murharingeittäin: pelaaja A:n tavoite on salamurhata kohde eli pelaaja B, pelaaja B saalistaa pelaaja C:tä ja niin edelleen aina pelaajaan N asti, joka väijyy pelaajaa A. Mikäli A onnistuu murhaamaan B:n sääntöjen sallimalla tavalla, A ja B ottavat yhteyttä tuomaristoon ja raportoivat tapahtumien kulusta pisteytystä varten. Nyt B putoaa pelistä, jolloin A alkaakin väijyä C:tä uutena kohteenaan. Peliä pelataan näin kellon ympäri ennalta määrättyyn aikarajaan asti, jolloin pelin voittaja päätetään pisteillä. Pelin helpottamiseksi pelaajat jakavat muun muuassa kalentereitaan ja kotiosoitteitaan toisilleen Surmassa.",
+      "whatIsAssassinationTournamentContent2": "Salamurhaturnaukseen osallistuminen aloitetaan ilmoittautumalla peliin Surman kautta, jonka jälkeen Surma ja turnauksen tuomaristo lähettävät lisäohjeita sähköpostilla. ",
+      "whatIsAssassinationTournamentContent3": "Lue lisää pelaajatiedoista ja niiden käsittelystä ",
+      "privacyPolicyLink": "Surman tietosuojakäytännöstä",
+      "whatIsAssassinationTournamentContent4": "Lue lisää salamurhaturnauksesta ja sen säännöistä ",
+      "hysinRulesLink": "HYSin nettisivuilta"
+    },
+    "tournamentTable": {
+      "name": "Nimi",
+      "tournamentRunning": "Turnaus käynnissä",
+      "registration": "Ilmoittautuminen",
+      "registerLink": "Ilmoittaudu mukaan tästä!",
+      "registrationNotOpen": "Ilmoittautuminen ei ole auki",
+      "noTournamentsMessage": "Tulevia turnauksia ei ole juuri nyt tiedossa, joten palaathan myöhemmin takaisin. Tietoa tulevista turnauksista voi saada myös ",
+      "hysinEventsLink": "Helsingin yliopiston salamurhapelaajien eli HYSin nettisivuilta."
+    }
   }
 }

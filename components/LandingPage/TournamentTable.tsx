@@ -1,8 +1,10 @@
 import Link from "next/link";
 import { NoSsr } from "@mui/material";
 import { Box, Grid } from "@mui/material";
+import { useTranslation } from "next-i18next";
 
 const TournamentTable = ({ tournaments }) => {
+  const { t } = useTranslation("common");
   const modifyDate = (dateString) => {
     const date = new Date(dateString);
     const formattedDate = `${date.toLocaleTimeString("fi-FI", {
@@ -23,11 +25,11 @@ const TournamentTable = ({ tournaments }) => {
     const registrationLink = isRegistrationOpen ? (
       <p>
         <Link href={`/tournaments/${tournament.id}/registration`}>
-          Ilmoittaudu mukaan tästä!
+          {t("landingPage.tournamentTable.registerLink")}
         </Link>
       </p>
     ) : (
-      <p>Ilmoittautuminen ei ole auki</p>
+      <p>{t("landingPage.tournamentTable.registrationNotOpen")}</p>
     );
     return registrationLink;
   };
@@ -44,11 +46,11 @@ const TournamentTable = ({ tournaments }) => {
             }}
           >
             <Grid size={{ xs: 6, md: 4 }}>
-              <h3>Nimi</h3>
+              <h3>{t("landingPage.tournamentTable.name")}</h3>
               <p>{tournament.name}</p>
             </Grid>
             <Grid size={{ xs: 6, md: 4 }}>
-              <h3>Turnaus käynnissä</h3>
+              <h3>{t("landingPage.tournamentTable.tournamentRunning")}</h3>
               <NoSsr>
                 {modifyDate(tournament.startTime)}&nbsp;-&nbsp;
                 {modifyDate(tournament.endTime)} (
@@ -56,7 +58,7 @@ const TournamentTable = ({ tournaments }) => {
               </NoSsr>
             </Grid>
             <Grid size={{ xs: 12, md: 4 }}>
-              <h3>Ilmoittautuminen</h3>
+              <h3>{t("landingPage.tournamentTable.registration")}</h3>
               <NoSsr>
                 {modifyDate(tournament.registrationStartTime)}
                 &nbsp;-&nbsp;{modifyDate(tournament.registrationEndTime)} (
@@ -71,10 +73,9 @@ const TournamentTable = ({ tournaments }) => {
   }
   return (
     <p>
-      Tulevia turnauksia ei ole juuri nyt tiedossa, joten palaathan myöhemmin
-      takaisin. Tietoa tulevista turnauksista voi saada myös{" "}
+      {t("landingPage.tournamentTable.noTournamentsMessage")}
       <a href="https://salamurhaajat.net/tulevat-tapahtumat">
-        Helsingin yliopiston salamurhapelaajien eli HYSin nettisivuilta.
+        {t("landingPage.tournamentTable.hysinEventsLink")}
       </a>
     </p>
   );
