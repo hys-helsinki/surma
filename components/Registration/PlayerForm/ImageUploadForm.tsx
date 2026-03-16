@@ -1,7 +1,9 @@
 import { Alert, Box, Snackbar } from "@mui/material";
 import { useState } from "react";
+import { useTranslation } from "next-i18next";
 
 const ImageUploadForm = ({ setSelectedFileData }) => {
+  const { t } = useTranslation("common");
   const [showError, setShowError] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
   const [fileInputState, setFileInputState] = useState("");
@@ -16,7 +18,7 @@ const ImageUploadForm = ({ setSelectedFileData }) => {
       return;
     }
     if (file.size > 4000000) {
-      setErrorMessage("Kuva liian suuri (yli 4 Mt)");
+      setErrorMessage(t("playerForm.imageTooLarge"));
       setShowError(true);
       return;
     }
@@ -29,9 +31,7 @@ const ImageUploadForm = ({ setSelectedFileData }) => {
       reader.readAsDataURL(file);
     } catch (error) {
       console.log(error);
-      setErrorMessage(
-        "Kuvatiedoston lukeminen epäonnistui. Kokeile toista tiedostoa"
-      );
+      setErrorMessage(t("playerForm.imageReadError"));
       setShowError(true);
       setFileInputState("");
       setSelectedFileName("");
@@ -46,7 +46,7 @@ const ImageUploadForm = ({ setSelectedFileData }) => {
   return (
     <Box sx={{ mb: 2 }}>
       <form>
-        <label htmlFor="image">Valitse kuva itsestäsi (max. 4 Mt)</label>
+        <label htmlFor="image">{t("playerForm.imageUploadLabel")}</label>
         <input
           type="file"
           name="image"
@@ -58,7 +58,7 @@ const ImageUploadForm = ({ setSelectedFileData }) => {
       </form>
       {selectedFileName ? (
         <p>
-          <i>Valittu tiedosto: {selectedFileName}</i>
+          <i>{t("playerForm.selectedFile", { fileName: selectedFileName })}</i>
         </p>
       ) : null}
       <Snackbar open={showError} onClose={() => setShowError(false)}>

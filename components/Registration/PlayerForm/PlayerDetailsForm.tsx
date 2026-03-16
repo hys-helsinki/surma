@@ -2,26 +2,27 @@ import { Box, Button } from "@mui/material";
 import { Field, Form, Formik } from "formik";
 import * as Yup from "yup";
 import Link from "next/link";
+import { useTranslation } from "next-i18next";
 import TextInput from "../TextInput";
 import { PlayerTitle } from "../../../lib/constants";
 import Markdown from "../../Common/Markdown";
 import GdprModal from "../../GdprModal";
 
 const BottomText = () => {
+  const { t } = useTranslation("common");
   return (
     <Box sx={{ my: 3, wordWrap: "break-word" }}>
       <div>
-        Ilmoittautuessasi turnaukseen hyväksyt Helsingin yliopiston
-        salamurhaajien{" "}
+        {t("playerForm.agreedTo")}{" "}
         <Link
           href={"https://salamurhaajat.net/mika-salamurhapeli/turnaussaannot"}
           passHref
         >
-          turnaussäännöt
+          {t("playerForm.tournamentRulesLink")}
         </Link>{" "}
-        sekä{" "}
+        {t("playerForm.and")}{" "}
       </div>
-      <GdprModal text=" tietosuojakäytännön" />.
+      <GdprModal text={t("playerForm.privacyPolicyLink")} />.
     </Box>
   );
 };
@@ -35,6 +36,8 @@ const PlayerDetailsForm = ({
   handleSubmit: (values: any) => Promise<void>;
   isLoading: boolean;
 }) => {
+  const { t } = useTranslation("common");
+
   const calendarInitials = dates.map((_, index) => ({
     [`calendar${index}`]: ""
   }));
@@ -55,21 +58,26 @@ const PlayerDetailsForm = ({
       enableReinitialize={true}
       initialValues={Object.assign(initialFields, ...calendarInitials)}
       validationSchema={Yup.object({
-        alias: Yup.string().required("Pakollinen"),
-        address: Yup.string().required("Pakollinen")
+        alias: Yup.string().required(t("playerForm.required")),
+        address: Yup.string().required(t("playerForm.required"))
       })}
       onSubmit={(values) => {
         handleSubmit(values);
       }}
     >
       <Form>
-        <TextInput label="Peitenimi" id="alias" name="alias" type="text" />
+        <TextInput
+          label={t("playerForm.alias")}
+          id="alias"
+          name="alias"
+          type="text"
+        />
         <Box sx={{ marginBottom: "8px" }}>
           <div style={{ width: "100%" }}>
-            <label htmlFor="title">Ammattilaistitteli</label>
+            <label htmlFor="title">{t("playerForm.professionalTitle")}</label>
           </div>
           <Field name="title" id="title" as="select">
-            <option>Ei titteliä</option>
+            <option>{t("playerForm.noTitle")}</option>
             <option value={PlayerTitle.KK}>{PlayerTitle.KK}</option>
             <option value={PlayerTitle.MM}>{PlayerTitle.MM}</option>
             <option value={PlayerTitle.LL}>{PlayerTitle.LL}</option>
@@ -77,39 +85,48 @@ const PlayerDetailsForm = ({
           </Field>
         </Box>
         <TextInput
-          label="Osoite"
+          label={t("playerForm.address")}
           id="address"
           name="address"
           autoComplete="home"
           type="text"
         />
         <TextInput
-          label="Oppilaitos"
+          label={t("playerForm.learningInstitution")}
           id="learningInstitution"
           name="learningInstitution"
           type="text"
         />
-        <TextInput label="Silmät" id="eyeColor" name="eyeColor" type="text" />
-        <TextInput label="Hiukset" id="hair" name="hair" type="text" />
-        <TextInput label="Pituus" id="height" name="height" type="text" />
+        <TextInput
+          label={t("playerForm.eyeColor")}
+          id="eyeColor"
+          name="eyeColor"
+          type="text"
+        />
+        <TextInput
+          label={t("playerForm.hair")}
+          id="hair"
+          name="hair"
+          type="text"
+        />
+        <TextInput
+          label={t("playerForm.height")}
+          id="height"
+          name="height"
+          type="text"
+        />
         <div style={{ marginBottom: "7px" }}>
-          <label htmlFor="safetyNotes">
-            Turvallisuushuomiot (esim. pelin ulkopuolelle rajatut ajat ja
-            paikat)
-          </label>
+          <label htmlFor="safetyNotes">{t("playerForm.safetyNotes")}</label>
           <Field name="safetyNotes" id="safetyNotes" as="textarea" />
         </div>
         <div style={{ marginBottom: "7px" }}>
-          <label htmlFor="other">Muut tiedot, kulkuneuvot yms.</label>
+          <label htmlFor="other">{t("playerForm.otherInfo")}</label>
           <Field name="other" id="other" as="textarea" />
         </div>
 
-        <h3>Kalenteritiedot</h3>
+        <h3>{t("playerForm.calendarTitle")}</h3>
         <Box sx={{ mb: 2 }}>
-          <Markdown>
-            *Kalenteri tukee
-            [Markdown-syntaksia](https://www.markdownguide.org/basic-syntax/)*
-          </Markdown>
+          <Markdown>{t("playerForm.calendarMarkdown")}</Markdown>
         </Box>
         {dates.map((date: string, index) => (
           <div key={index}>
@@ -124,7 +141,7 @@ const PlayerDetailsForm = ({
 
         <BottomText />
         <Button loading={isLoading} type="submit">
-          Ilmoittaudu
+          {t("playerForm.registerButton")}
         </Button>
       </Form>
     </Formik>

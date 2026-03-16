@@ -50,6 +50,38 @@
       "phoneTypeError": "Enter only numbers",
       "emailNotValidError": "The provided email address is not valid. Try a different address",
       "genericError": "Something went wrong. Please contact the referee"
+    },
+    "playerForm": {
+      "title": "Registration",
+      "userNotFound": "User not found",
+      "description": "This form asks for information relevant to the tournament, which will be visible to your hunters. After completing the form, the referee will confirm your registration.",
+      "mandatoryFields": "Only your alias and address are mandatory at this stage - you can fill in the other fields later and edit them during the tournament.",
+      "calendarInfo": "Calendar information should be kept up to date and sufficiently clear and detailed. You don't need to document every second, but the game becomes more fun for you and your hunters if you provide them with enough opportunities for assassination.",
+      "imageUploadLabel": "Choose a photo of yourself (max. 4 MB)",
+      "imageTooLarge": "Image too large (over 4 MB)",
+      "imageReadError": "Failed to read image file. Try another file",
+      "selectedFile": "Selected file: {fileName}",
+      "imageUploadFailed": "Failed to upload image to server",
+      "alias": "Alias",
+      "professionalTitle": "Professional title",
+      "noTitle": "No title",
+      "address": "Address",
+      "learningInstitution": "Learning institution",
+      "eyeColor": "Eyes",
+      "hair": "Hair",
+      "height": "Height",
+      "safetyNotes": "Safety notes (e.g. times and places outside the game)",
+      "otherInfo": "Other information, transportation etc.",
+      "calendarTitle": "Calendar information",
+      "calendarMarkdown": "*Calendar supports [Markdown syntax](https://www.markdownguide.org/basic-syntax/)*",
+      "registerButton": "Register",
+      "required": "Required",
+      "agreedTo": "By registering for the tournament, you accept the University of Helsinki assassination players'",
+      "tournamentRulesLink": "tournament rules",
+      "and": "and",
+      "privacyPolicyLink": "privacy policy",
+      "error": "Something went wrong. Please contact the referee",
+      "registrationNotOpen": "Registration is not open"
     }
   }
 }

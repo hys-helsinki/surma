@@ -50,6 +50,38 @@
       "phoneTypeError": "Syötä vain numeroita",
       "emailNotValidError": "Annettu sähköpostiosoite ei kelpaa. Kokeile toista osoitetta",
       "genericError": "Jotain meni pieleen. Ota yhteyttä tuomaristoon"
+    },
+    "playerForm": {
+      "title": "Ilmoittautuminen",
+      "userNotFound": "Käyttäjää ei löytynyt",
+      "description": "Tässä lomakkeessa kysytään turnauksen kannalta olennaisia tietoja, jotka näkyvät jahtaajillesi. Lomakkeen täyttämisen jälkeen tuomaristo vahvistaa vielä ilmoittautumisesi.",
+      "mandatoryFields": "Ainoastaan peitenimi ja osoite ovat tässä vaiheessa pakollisia - muut kentät voi täyttää myöhemminkin ja niitä voi muokata turnauksen aikana.",
+      "calendarInfo": "Kalenterin tiedot tulee pitää ajan tasalla sekä riittävän selkeinä ja yksityiskohtaisina. Jokaista sekuntia siihen ei tarvitse kirjoittaa, mutta pelistä tulee hauskempaa itsellesi sekä jahtaajillesi jos tarjoat heille riittävästi tilaisuuksia salamurhaamiseen.",
+      "imageUploadLabel": "Valitse kuva itsestäsi (max. 4 Mt)",
+      "imageTooLarge": "Kuva liian suuri (yli 4 Mt)",
+      "imageReadError": "Kuvatiedoston lukeminen epäonnistui. Kokeile toista tiedostoa",
+      "selectedFile": "Valittu tiedosto: {fileName}",
+      "imageUploadFailed": "Kuvan lataaminen palvelimelle epäonnistui",
+      "alias": "Peitenimi",
+      "professionalTitle": "Ammattilaistitteli",
+      "noTitle": "Ei titteliä",
+      "address": "Osoite",
+      "learningInstitution": "Oppilaitos",
+      "eyeColor": "Silmät",
+      "hair": "Hiukset",
+      "height": "Pituus",
+      "safetyNotes": "Turvallisuushuomiot (esim. pelin ulkopuolelle rajatut ajat ja paikat)",
+      "otherInfo": "Muut tiedot, kulkuneuvot yms.",
+      "calendarTitle": "Kalenteritiedot",
+      "calendarMarkdown": "*Kalenteri tukee [Markdown-syntaksia](https://www.markdownguide.org/basic-syntax/)*",
+      "registerButton": "Ilmoittaudu",
+      "required": "Pakollinen",
+      "agreedTo": "Ilmoittautuessasi turnaukseen hyväksyt Helsingin yliopiston salamurhaajien",
+      "tournamentRulesLink": "turnaussäännöt",
+      "and": "sekä",
+      "privacyPolicyLink": "tietosuojakäytännön",
+      "error": "Jotain meni pieleen. Ota yhteyttä tuomaristoon",
+      "registrationNotOpen": "Ilmoittautuminen ei ole auki"
     }
   }
 }
