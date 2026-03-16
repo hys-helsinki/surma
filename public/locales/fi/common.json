@@ -33,5 +33,23 @@
       "noTournamentsMessage": "Tulevia turnauksia ei ole juuri nyt tiedossa, joten palaathan myöhemmin takaisin. Tietoa tulevista turnauksista voi saada myös ",
       "hysinEventsLink": "Helsingin yliopiston salamurhapelaajien eli HYSin nettisivuilta."
     }
+  },
+  "registration": {
+    "registrationNotOpen": "Ilmoittautuminen ei ole auki",
+    "userForm": {
+      "title": "Ilmoittautuminen",
+      "welcomeMessage": "Tervetuloa ilmoittautumaan HYSin salamurhaturnaukseen",
+      "description": "Ilmoittautuminen on kaksivaiheinen. Ensimmäiseksi pyydämme sinulta nimen, sähköpostiosoitteen ja puhelinnumeron. Näitä tietoja tarvitaan Surmaan kirjautumiseen ja jotta tuomaristo voi ottaa sinuun yhteyttä turnaukseen liittyvissä asioissa. Sähköpostiosoitteen vahvistamisen jälkeen pääset syöttämään loput turnauksessa vaadittavat tiedot. Ilmoittautuessasi turnaukseen hyväksyt Helsingin yliopiston salamurhaajien ",
+      "privacyPolicyLink": "tietosuojakäytännön",
+      "firstNameLabel": "Etunimi",
+      "lastNameLabel": "Sukunimi",
+      "emailLabel": "Sähköpostiosoite",
+      "phoneLabel": "Puhelinnumero",
+      "submitButton": "Luo käyttäjä",
+      "requiredError": "Pakollinen",
+      "phoneTypeError": "Syötä vain numeroita",
+      "emailNotValidError": "Annettu sähköpostiosoite ei kelpaa. Kokeile toista osoitetta",
+      "genericError": "Jotain meni pieleen. Ota yhteyttä tuomaristoon"
+    }
   }
 }

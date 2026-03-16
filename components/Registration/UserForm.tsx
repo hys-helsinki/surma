@@ -6,8 +6,10 @@ import { useState } from "react";
 import { signIn } from "next-auth/react";
 import { Tournament } from "@prisma/client";
 import GdprModal from "../GdprModal";
+import { useTranslation } from "next-i18next";
 
 const UserForm = ({ tournament }: { tournament: Tournament }) => {
+  const { t } = useTranslation("common");
   const [isLoading, setIsLoading] = useState(false);
   const [showError, setShowError] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
@@ -31,12 +33,10 @@ const UserForm = ({ tournament }: { tournament: Tournament }) => {
           email: responseObject.email
         });
       } else if (response.status === 409) {
-        setErrorMessage(
-          "Annettu sähköpostiosoite ei kelpaa. Kokeile toista osoitetta"
-        );
+        setErrorMessage(t("registration.userForm.emailNotValidError"));
         setShowError(true);
       } else {
-        setErrorMessage("Jotain meni pieleen. Ota yhteyttä tuomaristoon");
+        setErrorMessage(t("registration.userForm.genericError"));
         setShowError(true);
       }
     } catch (error) {
@@ -48,22 +48,16 @@ const UserForm = ({ tournament }: { tournament: Tournament }) => {
 
   return (
     <Container maxWidth="md">
-      <h1 style={{ marginLeft: "10px" }}>Ilmoittautuminen</h1>
+      <h1 style={{ marginLeft: "10px" }}>{t("registration.userForm.title")}</h1>
 
       <Box sx={{ my: 4 }}>
         <p>
-          Tervetuloa ilmoittautumaan HYSin salamurhaturnaukseen &quot;
+          {t("registration.userForm.welcomeMessage")} &quot;
           {tournament.name}&quot;!
         </p>
         <p>
-          Ilmoittautuminen on kaksivaiheinen. Ensimmäiseksi pyydämme sinulta
-          nimen, sähköpostiosoitteen ja puhelinnumeron. Näitä tietoja tarvitaan
-          Surmaan kirjautumiseen ja jotta tuomaristo voi ottaa sinuun yhteyttä
-          turnaukseen liittyvissä asioissa. Sähköpostiosoitteen vahvistamisen
-          jälkeen pääset syöttämään loput turnauksessa vaadittavat tiedot.
-          Ilmoittautuessasi turnaukseen hyväksyt Helsingin yliopiston
-          salamurhaajien&nbsp;
-          <GdprModal text="tietosuojakäytännön" />.
+          {t("registration.userForm.description")}
+          <GdprModal text={t("registration.userForm.privacyPolicyLink")} />.
         </p>
       </Box>
       <Box sx={{ my: 5 }}>
@@ -76,12 +70,12 @@ const UserForm = ({ tournament }: { tournament: Tournament }) => {
             phone: ""
           }}
           validationSchema={Yup.object({
-            firstName: Yup.string().required("Pakollinen"),
-            lastName: Yup.string().required("Pakollinen"),
-            email: Yup.string().required("Pakollinen"),
+            firstName: Yup.string().required(t("registration.userForm.requiredError")),
+            lastName: Yup.string().required(t("registration.userForm.requiredError")),
+            email: Yup.string().required(t("registration.userForm.requiredError")),
             phone: Yup.number()
-              .typeError("Syötä vain numeroita")
-              .required("Pakollinen")
+              .typeError(t("registration.userForm.phoneTypeError"))
+              .required(t("registration.userForm.requiredError"))
           })}
           onSubmit={(values) => {
             submitForm(values);
@@ -96,16 +90,16 @@ const UserForm = ({ tournament }: { tournament: Tournament }) => {
           >
             <Grid container spacing={{ xs: 0, md: 2 }}>
               <Grid size={{ xs: 12, md: 6 }}>
-                <TextInput label="Etunimi" name="firstName" type="text" />
+                <TextInput label={t("registration.userForm.firstNameLabel")} name="firstName" type="text" />
               </Grid>
               <Grid size={{ xs: 12, md: 6 }}>
-                <TextInput label="Sukunimi" name="lastName" type="text" />
+                <TextInput label={t("registration.userForm.lastNameLabel")} name="lastName" type="text" />
               </Grid>
             </Grid>
-            <TextInput label="Sähköpostiosoite" name="email" type="email" />
-            <TextInput label="Puhelinnumero" name="phone" type="text" />
+            <TextInput label={t("registration.userForm.emailLabel")} name="email" type="email" />
+            <TextInput label={t("registration.userForm.phoneLabel")} name="phone" type="text" />
             <Button loading={isLoading} type="submit">
-              Luo käyttäjä
+              {t("registration.userForm.submitButton")}
             </Button>
           </Form>
         </Formik>

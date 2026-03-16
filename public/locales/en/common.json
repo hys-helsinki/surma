@@ -33,5 +33,23 @@
       "noTournamentsMessage": "There are currently no upcoming tournaments scheduled, so please come back later. You can also get information about upcoming tournaments from ",
       "hysinEventsLink": "the University of Helsinki assassination game players' (HYS) website."
     }
+  },
+  "registration": {
+    "registrationNotOpen": "Registration is not open",
+    "userForm": {
+      "title": "Registration",
+      "welcomeMessage": "Welcome to register for the HYS assassination tournament",
+      "description": "Registration is a two-step process. First, we ask for your name, email address and phone number. This information is needed to log into Surma and for the referee to contact you about tournament-related matters. After confirming your email address, you will be able to enter the rest of the information required in the tournament. By registering for the tournament, you accept the University of Helsinki assassination players' ",
+      "privacyPolicyLink": "privacy policy",
+      "firstNameLabel": "First name",
+      "lastNameLabel": "Last name",
+      "emailLabel": "Email address",
+      "phoneLabel": "Phone number",
+      "submitButton": "Create user",
+      "requiredError": "Required",
+      "phoneTypeError": "Enter only numbers",
+      "emailNotValidError": "The provided email address is not valid. Try a different address",
+      "genericError": "Something went wrong. Please contact the referee"
+    }
   }
 }

@@ -5,10 +5,9 @@ import TeamForm from "../../../components/Registration/TeamForm";
 import { Tournament } from "@prisma/client";
 import { getServerSession } from "next-auth/next";
 import { authConfig } from "../../api/auth/[...nextauth]";
-import { useRouter } from "next/router";
-import { useState, useEffect } from "react";
 import LoadingSpinner from "../../../components/Common/LoadingSpinner";
 import { useRouterLoading } from "../../../lib/hooks";
+import { useTranslation } from "next-i18next";
 
 export const getServerSideProps: GetServerSideProps = async ({
   params,
@@ -61,6 +60,7 @@ export default function Registration({
   tournament: Tournament;
 }) {
   const isLoading = useRouterLoading();
+  const { t } = useTranslation("common");
 
   if (isLoading) return <LoadingSpinner />;
 
@@ -78,7 +78,7 @@ export default function Registration({
           <UserForm tournament={tournament} />
         )
       ) : (
-        <h3 style={{ margin: 10 }}>Ilmoittautuminen ei ole auki</h3>
+        <h3 style={{ margin: 10 }}>{t("registration.registrationNotOpen")}</h3>
       )}
     </div>
   );
