@@ -18,6 +18,7 @@ const UserForm = ({ tournament }: { tournament: Tournament }) => {
     firstName: string;
     lastName: string;
     email: string;
+    phone: string;
   }) => {
     setIsLoading(true);
     const formdata = { tournamentId: tournament.id, ...values };
@@ -70,12 +71,18 @@ const UserForm = ({ tournament }: { tournament: Tournament }) => {
             phone: ""
           }}
           validationSchema={Yup.object({
-            firstName: Yup.string().required(t("registration.userForm.requiredError")),
-            lastName: Yup.string().required(t("registration.userForm.requiredError")),
-            email: Yup.string().required(t("registration.userForm.requiredError")),
-            phone: Yup.number()
-              .typeError(t("registration.userForm.phoneTypeError"))
-              .required(t("registration.userForm.requiredError"))
+            firstName: Yup.string().required(
+              t("registration.userForm.requiredError")
+            ),
+            lastName: Yup.string().required(
+              t("registration.userForm.requiredError")
+            ),
+            email: Yup.string().required(
+              t("registration.userForm.requiredError")
+            ),
+            phone: Yup.string().required(
+              t("registration.userForm.requiredError")
+            )
           })}
           onSubmit={(values) => {
             submitForm(values);
@@ -90,14 +97,30 @@ const UserForm = ({ tournament }: { tournament: Tournament }) => {
           >
             <Grid container spacing={{ xs: 0, md: 2 }}>
               <Grid size={{ xs: 12, md: 6 }}>
-                <TextInput label={t("registration.userForm.firstNameLabel")} name="firstName" type="text" />
+                <TextInput
+                  label={t("registration.userForm.firstNameLabel")}
+                  name="firstName"
+                  type="text"
+                />
               </Grid>
               <Grid size={{ xs: 12, md: 6 }}>
-                <TextInput label={t("registration.userForm.lastNameLabel")} name="lastName" type="text" />
+                <TextInput
+                  label={t("registration.userForm.lastNameLabel")}
+                  name="lastName"
+                  type="text"
+                />
               </Grid>
             </Grid>
-            <TextInput label={t("registration.userForm.emailLabel")} name="email" type="email" />
-            <TextInput label={t("registration.userForm.phoneLabel")} name="phone" type="text" />
+            <TextInput
+              label={t("registration.userForm.emailLabel")}
+              name="email"
+              type="email"
+            />
+            <TextInput
+              label={t("registration.userForm.phoneLabel")}
+              name="phone"
+              type="text"
+            />
             <Button loading={isLoading} type="submit">
               {t("registration.userForm.submitButton")}
             </Button>
