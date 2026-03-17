@@ -3,7 +3,7 @@ import { Field, Form, Formik } from "formik";
 import * as Yup from "yup";
 import Link from "next/link";
 import { useTranslation } from "next-i18next";
-import TextInput from "../TextInput";
+import TextInput from "../../Common/TextInput";
 import { PlayerTitle } from "../../../lib/constants";
 import Markdown from "../../Common/Markdown";
 import GdprModal from "../../GdprModal";
@@ -115,14 +115,19 @@ const PlayerDetailsForm = ({
           name="height"
           type="text"
         />
-        <div style={{ marginBottom: "7px" }}>
-          <label htmlFor="safetyNotes">{t("playerForm.safetyNotes")}</label>
-          <Field name="safetyNotes" id="safetyNotes" as="textarea" />
-        </div>
-        <div style={{ marginBottom: "7px" }}>
-          <label htmlFor="other">{t("playerForm.otherInfo")}</label>
-          <Field name="other" id="other" as="textarea" />
-        </div>
+        <TextInput
+          label={t("playerForm.safetyNotes")}
+          name="safetyNotes"
+          type="text"
+          textArea
+        />
+        <TextInput
+          label={t("playerForm.otherInfo")}
+          id="other"
+          name="other"
+          type="text"
+          textArea
+        />
 
         <h3>{t("playerForm.calendarTitle")}</h3>
         <Box sx={{ mb: 2 }}>

@@ -8,7 +8,11 @@ const TextInput = ({ label, ...props }) => {
       {meta.touched && meta.error ? (
         <div className="registration-error">{meta.error}</div>
       ) : null}
-      <input {...field} {...props} />
+      {props.textArea ? (
+        <textarea {...field} {...props} />
+      ) : (
+        <input {...field} {...props} />
+      )}
     </div>
   );
 };

@@ -1,5 +1,5 @@
-import { Field, Form, Formik } from "formik";
-import TextInput from "../../Registration/TextInput";
+import { Form, Formik } from "formik";
+import TextInput from "../../Common/TextInput";
 import { Dispatch, JSX, SetStateAction, useContext, useState } from "react";
 import { useTranslation } from "next-i18next";
 import { UserContext, UserWithPlayer } from "../../UserProvider";
@@ -61,10 +61,12 @@ export const UpdateForm = ({
       }}
     >
       <Form>
-        <div style={{ marginBottom: "7px" }}>
-          <label>{t("playerPage.details.updateForm.safetyNotesLabel")}</label>
-          <Field name="safetyNotes" as="textarea" />
-        </div>
+        <TextInput
+          label={t("playerPage.details.updateForm.safetyNotesLabel")}
+          name="safetyNotes"
+          type="text"
+          textArea
+        />
         <TextInput
           label={t("playerPage.details.updateForm.addressLabel")}
           name="address"
@@ -90,10 +92,12 @@ export const UpdateForm = ({
           name="height"
           type="text"
         />
-        <div style={{ marginBottom: "7px" }}>
-          <label>{t("playerPage.details.updateForm.otherInfoLabel")}</label>
-          <Field name="other" as="textarea" />
-        </div>
+        <TextInput
+          label={t("playerPage.details.updateForm.otherInfoLabel")}
+          name="other"
+          type="text"
+          textArea
+        />
         <Button loading={isLoading} type="submit">
           {t("playerPage.details.updateForm.saveButton")}
         </Button>

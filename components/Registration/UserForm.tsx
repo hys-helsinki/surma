@@ -1,7 +1,7 @@
 import { Alert, Box, Container, Grid, Snackbar, Button } from "@mui/material";
 import { Form, Formik } from "formik";
 import * as Yup from "yup";
-import TextInput from "./TextInput";
+import TextInput from "../Common/TextInput";
 import { useState } from "react";
 import { signIn } from "next-auth/react";
 import { Tournament } from "@prisma/client";

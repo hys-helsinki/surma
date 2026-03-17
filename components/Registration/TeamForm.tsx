@@ -1,7 +1,7 @@
 import { Alert, Box, Container, Grid, Snackbar, Button } from "@mui/material";
 import { FieldArray, Form, Formik } from "formik";
 import * as Yup from "yup";
-import TextInput from "./TextInput";
+import TextInput from "../Common/TextInput";
 import { Tournament } from "@prisma/client";
 import { useState } from "react";
 import GdprModal from "../GdprModal";

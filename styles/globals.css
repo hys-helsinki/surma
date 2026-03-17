@@ -132,3 +132,8 @@ button.playerTableStateButton {
   cursor: pointer;
   font-weight: bold;
 }
+
+input,
+textarea {
+  font-family: monospace;
+}
