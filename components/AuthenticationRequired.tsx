@@ -1,6 +1,7 @@
 import { signIn, useSession } from "next-auth/react";
 import LoadingSpinner from "./Common/LoadingSpinner";
 import { JSX } from "react";
+import { t } from "i18next";
 
 export const AuthenticationRequired = (props): JSX.Element => {
   const { data: session, status } = useSession();
@@ -11,9 +12,11 @@ export const AuthenticationRequired = (props): JSX.Element => {
   } else {
     return (
       <>
-        Et ole kirjautunut sisään.
+        {t("authenticationRequired.loginPrompt")}
         <br />
-        <button onClick={() => signIn()}>Kirjaudu sisään</button>
+        <button onClick={() => signIn()}>
+          {t("authenticationRequired.notLoggedInMessage")}
+        </button>
       </>
     );
   }

@@ -148,5 +148,17 @@
         "saveButton": "Save"
       }
     }
+  },
+  "authenticationRequired": {
+    "loginButton": "Login",
+    "notLoggedInMessage": "You are not logged in."
+  },
+  "gdprModal": {
+    "title": "Short privacy policy",
+    "noAnalytics": "We do not do analytics with your data. We only use your data for maintaining Surma and organizing the assassination tournament.",
+    "dataDeletion": "We delete your data from Surma after the tournament.",
+    "dataSharing": "We share data with our trusted service providers only to the extent necessary to provide the services, and we share data with players only to the extent necessary to participate in the tournament.",
+    "closeButton": "Thanks, that's enough for me!",
+    "privacyPolicyButton": "Actually, I want to read the full policy!"
   }
 }

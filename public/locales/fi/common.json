@@ -148,5 +148,17 @@
         "saveButton": "Tallenna"
       }
     }
+  },
+  "authenticationRequired": {
+    "loginButton": "Kirjaudu sisään",
+    "notLoggedInMessage": "Et ole kirjautunut sisään."
+  },
+  "gdprModal": {
+    "title": "Tietosuojakäytäntömme lyhyesti",
+    "noAnalytics": "Emme tee analytiikkaa tiedoillasi. Käytämme tietojasi vain Surman ylläpitoon ja salamurhaturnauksen järjestämiseen.",
+    "dataDeletion": "Tuhoamme tietosi Surmasta turnauksen jälkeen.",
+    "dataSharing": "Annamme luotettaville palveluntarjoajillemme tietoja vain sen verran, mitä tarvitaan palveluiden saamiseksi, ja annamme pelaajille tietoja vain sen verran, mitä tarvitaan turnaukseen osallistumiseen.",
+    "closeButton": "Kiitos, tämä riittää minulle!",
+    "privacyPolicyButton": "Eikun koko käytäntö, kiitos!"
   }
 }
