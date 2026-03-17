@@ -8,13 +8,13 @@ import { authConfig } from "../../api/auth/[...nextauth]";
 import LoadingSpinner from "../../../components/Common/LoadingSpinner";
 import { useRouterLoading } from "../../../lib/hooks";
 import { useTranslation } from "next-i18next";
+import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 
 export const getServerSideProps: GetServerSideProps = async ({
   params,
-  req,
-  res
+  ...context
 }) => {
-  const session = await getServerSession(req, res, authConfig);
+  const session = await getServerSession(context.req, context.res, authConfig);
 
   if (session) {
     const user = await prisma.user.findUnique({
@@ -50,7 +50,10 @@ export const getServerSideProps: GetServerSideProps = async ({
   tournament = JSON.parse(JSON.stringify(tournament)); // to avoid Next.js serialization error
 
   return {
-    props: { tournament }
+    props: {
+      tournament,
+      ...(await serverSideTranslations(context.locale, ["common"]))
+    }
   };
 };
 
