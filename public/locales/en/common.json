@@ -83,5 +83,70 @@
       "error": "Something went wrong. Please contact the referee",
       "registrationNotOpen": "Registration is not open"
     }
+  },
+  "playerPage": {
+    "tabs": {
+      "calendar": "Calendar",
+      "details": "Details"
+    },
+    "info": {
+      "aliasLabel": "Alias:",
+      "statusLabel": "Status:",
+      "state": {
+        "active": "Alive",
+        "dead": "Dead",
+        "detective": "Detective",
+        "extra": "Extra target"
+      },
+      "showPicture": "Show picture",
+      "hidePicture": "Hide picture",
+      "changePicture": "Change picture",
+      "uploadButton": "Upload picture",
+      "noPicture": "No picture :(",
+      "cancelButton": "Cancel",
+      "uploadError": "Failed to upload image to the server"
+    },
+    "calendar": {
+      "editButton": "Edit calendar",
+      "cancelButton": "Cancel",
+      "nextButton": "Next",
+      "markdown": "Calendar supports [Markdown syntax](https://www.markdownguide.org/basic-syntax/)",
+      "saveButton": "Save changes"
+    },
+    "details": {
+      "contact": {
+        "title": "Contact details",
+        "phoneLabel": "Phone number",
+        "emailLabel": "Email address",
+        "lastVisit": "Last visit",
+        "neverVisited": "Player has not logged in after registering for Surma"
+      },
+      "description": {
+        "title": "Description",
+        "editButton": "Edit information",
+        "cancelButton": "Cancel",
+        "safetyNotesTitle": "Safety notes (e.g. times and places outside the game):",
+        "addressLabel": "Address",
+        "learningInstitutionLabel": "Learning institution",
+        "eyeColorLabel": "Eyes",
+        "hairLabel": "Hair",
+        "heightLabel": "Height",
+        "otherInfoLabel": "Appearance, transportation and other details:"
+      },
+      "umpires": {
+        "playerUmpireTitle": "Player's referee",
+        "tournamentUmpiresTitle": "Tournament referees"
+      },
+      "updateForm": {
+        "safetyNotesLabel": "Safety notes (e.g. times and places outside the game)",
+        "addressLabel": "Address",
+        "learningInstitutionLabel": "Learning institution",
+        "eyeColorLabel": "Eyes",
+        "hairLabel": "Hair",
+        "heightLabel": "Height",
+        "otherInfoLabel": "Appearance, transportation and other details:",
+        "saveButton": "Save"
+      }
+    }
   }
 }

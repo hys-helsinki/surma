@@ -83,5 +83,70 @@
       "error": "Jotain meni pieleen. Ota yhteyttä tuomaristoon",
       "registrationNotOpen": "Ilmoittautuminen ei ole auki"
     }
+  },
+  "playerPage": {
+    "tabs": {
+      "calendar": "Kalenteri",
+      "details": "Tiedot"
+    },
+    "info": {
+      "aliasLabel": "Peitenimi:",
+      "statusLabel": "Status:",
+      "state": {
+        "active": "Elossa",
+        "dead": "Kuollut",
+        "detective": "Etsivä",
+        "extra": "Lisäkohde"
+      },
+      "showPicture": "Näytä kuva",
+      "hidePicture": "Piilota",
+      "changePicture": "Vaihda kuva",
+      "uploadButton": "Lisää kuva",
+      "noPicture": "Ei kuvaa :(",
+      "cancelButton": "Peruuta",
+      "uploadError": "Kuvan lataaminen palvelimelle epäonnistui"
+    },
+    "calendar": {
+      "editButton": "Muokkaa kalenteria",
+      "cancelButton": "Peruuta",
+      "nextButton": "Seuraava",
+      "markdown": "Kalenteri tukee [Markdown-syntaksia](https://www.markdownguide.org/basic-syntax/)",
+      "saveButton": "Tallenna muokkaukset"
+    },
+    "details": {
+      "contact": {
+        "title": "Yhteystiedot",
+        "phoneLabel": "Puhelinnumero",
+        "emailLabel": "Sähköpostiosoite",
+        "lastVisit": "Viime vierailu",
+        "neverVisited": "Pelaaja ei ole kirjautunut Surmaan ilmoittautumisen jälkeen"
+      },
+      "description": {
+        "title": "Kuvaus",
+        "editButton": "Muokkaa tietoja",
+        "cancelButton": "Peruuta",
+        "safetyNotesTitle": "Turvallisuushuomiot (esim. pelin ulkopuolelle rajatut ajat ja paikat):",
+        "addressLabel": "Osoite",
+        "learningInstitutionLabel": "Opinahjo",
+        "eyeColorLabel": "Silmät",
+        "hairLabel": "Hiukset",
+        "heightLabel": "Pituus",
+        "otherInfoLabel": "Ulkonäkö, kulkuvälineet ja muut lisätiedot:"
+      },
+      "umpires": {
+        "playerUmpireTitle": "Pelaajan tuomari",
+        "tournamentUmpiresTitle": "Turnauksen tuomarit"
+      },
+      "updateForm": {
+        "safetyNotesLabel": "Turvallisuushuomiot (esim. pelin ulkopuolelle rajatut ajat ja paikat)",
+        "addressLabel": "Osoite",
+        "learningInstitutionLabel": "Opinahjo",
+        "eyeColorLabel": "Silmät",
+        "hairLabel": "Hiukset",
+        "heightLabel": "Pituus",
+        "otherInfoLabel": "Ulkonäkö, kulkuvälineet ja muut lisätiedot:",
+        "saveButton": "Tallenna"
+      }
+    }
   }
 }

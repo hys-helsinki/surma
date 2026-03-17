@@ -1,6 +1,7 @@
 import { Box, Tab, Tabs } from "@mui/material";
 import { Calendar } from "./Calendar";
 import { Dispatch, useState } from "react";
+import { useTranslation } from "next-i18next";
 import Info from "./Info";
 import Details from "./Details";
 import { Tournament, Umpire, User } from "@prisma/client";
@@ -52,6 +53,7 @@ const MobileView = ({
   umpires: UmpireWithUser[];
   setUser: Dispatch<any>;
 }) => {
+  const { t } = useTranslation("common");
   const [value, setValue] = useState(0);
 
   const handleTabChange = (event: React.SyntheticEvent, newValue: number) => {
@@ -86,8 +88,8 @@ const MobileView = ({
             }
           }}
         >
-          <Tab label="Kalenteri" />
-          <Tab label="Tiedot" />
+          <Tab label={t("playerPage.tabs.calendar")} />
+          <Tab label={t("playerPage.tabs.details")} />
         </Tabs>
       </Box>
       <TabPanel value={value} index={0}>

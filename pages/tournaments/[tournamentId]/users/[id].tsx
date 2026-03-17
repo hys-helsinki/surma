@@ -18,6 +18,7 @@ import { JSX, useState } from "react";
 import { UserProvider } from "../../../../components/UserProvider";
 import LoadingSpinner from "../../../../components/Common/LoadingSpinner";
 import { useRouterLoading } from "../../../../lib/hooks";
+import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 
 const isCurrentUserAuthorized = async (currentUser, userId, tournamentId) => {
   return (
@@ -133,7 +134,8 @@ export const getServerSideProps: GetServerSideProps = async ({
       imageUrl,
       currentUserIsUmpire: currentUser.umpire != null,
       umpires,
-      currentUser
+      currentUser,
+      ...(await serverSideTranslations(context.locale, ["common"]))
     }
   };
 };

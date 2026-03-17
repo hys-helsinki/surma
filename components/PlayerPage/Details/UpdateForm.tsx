@@ -1,6 +1,7 @@
 import { Field, Form, Formik } from "formik";
 import TextInput from "../../Registration/TextInput";
 import { Dispatch, JSX, SetStateAction, useContext, useState } from "react";
+import { useTranslation } from "next-i18next";
 import { UserContext, UserWithPlayer } from "../../UserProvider";
 import { Button } from "@mui/material";
 
@@ -21,6 +22,7 @@ export const UpdateForm = ({
   setUser: Dispatch<SetStateAction<UserWithPlayer>>;
   setIsUpdating: Dispatch<SetStateAction<boolean>>;
 }): JSX.Element => {
+  const { t } = useTranslation("common");
   const user = useContext(UserContext);
   const [isLoading, setIsLoading] = useState(false);
   const player = user.player;
@@ -60,23 +62,40 @@ export const UpdateForm = ({
     >
       <Form>
         <div style={{ marginBottom: "7px" }}>
-          <label>
-            Turvallisuushuomiot (esim. pelin ulkopuolelle rajatut ajat ja
-            paikat)
-          </label>
+          <label>{t("playerPage.details.updateForm.safetyNotesLabel")}</label>
           <Field name="safetyNotes" as="textarea" />
         </div>
-        <TextInput label="Osoite" name="address" type="text" />
-        <TextInput label="Opinahjo" name="learningInstitution" type="text" />
-        <TextInput label="Silmät" name="eyeColor" type="text" />
-        <TextInput label="Hiukset" name="hair" type="text" />
-        <TextInput label="Pituus" name="height" type="text" />
+        <TextInput
+          label={t("playerPage.details.updateForm.addressLabel")}
+          name="address"
+          type="text"
+        />
+        <TextInput
+          label={t("playerPage.details.updateForm.learningInstitutionLabel")}
+          name="learningInstitution"
+          type="text"
+        />
+        <TextInput
+          label={t("playerPage.details.updateForm.eyeColorLabel")}
+          name="eyeColor"
+          type="text"
+        />
+        <TextInput
+          label={t("playerPage.details.updateForm.hairLabel")}
+          name="hair"
+          type="text"
+        />
+        <TextInput
+          label={t("playerPage.details.updateForm.heightLabel")}
+          name="height"
+          type="text"
+        />
         <div style={{ marginBottom: "7px" }}>
-          <label>Ulkonäkö, kulkuvälineet ja muut lisätiedot:</label>
+          <label>{t("playerPage.details.updateForm.otherInfoLabel")}</label>
           <Field name="other" as="textarea" />
         </div>
         <Button loading={isLoading} type="submit">
-          Tallenna
+          {t("playerPage.details.updateForm.saveButton")}
         </Button>
       </Form>
     </Formik>

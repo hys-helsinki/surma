@@ -1,15 +1,9 @@
 import { useContext, useState } from "react";
+import { useTranslation } from "next-i18next";
 import ImageUploadForm from "../../Registration/PlayerForm/ImageUploadForm";
 import ImageComponent from "./ImageComponent";
 import { Alert, Box, Snackbar, Button } from "@mui/material";
 import { UserContext } from "../../UserProvider";
-
-const states = {
-  ACTIVE: "Elossa",
-  DEAD: "Kuollut",
-  DETECTIVE: "Etsivä",
-  EXTRA: "Lisäkohde"
-};
 
 const Info = ({
   imageUrl,
@@ -24,6 +18,7 @@ const Info = ({
   showStatus: boolean;
   showImageForm: boolean;
 }) => {
+  const { t } = useTranslation("common");
   const user = useContext(UserContext);
   const [updateImage, setUpdateImage] = useState(false);
   const [showPicture, setShowPicture] = useState(false);
@@ -31,6 +26,13 @@ const Info = ({
   const [selectedFileData, setSelectedFileData] = useState();
   const [showError, setShowError] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
+
+  const states = {
+    ACTIVE: t("playerPage.info.state.active"),
+    DEAD: t("playerPage.info.state.dead"),
+    DETECTIVE: t("playerPage.info.state.detective"),
+    EXTRA: t("playerPage.info.state.extra")
+  };
 
   const uploadImage = async (event) => {
     event.preventDefault();
@@ -51,7 +53,7 @@ const Info = ({
       if (response.status === 200) {
         setImageUrl(responseObject.url);
       } else {
-        setErrorMessage("Kuvan lataaminen palvelimelle epäonnistui");
+        setErrorMessage(t("playerPage.info.uploadError"));
         setShowError(true);
       }
     } catch (error) {
@@ -78,12 +80,12 @@ const Info = ({
 
         {showAlias && (
           <h3 style={{ marginTop: "5px", marginBottom: "5px" }}>
-            Peitenimi: {user.player.alias}
+            {t("playerPage.info.aliasLabel")} {user.player.alias}
           </h3>
         )}
         {showStatus && (
           <h3 style={{ marginTop: "5px", marginBottom: "10px" }}>
-            Status: {states[user.player.state]}
+            {t("playerPage.info.statusLabel")} {states[user.player.state]}
           </h3>
         )}
       </Box>
@@ -100,17 +102,19 @@ const Info = ({
             }}
           >
             <button onClick={() => setShowPicture(!showPicture)}>
-              {showPicture ? "Piilota" : "Näytä kuva"}
+              {showPicture
+                ? t("playerPage.info.hidePicture")
+                : t("playerPage.info.showPicture")}
             </button>
             {showImageForm && (
               <button onClick={() => setUpdateImage(!updateImage)}>
-                Vaihda kuva
+                {t("playerPage.info.changePicture")}
               </button>
             )}
           </div>
         </>
       ) : !showImageForm ? (
-        <p style={{ marginLeft: "1rem" }}>{"Ei kuvaa :("}</p>
+        <p style={{ marginLeft: "1rem" }}>{t("playerPage.info.noPicture")}</p>
       ) : (
         <div style={{ margin: "10px" }}>
           <ImageUploadForm setSelectedFileData={setSelectedFileData} />
@@ -125,7 +129,7 @@ const Info = ({
                 }}
                 loading={isLoading}
               >
-                Lisää kuva
+                {t("playerPage.info.uploadButton")}
               </Button>
             )}
             {updateImage && (
@@ -133,7 +137,7 @@ const Info = ({
                 onClick={() => setUpdateImage(!updateImage)}
                 style={{ marginLeft: 3 }}
               >
-                Peruuta
+                {t("playerPage.info.cancelButton")}
               </button>
             )}
           </div>
