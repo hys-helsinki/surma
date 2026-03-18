@@ -149,7 +149,7 @@ export default function User({
   currentUser
 }): JSX.Element {
   const [user, setUser] = useState(u);
-  const [confirmed, setConfirmed] = useState(
+  const [confirmed, setConfirmed] = useState<boolean>(
     user.player ? user.player.confirmed : false
   );
   const [imageUrl, setImageUrl] = useState(image);
@@ -202,7 +202,7 @@ export default function User({
   return (
     <AuthenticationRequired>
       <UserProvider user={user}>
-        {!user.player.confirmed && (
+        {!confirmed && (
           <Alert
             severity="warning"
             sx={{ minHeight: "50px", display: "flex", alignItems: "center" }}
