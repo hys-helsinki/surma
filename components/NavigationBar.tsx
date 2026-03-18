@@ -176,7 +176,7 @@ const MobileView = ({ tournamentId, userId, targets, currentUserIsUmpire }) => {
 
         {!data && (
           <Button
-            onClick={() => signIn("email", { callbackUrl: "/personal" })}
+            onClick={() => signIn()}
             sx={{
               color: "black",
               backgroundColor: "white",
@@ -347,7 +347,7 @@ const DesktopView = ({
       </Box>
       {!data && (
         <Button
-          onClick={() => signIn("email", { callbackUrl: "/personal" })}
+          onClick={() => signIn()}
           sx={{
             color: "black",
             backgroundColor: "white",
