@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useSession } from "next-auth/react";
+import { useRouter } from "next/router";
 import { Alert, Box, Container, Snackbar } from "@mui/material";
 import { useTranslation } from "next-i18next";
 import PlayerDetailsForm from "./PlayerDetailsForm";
@@ -13,7 +14,7 @@ export default function PlayerForm({
   setErrorMessage,
   setShowError
 }) {
-  const { t } = useTranslation("common");
+  const { t, i18n } = useTranslation("common");
   const { data, status } = useSession();
   const [selectedFileData, setSelectedFileData] = useState();
   const [isLoading, setIsLoading] = useState(false);
@@ -21,6 +22,7 @@ export default function PlayerForm({
   const [showFormError, setShowFormError] = useState(false);
 
   const tournamentId = tournament.id;
+  const locale = i18n.language || "fi";
 
   if (status === "unauthenticated") {
     return <h2>{t("playerForm.userNotFound")}</h2>;
@@ -93,7 +95,7 @@ export default function PlayerForm({
     };
 
     try {
-      const response = await fetch("/api/player/create", {
+      const response = await fetch(`/api/player/create?locale=${locale}`, {
         method: "POST",
         body: JSON.stringify(playerData)
       });
