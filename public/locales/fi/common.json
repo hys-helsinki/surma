@@ -85,6 +85,8 @@
     }
   },
   "playerPage": {
+    "confirmRegistration": "Hyväksy ilmoittautuminen",
+    "registrationNotConfirmed": "Tuomaristo ei ole vielä hyväksynyt ilmoittautumista.",
     "tabs": {
       "calendar": "Kalenteri",
       "details": "Tiedot"

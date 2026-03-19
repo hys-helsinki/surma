@@ -85,6 +85,8 @@
     }
   },
   "playerPage": {
+    "confirmRegistration": "Confirm registration",
+    "registrationNotConfirmed": "Your registration has not yet been confirmed by the umpires.",
     "tabs": {
       "calendar": "Calendar",
       "details": "Details"

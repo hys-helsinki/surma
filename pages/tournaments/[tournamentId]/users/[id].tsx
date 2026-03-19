@@ -19,6 +19,7 @@ import { UserProvider } from "../../../../components/UserProvider";
 import LoadingSpinner from "../../../../components/Common/LoadingSpinner";
 import { useRouterLoading } from "../../../../lib/hooks";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
+import { useTranslation } from "next-i18next";
 
 const isCurrentUserAuthorized = async (currentUser, userId, tournamentId) => {
   return (
@@ -158,6 +159,7 @@ export default function User({
   const session = useSession();
   const theme = useTheme();
   const isMobileView = useMediaQuery(theme.breakpoints.down("md"));
+  const { t } = useTranslation("common");
 
   const isLoading = useRouterLoading();
 
@@ -207,7 +209,7 @@ export default function User({
             severity="warning"
             sx={{ minHeight: "50px", display: "flex", alignItems: "center" }}
           >
-            Tuomaristo ei ole vielä hyväksynyt ilmoittautumista
+            {t("playerPage.registrationNotConfirmed")}
             {currentUserIsUmpire && (
               <Button
                 onClick={() => handleConfirmRegistration()}
@@ -216,7 +218,7 @@ export default function User({
                 sx={{ ml: 1 }}
                 disabled={confirmed}
               >
-                Hyväksy ilmoittautuminen
+                {t("playerPage.confirmRegistration")}
               </Button>
             )}
           </Alert>
