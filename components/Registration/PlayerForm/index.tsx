@@ -10,18 +10,20 @@ export default function PlayerForm({
   tournament,
   setUser,
   setImageUrl,
-  setErrorMessage,
-  setShowError
+  imageUrl
 }) {
   const { t, i18n } = useTranslation("common");
   const { data, status } = useSession();
-  const [selectedFileData, setSelectedFileData] = useState();
   const [isLoading, setIsLoading] = useState(false);
   const [formErrorMessage, setFormErrorMessage] = useState("");
   const [showFormError, setShowFormError] = useState(false);
 
   const tournamentId = tournament.id;
   const locale = i18n.language || "fi";
+
+  if (status === "loading") {
+    return;
+  }
 
   if (status === "unauthenticated") {
     return <h2>{t("playerForm.userNotFound")}</h2>;
@@ -36,25 +38,6 @@ export default function PlayerForm({
     new Date().getTime() < new Date(tournament.registrationEndTime).getTime();
 
   const dates = getTournamentDates(start, end);
-
-  const uploadImage = async (id: string) => {
-    if (!selectedFileData) return;
-    const response = await fetch("/api/upload", {
-      method: "POST",
-      body: JSON.stringify({
-        url: selectedFileData,
-        publicId: id,
-        tournamentId
-      })
-    });
-    const responseObject = await response.json();
-    if (response.status === 200) {
-      setImageUrl(responseObject.url);
-    } else {
-      setErrorMessage(t("playerForm.imageUploadFailed"));
-      setShowError(true);
-    }
-  };
 
   const handleSubmit = async (values) => {
     setIsLoading(true);
@@ -100,7 +83,6 @@ export default function PlayerForm({
       });
       const responseObject = await response.json();
       if (response.status === 200) {
-        await uploadImage(responseObject.player.id);
         setUser((prev) => ({ ...prev, player: responseObject.player }));
       } else {
         setFormErrorMessage(t("playerForm.error"));
@@ -124,7 +106,15 @@ export default function PlayerForm({
             <p>{t("playerForm.mandatoryFields")}</p>
             <p>{t("playerForm.calendarInfo")}</p>
           </Box>
-          <ImageUploadForm setSelectedFileData={setSelectedFileData} />
+          {!imageUrl ? (
+            <ImageUploadForm
+              setImageUrl={setImageUrl}
+              tournamentId={tournamentId}
+              userId={data.user.id}
+            />
+          ) : (
+            <p>{t("playerForm.imageUploaded")}</p>
+          )}
           <PlayerDetailsForm
             dates={dates}
             handleSubmit={handleSubmit}

@@ -20,6 +20,7 @@ import LoadingSpinner from "../../../../components/Common/LoadingSpinner";
 import { useRouterLoading } from "../../../../lib/hooks";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import { useTranslation } from "next-i18next";
+import { v2 as cloudinary } from "cloudinary";
 
 const isCurrentUserAuthorized = async (currentUser, userId, tournamentId) => {
   return (
@@ -120,9 +121,15 @@ export const getServerSideProps: GetServerSideProps = async ({
     }
   });
 
-  const imageUrl = user.player
-    ? `surma/${user.tournamentId}/${user.player.id}`
-    : "";
+  let imageUrl = "";
+  try {
+    const result = await cloudinary.api.resource(
+      `hys_surma/${user.tournamentId}/${user.id}` as string
+    );
+    imageUrl = result.url;
+  } catch (error) {
+    console.log(error);
+  }
 
   user = JSON.parse(JSON.stringify(user));
   currentUser = JSON.parse(JSON.stringify(currentUser));
@@ -185,8 +192,7 @@ export default function User({
         tournament={tournament}
         setUser={setUser}
         setImageUrl={setImageUrl}
-        setErrorMessage={setErrorMessage}
-        setShowError={setShowError}
+        imageUrl={imageUrl}
       />
     );
   }

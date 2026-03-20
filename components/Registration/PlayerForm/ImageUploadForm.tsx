@@ -1,66 +1,42 @@
 import { Alert, Box, Snackbar } from "@mui/material";
 import { useState } from "react";
 import { useTranslation } from "next-i18next";
+import { CldUploadWidget } from "next-cloudinary";
 
-const ImageUploadForm = ({ setSelectedFileData }) => {
+const ImageUploadForm = ({ setImageUrl, tournamentId, userId }) => {
   const { t } = useTranslation("common");
   const [showError, setShowError] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
-  const [fileInputState, setFileInputState] = useState("");
-  const [selectedFileName, setSelectedFileName] = useState("");
-
-  const handleFileInputChange = (event) => {
-    const file = event.target.files[0];
-    if (file == undefined) {
-      setFileInputState("");
-      setSelectedFileData(null);
-      setSelectedFileName("");
-      return;
-    }
-    if (file.size > 4000000) {
-      setErrorMessage(t("playerForm.imageTooLarge"));
-      setShowError(true);
-      return;
-    }
-
-    setSelectedFileName(file.name);
-    setFileInputState(event.target.value);
-
-    const reader = new FileReader();
-    try {
-      reader.readAsDataURL(file);
-    } catch (error) {
-      console.log(error);
-      setErrorMessage(t("playerForm.imageReadError"));
-      setShowError(true);
-      setFileInputState("");
-      setSelectedFileName("");
-      return;
-    }
-
-    reader.onload = () => {
-      setSelectedFileData(reader.result);
-    };
+  const handleUploadSuccess = (result) => {
+    setImageUrl(result.info.url);
   };
 
+  const handleUploadError = (error) => {
+    console.error("Upload error:", error);
+    setErrorMessage(t("registration.playerForm.imageReadError"));
+    setShowError(true);
+  };
   return (
     <Box sx={{ mb: 2 }}>
-      <form>
-        <label htmlFor="image">{t("playerForm.imageUploadLabel")}</label>
-        <input
-          type="file"
-          name="image"
-          id="image"
-          accept="image/*"
-          onChange={handleFileInputChange}
-          value={fileInputState}
-        />
-      </form>
-      {selectedFileName ? (
-        <p>
-          <i>{t("playerForm.selectedFile", { fileName: selectedFileName })}</i>
-        </p>
-      ) : null}
+      <CldUploadWidget
+        uploadPreset="hys_surma"
+        options={{
+          maxFiles: 1,
+          publicId: `${userId}`,
+          folder: `hys_surma/${tournamentId}`,
+          maxImageFileSize: 10000000
+        }}
+        onSuccess={handleUploadSuccess}
+        onError={handleUploadError}
+      >
+        {({ open }) => {
+          return (
+            <button onClick={() => open()}>
+              {t("registration.playerForm.imageUploadLabel")}
+            </button>
+          );
+        }}
+      </CldUploadWidget>
       <Snackbar open={showError} onClose={() => setShowError(false)}>
         <Alert
           severity="error"

@@ -22,8 +22,6 @@ const Info = ({
   const user = useContext(UserContext);
   const [updateImage, setUpdateImage] = useState(false);
   const [showPicture, setShowPicture] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
-  const [selectedFileData, setSelectedFileData] = useState();
   const [showError, setShowError] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
 
@@ -32,35 +30,6 @@ const Info = ({
     DEAD: t("playerPage.info.state.dead"),
     DETECTIVE: t("playerPage.info.state.detective"),
     EXTRA: t("playerPage.info.state.extra")
-  };
-
-  const uploadImage = async (event) => {
-    event.preventDefault();
-    if (!selectedFileData) return;
-    try {
-      setIsLoading(true);
-
-      const response = await fetch("/api/upload", {
-        method: "POST",
-        body: JSON.stringify({
-          url: selectedFileData,
-          publicId: user.player.id,
-          tournamentId: user.tournamentId
-        })
-      });
-
-      const responseObject = await response.json();
-      if (response.status === 200) {
-        setImageUrl(responseObject.url);
-      } else {
-        setErrorMessage(t("playerPage.info.uploadError"));
-        setShowError(true);
-      }
-    } catch (error) {
-      console.log(error);
-    } finally {
-      setIsLoading(false);
-    }
   };
 
   return (
@@ -117,30 +86,11 @@ const Info = ({
         <p style={{ marginLeft: "1rem" }}>{t("playerPage.info.noPicture")}</p>
       ) : (
         <div style={{ margin: "10px" }}>
-          <ImageUploadForm setSelectedFileData={setSelectedFileData} />
-          <div style={{ display: "flex", alignItems: "center" }}>
-            {selectedFileData && (
-              <Button
-                onClick={async (e) => await uploadImage(e)}
-                sx={{
-                  textTransform: "none",
-                  lineHeight: "normal",
-                  fontFamily: "revert"
-                }}
-                loading={isLoading}
-              >
-                {t("playerPage.info.uploadButton")}
-              </Button>
-            )}
-            {updateImage && (
-              <button
-                onClick={() => setUpdateImage(!updateImage)}
-                style={{ marginLeft: 3 }}
-              >
-                {t("playerPage.info.cancelButton")}
-              </button>
-            )}
-          </div>
+          <ImageUploadForm
+            setImageUrl={setImageUrl}
+            tournamentId={user.tournamentId}
+            userId={user.id}
+          />
           <Snackbar open={showError} onClose={() => setShowError(false)}>
             <Alert
               severity="error"

@@ -12,6 +12,7 @@ import { UserProvider } from "../../../../components/UserProvider";
 import LoadingSpinner from "../../../../components/Common/LoadingSpinner";
 import { useRouterLoading } from "../../../../lib/hooks";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
+import { v2 as cloudinary } from "cloudinary";
 
 const isTournamentRunning = (startTime: Date, endTime: Date) => {
   const currentTime = new Date().getTime();
@@ -141,9 +142,15 @@ export const getServerSideProps: GetServerSideProps = async ({
     }
   });
 
-  const imageUrl = user.player
-    ? `surma/${user.tournamentId}/${user.player.id}`
-    : "";
+  let imageUrl = "";
+  try {
+    const result = await cloudinary.api.resource(
+      `hys_surma/${user.tournamentId}/${user.id}` as string
+    );
+    imageUrl = result.url;
+  } catch (error) {
+    console.log(error);
+  }
 
   tournament = JSON.parse(JSON.stringify(tournament));
   user = JSON.parse(JSON.stringify(user));
