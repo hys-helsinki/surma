@@ -100,21 +100,25 @@ export default function PlayerForm({
     <Container maxWidth="md">
       {isRegistrationOpen ? (
         <Box>
-          <h1 style={{ marginLeft: "10px" }}>{t("playerForm.title")}</h1>
+          <h1>{t("playerForm.title")}</h1>
           <Box sx={{ my: 4 }}>
             <p>{t("playerForm.description")}</p>
             <p>{t("playerForm.mandatoryFields")}</p>
             <p>{t("playerForm.calendarInfo")}</p>
           </Box>
-          {!imageUrl ? (
-            <ImageUploadForm
-              setImageUrl={setImageUrl}
-              tournamentId={tournamentId}
-              userId={data.user.id}
-            />
-          ) : (
-            <p>{t("imageUpload.imageUploaded")}</p>
-          )}
+          <Box sx={{ my: 2 }}>
+            {!imageUrl ? (
+              <ImageUploadForm
+                setImageUrl={setImageUrl}
+                tournamentId={tournamentId}
+                userId={data.user.id}
+              />
+            ) : (
+              <i>
+                <b>{t("imageUpload.imageUploaded")}</b>
+              </i>
+            )}
+          </Box>
           <PlayerDetailsForm
             dates={dates}
             handleSubmit={handleSubmit}
