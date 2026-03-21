@@ -1,9 +1,9 @@
-import { useContext, useState } from "react";
+import { Dispatch, SetStateAction, useContext, useState } from "react";
 import { useTranslation } from "next-i18next";
 import ImageUploadForm from "../../Common/ImageUploadForm";
 import ImageComponent from "./ImageComponent";
-import { Alert, Box, Snackbar, Button } from "@mui/material";
 import { UserContext } from "../../UserProvider";
+import { Box } from "@mui/material";
 
 const Info = ({
   imageUrl,
@@ -12,7 +12,7 @@ const Info = ({
   showStatus,
   showImageForm
 }: {
-  setImageUrl;
+  setImageUrl: Dispatch<SetStateAction<string>>;
   imageUrl: string;
   showAlias: boolean;
   showStatus: boolean;
@@ -20,10 +20,7 @@ const Info = ({
 }) => {
   const { t } = useTranslation("common");
   const user = useContext(UserContext);
-  const [updateImage, setUpdateImage] = useState(false);
   const [showPicture, setShowPicture] = useState(false);
-  const [showError, setShowError] = useState(false);
-  const [errorMessage, setErrorMessage] = useState("");
 
   const states = {
     ACTIVE: t("playerPage.info.state.active"),
@@ -58,7 +55,7 @@ const Info = ({
           </h3>
         )}
       </Box>
-      {imageUrl && !updateImage ? (
+      {imageUrl ? (
         <>
           <ImageComponent imageUrl={imageUrl} showPicture={showPicture} />
           <div
@@ -76,9 +73,12 @@ const Info = ({
                 : t("imageUpload.showPicture")}
             </button>
             {showImageForm && (
-              <button onClick={() => setUpdateImage(!updateImage)}>
-                {t("imageUpload.changePicture")}
-              </button>
+              <ImageUploadForm
+                setImageUrl={setImageUrl}
+                tournamentId={user.tournamentId}
+                userId={user.id}
+                uploadLabel={t("imageUpload.changePicture")}
+              />
             )}
           </div>
         </>
@@ -90,17 +90,8 @@ const Info = ({
             setImageUrl={setImageUrl}
             tournamentId={user.tournamentId}
             userId={user.id}
+            uploadLabel={t("playerPage.info.uploadButton")}
           />
-          <Snackbar open={showError} onClose={() => setShowError(false)}>
-            <Alert
-              severity="error"
-              variant="filled"
-              sx={{ width: "100%" }}
-              onClose={() => setShowError(false)}
-            >
-              {errorMessage}
-            </Alert>
-          </Snackbar>
         </div>
       )}
     </Box>

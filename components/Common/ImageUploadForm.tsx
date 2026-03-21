@@ -1,9 +1,19 @@
 import { Alert, Box, Snackbar } from "@mui/material";
-import { useState } from "react";
+import { Dispatch, SetStateAction, useState } from "react";
 import { useTranslation } from "next-i18next";
 import { CldUploadWidget } from "next-cloudinary";
 
-const ImageUploadForm = ({ setImageUrl, tournamentId, userId }) => {
+const ImageUploadForm = ({
+  setImageUrl,
+  tournamentId,
+  userId,
+  uploadLabel
+}: {
+  setImageUrl: Dispatch<SetStateAction<string>>;
+  tournamentId: string;
+  userId: string;
+  uploadLabel: string;
+}) => {
   const { t } = useTranslation("common");
   const [showError, setShowError] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
@@ -17,7 +27,7 @@ const ImageUploadForm = ({ setImageUrl, tournamentId, userId }) => {
     setShowError(true);
   };
   return (
-    <Box sx={{ mb: 2 }}>
+    <Box>
       <CldUploadWidget
         uploadPreset="hys_surma"
         options={{
@@ -26,15 +36,12 @@ const ImageUploadForm = ({ setImageUrl, tournamentId, userId }) => {
           folder: `hys_surma/${tournamentId}`,
           maxImageFileSize: 10000000
         }}
+        signatureEndpoint="/api/sign-cloudinary-params"
         onSuccess={handleUploadSuccess}
         onError={handleUploadError}
       >
         {({ open }) => {
-          return (
-            <button onClick={() => open()}>
-              {t("imageUpload.uploadLabel")}
-            </button>
-          );
+          return <button onClick={() => open()}>{uploadLabel}</button>;
         }}
       </CldUploadWidget>
       <Snackbar open={showError} onClose={() => setShowError(false)}>
