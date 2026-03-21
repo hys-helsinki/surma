@@ -146,6 +146,7 @@ export const getServerSideProps: GetServerSideProps = async ({
     : "";
 
   tournament = JSON.parse(JSON.stringify(tournament));
+  user = JSON.parse(JSON.stringify(user));
 
   return {
     props: {
