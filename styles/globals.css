@@ -114,10 +114,10 @@ button.playerTableStateButton:hover {
   padding: 10px;
 }
 
-a {
+a,
+a.MuiListItemButton-root {
   color: hotpink;
   text-decoration: underline;
-  display: inline;
 }
 
 .rdtPicker {

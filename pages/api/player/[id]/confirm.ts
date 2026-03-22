@@ -49,7 +49,7 @@ export default async function handler(
       where: { id: playerId },
       data: { confirmed }
     });
-    sendEmail(
+    await sendEmail(
       "surma@salamurhaajat.net",
       player.user.email,
       `Ilmoittautumisesi on nyt vahvistettu!`,

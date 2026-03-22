@@ -117,12 +117,13 @@ const MobileView = ({ tournamentId, userId, targets, currentUserIsUmpire }) => {
                 <Collapse in={open} timeout="auto" unmountOnExit>
                   <List component="div" disablePadding>
                     {targets.map((user) => (
-                      <ListItemButton key={user.id} sx={{ pl: 4 }}>
-                        <a
-                          href={`/tournaments/${tournamentId}/targets/${user.id}`}
-                        >
-                          {user.firstName} {user.lastName}
-                        </a>
+                      <ListItemButton
+                        key={user.id}
+                        sx={{ pl: 4 }}
+                        component="a"
+                        href={`/tournaments/${tournamentId}/targets/${user.id}`}
+                      >
+                        {user.firstName} {user.lastName}
                       </ListItemButton>
                     ))}
                   </List>
@@ -130,23 +131,23 @@ const MobileView = ({ tournamentId, userId, targets, currentUserIsUmpire }) => {
               </>
             )}
             {userId && (
-              <ListItemButton>
-                <a href={`/tournaments/${tournamentId}/users/${userId}`}>
-                  {t("navigation.myPage")}
-                </a>
+              <ListItemButton
+                component="a"
+                href={`/tournaments/${tournamentId}/users/${userId}`}
+              >
+                {t("navigation.myPage")}
               </ListItemButton>
             )}
             {currentUserIsUmpire && (
-              <ListItemButton>
-                <Link href={`/admin/${tournamentId}`}>
-                  {t("navigation.admin")}
-                </Link>
+              <ListItemButton component="a" href={`/admin/${tournamentId}`}>
+                {t("navigation.admin")}
               </ListItemButton>
             )}
-            <ListItemButton>
-              <Link href="https://salamurhaajat.net/mika-salamurhapeli/turnaussaannot">
-                {t("navigation.tournamentRules")}
-              </Link>
+            <ListItemButton
+              component="a"
+              href="https://salamurhaajat.net/mika-salamurhapeli/turnaussaannot"
+            >
+              {t("navigation.tournamentRules")}
               <OpenInNewIcon />
             </ListItemButton>
             <Divider />

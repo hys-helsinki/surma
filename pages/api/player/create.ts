@@ -67,7 +67,7 @@ export default async function create(
       const emailTitleEn = `Thank you for registering for the ${user.tournament.name} assassination tournament!`;
       const emailBodyEn = `Thank you for registering! The umpires will review your information before the game starts, and you will receive a confirmation email once your registration has been accepted. The umpires will contact you separately if any of the information you provided needs to be supplemented or modified.\n\nThis is an automatic confirmation message. Please do not reply to this message. The umpires answers messages related to the game at tuomaristo@salamurhaajat.net`;
 
-      sendEmail(
+      await sendEmail(
         "surma@salamurhaajat.net",
         user.email,
         locale === "fi" ? emailTitleFi : emailTitleEn,
