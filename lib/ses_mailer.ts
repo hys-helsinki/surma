@@ -3,10 +3,10 @@ import { defaultProvider } from "@aws-sdk/credential-provider-node";
 import nodemailer from "nodemailer";
 
 export default async function sendEmail(
-  from: String,
-  to: String,
-  subject: String,
-  payload: String
+  from: string,
+  to: string,
+  subject: string,
+  payload: string
 ) {
   const sesClient = new SESv2Client({
     region: "eu-north-1",

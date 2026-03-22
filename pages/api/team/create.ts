@@ -45,7 +45,7 @@ export default async function create(
           `\n${user.firstName} ${user.lastName}\n(${process.env.BASE_URL}/tournaments/${tournamentId}/users/${user.id})`
       )}`;
 
-      sendEmail(
+      await sendEmail(
         "surma@salamurhaajat.net",
         "tuomaristo@salamurhaajat.net",
         `${tournament.name}: Uusi ilmoittautuminen (${teamData.teamName})`,
@@ -66,8 +66,8 @@ export default async function create(
 
         team.users
           .map((u) => u.email)
-          .forEach((email) => {
-            sendEmail(
+          .forEach(async (email) => {
+            await sendEmail(
               "surma@salamurhaajat.net",
               email,
               `Vahvistusviesti ilmoittautumisesta`,
