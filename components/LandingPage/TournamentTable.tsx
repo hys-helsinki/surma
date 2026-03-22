@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { NoSsr } from "@mui/base/NoSsr";
+import { NoSsr } from "@mui/material";
 import { Box, Grid } from "@mui/material";
 
 const TournamentTable = ({ tournaments }) => {
@@ -43,11 +43,11 @@ const TournamentTable = ({ tournaments }) => {
               borderTop: index > 0 ? "0.5px solid white" : undefined
             }}
           >
-            <Grid item xs={6} md={4}>
+            <Grid size={{ xs: 6, md: 4 }}>
               <h3>Nimi</h3>
               <p>{tournament.name}</p>
             </Grid>
-            <Grid item xs={6} md={4}>
+            <Grid size={{ xs: 6, md: 4 }}>
               <h3>Turnaus käynnissä</h3>
               <NoSsr>
                 {modifyDate(tournament.startTime)}&nbsp;-&nbsp;
@@ -55,7 +55,7 @@ const TournamentTable = ({ tournaments }) => {
                 {Intl.DateTimeFormat().resolvedOptions().timeZone})
               </NoSsr>
             </Grid>
-            <Grid item xs={12} md={4}>
+            <Grid size={{ xs: 12, md: 4 }}>
               <h3>Ilmoittautuminen</h3>
               <NoSsr>
                 {modifyDate(tournament.registrationStartTime)}

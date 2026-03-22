@@ -1,5 +1,4 @@
-import { LoadingButton } from "@mui/lab";
-import { Autocomplete, Box } from "@mui/material";
+import { Autocomplete, Box, Button } from "@mui/material";
 import { Field, FieldArray, Form, Formik } from "formik";
 import { useState } from "react";
 import StyledTextField from "./StyledTextField";
@@ -156,9 +155,9 @@ const CreateRingForm = ({
                     </Box>
                   )}
                 </FieldArray>
-                <LoadingButton type="submit" loading={loading}>
+                <Button type="submit" loading={loading}>
                   Tallenna rinki
-                </LoadingButton>
+                </Button>
               </Form>
             )}
           </Formik>

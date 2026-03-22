@@ -5,16 +5,13 @@ import InfoAccordion from "../components/LandingPage/InfoAccordion";
 import TournamentTable from "../components/LandingPage/TournamentTable";
 import { authConfig } from "./api/auth/[...nextauth]";
 import prisma from "../lib/prisma";
-import { unstable_getServerSession } from "next-auth/next";
+import { getServerSession } from "next-auth/next";
 import { useRouterLoading } from "../lib/hooks";
 import LoadingSpinner from "../components/Common/LoadingSpinner";
+import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 
 export async function getServerSideProps(context) {
-  const session = await unstable_getServerSession(
-    context.req,
-    context.res,
-    authConfig
-  );
+  const session = await getServerSession(context.req, context.res, authConfig);
 
   if (session) {
     const user = await prisma.user.findUnique({
@@ -55,7 +52,10 @@ export async function getServerSideProps(context) {
   });
   tournaments = JSON.parse(JSON.stringify(tournaments));
   return {
-    props: { tournaments }
+    props: {
+      tournaments,
+      ...(await serverSideTranslations(context.locale, ["common"]))
+    }
   };
 }
 

@@ -8,14 +8,13 @@ import {
   useTheme
 } from "@mui/material";
 import { AuthenticationRequired } from "../../../../components/AuthenticationRequired";
-import { unstable_getServerSession } from "next-auth";
+import { getServerSession } from "next-auth";
 import { authConfig } from "../../../api/auth/[...nextauth]";
-import { v2 as cloudinary } from "cloudinary";
 import DesktopView from "../../../../components/PlayerPage/DesktopView";
 import MobileView from "../../../../components/PlayerPage/MobileView";
 import PlayerForm from "../../../../components/Registration/PlayerForm";
 import { useSession } from "next-auth/react";
-import { useState } from "react";
+import { JSX, useState } from "react";
 import { UserProvider } from "../../../../components/UserProvider";
 import LoadingSpinner from "../../../../components/Common/LoadingSpinner";
 import { useRouterLoading } from "../../../../lib/hooks";
@@ -33,11 +32,7 @@ export const getServerSideProps: GetServerSideProps = async ({
   params,
   ...context
 }) => {
-  const session = await unstable_getServerSession(
-    context.req,
-    context.res,
-    authConfig
-  );
+  const session = await getServerSession(context.req, context.res, authConfig);
 
   let currentUser = await prisma.user.findUnique({
     where: {
@@ -123,15 +118,9 @@ export const getServerSideProps: GetServerSideProps = async ({
     }
   });
 
-  let imageUrl = "";
-  try {
-    const result = await cloudinary.api.resource(
-      `surma/${user.tournamentId}/${user.player.id}` as string
-    );
-    imageUrl = result.url;
-  } catch (error) {
-    console.log(error);
-  }
+  const imageUrl = user.player
+    ? `surma/${user.tournamentId}/${user.player.id}`
+    : "";
 
   user = JSON.parse(JSON.stringify(user));
   currentUser = JSON.parse(JSON.stringify(currentUser));

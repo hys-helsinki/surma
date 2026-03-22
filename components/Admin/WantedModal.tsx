@@ -1,5 +1,4 @@
-import LoadingButton from "@mui/lab/LoadingButton";
-import { Box, Modal, Snackbar } from "@mui/material";
+import { Box, Modal, Snackbar, Button } from "@mui/material";
 import { Assignment, Player, Team, User } from "@prisma/client";
 import { Formik, Form, Field } from "formik";
 import { getPlayerFullNameById } from "../utils";
@@ -135,9 +134,9 @@ const WantedModal = ({
                     </Box>
                   ))}
 
-                  <LoadingButton type="submit" loading={isLoading}>
+                  <Button type="submit" loading={isLoading}>
                     Etsintäkuuluta
-                  </LoadingButton>
+                  </Button>
                   <button onClick={() => setOpenModal(false)}>Peruuta</button>
                 </Form>
               );

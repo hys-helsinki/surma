@@ -31,7 +31,7 @@ export default async function create(
       });
 
       const playerUrl = `${process.env.BASE_URL}/tournaments/${playerData.tournamentId}/users/${user.id}`;
-      sendEmail(
+      await sendEmail(
         "surma@salamurhaajat.net",
         "tuomaristo@salamurhaajat.net",
         `${tournament.name}: Uusi ilmoittautuminen (${user.firstName} ${user.lastName})`,

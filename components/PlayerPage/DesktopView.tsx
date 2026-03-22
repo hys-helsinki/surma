@@ -36,7 +36,7 @@ const DesktopView = ({
   return (
     <Container sx={{ marginBottom: "2rem" }}>
       <Grid container>
-        <Grid item xs={12} md={6}>
+        <Grid size={{ xs: 12, md: 6 }}>
           <Info
             imageUrl={imageUrl}
             setImageUrl={setImageUrl}
@@ -54,7 +54,7 @@ const DesktopView = ({
             setUser={setUser}
           />
         </Grid>
-        <Grid item xs={12} md={6} padding={2}>
+        <Grid size={{ xs: 12, md: 6 }} padding={2}>
           <Box sx={{ borderLeft: "solid red 2px" }}>
             <Calendar
               setUser={setUser}

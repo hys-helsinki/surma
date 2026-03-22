@@ -1,4 +1,3 @@
-import LoadingButton from "@mui/lab/LoadingButton";
 import { Tournament, Umpire, User } from "@prisma/client";
 import { useState } from "react";
 import Datetime from "react-datetime";
@@ -10,7 +9,7 @@ import { useField } from "formik";
 import moment from "moment";
 import * as Yup from "yup";
 import { useRouter } from "next/router";
-import { Tooltip } from "@mui/material";
+import { Tooltip, Button } from "@mui/material";
 import { useSession } from "next-auth/react";
 
 interface UmpireUser extends User {
@@ -101,9 +100,9 @@ const TournamentEditForm = ({ tournament }: { tournament: Tournament }) => {
             label="Ilmoittautuminen päättyy"
             name="registrationEndTime"
           />
-          <LoadingButton loading={isLoading} type="submit">
+          <Button loading={isLoading} type="submit">
             Tallenna muutokset
-          </LoadingButton>
+          </Button>
         </Form>
       </Formik>
     </Box>
@@ -168,14 +167,14 @@ const DeleteButton = ({ tournament }: { tournament: Tournament }) => {
         }
       >
         <span>
-          <LoadingButton
+          <Button
             onClick={() => deleteTournamentResources()}
             loading={loading}
             className="delete-tournament"
             disabled={!isTournamentFinished()}
           >
             Poista kaikki turnausdata
-          </LoadingButton>
+          </Button>
         </span>
       </Tooltip>
     </Box>

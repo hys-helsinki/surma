@@ -1,11 +1,10 @@
 import { GetServerSideProps } from "next";
 import prisma from "../../../../lib/prisma";
-import React, { useState } from "react";
+import React, { JSX, useState } from "react";
 import { useMediaQuery, useTheme } from "@mui/material";
 import { AuthenticationRequired } from "../../../../components/AuthenticationRequired";
-import { Session, unstable_getServerSession } from "next-auth";
+import { Session, getServerSession } from "next-auth";
 import { authConfig } from "../../../api/auth/[...nextauth]";
-import { v2 as cloudinary } from "cloudinary";
 import DesktopView from "../../../../components/PlayerPage/DesktopView";
 import MobileView from "../../../../components/PlayerPage/MobileView";
 import { Tournament } from "@prisma/client";
@@ -55,11 +54,7 @@ export const getServerSideProps: GetServerSideProps = async ({
   params,
   ...context
 }) => {
-  const session = await unstable_getServerSession(
-    context.req,
-    context.res,
-    authConfig
-  );
+  const session = await getServerSession(context.req, context.res, authConfig);
 
   const { id: userId, tournamentId } = params;
 
@@ -96,6 +91,7 @@ export const getServerSideProps: GetServerSideProps = async ({
       id: true,
       firstName: true,
       lastName: true,
+      tournamentId: true,
       player: {
         select: {
           id: true,
@@ -144,15 +140,9 @@ export const getServerSideProps: GetServerSideProps = async ({
     }
   });
 
-  let imageUrl = "";
-  try {
-    const result = await cloudinary.api.resource(
-      `surma/${tournament.id}/${user.player.id}` as string
-    );
-    imageUrl = result.url;
-  } catch (error) {
-    console.log(error);
-  }
+  const imageUrl = user.player
+    ? `surma/${user.tournamentId}/${user.player.id}`
+    : "";
 
   tournament = JSON.parse(JSON.stringify(tournament));
 

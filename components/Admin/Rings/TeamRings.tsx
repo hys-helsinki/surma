@@ -1,9 +1,8 @@
-import { Dispatch, SetStateAction, useState } from "react";
+import { Dispatch, JSX, SetStateAction, useState } from "react";
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 import IconButton from "@mui/material/IconButton";
 import { Button } from "@mui/material";
 import { TeamAssignment } from "@prisma/client";
-import { LoadingButton } from "@mui/lab";
 import CreateTeamRingForm from "./CreateTeamRingForm";
 import KeyboardArrowUpRoundedIcon from "@mui/icons-material/KeyboardArrowUpRounded";
 import KeyboardArrowDownRoundedIcon from "@mui/icons-material/KeyboardArrowDownRounded";
@@ -94,14 +93,14 @@ const AssignmentCard = ({
         <strong>Kohde: </strong>
         {teams.find((team) => team.id === assignment.targetTeamId).name}
       </p>
-      <LoadingButton
+      <Button
         onClick={() => deleteAssignment(assignment.id)}
         loading={isDeletingAssignment}
         sx={{ margin: "10px" }}
         variant="contained"
       >
         Poista toimeksianto
-      </LoadingButton>
+      </Button>
     </Card>
   );
 };
@@ -335,9 +334,9 @@ const Ring = ({
                   )}
                 </FieldArray>
                 <Box>
-                  <LoadingButton type="submit" loading={isCreatingAssignment}>
+                  <Button type="submit" loading={isCreatingAssignment}>
                     Tallenna toimeksiannot
-                  </LoadingButton>
+                  </Button>
                 </Box>
               </Form>
             )}

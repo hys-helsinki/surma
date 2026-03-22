@@ -60,7 +60,7 @@ export default async function create(
         }
       });
 
-      sendEmail(
+      await sendEmail(
         "surma@salamurhaajat.net",
         user.email,
         `Kiitos ilmoittautumisestasi salamurhaturnaukseen ${user.tournament.name}!`,

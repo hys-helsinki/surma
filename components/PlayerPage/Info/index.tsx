@@ -1,9 +1,8 @@
 import { useContext, useState } from "react";
 import ImageUploadForm from "../../Registration/PlayerForm/ImageUploadForm";
 import ImageComponent from "./ImageComponent";
-import { Alert, Box, Snackbar } from "@mui/material";
+import { Alert, Box, Snackbar, Button } from "@mui/material";
 import { UserContext } from "../../UserProvider";
-import { LoadingButton } from "@mui/lab";
 
 const states = {
   ACTIVE: "Elossa",
@@ -117,7 +116,7 @@ const Info = ({
           <ImageUploadForm setSelectedFileData={setSelectedFileData} />
           <div style={{ display: "flex", alignItems: "center" }}>
             {selectedFileData && (
-              <LoadingButton
+              <Button
                 onClick={async (e) => await uploadImage(e)}
                 sx={{
                   textTransform: "none",
@@ -127,7 +126,7 @@ const Info = ({
                 loading={isLoading}
               >
                 Lisää kuva
-              </LoadingButton>
+              </Button>
             )}
             {updateImage && (
               <button
