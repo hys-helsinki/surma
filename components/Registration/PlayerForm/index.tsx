@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { useSession } from "next-auth/react";
-import { useRouter } from "next/router";
 import { Alert, Box, Container, Snackbar } from "@mui/material";
 import { useTranslation } from "next-i18next";
 import PlayerDetailsForm from "./PlayerDetailsForm";

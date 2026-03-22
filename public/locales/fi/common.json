@@ -150,7 +150,7 @@
     }
   },
   "authenticationRequired": {
-    "loginButton": "Kirjaudu sisään",
+    "loginPrompt": "Kirjaudu sisään",
     "notLoggedInMessage": "Et ole kirjautunut sisään."
   },
   "gdprModal": {

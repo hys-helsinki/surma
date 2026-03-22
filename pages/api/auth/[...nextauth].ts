@@ -63,8 +63,9 @@ const html = (url: string) => {
                   display: inline-block;
                   font-weight: bold;
                 "
-                >${emailButton}</a
               >
+                ${emailButton}
+              </a>
             </td>
           </tr>
         </table>
@@ -83,6 +84,7 @@ const html = (url: string) => {
       >
         ${emailNote}
       </td>
+    </tr>
   </table>
 </body>
 
@@ -114,7 +116,13 @@ export const authConfig = {
       }) {
         const htmlContents = html(url);
         const textContents = text(url);
-        sendEmail(from, email, "Sign in to Surma", textContents, htmlContents);
+        await sendEmail(
+          from,
+          email,
+          "Sign in to Surma",
+          textContents,
+          htmlContents
+        );
       }
     })
   ],

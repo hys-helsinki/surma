@@ -24,7 +24,17 @@ export default async function create(
   res: NextApiResponse
 ) {
   if (req.method === "POST") {
-    const locale = (req.query.locale as string) || "fi";
+    const rawLocale = ((req.query.locale as string) || "").toLowerCase();
+    let locale: "fi" | "en";
+    if (!rawLocale) {
+      locale = "fi";
+    } else if (rawLocale === "fi" || rawLocale.startsWith("fi-")) {
+      locale = "fi";
+    } else if (rawLocale === "en" || rawLocale.startsWith("en-")) {
+      locale = "en";
+    } else {
+      locale = "en";
+    }
     const playerData: PlayerFormData = JSON.parse(req.body);
     try {
       const user = await prisma.user.findFirst({

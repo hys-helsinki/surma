@@ -30,7 +30,7 @@ const ContactDetails = ({
       <p>
         {t("playerPage.details.contact.lastVisit")}:
         {user.player.lastVisit
-          ? ` ${new Date(user.player.lastVisit).toLocaleTimeString(locale, {
+          ? ` ${new Date(user.player.lastVisit).toLocaleString(locale, {
               hour: "2-digit",
               minute: "2-digit",
               year: "numeric",
