@@ -20,6 +20,7 @@ import {
   TeamRingWithAssignments,
   UmpirePageTeam
 } from "../../types/umpirepage";
+import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -135,7 +136,15 @@ export const getServerSideProps: GetServerSideProps = async ({
   teamRings = JSON.parse(JSON.stringify(teamRings));
 
   return {
-    props: { tournament, users, players, playerRings, teamRings, teams }
+    props: {
+      tournament,
+      users,
+      players,
+      playerRings,
+      teamRings,
+      teams,
+      ...(await serverSideTranslations(context.locale, ["common"]))
+    }
   };
 };
 

@@ -3,6 +3,7 @@ import { getCurrentWeek, getTournamentDates, splitCalendar } from "../utils";
 import { Formik, Form, Field } from "formik";
 import Markdown from "../Common/Markdown";
 import { Tournament } from "@prisma/client";
+import { useTranslation } from "next-i18next";
 import { UserContext } from "../UserProvider";
 import { Button } from "@mui/material";
 
@@ -15,6 +16,7 @@ export const Calendar = ({
   showEditButton: boolean;
   setUser: Dispatch<any>;
 }): JSX.Element => {
+  const { t } = useTranslation("common");
   const user = useContext(UserContext);
   const [weekNumber, setSlideNumber] = useState(0);
   const [weeks, setWeeks] = useState([]);
@@ -85,7 +87,9 @@ export const Calendar = ({
     <div className="calendar">
       {showEditButton && (
         <button onClick={() => setIsUpdated(!isUpdated)}>
-          {isUpdated ? "Muokkaa kalenteria" : "Peruuta"}
+          {isUpdated
+            ? t("playerPage.calendar.editButton")
+            : t("playerPage.calendar.cancelButton")}
         </button>
       )}
 
@@ -103,7 +107,7 @@ export const Calendar = ({
             ))}
           </ul>
           <button onClick={() => handleSlideShow()} style={{ left: "40%" }}>
-            Seuraava
+            {t("playerPage.calendar.nextButton")}
           </button>
         </div>
       ) : (
@@ -115,12 +119,9 @@ export const Calendar = ({
           }}
         >
           <Form>
-            <Markdown>
-              Kalenteri tukee
-              [Markdown-syntaksia](https://www.markdownguide.org/basic-syntax/)
-            </Markdown>
+            <Markdown>{t("playerPage.calendar.markdown")}</Markdown>
             <Button loading={isLoading} type="submit">
-              Tallenna muokkaukset
+              {t("playerPage.calendar.saveButton")}
             </Button>
             {dates.map((date: string, index) => (
               <div key={index}>
@@ -129,7 +130,7 @@ export const Calendar = ({
               </div>
             ))}
             <Button loading={isLoading} type="submit">
-              Tallenna muokkaukset
+              {t("playerPage.calendar.saveButton")}
             </Button>
           </Form>
         </Formik>

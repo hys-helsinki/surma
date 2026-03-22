@@ -5,17 +5,16 @@ import TeamForm from "../../../components/Registration/TeamForm";
 import { Tournament } from "@prisma/client";
 import { getServerSession } from "next-auth/next";
 import { authConfig } from "../../api/auth/[...nextauth]";
-import { useRouter } from "next/router";
-import { useState, useEffect } from "react";
 import LoadingSpinner from "../../../components/Common/LoadingSpinner";
 import { useRouterLoading } from "../../../lib/hooks";
+import { useTranslation } from "next-i18next";
+import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 
 export const getServerSideProps: GetServerSideProps = async ({
   params,
-  req,
-  res
+  ...context
 }) => {
-  const session = await getServerSession(req, res, authConfig);
+  const session = await getServerSession(context.req, context.res, authConfig);
 
   if (session) {
     const user = await prisma.user.findUnique({
@@ -51,7 +50,10 @@ export const getServerSideProps: GetServerSideProps = async ({
   tournament = JSON.parse(JSON.stringify(tournament)); // to avoid Next.js serialization error
 
   return {
-    props: { tournament }
+    props: {
+      tournament,
+      ...(await serverSideTranslations(context.locale, ["common"]))
+    }
   };
 };
 
@@ -61,6 +63,7 @@ export default function Registration({
   tournament: Tournament;
 }) {
   const isLoading = useRouterLoading();
+  const { t } = useTranslation("common");
 
   if (isLoading) return <LoadingSpinner />;
 
@@ -78,7 +81,7 @@ export default function Registration({
           <UserForm tournament={tournament} />
         )
       ) : (
-        <h3 style={{ margin: 10 }}>Ilmoittautuminen ei ole auki</h3>
+        <h3 style={{ margin: 10 }}>{t("registration.registrationNotOpen")}</h3>
       )}
     </div>
   );

@@ -18,6 +18,8 @@ import { JSX, useState } from "react";
 import { UserProvider } from "../../../../components/UserProvider";
 import LoadingSpinner from "../../../../components/Common/LoadingSpinner";
 import { useRouterLoading } from "../../../../lib/hooks";
+import { serverSideTranslations } from "next-i18next/serverSideTranslations";
+import { useTranslation } from "next-i18next";
 
 const isCurrentUserAuthorized = async (currentUser, userId, tournamentId) => {
   return (
@@ -133,7 +135,8 @@ export const getServerSideProps: GetServerSideProps = async ({
       imageUrl,
       currentUserIsUmpire: currentUser.umpire != null,
       umpires,
-      currentUser
+      currentUser,
+      ...(await serverSideTranslations(context.locale, ["common"]))
     }
   };
 };
@@ -147,7 +150,7 @@ export default function User({
   currentUser
 }): JSX.Element {
   const [user, setUser] = useState(u);
-  const [confirmed, setConfirmed] = useState(
+  const [confirmed, setConfirmed] = useState<boolean>(
     user.player ? user.player.confirmed : false
   );
   const [imageUrl, setImageUrl] = useState(image);
@@ -156,6 +159,7 @@ export default function User({
   const session = useSession();
   const theme = useTheme();
   const isMobileView = useMediaQuery(theme.breakpoints.down("md"));
+  const { t } = useTranslation("common");
 
   const isLoading = useRouterLoading();
 
@@ -200,12 +204,12 @@ export default function User({
   return (
     <AuthenticationRequired>
       <UserProvider user={user}>
-        {!user.player.confirmed && (
+        {!confirmed && (
           <Alert
             severity="warning"
             sx={{ minHeight: "50px", display: "flex", alignItems: "center" }}
           >
-            Tuomaristo ei ole vielä hyväksynyt ilmoittautumista
+            {t("playerPage.registrationNotConfirmed")}
             {currentUserIsUmpire && (
               <Button
                 onClick={() => handleConfirmRegistration()}
@@ -214,7 +218,7 @@ export default function User({
                 sx={{ ml: 1 }}
                 disabled={confirmed}
               >
-                Hyväksy ilmoittautuminen
+                {t("playerPage.confirmRegistration")}
               </Button>
             )}
           </Alert>

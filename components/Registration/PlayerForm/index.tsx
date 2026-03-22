@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useSession } from "next-auth/react";
 import { Alert, Box, Container, Snackbar } from "@mui/material";
+import { useTranslation } from "next-i18next";
 import PlayerDetailsForm from "./PlayerDetailsForm";
 import ImageUploadForm from "./ImageUploadForm";
 import { getTournamentDates } from "../../utils";
@@ -12,6 +13,7 @@ export default function PlayerForm({
   setErrorMessage,
   setShowError
 }) {
+  const { t, i18n } = useTranslation("common");
   const { data, status } = useSession();
   const [selectedFileData, setSelectedFileData] = useState();
   const [isLoading, setIsLoading] = useState(false);
@@ -19,9 +21,10 @@ export default function PlayerForm({
   const [showFormError, setShowFormError] = useState(false);
 
   const tournamentId = tournament.id;
+  const locale = i18n.language || "fi";
 
   if (status === "unauthenticated") {
-    return <h2>User not found</h2>;
+    return <h2>{t("playerForm.userNotFound")}</h2>;
   }
 
   const start = new Date(tournament.startTime);
@@ -48,7 +51,7 @@ export default function PlayerForm({
     if (response.status === 200) {
       setImageUrl(responseObject.url);
     } else {
-      setErrorMessage("Kuvan lataaminen palvelimelle epäonnistui");
+      setErrorMessage(t("playerForm.imageUploadFailed"));
       setShowError(true);
     }
   };
@@ -91,7 +94,7 @@ export default function PlayerForm({
     };
 
     try {
-      const response = await fetch("/api/player/create", {
+      const response = await fetch(`/api/player/create?locale=${locale}`, {
         method: "POST",
         body: JSON.stringify(playerData)
       });
@@ -100,7 +103,7 @@ export default function PlayerForm({
         await uploadImage(responseObject.player.id);
         setUser((prev) => ({ ...prev, player: responseObject.player }));
       } else {
-        setFormErrorMessage("Jotain meni pieleen. Ota yhteyttä tuomaristoon");
+        setFormErrorMessage(t("playerForm.error"));
         setShowFormError(true);
         console.log(responseObject.message);
       }
@@ -115,25 +118,11 @@ export default function PlayerForm({
     <Container maxWidth="md">
       {isRegistrationOpen ? (
         <Box>
-          <h1 style={{ marginLeft: "10px" }}>Ilmoittautuminen</h1>
+          <h1 style={{ marginLeft: "10px" }}>{t("playerForm.title")}</h1>
           <Box sx={{ my: 4 }}>
-            <p>
-              Tässä lomakkeessa kysytään turnauksen kannalta olennaisia tietoja,
-              jotka näkyvät jahtaajillesi. Lomakkeen täyttämisen jälkeen
-              tuomaristo vahvistaa vielä ilmoittautumisesi.
-            </p>
-            <p>
-              Ainoastaan peitenimi ja osoite ovat tässä vaiheessa pakollisia -
-              muut kentät voi täyttää myöhemminkin ja niitä voi muokata
-              turnauksen aikana.
-            </p>
-            <p>
-              Kalenterin tiedot tulee pitää ajan tasalla sekä riittävän selkeinä
-              ja yksityiskohtaisina. Jokaista sekuntia siihen ei tarvitse
-              kirjoittaa, mutta pelistä tulee hauskempaa itsellesi sekä
-              jahtaajillesi jos tarjoat heille riittävästi tilaisuuksia
-              salamurhaamiseen.
-            </p>
+            <p>{t("playerForm.description")}</p>
+            <p>{t("playerForm.mandatoryFields")}</p>
+            <p>{t("playerForm.calendarInfo")}</p>
           </Box>
           <ImageUploadForm setSelectedFileData={setSelectedFileData} />
           <PlayerDetailsForm
@@ -143,7 +132,7 @@ export default function PlayerForm({
           />
         </Box>
       ) : (
-        <p>Ilmoittautuminen ei ole auki</p>
+        <p>{t("playerForm.registrationNotOpen")}</p>
       )}
       <Snackbar open={showFormError} onClose={() => setShowFormError(false)}>
         <Alert

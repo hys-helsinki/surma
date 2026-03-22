@@ -9,6 +9,7 @@ import { getServerSession } from "next-auth/next";
 import { useRouterLoading } from "../lib/hooks";
 import LoadingSpinner from "../components/Common/LoadingSpinner";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
+import { useTranslation } from "next-i18next";
 
 export async function getServerSideProps(context) {
   const session = await getServerSession(context.req, context.res, authConfig);
@@ -60,6 +61,7 @@ export async function getServerSideProps(context) {
 }
 
 export default function Home({ tournaments }) {
+  const { t } = useTranslation("common");
   const isLoading = useRouterLoading();
 
   if (isLoading) return <LoadingSpinner />;
@@ -68,7 +70,7 @@ export default function Home({ tournaments }) {
       className={`${styles.center} ${styles.main}`}
       style={{ padding: "20px" }}
     >
-      <h1>Surma</h1>
+      <h1>{t("common.appName")}</h1>
       <Image
         src={logo}
         alt="logo"
@@ -81,7 +83,7 @@ export default function Home({ tournaments }) {
         }}
       />
       <h2 className={styles.container} style={{ padding: "1em" }}>
-        Avoimet salamurhaturnaukset
+        {t("landingPage.title")}
       </h2>
       <TournamentTable tournaments={tournaments} />
       <InfoAccordion />

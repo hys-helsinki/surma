@@ -1,5 +1,6 @@
 import { Box } from "@mui/material";
 import { JSX, useContext } from "react";
+import { useTranslation } from "next-i18next";
 import { UserContext } from "../../UserProvider";
 
 const ContactDetails = ({
@@ -7,22 +8,29 @@ const ContactDetails = ({
 }: {
   showPhoneAndEmail: boolean;
 }): JSX.Element => {
+  const { t, i18n } = useTranslation("common");
+  const locale = i18n?.language || "fi";
   const user = useContext(UserContext);
+
   return (
     <Box sx={{ my: 3 }}>
       {showPhoneAndEmail && (
         <>
           <h2>
-            <u>Yhteystiedot</u>
+            <u>{t("playerPage.details.contact.title")}</u>
           </h2>
-          <p>Puhelinnumero: {user.phone}</p>
-          <p>Sähköpostiosoite: {user.email}</p>
+          <p>
+            {t("playerPage.details.contact.phoneLabel")}: {user.phone}
+          </p>
+          <p>
+            {t("playerPage.details.contact.emailLabel")}: {user.email}
+          </p>
         </>
       )}
       <p>
-        Viime vierailu:
+        {t("playerPage.details.contact.lastVisit")}:
         {user.player.lastVisit
-          ? ` ${new Date(user.player.lastVisit).toLocaleTimeString("fi-FI", {
+          ? ` ${new Date(user.player.lastVisit).toLocaleString(locale, {
               hour: "2-digit",
               minute: "2-digit",
               year: "numeric",
@@ -30,7 +38,7 @@ const ContactDetails = ({
               month: "numeric",
               timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone
             })}`
-          : " Pelaaja ei ole kirjautunut Surmaan ilmoittautumisen jälkeen"}
+          : ` ${t("playerPage.details.contact.neverVisited")}`}
       </p>
     </Box>
   );

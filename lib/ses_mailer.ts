@@ -6,7 +6,8 @@ export default async function sendEmail(
   from: string,
   to: string,
   subject: string,
-  payload: string
+  payload: string,
+  htmlPayload?: string
 ) {
   const sesClient = new SESv2Client({
     region: "eu-north-1",
@@ -23,6 +24,7 @@ export default async function sendEmail(
       to,
       subject,
       text: payload,
+      html: htmlPayload,
       ses: {
         EmailTags: [
           {

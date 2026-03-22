@@ -2,6 +2,7 @@ import { Box, Button } from "@mui/material";
 import { JSX, useContext, useState } from "react";
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
+import { useTranslation } from "next-i18next";
 import { Umpire, User } from "@prisma/client";
 import { UserContext } from "../../UserProvider";
 interface UmpireWithUser extends Umpire {
@@ -9,6 +10,7 @@ interface UmpireWithUser extends Umpire {
 }
 
 const Umpires = ({ umpires }: { umpires: UmpireWithUser[] }): JSX.Element => {
+  const { t } = useTranslation("common");
   const user = useContext(UserContext);
   const [showOtherUmpires, setShowOtherUmpires] = useState(false);
 
@@ -23,7 +25,7 @@ const Umpires = ({ umpires }: { umpires: UmpireWithUser[] }): JSX.Element => {
       {playerUmpire && (
         <Box>
           <h2>
-            <u>Pelaajan tuomari</u>
+            <u>{t("playerPage.details.umpires.playerUmpireTitle")}</u>
           </h2>
           <strong>
             {playerUmpire.user.firstName} {playerUmpire.user.lastName} (
@@ -37,7 +39,9 @@ const Umpires = ({ umpires }: { umpires: UmpireWithUser[] }): JSX.Element => {
 
       {otherUmpires.length !== 0 && (
         <div>
-          <h3 style={{ display: "inline" }}>Turnauksen tuomarit</h3>
+          <h3 style={{ display: "inline" }}>
+            {t("playerPage.details.umpires.tournamentUmpiresTitle")}
+          </h3>
           <Button
             onClick={() => setShowOtherUmpires(!showOtherUmpires)}
             sx={{ color: "white" }}

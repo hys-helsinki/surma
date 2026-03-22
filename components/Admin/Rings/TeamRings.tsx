@@ -98,6 +98,7 @@ const AssignmentCard = ({
         loading={isDeletingAssignment}
         sx={{ margin: "10px" }}
         variant="contained"
+        className="loadingButton"
       >
         Poista toimeksianto
       </Button>

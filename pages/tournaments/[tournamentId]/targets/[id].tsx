@@ -11,6 +11,7 @@ import { Tournament } from "@prisma/client";
 import { UserProvider } from "../../../../components/UserProvider";
 import LoadingSpinner from "../../../../components/Common/LoadingSpinner";
 import { useRouterLoading } from "../../../../lib/hooks";
+import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 
 const isTournamentRunning = (startTime: Date, endTime: Date) => {
   const currentTime = new Date().getTime();
@@ -145,6 +146,7 @@ export const getServerSideProps: GetServerSideProps = async ({
     : "";
 
   tournament = JSON.parse(JSON.stringify(tournament));
+  user = JSON.parse(JSON.stringify(user));
 
   return {
     props: {
@@ -154,7 +156,8 @@ export const getServerSideProps: GetServerSideProps = async ({
       imageUrl,
       currentUserIsUmpire: currentUser.umpire != null,
       currentUserIsDetective: currentUser.player.state === "DETECTIVE",
-      umpires
+      umpires,
+      ...(await serverSideTranslations(context.locale, ["common"]))
     }
   };
 };

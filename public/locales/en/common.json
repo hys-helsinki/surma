@@ -8,5 +8,157 @@
     "admin": "Admin",
     "tournamentRules": "Tournament rules",
     "signIn": "Sign in"
+  },
+  "landingPage": {
+    "title": "Open assassination tournaments",
+    "infoAccordion": {
+      "whatIsSurmaTitle": "What is Surma?",
+      "whatIsSurmaContent": "Surma is a program designed for organizing fun assassination tournaments, maintained and developed by active members of the Helsinki University's Society of Human Hunters, which is ",
+      "hysinOrgLink": "the hys-helsinki organization on GitHub",
+      "whatIsSurmaContent2": ". Surma is used to manage assassination tournaments: players share information with each other through Surma during the tournament.",
+      "whatIsAssassinationTournamentTitle": "What is an assassination tournament?",
+      "whatIsAssassinationTournamentContent1": "In an assassination tournament, players live their everyday lives while trying to get into situations unnoticed by others, where they can apply playful weapon substitutes to other players as allowed by the rules. The tournament is played among participants in murder chains: player A's goal is to assassinate the target, player B; player B hunts player C, and so on up to player N, who waits for player A. If A successfully kills B in a way allowed by the rules, A and B contact the umpires and report what happened for scoring purposes. Now B drops out of the game, and A starts hunting C as their new target. The game is played around the clock until a predetermined time limit, at which point the game winner is determined by points. To make the game easier, players share, among other things, their calendars and home addresses with each other in Surma.",
+      "whatIsAssassinationTournamentContent2": "Participation in an assassination tournament begins by registering for the game through Surma, after which Surma and the tournament umpires send additional instructions by email. ",
+      "whatIsAssassinationTournamentContent3": "Read more about player data and how it is handled in ",
+      "privacyPolicyLink": "Surma's privacy policy",
+      "whatIsAssassinationTournamentContent4": "Read more about assassination tournaments and their rules on ",
+      "hysinRulesLink": "HUSH's website"
+    },
+    "tournamentTable": {
+      "name": "Name",
+      "tournamentRunning": "Tournament running",
+      "registration": "Registration",
+      "registerLink": "Register here!",
+      "registrationNotOpen": "Registration is not open",
+      "noTournamentsMessage": "There are currently no upcoming tournaments scheduled, so please come back later. You can also get information about upcoming tournaments from ",
+      "hysinEventsLink": "the Helsinki University's Society of Human Hunters' (HUSH) website."
+    }
+  },
+  "registration": {
+    "registrationNotOpen": "Registration is not open",
+    "userForm": {
+      "title": "Registration",
+      "welcomeMessage": "Welcome to register for the HUSH assassination tournament",
+      "description": "Registration is a two-step process. First, we ask for your name, email address and phone number. This information is needed to log into Surma and for the umpires to contact you about tournament-related matters. After confirming your email address, you will be able to enter the rest of the information required in the tournament. By registering for the tournament, you accept the Helsinki University's Society of Human Hunters' ",
+      "privacyPolicyLink": "privacy policy",
+      "firstNameLabel": "First name",
+      "lastNameLabel": "Last name",
+      "emailLabel": "Email address",
+      "phoneLabel": "Phone number",
+      "submitButton": "Create user",
+      "requiredError": "Required",
+      "phoneTypeError": "Enter only numbers",
+      "emailNotValidError": "The provided email address is not valid. Try a different address",
+      "genericError": "Something went wrong. Please contact the umpires"
+    }
+  },
+  "playerForm": {
+    "title": "Registration",
+    "userNotFound": "User not found",
+    "description": "This form asks for information relevant to the tournament, which will be visible to your hunters. After completing the form, the umpires will confirm your registration.",
+    "mandatoryFields": "Only your alias and address are mandatory at this stage - you can fill in the other fields later and edit them during the tournament.",
+    "calendarInfo": "Calendar information should be kept up to date and sufficiently clear and detailed. You don't need to document every second, but the game becomes more fun for you and your hunters if you provide them with enough opportunities for assassination.",
+    "imageUploadLabel": "Add an image",
+    "imageReadError": "Failed to read image file. Try another file",
+    "imageUploaded": "Image uploaded successfully!",
+    "alias": "Alias",
+    "professionalTitle": "Pro title",
+    "noTitle": "No title",
+    "address": "Address",
+    "learningInstitution": "Learning institution",
+    "eyeColor": "Eyes",
+    "hair": "Hair",
+    "height": "Height",
+    "safetyNotes": "Safety notes (e.g. times and places outside the game)",
+    "otherInfo": "Appearance, transportation and other details",
+    "calendarTitle": "Calendar information",
+    "calendarMarkdown": "*Calendar supports [Markdown syntax](https://www.markdownguide.org/basic-syntax/)*",
+    "registerButton": "Register",
+    "required": "Required",
+    "agreedTo": "By registering for the tournament, you accept the Helsinki University's Society of Human Hunters'",
+    "tournamentRulesLink": "tournament rules",
+    "and": "and",
+    "privacyPolicyLink": "privacy policy",
+    "error": "Something went wrong. Please contact the umpires",
+    "registrationNotOpen": "Registration is not open"
+  },
+  "playerPage": {
+    "confirmRegistration": "Confirm registration",
+    "registrationNotConfirmed": "Your registration has not yet been confirmed by the umpires.",
+    "tabs": {
+      "calendar": "Calendar",
+      "details": "Details"
+    },
+    "info": {
+      "aliasLabel": "Alias:",
+      "statusLabel": "Status:",
+      "state": {
+        "active": "Alive",
+        "dead": "Dead",
+        "detective": "Detective",
+        "extra": "Extra target"
+      },
+      "showPicture": "Show picture",
+      "hidePicture": "Hide picture",
+      "changePicture": "Change picture",
+      "uploadButton": "Upload picture",
+      "noPicture": "No picture :(",
+      "cancelButton": "Cancel",
+      "uploadError": "Failed to upload image to the server"
+    },
+    "calendar": {
+      "editButton": "Edit calendar",
+      "cancelButton": "Cancel",
+      "nextButton": "Next",
+      "markdown": "Calendar supports [Markdown syntax](https://www.markdownguide.org/basic-syntax/)",
+      "saveButton": "Save changes"
+    },
+    "details": {
+      "contact": {
+        "title": "Contact details",
+        "phoneLabel": "Phone number",
+        "emailLabel": "Email address",
+        "lastVisit": "Last visit",
+        "neverVisited": "Player has not logged in after registering for Surma"
+      },
+      "description": {
+        "title": "Description",
+        "editButton": "Edit information",
+        "cancelButton": "Cancel",
+        "safetyNotesTitle": "Safety notes (e.g. times and places outside the game):",
+        "addressLabel": "Address",
+        "learningInstitutionLabel": "Learning institution",
+        "eyeColorLabel": "Eyes",
+        "hairLabel": "Hair",
+        "heightLabel": "Height",
+        "otherInfoLabel": "Appearance, transportation and other details:"
+      },
+      "umpires": {
+        "playerUmpireTitle": "Player's umpire",
+        "tournamentUmpiresTitle": "Tournament umpires"
+      },
+      "updateForm": {
+        "safetyNotesLabel": "Safety notes (e.g. times and places outside the game)",
+        "addressLabel": "Address",
+        "learningInstitutionLabel": "Learning institution",
+        "eyeColorLabel": "Eyes",
+        "hairLabel": "Hair",
+        "heightLabel": "Height",
+        "otherInfoLabel": "Appearance, transportation and other details:",
+        "saveButton": "Save"
+      }
+    }
+  },
+  "authenticationRequired": {
+    "loginPrompt": "Login",
+    "notLoggedInMessage": "You are not logged in."
+  },
+  "gdprModal": {
+    "title": "Short privacy policy",
+    "noAnalytics": "We do not do analytics with your data. We only use your data for maintaining Surma and organizing the assassination tournament.",
+    "dataDeletion": "We delete your data from Surma after the tournament.",
+    "dataSharing": "We share data with our trusted service providers only to the extent necessary to provide the services, and we share data with players only to the extent necessary to participate in the tournament.",
+    "closeButton": "Thanks, that's enough for me!",
+    "privacyPolicyButton": "Actually, I want to read the full policy!"
   }
 }

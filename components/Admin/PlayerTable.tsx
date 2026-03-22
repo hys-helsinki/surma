@@ -79,7 +79,7 @@ const PlayerRow = ({
           <Button
             onClick={() => handlePlayerStatusChange("DEAD", player.id)}
             loading={isStateButtonLoading == "DEAD"}
-            className="playerTableStateButton"
+            className="loadingButton"
           >
             Tapa
           </Button>
@@ -96,7 +96,7 @@ const PlayerRow = ({
           <Button
             onClick={() => setOpenModal(true)}
             loading={false}
-            className="playerTableStateButton"
+            className="loadingButton"
           >
             Etsintäkuuluta
           </Button>
@@ -113,7 +113,7 @@ const PlayerRow = ({
           <Button
             onClick={() => handlePlayerStatusChange("DETECTIVE", player.id)}
             loading={isStateButtonLoading == "DETECTIVE"}
-            className="playerTableStateButton"
+            className="loadingButton"
           >
             Etsiväksi
           </Button>
@@ -130,7 +130,7 @@ const PlayerRow = ({
           <Button
             onClick={() => handlePlayerStatusChange("ACTIVE", player.id)}
             loading={isStateButtonLoading == "ACTIVE"}
-            className="playerTableStateButton"
+            className="loadingButton"
           >
             Herätä henkiin
           </Button>
@@ -195,7 +195,7 @@ const PlayerTable = ({
         </div>
       )}
       <h2>Pelaajat</h2>
-      <Box sx={{ borderBottom: "1px solid", my: 2 }}>
+      <Box sx={{ borderBottom: "1px solid", my: 2, pb: 2 }}>
         <b>Elossa ({activePlayers.length})</b>
         {activePlayers.map((player) => (
           <PlayerRow
@@ -208,7 +208,7 @@ const PlayerTable = ({
           />
         ))}
       </Box>
-      <Box sx={{ borderBottom: "1px solid", my: 2 }}>
+      <Box sx={{ borderBottom: "1px solid", my: 2, pb: 2 }}>
         <b>Kuolleet ({deadPlayers.length})</b>
         {deadPlayers.map((player) => (
           <PlayerRow
@@ -221,7 +221,7 @@ const PlayerTable = ({
           />
         ))}
       </Box>
-      <Box sx={{ borderBottom: "1px solid", my: 2 }}>
+      <Box sx={{ borderBottom: "1px solid", my: 2, pb: 2 }}>
         <b>Etsivät ({detectivePlayers.length})</b>
         {detectivePlayers.map((player) => (
           <PlayerRow

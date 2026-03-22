@@ -2,6 +2,7 @@ import { Box, Typography, Modal } from "@mui/material";
 import { useState } from "react";
 import styles from "../styles/Home.module.css";
 import { useRouter } from "next/router";
+import { useTranslation } from "next-i18next";
 
 const style = {
   position: "absolute" as "absolute",
@@ -18,6 +19,7 @@ const style = {
 };
 
 export default function GdprModal({ text }) {
+  const { t } = useTranslation("common");
   const [open, setOpen] = useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
@@ -36,29 +38,21 @@ export default function GdprModal({ text }) {
       >
         <Box sx={style}>
           <Typography id="short-privacy-policy" variant="h6">
-            <h3>Tietosuojakäytäntömme lyhyesti</h3>
+            <h3>{t("gdprModal.title")}</h3>
           </Typography>
           <div>
             <ul>
-              <li>
-                Me emme tee analytiikkaa tiedoillasi. Käytämme tietojasi vain
-                Surman ylläpitoon ja salamurhaturnauksen järjestämiseen.
-              </li>
-              <li>Tuhoamme tietosi Surmasta turnauksen jälkeen.</li>
-              <li>
-                Annamme luotettaville palveluntarjoajillemme tietoja vain sen
-                verran, mitä tarvitaan palveluiden saamiseksi, ja annamme
-                pelaajille tietoja vain sen verran, mitä tarvitaan turnaukseen
-                osallistumiseen.
-              </li>
+              <li>{t("gdprModal.noAnalytics")}</li>
+              <li>{t("gdprModal.dataDeletion")}</li>
+              <li>{t("gdprModal.dataSharing")}</li>
             </ul>
           </div>
           <div className={styles.center}>
             <button onClick={handleClose} style={{ marginBottom: "50px" }}>
-              Kiitos, tämä riittää minulle!
+              {t("gdprModal.closeButton")}
             </button>
             <button onClick={() => router.push({ pathname: `/privacy` })}>
-              Eikun koko käytäntö, kiitos!
+              {t("gdprModal.privacyPolicyButton")}
             </button>
           </div>
         </Box>
