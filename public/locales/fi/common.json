@@ -58,9 +58,6 @@
     "description": "Tässä lomakkeessa kysytään turnauksen kannalta olennaisia tietoja, jotka näkyvät jahtaajillesi. Lomakkeen täyttämisen jälkeen tuomaristo vahvistaa vielä ilmoittautumisesi.",
     "mandatoryFields": "Ainoastaan peitenimi ja osoite ovat tässä vaiheessa pakollisia - muut kentät voi täyttää myöhemminkin ja niitä voi muokata turnauksen aikana.",
     "calendarInfo": "Kalenterin tiedot tulee pitää ajan tasalla sekä riittävän selkeinä ja yksityiskohtaisina. Jokaista sekuntia siihen ei tarvitse kirjoittaa, mutta pelistä tulee hauskempaa itsellesi sekä jahtaajillesi jos tarjoat heille riittävästi tilaisuuksia salamurhaamiseen.",
-    "imageUploadLabel": "Lisää kuva",
-    "imageReadError": "Kuvatiedoston lukeminen epäonnistui. Kokeile toista tiedostoa",
-    "imageUploaded": "Kuva ladattu onnistuneesti!",
     "alias": "Peitenimi",
     "professionalTitle": "Ammattilaistitteli",
     "noTitle": "Ei titteliä",
@@ -160,5 +157,15 @@
     "dataSharing": "Annamme luotettaville palveluntarjoajillemme tietoja vain sen verran, mitä tarvitaan palveluiden saamiseksi, ja annamme pelaajille tietoja vain sen verran, mitä tarvitaan turnaukseen osallistumiseen.",
     "closeButton": "Kiitos, tämä riittää minulle!",
     "privacyPolicyButton": "Eikun koko käytäntö, kiitos!"
+  },
+  "imageUpload": {
+    "uploadLabel": "Lisää kuva",
+    "imageUploaded": "Kuva ladattu onnistuneesti!",
+    "changePicture": "Vaihda kuva",
+    "showPicture": "Näytä kuva",
+    "hidePicture": "Piilota kuva",
+    "noPicture": "Ei kuvaa :(",
+    "cancelButton": "Peruuta",
+    "uploadError": "Kuvan lataaminen palvelimelle epäonnistui"
   }
 }

@@ -3,7 +3,7 @@ import { useSession } from "next-auth/react";
 import { Alert, Box, Container, Snackbar } from "@mui/material";
 import { useTranslation } from "next-i18next";
 import PlayerDetailsForm from "./PlayerDetailsForm";
-import ImageUploadForm from "./ImageUploadForm";
+import ImageUploadForm from "../../Common/ImageUploadForm";
 import { getTournamentDates } from "../../utils";
 
 export default function PlayerForm({
@@ -113,7 +113,7 @@ export default function PlayerForm({
               userId={data.user.id}
             />
           ) : (
-            <p>{t("playerForm.imageUploaded")}</p>
+            <p>{t("imageUpload.imageUploaded")}</p>
           )}
           <PlayerDetailsForm
             dates={dates}

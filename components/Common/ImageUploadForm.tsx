@@ -13,7 +13,7 @@ const ImageUploadForm = ({ setImageUrl, tournamentId, userId }) => {
 
   const handleUploadError = (error) => {
     console.error("Upload error:", error);
-    setErrorMessage(t("registration.playerForm.imageReadError"));
+    setErrorMessage(t("imageUpload.uploadError"));
     setShowError(true);
   };
   return (
@@ -32,7 +32,7 @@ const ImageUploadForm = ({ setImageUrl, tournamentId, userId }) => {
         {({ open }) => {
           return (
             <button onClick={() => open()}>
-              {t("registration.playerForm.imageUploadLabel")}
+              {t("imageUpload.uploadLabel")}
             </button>
           );
         }}

@@ -1,6 +1,6 @@
 import { useContext, useState } from "react";
 import { useTranslation } from "next-i18next";
-import ImageUploadForm from "../../Registration/PlayerForm/ImageUploadForm";
+import ImageUploadForm from "../../Common/ImageUploadForm";
 import ImageComponent from "./ImageComponent";
 import { Alert, Box, Snackbar, Button } from "@mui/material";
 import { UserContext } from "../../UserProvider";
@@ -72,18 +72,18 @@ const Info = ({
           >
             <button onClick={() => setShowPicture(!showPicture)}>
               {showPicture
-                ? t("playerPage.info.hidePicture")
-                : t("playerPage.info.showPicture")}
+                ? t("imageUpload.hidePicture")
+                : t("imageUpload.showPicture")}
             </button>
             {showImageForm && (
               <button onClick={() => setUpdateImage(!updateImage)}>
-                {t("playerPage.info.changePicture")}
+                {t("imageUpload.changePicture")}
               </button>
             )}
           </div>
         </>
       ) : !showImageForm ? (
-        <p style={{ marginLeft: "1rem" }}>{t("playerPage.info.noPicture")}</p>
+        <p style={{ marginLeft: "1rem" }}>{t("imageUpload.noPicture")}</p>
       ) : (
         <div style={{ margin: "10px" }}>
           <ImageUploadForm
