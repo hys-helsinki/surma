@@ -112,7 +112,7 @@ export default function PlayerForm({
                 setImageUrl={setImageUrl}
                 tournamentId={tournamentId}
                 userId={data.user.id}
-                uploadLabel={t("playerForm.imageUploadLabel")}
+                uploadLabel={t("imageUpload.uploadLabel")}
               />
             ) : (
               <i>

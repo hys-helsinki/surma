@@ -153,7 +153,7 @@
   },
   "imageUpload": {
     "uploadLabel": "Add an image",
-    "imageUploaded": "Image uploaded successfully!",
+    "imageUploaded": "Image uploaded successfully! You can change the image after registration if you want.",
     "changePicture": "Change picture",
     "showPicture": "Show picture",
     "hidePicture": "Hide picture",

@@ -160,7 +160,7 @@
   },
   "imageUpload": {
     "uploadLabel": "Lisää kuva",
-    "imageUploaded": "Kuva ladattu onnistuneesti!",
+    "imageUploaded": "Kuva ladattu onnistuneesti! Voit halutessasi vaihtaa kuvaa vielä ilmoittautumisen jälkeen.",
     "changePicture": "Vaihda kuva",
     "showPicture": "Näytä kuva",
     "hidePicture": "Piilota kuva",
