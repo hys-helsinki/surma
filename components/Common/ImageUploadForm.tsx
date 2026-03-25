@@ -17,8 +17,9 @@ const ImageUploadForm = ({
   const { t } = useTranslation("common");
   const [showError, setShowError] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
-  const handleUploadSuccess = (result) => {
+  const handleUploadSuccess = (result, widget) => {
     setImageUrl(result.info.url);
+    widget.hide();
   };
 
   const handleUploadError = (error) => {
