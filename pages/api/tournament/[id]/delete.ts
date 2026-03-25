@@ -41,7 +41,7 @@ export default async function handler(
     if (currentTime > new Date(tournament.endTime).getTime()) {
       try {
         await cloudinary.api.delete_resources_by_prefix(
-          `surma/${tournamentId}/`,
+          `hys_surma/${tournamentId}/`,
           function (result) {
             console.log(result);
           }
