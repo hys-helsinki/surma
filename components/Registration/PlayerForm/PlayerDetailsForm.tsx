@@ -21,8 +21,8 @@ const BottomText = () => {
           {t("playerForm.tournamentRulesLink")}
         </Link>{" "}
         {t("playerForm.and")}{" "}
+        <GdprModal text={t("playerForm.privacyPolicyLink")} />.
       </div>
-      <GdprModal text={t("playerForm.privacyPolicyLink")} />.
     </Box>
   );
 };
@@ -72,6 +72,13 @@ const PlayerDetailsForm = ({
           name="alias"
           type="text"
         />
+        <TextInput
+          label={t("playerForm.address")}
+          id="address"
+          name="address"
+          autoComplete="home"
+          type="text"
+        />
         <Box sx={{ marginBottom: "8px" }}>
           <div style={{ width: "100%" }}>
             <label htmlFor="title">{t("playerForm.professionalTitle")}</label>
@@ -84,13 +91,6 @@ const PlayerDetailsForm = ({
             <option value={PlayerTitle.TT}>{PlayerTitle.TT}</option>
           </Field>
         </Box>
-        <TextInput
-          label={t("playerForm.address")}
-          id="address"
-          name="address"
-          autoComplete="home"
-          type="text"
-        />
         <TextInput
           label={t("playerForm.learningInstitution")}
           id="learningInstitution"

@@ -1,9 +1,9 @@
-import { useContext, useState } from "react";
+import { Dispatch, SetStateAction, useContext, useState } from "react";
 import { useTranslation } from "next-i18next";
-import ImageUploadForm from "../../Registration/PlayerForm/ImageUploadForm";
+import ImageUploadForm from "../../Common/ImageUploadForm";
 import ImageComponent from "./ImageComponent";
-import { Alert, Box, Snackbar, Button } from "@mui/material";
 import { UserContext } from "../../UserProvider";
+import { Box } from "@mui/material";
 
 const Info = ({
   imageUrl,
@@ -12,7 +12,7 @@ const Info = ({
   showStatus,
   showImageForm
 }: {
-  setImageUrl;
+  setImageUrl: Dispatch<SetStateAction<string>>;
   imageUrl: string;
   showAlias: boolean;
   showStatus: boolean;
@@ -20,47 +20,13 @@ const Info = ({
 }) => {
   const { t } = useTranslation("common");
   const user = useContext(UserContext);
-  const [updateImage, setUpdateImage] = useState(false);
   const [showPicture, setShowPicture] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
-  const [selectedFileData, setSelectedFileData] = useState();
-  const [showError, setShowError] = useState(false);
-  const [errorMessage, setErrorMessage] = useState("");
 
   const states = {
     ACTIVE: t("playerPage.info.state.active"),
     DEAD: t("playerPage.info.state.dead"),
     DETECTIVE: t("playerPage.info.state.detective"),
     EXTRA: t("playerPage.info.state.extra")
-  };
-
-  const uploadImage = async (event) => {
-    event.preventDefault();
-    if (!selectedFileData) return;
-    try {
-      setIsLoading(true);
-
-      const response = await fetch("/api/upload", {
-        method: "POST",
-        body: JSON.stringify({
-          url: selectedFileData,
-          publicId: user.player.id,
-          tournamentId: user.tournamentId
-        })
-      });
-
-      const responseObject = await response.json();
-      if (response.status === 200) {
-        setImageUrl(responseObject.url);
-      } else {
-        setErrorMessage(t("playerPage.info.uploadError"));
-        setShowError(true);
-      }
-    } catch (error) {
-      console.log(error);
-    } finally {
-      setIsLoading(false);
-    }
   };
 
   return (
@@ -89,7 +55,7 @@ const Info = ({
           </h3>
         )}
       </Box>
-      {imageUrl && !updateImage ? (
+      {imageUrl ? (
         <>
           <ImageComponent imageUrl={imageUrl} showPicture={showPicture} />
           <div
@@ -103,54 +69,29 @@ const Info = ({
           >
             <button onClick={() => setShowPicture(!showPicture)}>
               {showPicture
-                ? t("playerPage.info.hidePicture")
-                : t("playerPage.info.showPicture")}
+                ? t("imageUpload.hidePicture")
+                : t("imageUpload.showPicture")}
             </button>
             {showImageForm && (
-              <button onClick={() => setUpdateImage(!updateImage)}>
-                {t("playerPage.info.changePicture")}
-              </button>
+              <ImageUploadForm
+                setImageUrl={setImageUrl}
+                tournamentId={user.tournamentId}
+                userId={user.id}
+                uploadLabel={t("imageUpload.changePicture")}
+              />
             )}
           </div>
         </>
       ) : !showImageForm ? (
-        <p style={{ marginLeft: "1rem" }}>{t("playerPage.info.noPicture")}</p>
+        <p style={{ marginLeft: "1rem" }}>{t("imageUpload.noPicture")}</p>
       ) : (
         <div style={{ margin: "10px" }}>
-          <ImageUploadForm setSelectedFileData={setSelectedFileData} />
-          <div style={{ display: "flex", alignItems: "center" }}>
-            {selectedFileData && (
-              <Button
-                onClick={async (e) => await uploadImage(e)}
-                sx={{
-                  textTransform: "none",
-                  lineHeight: "normal",
-                  fontFamily: "revert"
-                }}
-                loading={isLoading}
-              >
-                {t("playerPage.info.uploadButton")}
-              </Button>
-            )}
-            {updateImage && (
-              <button
-                onClick={() => setUpdateImage(!updateImage)}
-                style={{ marginLeft: 3 }}
-              >
-                {t("playerPage.info.cancelButton")}
-              </button>
-            )}
-          </div>
-          <Snackbar open={showError} onClose={() => setShowError(false)}>
-            <Alert
-              severity="error"
-              variant="filled"
-              sx={{ width: "100%" }}
-              onClose={() => setShowError(false)}
-            >
-              {errorMessage}
-            </Alert>
-          </Snackbar>
+          <ImageUploadForm
+            setImageUrl={setImageUrl}
+            tournamentId={user.tournamentId}
+            userId={user.id}
+            uploadLabel={t("imageUpload.uploadLabel")}
+          />
         </div>
       )}
     </Box>

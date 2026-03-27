@@ -3,25 +3,27 @@ import { useSession } from "next-auth/react";
 import { Alert, Box, Container, Snackbar } from "@mui/material";
 import { useTranslation } from "next-i18next";
 import PlayerDetailsForm from "./PlayerDetailsForm";
-import ImageUploadForm from "./ImageUploadForm";
+import ImageUploadForm from "../../Common/ImageUploadForm";
 import { getTournamentDates } from "../../utils";
 
 export default function PlayerForm({
   tournament,
   setUser,
   setImageUrl,
-  setErrorMessage,
-  setShowError
+  imageUrl
 }) {
   const { t, i18n } = useTranslation("common");
   const { data, status } = useSession();
-  const [selectedFileData, setSelectedFileData] = useState();
   const [isLoading, setIsLoading] = useState(false);
   const [formErrorMessage, setFormErrorMessage] = useState("");
   const [showFormError, setShowFormError] = useState(false);
 
   const tournamentId = tournament.id;
   const locale = i18n.language || "fi";
+
+  if (status === "loading") {
+    return;
+  }
 
   if (status === "unauthenticated") {
     return <h2>{t("playerForm.userNotFound")}</h2>;
@@ -36,25 +38,6 @@ export default function PlayerForm({
     new Date().getTime() < new Date(tournament.registrationEndTime).getTime();
 
   const dates = getTournamentDates(start, end);
-
-  const uploadImage = async (id: string) => {
-    if (!selectedFileData) return;
-    const response = await fetch("/api/upload", {
-      method: "POST",
-      body: JSON.stringify({
-        url: selectedFileData,
-        publicId: id,
-        tournamentId
-      })
-    });
-    const responseObject = await response.json();
-    if (response.status === 200) {
-      setImageUrl(responseObject.url);
-    } else {
-      setErrorMessage(t("playerForm.imageUploadFailed"));
-      setShowError(true);
-    }
-  };
 
   const handleSubmit = async (values) => {
     setIsLoading(true);
@@ -100,7 +83,6 @@ export default function PlayerForm({
       });
       const responseObject = await response.json();
       if (response.status === 200) {
-        await uploadImage(responseObject.player.id);
         setUser((prev) => ({ ...prev, player: responseObject.player }));
       } else {
         setFormErrorMessage(t("playerForm.error"));
@@ -118,13 +100,26 @@ export default function PlayerForm({
     <Container maxWidth="md">
       {isRegistrationOpen ? (
         <Box>
-          <h1 style={{ marginLeft: "10px" }}>{t("playerForm.title")}</h1>
+          <h1>{t("playerForm.title")}</h1>
           <Box sx={{ my: 4 }}>
             <p>{t("playerForm.description")}</p>
             <p>{t("playerForm.mandatoryFields")}</p>
             <p>{t("playerForm.calendarInfo")}</p>
           </Box>
-          <ImageUploadForm setSelectedFileData={setSelectedFileData} />
+          <Box sx={{ my: 2 }}>
+            {!imageUrl ? (
+              <ImageUploadForm
+                setImageUrl={setImageUrl}
+                tournamentId={tournamentId}
+                userId={data.user.id}
+                uploadLabel={t("imageUpload.uploadLabel")}
+              />
+            ) : (
+              <i>
+                <b>{t("imageUpload.imageUploaded")}</b>
+              </i>
+            )}
+          </Box>
           <PlayerDetailsForm
             dates={dates}
             handleSubmit={handleSubmit}

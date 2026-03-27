@@ -58,9 +58,6 @@
     "description": "This form asks for information relevant to the tournament, which will be visible to your hunters. After completing the form, the umpires will confirm your registration.",
     "mandatoryFields": "Only your alias and address are mandatory at this stage - you can fill in the other fields later and edit them during the tournament.",
     "calendarInfo": "Calendar information should be kept up to date and sufficiently clear and detailed. You don't need to document every second, but the game becomes more fun for you and your hunters if you provide them with enough opportunities for assassination.",
-    "imageUploadLabel": "Add an image",
-    "imageReadError": "Failed to read image file. Try another file",
-    "imageUploaded": "Image uploaded successfully!",
     "alias": "Alias",
     "professionalTitle": "Pro title",
     "noTitle": "No title",
@@ -97,14 +94,7 @@
         "dead": "Dead",
         "detective": "Detective",
         "extra": "Extra target"
-      },
-      "showPicture": "Show picture",
-      "hidePicture": "Hide picture",
-      "changePicture": "Change picture",
-      "uploadButton": "Upload picture",
-      "noPicture": "No picture :(",
-      "cancelButton": "Cancel",
-      "uploadError": "Failed to upload image to the server"
+      }
     },
     "calendar": {
       "editButton": "Edit calendar",
@@ -160,5 +150,15 @@
     "dataSharing": "We share data with our trusted service providers only to the extent necessary to provide the services, and we share data with players only to the extent necessary to participate in the tournament.",
     "closeButton": "Thanks, that's enough for me!",
     "privacyPolicyButton": "Actually, I want to read the full policy!"
+  },
+  "imageUpload": {
+    "uploadLabel": "Add an image",
+    "imageUploaded": "Image uploaded successfully! You can change the image after registration if you want.",
+    "changePicture": "Change picture",
+    "showPicture": "Show picture",
+    "hidePicture": "Hide picture",
+    "noPicture": "No picture :(",
+    "cancelButton": "Cancel",
+    "uploadError": "Failed to upload image to the server"
   }
 }

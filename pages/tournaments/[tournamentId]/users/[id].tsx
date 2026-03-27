@@ -20,6 +20,7 @@ import LoadingSpinner from "../../../../components/Common/LoadingSpinner";
 import { useRouterLoading } from "../../../../lib/hooks";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import { useTranslation } from "next-i18next";
+import { v2 as cloudinary } from "cloudinary";
 
 const isCurrentUserAuthorized = async (currentUser, userId, tournamentId) => {
   return (
@@ -120,9 +121,17 @@ export const getServerSideProps: GetServerSideProps = async ({
     }
   });
 
-  const imageUrl = user.player
-    ? `surma/${user.tournamentId}/${user.player.id}`
-    : "";
+  let imageUrl = "";
+  try {
+    const result = await cloudinary.api.resource(
+      `hys_surma/${user.tournamentId}/${user.id}` as string
+    );
+    imageUrl = result.secure_url;
+  } catch (error) {
+    if (error.error.http_code !== 404) {
+      console.error(error);
+    }
+  }
 
   user = JSON.parse(JSON.stringify(user));
   currentUser = JSON.parse(JSON.stringify(currentUser));
@@ -154,8 +163,6 @@ export default function User({
     user.player ? user.player.confirmed : false
   );
   const [imageUrl, setImageUrl] = useState(image);
-  const [showError, setShowError] = useState(false);
-  const [errorMessage, setErrorMessage] = useState("");
   const session = useSession();
   const theme = useTheme();
   const isMobileView = useMediaQuery(theme.breakpoints.down("md"));
@@ -185,8 +192,7 @@ export default function User({
         tournament={tournament}
         setUser={setUser}
         setImageUrl={setImageUrl}
-        setErrorMessage={setErrorMessage}
-        setShowError={setShowError}
+        imageUrl={imageUrl}
       />
     );
   }
@@ -244,16 +250,6 @@ export default function User({
             umpires={umpires}
           />
         )}
-        <Snackbar open={showError} onClose={() => setShowError(false)}>
-          <Alert
-            severity="error"
-            variant="filled"
-            sx={{ width: "100%" }}
-            onClose={() => setShowError(false)}
-          >
-            {errorMessage}
-          </Alert>
-        </Snackbar>
       </UserProvider>
     </AuthenticationRequired>
   );

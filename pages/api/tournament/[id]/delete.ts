@@ -26,8 +26,8 @@ export default async function handler(
   res: NextApiResponse
 ) {
   const tournamentId = req.query.id as string;
-  if (!isCurrentUserAuthorized(tournamentId, req, res)) {
-    res.status(403).end();
+  if (!(await isCurrentUserAuthorized(tournamentId, req, res))) {
+    return res.status(403).end();
   }
   if (req.method === "DELETE") {
     const tournament = await prisma.tournament.findUnique({
@@ -41,7 +41,7 @@ export default async function handler(
     if (currentTime > new Date(tournament.endTime).getTime()) {
       try {
         await cloudinary.api.delete_resources_by_prefix(
-          `surma/${tournamentId}/`,
+          `hys_surma/${tournamentId}/`,
           function (result) {
             console.log(result);
           }
