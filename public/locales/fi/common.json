@@ -94,14 +94,7 @@
         "dead": "Kuollut",
         "detective": "Etsivä",
         "extra": "Lisäkohde"
-      },
-      "showPicture": "Näytä kuva",
-      "hidePicture": "Piilota",
-      "changePicture": "Vaihda kuva",
-      "uploadButton": "Lisää kuva",
-      "noPicture": "Ei kuvaa :(",
-      "cancelButton": "Peruuta",
-      "uploadError": "Kuvan lataaminen palvelimelle epäonnistui"
+      }
     },
     "calendar": {
       "editButton": "Muokkaa kalenteria",

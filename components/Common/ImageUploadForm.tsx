@@ -18,7 +18,12 @@ const ImageUploadForm = ({
   const [showError, setShowError] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
   const handleUploadSuccess = (result, widget) => {
-    setImageUrl(result.info.url);
+    if (!result.info || !result.info.secure_url) {
+      setErrorMessage(t("imageUpload.uploadError"));
+      setShowError(true);
+      widget.hide();
+    }
+    setImageUrl(result.info.secure_url);
     widget.hide();
   };
 
@@ -42,7 +47,17 @@ const ImageUploadForm = ({
         onError={handleUploadError}
       >
         {({ open }) => {
-          return <button onClick={() => open()}>{uploadLabel}</button>;
+          return (
+            <button
+              // type="button"
+              onClick={() => {
+                // event.preventDefault();
+                open();
+              }}
+            >
+              {uploadLabel}
+            </button>
+          );
         }}
       </CldUploadWidget>
       <Snackbar open={showError} onClose={() => setShowError(false)}>

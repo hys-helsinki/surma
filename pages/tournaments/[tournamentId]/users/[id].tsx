@@ -126,9 +126,11 @@ export const getServerSideProps: GetServerSideProps = async ({
     const result = await cloudinary.api.resource(
       `hys_surma/${user.tournamentId}/${user.id}` as string
     );
-    imageUrl = result.url;
+    imageUrl = result.secure_url;
   } catch (error) {
-    console.log(error);
+    if (error.error.http_code !== 404) {
+      console.error(error);
+    }
   }
 
   user = JSON.parse(JSON.stringify(user));
@@ -161,8 +163,6 @@ export default function User({
     user.player ? user.player.confirmed : false
   );
   const [imageUrl, setImageUrl] = useState(image);
-  const [showError, setShowError] = useState(false);
-  const [errorMessage, setErrorMessage] = useState("");
   const session = useSession();
   const theme = useTheme();
   const isMobileView = useMediaQuery(theme.breakpoints.down("md"));
@@ -250,16 +250,6 @@ export default function User({
             umpires={umpires}
           />
         )}
-        <Snackbar open={showError} onClose={() => setShowError(false)}>
-          <Alert
-            severity="error"
-            variant="filled"
-            sx={{ width: "100%" }}
-            onClose={() => setShowError(false)}
-          >
-            {errorMessage}
-          </Alert>
-        </Snackbar>
       </UserProvider>
     </AuthenticationRequired>
   );

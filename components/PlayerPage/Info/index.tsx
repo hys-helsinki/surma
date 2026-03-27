@@ -90,7 +90,7 @@ const Info = ({
             setImageUrl={setImageUrl}
             tournamentId={user.tournamentId}
             userId={user.id}
-            uploadLabel={t("playerPage.info.uploadButton")}
+            uploadLabel={t("imageUpload.uploadLabel")}
           />
         </div>
       )}

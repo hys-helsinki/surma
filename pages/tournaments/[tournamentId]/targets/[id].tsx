@@ -147,9 +147,11 @@ export const getServerSideProps: GetServerSideProps = async ({
     const result = await cloudinary.api.resource(
       `hys_surma/${user.tournamentId}/${user.id}` as string
     );
-    imageUrl = result.url;
+    imageUrl = result.secure_url;
   } catch (error) {
-    console.log(error);
+    if (error.error.http_code !== 404) {
+      console.error(error);
+    }
   }
 
   tournament = JSON.parse(JSON.stringify(tournament));
