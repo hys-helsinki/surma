@@ -49,7 +49,7 @@ const UserForm = ({ tournament }: { tournament: Tournament }) => {
 
   return (
     <Container maxWidth="md">
-      <h1 style={{ marginLeft: "10px" }}>{t("registration.userForm.title")}</h1>
+      <h1>{t("registration.userForm.title")}</h1>
 
       <Box sx={{ my: 4 }}>
         <p>

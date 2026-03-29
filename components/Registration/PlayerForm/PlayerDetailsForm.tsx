@@ -79,11 +79,16 @@ const PlayerDetailsForm = ({
           autoComplete="home"
           type="text"
         />
-        <Box sx={{ marginBottom: "8px" }}>
+        <Box sx={{ my: 1 }}>
           <div style={{ width: "100%" }}>
             <label htmlFor="title">{t("playerForm.professionalTitle")}</label>
           </div>
-          <Field name="title" id="title" as="select">
+          <Field
+            name="title"
+            id="title"
+            as="select"
+            style={{ margin: "8px 0" }}
+          >
             <option>{t("playerForm.noTitle")}</option>
             <option value={PlayerTitle.KK}>{PlayerTitle.KK}</option>
             <option value={PlayerTitle.MM}>{PlayerTitle.MM}</option>
