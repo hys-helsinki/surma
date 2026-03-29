@@ -101,6 +101,7 @@
       "editButton": "Muokkaa kalenteria",
       "cancelButton": "Peruuta",
       "nextButton": "Seuraava",
+      "previousButton": "Edellinen",
       "markdown": "Kalenteri tukee [Markdown-syntaksia](https://www.markdownguide.org/basic-syntax/)",
       "saveButton": "Tallenna muokkaukset"
     },

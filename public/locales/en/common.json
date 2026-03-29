@@ -101,6 +101,7 @@
       "editButton": "Edit calendar",
       "cancelButton": "Cancel",
       "nextButton": "Next",
+      "previousButton": "Previous",
       "markdown": "Calendar supports [Markdown syntax](https://www.markdownguide.org/basic-syntax/)",
       "saveButton": "Save changes"
     },

@@ -46,14 +46,6 @@ export const Calendar = ({
 
   if (weeks.length === 0) return null;
 
-  const handleSlideShow = () => {
-    if (weekNumber == weeks.length - 1) {
-      setSlideNumber(0);
-    } else {
-      setSlideNumber(weekNumber + 1);
-    }
-  };
-
   const handleCalendarSubmit = async (values) => {
     setIsLoading(true);
     const updatedCalendar: string[][] = dates.map((date, index) => [
@@ -106,9 +98,36 @@ export const Calendar = ({
               </li>
             ))}
           </ul>
-          <button onClick={() => handleSlideShow()} style={{ left: "40%" }}>
-            {t("playerPage.calendar.nextButton")}
-          </button>
+          <div
+            style={{
+              display: "flex",
+              gap: "20px",
+              margin: "0"
+            }}
+          >
+            {weekNumber > 0 && (
+              <button
+                onClick={() =>
+                  setSlideNumber(
+                    weekNumber > 0 ? weekNumber - 1 : weeks.length - 1
+                  )
+                }
+              >
+                {t("playerPage.calendar.previousButton")}
+              </button>
+            )}
+            {weekNumber < weeks.length - 1 && (
+              <button
+                onClick={() =>
+                  setSlideNumber(
+                    weekNumber < weeks.length - 1 ? weekNumber + 1 : 0
+                  )
+                }
+              >
+                {t("playerPage.calendar.nextButton")}
+              </button>
+            )}
+          </div>
         </div>
       ) : (
         <Formik
