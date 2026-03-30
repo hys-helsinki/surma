@@ -161,5 +161,154 @@
     "noPicture": "No picture :(",
     "cancelButton": "Cancel",
     "uploadError": "Failed to upload image to the server"
+  },
+  "privacy": {
+    "title": "Privacy Policy",
+    "whatIsSurma": {
+      "title": "What is Surma?",
+      "content": "Surma is an application for creating, managing and maintaining assassination tournaments. In assassination tournaments, players attempt to playfully \"assassinate\" each other using various information and within the framework of the rules of the Helsinki University's assassination game players association. By registering and participating in an assassination tournament in Surma, the user accepts the use of their information in Surma for the purposes of organizing the assassination tournament and maintaining Surma, in accordance with this privacy policy, Finnish national legislation and the European Union data protection regulation.",
+      "link": "Helsinki University's assassination game players association's tournament rules"
+    },
+    "dataSources": {
+      "title": "Data sources",
+      "content": "User information is collected through two forms and cookies. The user fills in the first form when registering for an assassination tournament in Surma (hereinafter \"registration form\") and the second form after registration in Surma (hereinafter \"participation form\"). Registration and participation in the tournament are voluntary. Cookies about the user are created when filling out the forms and using Surma."
+    },
+    "collectedData": {
+      "title": "Collected data",
+      "registrationFormTitle": "Data collected through the registration form:",
+      "registrationFormItems": [
+        "First and last name",
+        "Email address",
+        "Phone number",
+        "Consent to process information in accordance with this privacy notice, and",
+        "Timestamp of when the user filled out the form."
+      ],
+      "participationFormTitle": "Data collected through the participation form:",
+      "participationFormItems": [
+        "Tournament-specific anonymous alias",
+        "Height",
+        "Profile photo",
+        "Address",
+        "Educational institution",
+        "Calendar",
+        "Professional title",
+        "Free description of eyes",
+        "Free description of hair and",
+        "Safety notes (e.g., times and places outside the game)",
+        "Other optional information (e.g., transportation)",
+        "Consent to process information in accordance with this privacy notice, and",
+        "Timestamp of when the user filled out the form."
+      ],
+      "cookiesTitle": "Additionally, Surma collects the following cookies per user when using Surma:",
+      "cookiesItems": [
+        "Timestamp of when the user last logged into Surma, and",
+        "Timestamp of when the user last modified their information in Surma."
+      ]
+    },
+    "groundsAndPurposes": {
+      "title": "Grounds and purposes",
+      "administrators": {
+        "title": "Administrators use the following information for the EU data protection regulation (consent):",
+        "items": [
+          "First and last name",
+          "Email address",
+          "Phone number",
+          "Consent to process information, and",
+          "Timestamps of registration and participation form submissions."
+        ]
+      },
+      "administratorsAndUmpires": {
+        "title": "Administrators and umpires use the following information to maintain Surma and the assassination tournament (consent):",
+        "items": [
+          "Timestamp of the user's last login to Surma, and",
+          "Timestamp of the last time the user modified their information in Surma."
+        ]
+      },
+      "umpires": {
+        "title": "Umpires use the following information for internal and user-specific communication regarding the assassination tournament (consent):",
+        "items": [
+          "First and last name",
+          "Email address and",
+          "Phone number."
+        ]
+      },
+      "umpiresPublic": {
+        "title": "Umpires use the following information for open and public communication on the tournament event page (consent):",
+        "items": [
+          "Tournament-specific anonymous alias."
+        ]
+      },
+      "umpiresAndPlayers": {
+        "title": "Umpires and other players use the following information to identify the user in the tournament and for playing and maintaining the tournament (consent):",
+        "items": [
+          "First and last name",
+          "Height",
+          "Profile photo",
+          "Address",
+          "Educational institution",
+          "Calendar",
+          "Professional title",
+          "Free description of eyes",
+          "Free description of hair and",
+          "Safety notes (e.g., times and places outside the game) and",
+          "Other optional information provided (e.g., transportation)."
+        ]
+      }
+    },
+    "retentionPeriod": {
+      "title": "Retention period",
+      "content": "The user's tournament-specific anonymous alias is published on the tournament event page indefinitely, which is a separate website from Surma. All other data collected in Surma is used only during the assassination tournament and is destroyed after the assassination tournament ends."
+    },
+    "userRights": {
+      "title": "User rights",
+      "rightToKnow": {
+        "title": "Right to know what information has been collected and to transfer information elsewhere",
+        "content": "All information collected about the user is available in JSON and CSV formats upon request. Users can request information from the registry processors. Users are asked to describe in detail whether the request concerns only Surma data or also data from our service providers. We provide the information as quickly as possible. We will notify the estimated delivery time based on the scope of the request. Users can transfer the received information to another data controller."
+      },
+      "rightToRectify": {
+        "title": "Right to rectify information",
+        "content": "User-provided data is assumed to be correct as is. The umpires may wish to verify the accuracy of the user's information. Users can also edit the participation form information themselves in Surma except for the alias. In other cases, users can contact the registry processors."
+      },
+      "rightToBeForotten": {
+        "title": "Right to be forgotten",
+        "content": "Users can be forgotten at any time by submitting a request to the registry processors. If the user's data is deleted, their tournament participation is also canceled."
+      },
+      "rightToObject": {
+        "title": "Right to object or restrict data processing",
+        "content": "Users can object to or restrict the processing of their personal information as they wish for the purposes mentioned in this privacy notice by submitting a request to the registry processors. Restricting or objecting to the processing of personal information will result in the cancellation of the user's tournament participation and the retention of information until the end of the tournament."
+      }
+    },
+    "thirdParties": {
+      "title": "Third parties",
+      "intro": "The EU data protection regulation grants users several rights that allow users to often determine data processing by third parties. Below is more information about data processing by third parties in Surma.",
+      "dataTransfer": "Information collected in Surma is transferred to third parties through the service providers used. Information is transferred to service providers only to the extent they need to provide their services for the purposes defined in this privacy notice. Service providers have been selected carefully, taking into account their responsibility regarding data protection.",
+      "playerData": "Information collected in Surma is transferred to other users only to the extent they need it to participate in the tournament.",
+      "databaseInfo": "User information is stored in Surma's PostgreSQL database, which is maintained for free on Vercel. Vercel is a US-owned company. Surma's database server is located in Washington, USA.",
+      "vercelLink": "Vercel's, the provider of Surma's database server, privacy policy in English",
+      "hostingInfo": "Surma's user interface server is maintained through Suncomet, a Finnish-owned company. Suncomet's servers are located around the world, but our website is primarily on a C1 server.",
+      "sunCometLink": "Suncomet's, the provider of Surma's user interface and website maintenance, server information in Finnish",
+      "eventPageInfo": "The tournament event page is published as part of HYS's website for free on WordPress.org, which is open-source software. WordPress's server is maintained through Suncomet, a Finnish-owned company. WordPress Foundation, a non-profit organization in the United States, owns WordPress and ensures the software's open availability.",
+      "wordPressLink": "WordPress', the provider of the website editing software, privacy policy in English",
+      "hysinLink": "Website privacy policy in Finnish",
+      "dataDisclosure": "User information is not disclosed to other third parties except for legal reasons:",
+      "disclosureReasons": [
+        "To comply with applicable laws and/or court orders;",
+        "To detect, prevent or handle misuse, security risks or technical issues."
+      ]
+    },
+    "contact": {
+      "title": "Contact information",
+      "intro": "Questions about the registry and Surma's issues are directed to the Surma developers. Questions about the tournament are directed to the umpires.",
+      "dataController": "Data controller",
+      "dataControllerOrg": "Helsinki University's assassination game players association",
+      "dataControllerOrgId": "ID number: 3237069-8",
+      "dataControllerAddress": "Address: Mechelininkatu 3D, 00100 Helsinki",
+      "dataControllerDpo": "Association's data protection officer email:",
+      "processors": "Registry processors",
+      "processorsSurma": "Surma's administrators and developers' email:",
+      "processorsUmpires": "Assassination tournament umpires' email:",
+      "complaint": "If you believe that the processing of your personal information violates data protection legislation, you have the right to lodge a complaint with the supervisory authority responsible for the data controller's processing of personal information. In Finland, a complaint is made to the data protection ombudsman in accordance with their instructions. You can find more information on ",
+      "ombudsmanLink": "the data protection ombudsman's website"
+    }
   }
 }
