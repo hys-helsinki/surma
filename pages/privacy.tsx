@@ -17,13 +17,13 @@ const getTranslationArray = (data: any): string[] => {
 export async function getServerSideProps(context) {
   return {
     props: {
-      ...(await serverSideTranslations(context.locale, ["common"]))
+      ...(await serverSideTranslations(context.locale, ["privacy", "common"]))
     }
   };
 }
 
 export default function Privacy() {
-  const { t } = useTranslation("common");
+  const { t } = useTranslation("privacy");
 
   return (
     <Container maxWidth="md">
