@@ -105,6 +105,7 @@ export default function PlayerForm({
             <p>{t("playerForm.description")}</p>
             <p>{t("playerForm.mandatoryFields")}</p>
             <p>{t("playerForm.calendarInfo")}</p>
+            <i>{t("playerForm.infoField")}</i>
           </Box>
           <Box sx={{ my: 2 }}>
             {!imageUrl ? (
