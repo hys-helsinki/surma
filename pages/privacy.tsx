@@ -31,13 +31,7 @@ export default function Privacy() {
         <h1>{t("privacy.title")}</h1>
         <Box sx={{ paddingTop: "5px" }}>
           <h2>{t("privacy.whatIsSurma.title")}</h2>
-          <p>
-            {t("privacy.whatIsSurma.content")}{" "}
-            <a href="https://salamurhaajat.net/mika-salamurhapeli/turnaussaannot">
-              {t("privacy.whatIsSurma.link")}
-            </a>
-            .
-          </p>
+          <p>{t("privacy.whatIsSurma.content")}</p>
 
           <h2>{t("privacy.dataSources.title")}</h2>
           <p>{t("privacy.dataSources.content")}</p>
@@ -144,8 +138,8 @@ export default function Privacy() {
           <h3>{t("privacy.userRights.rightToRectify.title")}</h3>
           <p>{t("privacy.userRights.rightToRectify.content")}</p>
 
-          <h3>{t("privacy.userRights.rightToBeForotten.title")}</h3>
-          <p>{t("privacy.userRights.rightToBeForotten.content")}</p>
+          <h3>{t("privacy.userRights.rightToBeForgotten.title")}</h3>
+          <p>{t("privacy.userRights.rightToBeForgotten.content")}</p>
 
           <h3>{t("privacy.userRights.rightToObject.title")}</h3>
           <p>{t("privacy.userRights.rightToObject.content")}</p>
@@ -171,12 +165,12 @@ export default function Privacy() {
             .
           </p>
 
+          <p>{t("privacy.thirdParties.hostingInfo")}</p>
           <p>
-            {t("privacy.thirdParties.hostingInfo")}
+            {" "}
             <a href="https://suncomet.fi/osoitteet/">
               {t("privacy.thirdParties.sunCometLink")}
             </a>
-            .
           </p>
 
           <p>{t("privacy.thirdParties.eventPageInfo")}</p>
@@ -211,32 +205,36 @@ export default function Privacy() {
 
           <ul>
             <li>{t("privacy.contact.dataController")}</li>
-            <ul>
-              <li>{t("privacy.contact.dataControllerOrg")}</li>
-              <li>{t("privacy.contact.dataControllerOrgId")}</li>
-              <li>{t("privacy.contact.dataControllerAddress")}</li>
-              <li>
-                {t("privacy.contact.dataControllerDpo")}{" "}
-                <a href="mailto:gdpr@salamurhaajat.net">
-                  gdpr@salamurhaajat.net
-                </a>
-              </li>
-            </ul>
+            <li>
+              <ul>
+                <li>{t("privacy.contact.dataControllerOrg")}</li>
+                <li>{t("privacy.contact.dataControllerOrgId")}</li>
+                <li>{t("privacy.contact.dataControllerAddress")}</li>
+                <li>
+                  {t("privacy.contact.dataControllerDpo")}{" "}
+                  <a href="mailto:gdpr@salamurhaajat.net">
+                    gdpr@salamurhaajat.net
+                  </a>
+                </li>
+              </ul>
+            </li>
             <li>{t("privacy.contact.processors")}</li>
-            <ul>
-              <li>
-                {t("privacy.contact.processorsSurma")}{" "}
-                <a href="mailto:surma@salamurhaajat.net">
-                  surma@salamurhaajat.net
-                </a>
-              </li>
-              <li>
-                {t("privacy.contact.processorsUmpires")}{" "}
-                <a href="mailto:tuomaristo@salamurhaajat.net">
-                  tuomaristo@salamurhaajat.net
-                </a>
-              </li>
-            </ul>
+            <li>
+              <ul>
+                <li>
+                  {t("privacy.contact.processorsSurma")}{" "}
+                  <a href="mailto:surma@salamurhaajat.net">
+                    surma@salamurhaajat.net
+                  </a>
+                </li>
+                <li>
+                  {t("privacy.contact.processorsUmpires")}{" "}
+                  <a href="mailto:tuomaristo@salamurhaajat.net">
+                    tuomaristo@salamurhaajat.net
+                  </a>
+                </li>
+              </ul>
+            </li>
           </ul>
 
           <p>

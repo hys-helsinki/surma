@@ -3,8 +3,7 @@
     "title": "Privacy Policy",
     "whatIsSurma": {
       "title": "What is Surma?",
-      "content": "Surma is an application for creating, managing and maintaining assassination tournaments. In assassination tournaments, players attempt to playfully \"assassinate\" each other using various information and within the framework of the rules of the Helsinki University's assassination game players association. By registering and participating in an assassination tournament in Surma, the user accepts the use of their information in Surma for the purposes of organizing the assassination tournament and maintaining Surma, in accordance with this privacy policy, Finnish national legislation and the European Union data protection regulation.",
-      "link": "Helsinki University's assassination game players association's tournament rules"
+      "content": "Surma is an application for creating, managing and maintaining assassination tournaments. In assassination tournaments, players attempt to playfully \"assassinate\" each other using various information and within the framework of the rules of the Helsinki University's assassination game players association. By registering and participating in an assassination tournament in Surma, the user accepts the use of their information in Surma for the purposes of organizing the assassination tournament and maintaining Surma, in accordance with this privacy policy, Finnish national legislation and the European Union data protection regulation."
     },
     "dataSources": {
       "title": "Data sources",
@@ -106,7 +105,7 @@
         "title": "Right to rectify information",
         "content": "User-provided data is assumed to be correct as is. The umpires may wish to verify the accuracy of the user's information. Users can also edit the participation form information themselves in Surma except for the alias. In other cases, users can contact the registry processors."
       },
-      "rightToBeForotten": {
+      "rightToBeForgotten": {
         "title": "Right to be forgotten",
         "content": "Users can be forgotten at any time by submitting a request to the registry processors. If the user's data is deleted, their tournament participation is also canceled."
       },

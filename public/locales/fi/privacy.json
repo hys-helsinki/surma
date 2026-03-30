@@ -3,8 +3,7 @@
     "title": "Tietosuojakäytäntö",
     "whatIsSurma": {
       "title": "Mikä Surma?",
-      "content": "Surma on sovellus, jolla voi luoda, hallita ja ylläpitää salamurhaturnauksia. Salamurhaturnauksissa pelaajat yrittävät leikkisästi \"salamurhata\" toisensa erinäisten tietojen avulla ja Helsingin yliopiston salamurhapelaajat ry:n turnaussääntöjen puitteissa. Ilmoittautuessaan ja osallistuessaan salamurhaturnaukseen Surmassa, käyttäjä hyväksyy tietojensa käytön Surmassa seuraavan tietosuojakäytännön, Suomen kansallisen lainsäädännön ja Euroopan unionin tietosuoja-asetuksen mukaisesti salamurhaturnauksen järjestämistä ja Surman ylläpitämistä varten.",
-      "link": "Helsingin yliopiston salamurhapelaajat ry:n turnaussääntöjen"
+      "content": "Surma on sovellus, jolla voi luoda, hallita ja ylläpitää salamurhaturnauksia. Salamurhaturnauksissa pelaajat yrittävät leikkisästi \"salamurhata\" toisensa erinäisten tietojen avulla ja Helsingin yliopiston salamurhapelaajat ry:n turnaussääntöjen puitteissa. Ilmoittautuessaan ja osallistuessaan salamurhaturnaukseen Surmassa, käyttäjä hyväksyy tietojensa käytön Surmassa seuraavan tietosuojakäytännön, Suomen kansallisen lainsäädännön ja Euroopan unionin tietosuoja-asetuksen mukaisesti salamurhaturnauksen järjestämistä ja Surman ylläpitämistä varten."
     },
     "dataSources": {
       "title": "Tietolähteet",
@@ -106,7 +105,7 @@
         "title": "Oikeus oikaista tietoja",
         "content": "Käyttäjän antama data oletetaan oikeaksi sellaisenaan. Tuomaristo voi halutessaan varmistaa käyttäjältä tietojen oikeellisuuden. Käyttäjä voi myös itse muokata osallistumislomakkeen tietoja Surmassa peitenimeä lukuun ottamatta. Muissa tapauksissa käyttäjä voi ottaa yhteyttä rekisterin käsittelijöihin."
       },
-      "rightToBeForotten": {
+      "rightToBeForgotten": {
         "title": "Oikeus tulla unohdetuksi",
         "content": "Käyttäjä voi tulla unohdetuksi milloin tahansa osoittamalla pyynnön rekisterin käsittelijöille. Jos käyttäjän data poistetaan, myös käyttäjän turnausosallistuminen peruuntuu."
       },
