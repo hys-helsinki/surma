@@ -51,6 +51,7 @@ export default async function handler(
             id: tournamentId
           }
         });
+        await prisma.verificationToken.deleteMany(); // Nämä ei poistu turnauksen poistamisen yhteydessä, joten pitää poistaa erikseen.
       } catch (error) {
         console.log(error);
         return res.status(500).end();
