@@ -1,14 +1,8 @@
-import { Box, Modal, Snackbar, Button } from "@mui/material";
-import { Assignment, Player, Team, User } from "@prisma/client";
+import { Box, Modal, Snackbar, Button, Alert } from "@mui/material";
 import { Formik, Form, Field } from "formik";
 import { getPlayerFullNameById } from "../utils";
 import { useState } from "react";
-
-interface PlayerWithUser extends Player {
-  user: User;
-  targets: Assignment[];
-  team?: Team;
-}
+import { UmpirePagePlayer } from "../../types/umpirepage";
 
 const style = {
   position: "absolute" as "absolute",
@@ -33,7 +27,7 @@ const WantedModal = ({
   setOpenModal,
   tournament
 }: {
-  players: PlayerWithUser[];
+  players: UmpirePagePlayer[];
   wantedPlayerId: string;
   open: boolean;
   setRings: any;
@@ -106,11 +100,14 @@ const WantedModal = ({
                     Keille etsiville annat kohteeksi pelaajan {wantedPlayerName}
                     ?
                   </p>
-                  <Box>
-                    <button type="button" onClick={handleSelectAll}>
-                      {allSelected ? "Tyhjennä" : "Valitse kaikki"}
-                    </button>
-                  </Box>
+                  {detectivePlayers.length === 0 && <i>Ei etsiviä :(</i>}
+                  {detectivePlayers.length > 0 && (
+                    <Box>
+                      <button type="button" onClick={handleSelectAll}>
+                        {allSelected ? "Tyhjennä" : "Valitse kaikki"}
+                      </button>
+                    </Box>
+                  )}
                   {detectivePlayers.map((player) => (
                     <Box
                       sx={{
@@ -134,7 +131,14 @@ const WantedModal = ({
                     </Box>
                   ))}
 
-                  <Button type="submit" loading={isLoading}>
+                  <Button
+                    type="submit"
+                    loading={isLoading}
+                    disabled={
+                      detectivePlayers.length === 0 ||
+                      values.selectedPlayers.length === 0
+                    }
+                  >
                     Etsintäkuuluta
                   </Button>
                   <button onClick={() => setOpenModal(false)}>Peruuta</button>
@@ -150,6 +154,19 @@ const WantedModal = ({
         autoHideDuration={4000}
         message="Etsintäkuuluttaminen onnistui!"
       />
+      <Snackbar
+        open={showSuccessText}
+        onClose={() => setShowSuccessText(false)}
+      >
+        <Alert
+          severity="success"
+          variant="filled"
+          sx={{ width: "100%" }}
+          onClose={() => setShowSuccessText(false)}
+        >
+          Etsintäkuuluttaminen onnistui!
+        </Alert>
+      </Snackbar>
     </>
   );
 };
