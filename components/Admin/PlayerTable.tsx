@@ -162,7 +162,7 @@ const PlayerTable = ({
   setRings: Dispatch<SetStateAction<RingWithAssignments[]>>;
   users: UmpirePageUser[];
 }) => {
-  if (players.length === 0) return <p>Ei pelaajia</p>;
+  if (users.length === 0) return <p>Ei pelaajia</p>;
 
   const sortedPlayers = players.sort((a, b) =>
     a.user.firstName.localeCompare(b.user.firstName)
