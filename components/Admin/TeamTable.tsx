@@ -1,15 +1,8 @@
 import { Button, Grid } from "@mui/material";
-import { Player, Team, Tournament, User } from "@prisma/client";
+import { Tournament } from "@prisma/client";
 import Link from "next/link";
 import React, { useState } from "react";
-
-interface PlayerWithUser extends Player {
-  user: User;
-}
-
-interface TeamWithPlayers extends Team {
-  players: PlayerWithUser[];
-}
+import { UmpirePageTeam } from "../../types/umpirepage";
 
 const PlayerRow = ({ player: p, tournament, setRings }) => {
   const [player, setPlayer] = useState(p);
@@ -116,7 +109,7 @@ const TeamTable = ({
   setRings
 }: {
   tournament: Tournament;
-  teams: TeamWithPlayers[];
+  teams: UmpirePageTeam[];
   users: any[];
   setRings: any;
 }) => {
