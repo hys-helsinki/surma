@@ -31,6 +31,7 @@ export default async function handler(
             select: {
               target: {
                 select: {
+                  title: true,
                   user: {
                     select: {
                       id: true,
@@ -54,7 +55,12 @@ export default async function handler(
       new Date(user.tournament.startTime),
       new Date(user.tournament.endTime)
     ) && user.player
-      ? user.player.targets.map((target) => target.target.user)
+      ? user.player.targets.map((target) => ({
+          ...target.target.user,
+          firstName: target.target.title
+            ? `${target.target.title} ${target.target.user.firstName}`
+            : target.target.user.firstName
+        }))
       : [];
 
   const uniqueTargets = targets.filter(

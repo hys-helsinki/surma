@@ -210,6 +210,14 @@ export default function UmpirePage({
   const [players, setPlayers] = useState<UmpirePagePlayer[]>(playerList);
   const [value, setValue] = useState(0);
 
+  const playersWithTitles = players.map((p) => ({
+    ...p,
+    user: {
+      ...p.user,
+      firstName: p.title ? `${p.title} ${p.user.firstName}` : p.user.firstName
+    }
+  }));
+
   const isLoading = useRouterLoading();
   if (isLoading) return <LoadingSpinner />;
 
@@ -252,7 +260,7 @@ export default function UmpirePage({
             />
           ) : (
             <PlayerTable
-              players={players}
+              players={playersWithTitles}
               setPlayers={setPlayers}
               tournament={tournament}
               setRings={setRings}
@@ -263,14 +271,14 @@ export default function UmpirePage({
         <TabPanel value={value} index={2}>
           <UmpireSelect
             umpires={umpires}
-            players={players}
+            players={playersWithTitles}
             tournament={tournament}
             setPlayers={setPlayers}
           />
         </TabPanel>
         <TabPanel value={value} index={1}>
           <Rings
-            players={players}
+            players={playersWithTitles}
             playerRings={playerRings}
             teamRings={teamRings}
             setTeamRings={setTeamRings}
