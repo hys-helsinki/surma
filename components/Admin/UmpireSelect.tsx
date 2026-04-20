@@ -1,15 +1,19 @@
 import { Box, Button, Grid, Snackbar } from "@mui/material";
 import { Field, Form, Formik } from "formik";
-import { useState } from "react";
+import { Dispatch, SetStateAction, useState } from "react";
+import { UmpirePagePlayer, UmpirePageUser } from "../../types/umpirepage";
+import { Tournament } from "@prisma/client";
 
 const UmpireSelect = ({
   umpires,
   players,
-  teamGame
+  tournament,
+  setPlayers
 }: {
-  umpires: any[];
-  players: any[];
-  teamGame: boolean;
+  umpires: UmpirePageUser[];
+  players: UmpirePagePlayer[];
+  tournament: Tournament;
+  setPlayers: Dispatch<SetStateAction<UmpirePagePlayer[]>>;
 }) => {
   const [showSuccessText, setShowSuccessText] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -17,10 +21,20 @@ const UmpireSelect = ({
     setIsLoading(true);
     const res = await fetch(`/api/player/umpires`, {
       method: "PATCH",
-      body: JSON.stringify(values)
+      body: JSON.stringify({ values, tournamentId: tournament.id })
     });
 
     if (res.status === 200) {
+      const updatedPlayerList = players.map((player) => {
+        const umpireId = values[player.id];
+        const selectedUmpire = umpires.find((u) => u.umpire.id === umpireId);
+        if (!umpireId || !selectedUmpire) return player;
+        return {
+          ...player,
+          umpire: { ...selectedUmpire.umpire, user: selectedUmpire }
+        };
+      });
+      setPlayers(updatedPlayerList);
       setShowSuccessText(true);
     }
     setIsLoading(false);
@@ -33,7 +47,7 @@ const UmpireSelect = ({
     }))
   );
 
-  const sortedPlayers = teamGame
+  const sortedPlayers = tournament.teamGame
     ? players.sort(
         (a, b) =>
           a.team.name.localeCompare(b.team.name) ||
@@ -57,7 +71,7 @@ const UmpireSelect = ({
               <div key={player.id}>
                 <div>
                   <label htmlFor={`${player.id}`}>
-                    {teamGame && `${player.team.name}: `}
+                    {tournament.teamGame && `${player.team.name}: `}
                     {player.user.firstName} {player.user.lastName}{" "}
                     {`(${player.alias})`}
                   </label>

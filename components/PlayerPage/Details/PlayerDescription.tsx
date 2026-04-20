@@ -43,7 +43,14 @@ const PlayerDescription = ({ setUser }: { setUser: Dispatch<any> }) => {
               </b>
               <b>{t("playerPage.details.description.safetyNotesTitle")}</b>
             </div>
-            <pre style={{ whiteSpace: "pre-wrap", margin: "auto" }}>
+            <pre
+              style={{
+                whiteSpace: "pre-wrap",
+                margin: "auto",
+                width: "100%",
+                overflowWrap: "break-word"
+              }}
+            >
               {player.safetyNotes}
             </pre>
 
@@ -69,8 +76,15 @@ const PlayerDescription = ({ setUser }: { setUser: Dispatch<any> }) => {
               <b>{t("playerPage.details.description.heightLabel")}:</b>{" "}
               {player.height}
             </p>
-            <b>{t("playerPage.details.description.otherInfoLabel")} </b>
-            <pre style={{ whiteSpace: "pre-wrap", margin: "auto" }}>
+            <b>{t("playerPage.details.description.otherInfoLabel")}</b>
+            <pre
+              style={{
+                whiteSpace: "pre-wrap",
+                margin: "auto",
+                width: "100%",
+                overflowWrap: "break-word"
+              }}
+            >
               {player.other}
             </pre>
           </Box>
