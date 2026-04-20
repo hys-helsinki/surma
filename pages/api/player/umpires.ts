@@ -25,15 +25,28 @@ const isCurrentUserAuthorized = async (playerId, req, res) => {
 };
 
 const assignUmpireToPlayer = async (id: string, umpireId: string) => {
-  const updatedPlayer = await prisma.player.update({
-    where: {
-      id: id
-    },
-    data: {
-      umpireId: umpireId
-    }
-  });
-  return updatedPlayer;
+  try {
+    await prisma.player.update({
+      where: {
+        id: id
+      },
+      data: {
+        umpireId: umpireId
+      },
+      include: {
+        user: true,
+        team: true,
+        targets: true,
+        umpire: {
+          include: {
+            user: true
+          }
+        }
+      }
+    });
+  } catch (e) {
+    console.log(e);
+  }
 };
 
 export default async function handler(
@@ -53,9 +66,9 @@ export default async function handler(
       noEmptyValues.forEach(async (pair) => {
         await assignUmpireToPlayer(pair[0], pair[1] as string);
       });
+      return res.status(200).send("Updating players succeeded");
     } catch (error) {
-      res.status(500).send("Updating players failed");
+      return res.status(500).send("Updating players failed");
     }
-    res.status(200).send("Updated successfully");
   }
 }

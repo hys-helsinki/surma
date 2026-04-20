@@ -225,6 +225,7 @@ export default function UmpirePage({
             umpires={umpires}
             players={players}
             teamGame={tournament.teamGame}
+            setPlayers={setPlayers}
           />
         </TabPanel>
         <TabPanel value={value} index={1}>

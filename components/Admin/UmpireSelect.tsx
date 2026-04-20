@@ -1,15 +1,18 @@
 import { Box, Button, Grid, Snackbar } from "@mui/material";
 import { Field, Form, Formik } from "formik";
-import { useState } from "react";
+import { Dispatch, SetStateAction, useState } from "react";
+import { UmpirePagePlayer } from "../../types/umpirepage";
 
 const UmpireSelect = ({
   umpires,
   players,
-  teamGame
+  teamGame,
+  setPlayers
 }: {
   umpires: any[];
   players: any[];
   teamGame: boolean;
+  setPlayers: Dispatch<SetStateAction<UmpirePagePlayer[]>>;
 }) => {
   const [showSuccessText, setShowSuccessText] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -21,6 +24,13 @@ const UmpireSelect = ({
     });
 
     if (res.status === 200) {
+      const updatedPlayerList = players.map((player) => {
+        const umpireId = values[player.id];
+        if (!umpireId) return player;
+        const selectedUmpire = umpires.find((u) => u.umpire.id === umpireId);
+        return { ...player, umpire: selectedUmpire.umpire };
+      });
+      setPlayers(updatedPlayerList);
       setShowSuccessText(true);
     }
     setIsLoading(false);
