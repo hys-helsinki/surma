@@ -137,7 +137,8 @@
         "hairLabel": "Hair",
         "heightLabel": "Height",
         "otherInfoLabel": "Appearance, transportation and other details:",
-        "saveButton": "Save"
+        "saveButton": "Save",
+        "markdownNote": "NOTE! These fields support Markdown syntax as well"
       }
     }
   },

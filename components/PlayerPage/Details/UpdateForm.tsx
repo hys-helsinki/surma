@@ -61,6 +61,9 @@ export const UpdateForm = ({
       }}
     >
       <Form>
+        <p>
+          <i>{t("playerPage.details.updateForm.markdownNote")}</i>
+        </p>
         <TextInput
           label={t("playerPage.details.updateForm.safetyNotesLabel")}
           name="safetyNotes"

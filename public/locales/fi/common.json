@@ -137,7 +137,8 @@
         "hairLabel": "Hiukset",
         "heightLabel": "Pituus",
         "otherInfoLabel": "Ulkonäkö, kulkuvälineet ja muut lisätiedot:",
-        "saveButton": "Tallenna"
+        "saveButton": "Tallenna",
+        "markdownNote": "Huom! Nämäkin kentät tukevat nyt Markdownia"
       }
     }
   },
