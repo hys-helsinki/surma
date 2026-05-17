@@ -55,12 +55,7 @@ export default async function handler(
       new Date(user.tournament.startTime),
       new Date(user.tournament.endTime)
     ) && user.player
-      ? user.player.targets.map((target) => ({
-          ...target.target.user,
-          firstName: target.target.title
-            ? `${target.target.title} ${target.target.user.firstName}`
-            : target.target.user.firstName
-        }))
+      ? user.player.targets.map((target) => target.target.user)
       : [];
 
   const uniqueTargets = targets.filter(

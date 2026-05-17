@@ -71,6 +71,19 @@ export default async function create(
         }
       });
 
+      // Päivitetään pelaajan ammattilaistitteli suoraan pelaajan etunimeen niin sitten sitä ei tarvitse lisätä koodissa jokaiseen paikkaan
+      // Helpottaa varsinkin tuomaristonäkymän koodaamista
+      await prisma.user.update({
+        where: {
+          id: playerData.userId
+        },
+        data: {
+          firstName: playerData.title
+            ? `${playerData.title} ${user.firstName}`
+            : user.firstName
+        }
+      });
+
       const emailTitleFi = `Kiitos ilmoittautumisestasi salamurhaturnaukseen ${user.tournament.name}!`;
       const emailBodyFi = `Kiitos ilmoittautumisestasi! Tuomaristo tarkistaa tietosi vielä ennen pelin alkua, ja saat sähköpostitse vahvistusviestin, kun ilmoittautumisesi on hyväksytty. Tuomaristo ottaa erikseen yhteyttä, mikäli antamiasi tietoja pitää täydentää tai muokata.\n\nTämä on automaattinen vahvistusviesti. Älä vastaa tähän viestiin. Tuomaristo vastaa peliin liittyviin viesteihin osoitteessa tuomaristo@salamurhaajat.net.`;
 
@@ -84,7 +97,7 @@ export default async function create(
         locale === "fi" ? emailBodyFi : emailBodyEn
       );
 
-      res.status(200).json({ player: createdPlayer });
+      return res.status(200).json({ player: createdPlayer });
     } catch (e) {
       console.log(e);
       if (e instanceof Prisma.PrismaClientKnownRequestError) {

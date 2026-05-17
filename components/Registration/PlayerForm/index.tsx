@@ -83,7 +83,13 @@ export default function PlayerForm({
       });
       const responseObject = await response.json();
       if (response.status === 200) {
-        setUser((prev) => ({ ...prev, player: responseObject.player }));
+        setUser((prev) => ({
+          ...prev,
+          firstName: playerData.title
+            ? `${playerData.title} ${prev.firstName}`
+            : prev.firstName,
+          player: responseObject.player
+        }));
       } else {
         setFormErrorMessage(t("playerForm.error"));
         setShowFormError(true);
