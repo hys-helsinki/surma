@@ -158,10 +158,27 @@ export const getServerSideProps: GetServerSideProps = async ({
     where: {
       tournamentId: params.id as string
     },
-    include: {
+    select: {
+      id: true,
+      name: true,
       players: {
-        include: {
-          user: true
+        select: {
+          id: true,
+          title: true,
+          alias: true,
+          state: true,
+          user: {
+            select: {
+              id: true,
+              firstName: true,
+              lastName: true
+            }
+          },
+          team: {
+            select: {
+              id: true
+            }
+          }
         }
       }
     }
@@ -194,7 +211,7 @@ export default function UmpirePage({
   players: playerList,
   playerRings: playerRingList,
   teamRings: teamRingList,
-  teams
+  teams: teamList
 }: {
   tournament: Tournament;
   users: UmpirePageUser[];
@@ -208,6 +225,7 @@ export default function UmpirePage({
   const [teamRings, setTeamRings] =
     useState<TeamRingWithAssignments[]>(teamRingList);
   const [players, setPlayers] = useState<UmpirePagePlayer[]>(playerList);
+  const [teams, setTeams] = useState<UmpirePageTeam[]>(teamList);
   const [value, setValue] = useState(0);
 
   const isLoading = useRouterLoading();
@@ -245,10 +263,13 @@ export default function UmpirePage({
         <TabPanel value={value} index={0}>
           {tournament.teamGame ? (
             <TeamTable
+              players={players}
+              setPlayers={setPlayers}
               tournament={tournament}
-              teams={teams}
-              users={users}
               setRings={setRings}
+              users={users}
+              teams={teams}
+              setTeams={setTeams}
             />
           ) : (
             <PlayerTable
