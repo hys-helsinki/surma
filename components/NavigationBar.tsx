@@ -28,6 +28,7 @@ import {
   Divider
 } from "@mui/material";
 import { Player, Tournament, Umpire, User } from "@prisma/client";
+import { FeatureFlag } from "../lib/constants";
 interface PlayerWithTargets extends Player {
   targets: { id: string; firstName: string; lastName: string }[];
 }
@@ -42,7 +43,13 @@ const LANGUAGE_LABELS: Record<string, string> = {
   en: "English"
 };
 
-const MobileView = ({ tournamentId, userId, targets, currentUserIsUmpire }) => {
+const MobileView = ({
+  tournamentId,
+  userId,
+  targets,
+  currentUserIsUmpire,
+  isTeamGame
+}) => {
   const { t } = useTranslation("common");
   const [anchorElNav, setAnchorElNav] = useState(null);
   const [open, setOpen] = useState(false);
@@ -123,7 +130,10 @@ const MobileView = ({ tournamentId, userId, targets, currentUserIsUmpire }) => {
                         component="a"
                         href={`/tournaments/${tournamentId}/targets/${user.id}`}
                       >
-                        {user.firstName} {user.lastName}
+                        {user.firstName} {user.lastName}{" "}
+                        {isTeamGame &&
+                          FeatureFlag.SHOW_TEAM_NAME &&
+                          `(${user.team.name})`}
                       </ListItemButton>
                     ))}
                   </List>
@@ -197,7 +207,8 @@ const DesktopView = ({
   tournamentId,
   userId,
   targets,
-  currentUserIsUmpire
+  currentUserIsUmpire,
+  isTeamGame
 }) => {
   const { t } = useTranslation("common");
   const { data } = useSession();
@@ -285,7 +296,10 @@ const DesktopView = ({
           {targets.map((user) => (
             <MenuItem key={user.id}>
               <a href={`/tournaments/${tournamentId}/targets/${user.id}`}>
-                {user.firstName} {user.lastName}
+                {user.firstName} {user.lastName}{" "}
+                {isTeamGame &&
+                  FeatureFlag.SHOW_TEAM_NAME &&
+                  `(${user.team.name})`}
               </a>
             </MenuItem>
           ))}
@@ -380,6 +394,7 @@ const NavigationBar = () => {
   const userId = data ? data.user.id : "";
   const targets = user ? user.player.targets : [];
   const currentUserIsUmpire = user ? user.umpire : false;
+  const isTeamGame = user ? user.tournament.teamGame : false;
 
   return (
     <AppBar position="static">
@@ -390,6 +405,7 @@ const NavigationBar = () => {
             userId={userId}
             targets={targets}
             currentUserIsUmpire={currentUserIsUmpire}
+            isTeamGame={isTeamGame}
           />
         ) : (
           <DesktopView
@@ -397,6 +413,7 @@ const NavigationBar = () => {
             userId={userId}
             targets={targets}
             currentUserIsUmpire={currentUserIsUmpire}
+            isTeamGame={isTeamGame}
           />
         )}
       </Container>

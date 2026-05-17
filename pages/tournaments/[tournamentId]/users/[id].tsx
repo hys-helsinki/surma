@@ -83,6 +83,7 @@ export const getServerSideProps: GetServerSideProps = async ({
           confirmed: true,
           state: true,
           safetyNotes: true,
+          team: true,
           umpire: {
             select: {
               id: true,

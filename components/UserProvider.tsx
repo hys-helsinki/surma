@@ -1,15 +1,16 @@
-import { Player, User, Umpire } from "@prisma/client";
+import { Player, User, Umpire, Team } from "@prisma/client";
 import { createContext } from "react";
 
 interface UmpireWithUser extends Umpire {
   user: User;
 }
 
-interface PlayerWithUmpire extends Player {
+interface PlayerPagePlayer extends Player {
   umpire: UmpireWithUser;
+  team: Team;
 }
 export interface UserWithPlayer extends User {
-  player: PlayerWithUmpire;
+  player: PlayerPagePlayer;
 }
 
 interface UserProviderProps {
