@@ -2,6 +2,7 @@ import prisma from "../../../lib/prisma";
 import type { NextApiRequest, NextApiResponse } from "next";
 import { getServerSession } from "next-auth";
 import { authConfig } from "../auth/[...nextauth]";
+import { UmpirePagePlayer } from "../../../types/umpirepage";
 
 const isCurrentUserAuthorized = async (tournamentId, req, res) => {
   const session = await getServerSession(req, res, authConfig);
@@ -84,11 +85,38 @@ export default async function handler(
       data: newAssignments
     });
 
-    const updatedPlayers = await prisma.player.findMany({
-      include: {
-        user: true,
-        targets: true,
-        team: true
+    const updatedPlayers: UmpirePagePlayer[] = await prisma.player.findMany({
+      select: {
+        id: true,
+        title: true,
+        alias: true,
+        state: true,
+        user: {
+          select: {
+            id: true,
+            firstName: true,
+            lastName: true
+          }
+        },
+        team: {
+          select: {
+            id: true,
+            name: true
+          }
+        },
+        umpire: {
+          select: {
+            id: true,
+            user: {
+              select: {
+                id: true,
+                firstName: true,
+                lastName: true
+              }
+            }
+          }
+        },
+        targets: true
       }
     });
 

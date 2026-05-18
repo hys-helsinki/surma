@@ -2,6 +2,10 @@ import prisma from "../../../lib/prisma";
 import type { NextApiRequest, NextApiResponse } from "next";
 import { getServerSession } from "next-auth";
 import { authConfig } from "../auth/[...nextauth]";
+import {
+  RingWithAssignments,
+  UmpirePagePlayer
+} from "../../../types/umpirepage";
 
 const isCurrentUserAuthorized = async (tournamentId, req, res) => {
   const session = await getServerSession(req, res, authConfig);
@@ -82,24 +86,52 @@ export default async function handler(
     data: playerAssignments
   });
 
-  const updatedPlayers = await prisma.player.findMany({
-    include: {
-      user: true,
-      targets: true,
-      team: true
+  const updatedPlayers: UmpirePagePlayer[] = await prisma.player.findMany({
+    select: {
+      id: true,
+      title: true,
+      alias: true,
+      state: true,
+      user: {
+        select: {
+          id: true,
+          firstName: true,
+          lastName: true
+        }
+      },
+      team: {
+        select: {
+          id: true,
+          name: true
+        }
+      },
+      umpire: {
+        select: {
+          id: true,
+          user: {
+            select: {
+              id: true,
+              firstName: true,
+              lastName: true
+            }
+          }
+        }
+      },
+      targets: true
     }
   });
 
-  const playerRings = await prisma.assignmentRing.findMany({
-    where: {
-      assignments: {
-        some: {}
+  const playerRings: RingWithAssignments[] =
+    await prisma.assignmentRing.findMany({
+      where: {
+        assignments: {
+          some: {}
+        }
+      },
+      include: {
+        assignments: true
       }
-    },
-    include: {
-      assignments: true
-    }
-  });
+    });
 
   res.json({ savedTeamAssignments, players: updatedPlayers, playerRings });
 }
