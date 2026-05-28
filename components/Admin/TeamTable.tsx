@@ -227,18 +227,20 @@ const TeamTable = ({
           <Box key={team.id} sx={{ borderBottom: "1px solid", my: 2, pb: 2 }}>
             <h3>{team.name} </h3>
 
-            {team.players.map((player) => (
-              <PlayerRow
-                key={player.id}
-                player={player}
-                tournament={tournament}
-                setRings={setRings}
-                players={players}
-                setPlayers={setPlayers}
-                setTeams={setTeams}
-                teams={teams}
-              />
-            ))}
+            {team.players
+              .sort((a, b) => a.user.lastName.localeCompare(b.user.lastName))
+              .map((player) => (
+                <PlayerRow
+                  key={player.id}
+                  player={player}
+                  tournament={tournament}
+                  setRings={setRings}
+                  players={players}
+                  setPlayers={setPlayers}
+                  setTeams={setTeams}
+                  teams={teams}
+                />
+              ))}
           </Box>
         ))}
       </Grid>
