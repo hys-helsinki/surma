@@ -106,24 +106,12 @@ export const Calendar = ({
             }}
           >
             {weekNumber > 0 && (
-              <button
-                onClick={() =>
-                  setSlideNumber(
-                    weekNumber > 0 ? weekNumber - 1 : weeks.length - 1
-                  )
-                }
-              >
+              <button onClick={() => setSlideNumber(weekNumber - 1)}>
                 {t("playerPage.calendar.previousButton")}
               </button>
             )}
             {weekNumber < weeks.length - 1 && (
-              <button
-                onClick={() =>
-                  setSlideNumber(
-                    weekNumber < weeks.length - 1 ? weekNumber + 1 : 0
-                  )
-                }
-              >
+              <button onClick={() => setSlideNumber(weekNumber + 1)}>
                 {t("playerPage.calendar.nextButton")}
               </button>
             )}

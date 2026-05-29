@@ -16,16 +16,16 @@ interface User {
 
 interface Player {
   id: string;
-  title: PlayerTitle;
   alias: string;
   state: PlayerState;
+  title?: PlayerTitle;
   colorCode?: string;
 }
 
 interface Umpire {
   id: string;
-  responsibility: string;
   mainUmpire: boolean;
+  responsibility?: string;
 }
 
 interface Team {
