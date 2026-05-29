@@ -24,7 +24,9 @@ const PlayerRow = ({
   tournament,
   setRings,
   setTeams,
-  teams
+  teams,
+  setOpenModal,
+  setWantedPlayerId
 }: {
   player: UmpirePagePlayer;
   players: UmpirePagePlayer[];
@@ -33,9 +35,10 @@ const PlayerRow = ({
   setRings: Dispatch<SetStateAction<RingWithAssignments[]>>;
   setTeams: Dispatch<SetStateAction<UmpirePageTeam[]>>;
   teams: UmpirePageTeam[];
+  setOpenModal: Dispatch<SetStateAction<boolean>>;
+  setWantedPlayerId: Dispatch<SetStateAction<string>>;
 }) => {
   const [isStateButtonLoading, setIsStateButtonLoading] = useState("");
-  const [openModal, setOpenModal] = useState(false);
 
   const handlePlayerStatusChange = async (playerState: string, id: string) => {
     setIsStateButtonLoading(playerState);
@@ -127,7 +130,9 @@ const PlayerRow = ({
           }}
         >
           <Button
-            onClick={() => setOpenModal(true)}
+            onClick={() => {
+              setOpenModal(true), setWantedPlayerId(player.id);
+            }}
             loading={false}
             className="loadingButton"
           >
@@ -169,15 +174,6 @@ const PlayerRow = ({
           </Button>
         </Grid>
       )}
-      <WantedModal
-        players={players}
-        wantedPlayerId={player.id}
-        open={openModal}
-        setRings={setRings}
-        setPlayers={setPlayers}
-        setOpenModal={setOpenModal}
-        tournament={tournament}
-      />
     </Grid>
   );
 };
@@ -199,9 +195,12 @@ const TeamTable = ({
   teams: UmpirePageTeam[];
   setTeams: Dispatch<SetStateAction<UmpirePageTeam[]>>;
 }) => {
+  const [openModal, setOpenModal] = useState(false);
+  const [wantedPlayerId, setWantedPlayerId] = useState("");
+
   if (teams.length === 0) return <p>Ei pelaajia</p>;
 
-  const sortedTeams = teams.sort((a, b) => a.name.localeCompare(b.name));
+  const sortedTeams = [...teams].sort((a, b) => a.name.localeCompare(b.name));
 
   const unfinishedRegistrations = users
     .filter((user) => !user.player && !user.umpire)
@@ -227,10 +226,12 @@ const TeamTable = ({
           <Box key={team.id} sx={{ borderBottom: "1px solid", my: 2, pb: 2 }}>
             <h3>{team.name} </h3>
 
-            {team.players
+            {[...team.players]
               .sort((a, b) => a.user.lastName.localeCompare(b.user.lastName))
               .map((player) => (
                 <PlayerRow
+                  setOpenModal={setOpenModal}
+                  setWantedPlayerId={setWantedPlayerId}
                   key={player.id}
                   player={player}
                   tournament={tournament}
@@ -244,6 +245,15 @@ const TeamTable = ({
           </Box>
         ))}
       </Grid>
+      <WantedModal
+        players={players}
+        wantedPlayerId={wantedPlayerId}
+        open={openModal}
+        setRings={setRings}
+        setPlayers={setPlayers}
+        setOpenModal={setOpenModal}
+        tournament={tournament}
+      />
     </Grid>
   );
 };
