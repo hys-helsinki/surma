@@ -7,6 +7,7 @@ import {
   RingWithAssignments,
   UmpirePagePlayer
 } from "../../../../types/umpirepage";
+import { umpirePagePlayerSelect } from "../../../../lib/prisma-selects";
 
 const updateTeamGameRings = async (killedPlayerId: string) => {
   // Nämä tehdään jos kyseessä joukkueturnaus
@@ -154,38 +155,7 @@ export default async function handler(
     });
 
     const updatedPlayerList: UmpirePagePlayer[] = await prisma.player.findMany({
-      select: {
-        id: true,
-        title: true,
-        alias: true,
-        state: true,
-        user: {
-          select: {
-            id: true,
-            firstName: true,
-            lastName: true
-          }
-        },
-        team: {
-          select: {
-            id: true,
-            name: true
-          }
-        },
-        umpire: {
-          select: {
-            id: true,
-            user: {
-              select: {
-                id: true,
-                firstName: true,
-                lastName: true
-              }
-            }
-          }
-        },
-        targets: true
-      }
+      select: umpirePagePlayerSelect
     });
     const rings: RingWithAssignments[] = await prisma.assignmentRing.findMany({
       include: { assignments: true }

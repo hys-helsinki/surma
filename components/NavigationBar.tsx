@@ -27,16 +27,8 @@ import {
   Collapse,
   Divider
 } from "@mui/material";
-import { Player, Tournament, Umpire, User } from "@prisma/client";
 import { FeatureFlag } from "../lib/constants";
-interface PlayerWithTargets extends Player {
-  targets: { id: string; firstName: string; lastName: string }[];
-}
-interface NavBarUser extends User {
-  player: PlayerWithTargets;
-  tournament: Tournament;
-  umpire: Umpire;
-}
+import { NavBarUser, Target } from "../types/navbar";
 
 const LANGUAGE_LABELS: Record<string, string> = {
   fi: "Suomi",
@@ -49,6 +41,12 @@ const MobileView = ({
   targets,
   currentUserIsUmpire,
   isTeamGame
+}: {
+  tournamentId: string;
+  userId: string;
+  targets: Target[];
+  currentUserIsUmpire: boolean;
+  isTeamGame: boolean;
 }) => {
   const { t } = useTranslation("common");
   const [anchorElNav, setAnchorElNav] = useState(null);
@@ -133,6 +131,7 @@ const MobileView = ({
                         {user.firstName} {user.lastName}{" "}
                         {isTeamGame &&
                           FeatureFlag.SHOW_TEAM_NAME &&
+                          user.team &&
                           `(${user.team.name})`}
                       </ListItemButton>
                     ))}
@@ -393,7 +392,7 @@ const NavigationBar = () => {
   const tournamentId = data ? data.user.tournamentId : "";
   const userId = data ? data.user.id : "";
   const targets = user ? user.player.targets : [];
-  const currentUserIsUmpire = user ? user.umpire : false;
+  const currentUserIsUmpire = user ? Boolean(user.umpire) : false;
   const isTeamGame = user ? user.tournament.teamGame : false;
 
   return (

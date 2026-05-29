@@ -19,6 +19,7 @@ import {
   TeamRingWithAssignments,
   UmpirePageTeam
 } from "../../types/umpirepage";
+import { umpirePagePlayerSelect } from "../../lib/prisma-selects";
 import { Tournament } from "@prisma/client";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 
@@ -102,38 +103,7 @@ export const getServerSideProps: GetServerSideProps = async ({
     where: {
       tournamentId: params.id as string
     },
-    select: {
-      id: true,
-      title: true,
-      alias: true,
-      state: true,
-      user: {
-        select: {
-          id: true,
-          firstName: true,
-          lastName: true
-        }
-      },
-      team: {
-        select: {
-          id: true,
-          name: true
-        }
-      },
-      umpire: {
-        select: {
-          id: true,
-          user: {
-            select: {
-              id: true,
-              firstName: true,
-              lastName: true
-            }
-          }
-        }
-      },
-      targets: true
-    }
+    select: umpirePagePlayerSelect
   });
 
   let playerRings = await prisma.assignmentRing.findMany({
@@ -162,24 +132,7 @@ export const getServerSideProps: GetServerSideProps = async ({
       id: true,
       name: true,
       players: {
-        select: {
-          id: true,
-          title: true,
-          alias: true,
-          state: true,
-          user: {
-            select: {
-              id: true,
-              firstName: true,
-              lastName: true
-            }
-          },
-          team: {
-            select: {
-              id: true
-            }
-          }
-        }
+        select: umpirePagePlayerSelect
       }
     }
   });
