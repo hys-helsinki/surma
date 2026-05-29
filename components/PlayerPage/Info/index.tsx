@@ -41,7 +41,7 @@ const Info = ({
         }}
       >
         <h1>
-          {user.player.title} {user.firstName} {user.lastName}
+          {user.firstName} {user.lastName}
         </h1>
 
         {showAlias && (

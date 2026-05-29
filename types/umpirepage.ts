@@ -1,15 +1,38 @@
 import {
   Assignment,
   AssignmentRing,
-  Player,
-  Team,
   TeamAssignment,
   TeamAssignmentRing,
-  Tournament,
-  Umpire,
-  User
+  Tournament
 } from "@prisma/client";
+import { PlayerTitle, PlayerState } from "@prisma/client";
 import { Dispatch, SetStateAction } from "react";
+
+interface User {
+  id: string;
+  firstName: string;
+  lastName: string;
+}
+
+interface Player {
+  id: string;
+  alias: string;
+  state: PlayerState;
+  title?: PlayerTitle;
+  colorCode?: string;
+}
+
+interface Umpire {
+  id: string;
+  mainUmpire: boolean;
+  responsibility?: string;
+}
+
+interface Team {
+  id: string;
+  name: string;
+  colorCode?: string;
+}
 
 interface PlayerWithUser extends Player {
   user: User;

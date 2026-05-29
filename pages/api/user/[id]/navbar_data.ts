@@ -31,6 +31,7 @@ export default async function handler(
             select: {
               target: {
                 select: {
+                  title: true,
                   user: {
                     select: {
                       id: true,

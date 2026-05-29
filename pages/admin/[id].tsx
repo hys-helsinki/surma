@@ -12,7 +12,6 @@ import Settings from "../../components/UmpirePage/Settings";
 import LoadingSpinner from "../../components/Common/LoadingSpinner";
 import { useRouterLoading } from "../../lib/hooks";
 import Rings from "../../components/Admin/Rings/Rings";
-import { Tournament } from "@prisma/client";
 import {
   RingWithAssignments,
   UmpirePagePlayer,
@@ -20,6 +19,7 @@ import {
   TeamRingWithAssignments,
   UmpirePageTeam
 } from "../../types/umpirepage";
+import { Tournament } from "@prisma/client";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 
 interface TabPanelProps {
@@ -73,10 +73,28 @@ export const getServerSideProps: GetServerSideProps = async ({
     where: {
       tournamentId: params.id as string
     },
-    include: {
-      player: true,
-      umpire: true,
-      team: true
+    select: {
+      id: true,
+      firstName: true,
+      lastName: true,
+      player: {
+        select: {
+          id: true
+        }
+      },
+      umpire: {
+        select: {
+          id: true,
+          responsibility: true,
+          mainUmpire: true
+        }
+      },
+      team: {
+        select: {
+          id: true,
+          name: true
+        }
+      }
     }
   });
 
@@ -84,12 +102,34 @@ export const getServerSideProps: GetServerSideProps = async ({
     where: {
       tournamentId: params.id as string
     },
-    include: {
-      user: true,
-      team: true,
+    select: {
+      id: true,
+      title: true,
+      alias: true,
+      state: true,
+      user: {
+        select: {
+          id: true,
+          firstName: true,
+          lastName: true
+        }
+      },
+      team: {
+        select: {
+          id: true,
+          name: true
+        }
+      },
       umpire: {
-        include: {
-          user: true
+        select: {
+          id: true,
+          user: {
+            select: {
+              id: true,
+              firstName: true,
+              lastName: true
+            }
+          }
         }
       },
       targets: true

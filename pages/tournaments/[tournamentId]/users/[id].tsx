@@ -172,6 +172,8 @@ export default function User({
 
   if (session.status === "loading" || isLoading) return <LoadingSpinner />;
 
+  if (!session.data) return <AuthenticationRequired />;
+
   if (!Boolean(user.player) && user.id !== session.data.user.id) {
     return (
       <div style={{ margin: 2 }}>

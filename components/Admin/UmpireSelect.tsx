@@ -1,4 +1,4 @@
-import { Box, Button, Grid, Snackbar } from "@mui/material";
+import { Alert, Box, Button, Grid, Snackbar } from "@mui/material";
 import { Field, Form, Formik } from "formik";
 import { Dispatch, SetStateAction, useState } from "react";
 import { UmpirePagePlayer, UmpirePageUser } from "../../types/umpirepage";
@@ -94,9 +94,16 @@ const UmpireSelect = ({
             <Snackbar
               open={showSuccessText}
               onClose={() => setShowSuccessText(false)}
-              autoHideDuration={4000}
-              message="Tuomarien asettaminen onnistui!"
-            />
+            >
+              <Alert
+                severity="success"
+                variant="filled"
+                sx={{ width: "100%" }}
+                onClose={() => setShowSuccessText(false)}
+              >
+                Tuomarien asettaminen onnistui!
+              </Alert>
+            </Snackbar>
           </Form>
         </Formik>
       </Grid>

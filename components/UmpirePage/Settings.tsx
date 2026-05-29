@@ -11,10 +11,7 @@ import * as Yup from "yup";
 import { useRouter } from "next/router";
 import { Tooltip, Button } from "@mui/material";
 import { useSession } from "next-auth/react";
-
-interface UmpireUser extends User {
-  umpire: Umpire;
-}
+import { UmpirePageUser } from "../../types/umpirepage";
 
 const DateTimePicker = ({ label, name }) => {
   const [field, meta, helpers] = useField(name);
@@ -172,6 +169,7 @@ const DeleteButton = ({ tournament }: { tournament: Tournament }) => {
             loading={loading}
             className="delete-tournament"
             disabled={!isTournamentFinished()}
+            sx={{ backgroundColor: "#a50000", color: "white" }}
           >
             Poista kaikki turnausdata
           </Button>
@@ -186,7 +184,7 @@ const Settings = ({
   umpireUsers
 }: {
   tournament: Tournament;
-  umpireUsers: UmpireUser[];
+  umpireUsers: UmpirePageUser[];
 }) => {
   const session = useSession();
 

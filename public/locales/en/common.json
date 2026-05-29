@@ -101,6 +101,7 @@
       "editButton": "Edit calendar",
       "cancelButton": "Cancel",
       "nextButton": "Next",
+      "previousButton": "Previous",
       "markdown": "Calendar supports [Markdown syntax](https://www.markdownguide.org/basic-syntax/)",
       "saveButton": "Save changes"
     },
@@ -136,7 +137,8 @@
         "hairLabel": "Hair",
         "heightLabel": "Height",
         "otherInfoLabel": "Appearance, transportation and other details:",
-        "saveButton": "Save"
+        "saveButton": "Save",
+        "markdownNote": "NOTE! These fields support Markdown syntax as well"
       }
     }
   },

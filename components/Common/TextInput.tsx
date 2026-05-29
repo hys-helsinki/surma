@@ -2,16 +2,18 @@ import { useField } from "formik";
 
 const TextInput = ({ label, ...props }) => {
   const [field, meta] = useField(props.name);
+
+  const { textArea, ...inputProps } = props;
   return (
     <div style={{ marginBottom: "7px" }}>
-      <label htmlFor={props.id}>{label}</label>
+      <label htmlFor={inputProps.id}>{label}</label>
       {meta.touched && meta.error ? (
         <div className="registration-error">{meta.error}</div>
       ) : null}
-      {props.textArea ? (
-        <textarea {...field} {...props} />
+      {textArea ? (
+        <textarea {...field} {...inputProps} />
       ) : (
-        <input {...field} {...props} />
+        <input {...field} {...inputProps} />
       )}
     </div>
   );

@@ -100,7 +100,6 @@ button:hover,
 button.playerTableStateButton:hover {
   background-color: #a50000;
   color: white;
-  font-weight: bold;
 }
 
 .updateform {
