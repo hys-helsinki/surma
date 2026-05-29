@@ -72,7 +72,7 @@ export default function PlayerForm({
       learningInstitution,
       other,
       safetyNotes,
-      title,
+      title: title != "" ? title : undefined,
       calendar
     };
 

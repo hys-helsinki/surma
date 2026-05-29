@@ -153,11 +153,6 @@ const WantedModal = ({
         open={showSuccessText}
         onClose={() => setShowSuccessText(false)}
         autoHideDuration={4000}
-        message="Etsintäkuuluttaminen onnistui!"
-      />
-      <Snackbar
-        open={showSuccessText}
-        onClose={() => setShowSuccessText(false)}
       >
         <Alert
           severity="success"

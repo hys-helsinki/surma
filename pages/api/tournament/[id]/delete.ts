@@ -46,6 +46,23 @@ export default async function handler(
             console.log(result);
           }
         );
+        const tournament = await prisma.tournament.findUnique({
+          where: {
+            id: tournamentId
+          },
+          include: {
+            users: true
+          }
+        });
+
+        await prisma.verificationToken.deleteMany({
+          where: {
+            identifier: {
+              in: tournament.users.map((user) => user.email)
+            }
+          }
+        }); // Nämä ei poistu turnauksen poistamisen yhteydessä, joten pitää poistaa erikseen.
+
         await prisma.tournament.delete({
           where: {
             id: tournamentId

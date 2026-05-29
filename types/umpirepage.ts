@@ -16,9 +16,9 @@ interface User {
 
 interface Player {
   id: string;
-  title: PlayerTitle;
   alias: string;
   state: PlayerState;
+  title?: PlayerTitle;
   colorCode?: string;
 }
 
