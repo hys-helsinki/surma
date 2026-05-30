@@ -5,7 +5,10 @@ export enum PlayerTitle {
   TT = "TT"
 }
 
-export const FeatureFlag = { DELETE_DEAD_HUNTER_ASSIGNMENTS: false };
+export const FeatureFlag = {
+  DELETE_DEAD_HUNTER_ASSIGNMENTS: false,
+  SHOW_TEAM_NAME: true
+};
 
 export const TEAM_MAX_PLAYERS = 4;
 

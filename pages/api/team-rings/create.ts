@@ -2,6 +2,12 @@ import prisma from "../../../lib/prisma";
 import type { NextApiRequest, NextApiResponse } from "next";
 import { getServerSession } from "next-auth";
 import { authConfig } from "../auth/[...nextauth]";
+import {
+  RingWithAssignments,
+  TeamRingWithAssignments,
+  UmpirePagePlayer
+} from "../../../types/umpirepage";
+import { umpirePagePlayerSelect } from "../../../lib/prisma-selects";
 
 const isCurrentUserAuthorized = async (tournamentId, req, res) => {
   const session = await getServerSession(req, res, authConfig);
@@ -27,20 +33,21 @@ export default async function handler(
       res.status(403).end();
     }
 
-    const createdRing = await prisma.teamAssignmentRing.create({
-      data: {
-        name: data.name,
-        tournamentId: data.tournamentId,
-        assignments: {
-          createMany: {
-            data: data.assignments
+    const createdRing: TeamRingWithAssignments =
+      await prisma.teamAssignmentRing.create({
+        data: {
+          name: data.name,
+          tournamentId: data.tournamentId,
+          assignments: {
+            createMany: {
+              data: data.assignments
+            }
           }
+        },
+        include: {
+          assignments: true
         }
-      },
-      include: {
-        assignments: true
-      }
-    });
+      });
 
     const teams = await prisma.team.findMany({
       include: {
@@ -82,24 +89,21 @@ export default async function handler(
       }
     });
 
-    const updatedPlayers = await prisma.player.findMany({
-      include: {
-        user: true,
-        targets: true,
-        team: true
-      }
+    const updatedPlayers: UmpirePagePlayer[] = await prisma.player.findMany({
+      select: umpirePagePlayerSelect
     });
 
-    const playerRings = await prisma.assignmentRing.findMany({
-      where: {
-        assignments: {
-          some: {}
+    const playerRings: RingWithAssignments[] =
+      await prisma.assignmentRing.findMany({
+        where: {
+          assignments: {
+            some: {}
+          }
+        },
+        include: {
+          assignments: true
         }
-      },
-      include: {
-        assignments: true
-      }
-    });
+      });
 
     res.json({ createdRing, players: updatedPlayers, playerRings });
   }

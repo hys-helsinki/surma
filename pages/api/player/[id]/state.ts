@@ -3,6 +3,11 @@ import type { NextApiRequest, NextApiResponse } from "next";
 import { getServerSession } from "next-auth";
 import { authConfig } from "../../auth/[...nextauth]";
 import { FeatureFlag } from "../../../../lib/constants";
+import {
+  RingWithAssignments,
+  UmpirePagePlayer
+} from "../../../../types/umpirepage";
+import { umpirePagePlayerSelect } from "../../../../lib/prisma-selects";
 
 const updateTeamGameRings = async (killedPlayerId: string) => {
   // Nämä tehdään jos kyseessä joukkueturnaus
@@ -149,19 +154,10 @@ export default async function handler(
       data: { state }
     });
 
-    const updatedPlayerList = await prisma.player.findMany({
-      include: {
-        user: true,
-        team: true,
-        targets: true,
-        umpire: {
-          include: {
-            user: true
-          }
-        }
-      }
+    const updatedPlayerList: UmpirePagePlayer[] = await prisma.player.findMany({
+      select: umpirePagePlayerSelect
     });
-    const rings = await prisma.assignmentRing.findMany({
+    const rings: RingWithAssignments[] = await prisma.assignmentRing.findMany({
       include: { assignments: true }
     });
     res.json({ updatedPlayerList, rings });

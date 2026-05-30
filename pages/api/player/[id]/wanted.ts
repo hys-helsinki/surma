@@ -2,6 +2,11 @@ import prisma from "../../../../lib/prisma";
 import type { NextApiRequest, NextApiResponse } from "next";
 import { getServerSession } from "next-auth";
 import { authConfig } from "../../auth/[...nextauth]";
+import {
+  RingWithAssignments,
+  UmpirePagePlayer
+} from "../../../../types/umpirepage";
+import { umpirePagePlayerSelect } from "../../../../lib/prisma-selects";
 
 const isCurrentUserAuthorized = async (playerId, req, res) => {
   const session = await getServerSession(req, res, authConfig);
@@ -57,7 +62,7 @@ export default async function handler(
       targetId: player.id
     }));
 
-    const wantedRing = await prisma.assignmentRing.create({
+    const wantedRing: RingWithAssignments = await prisma.assignmentRing.create({
       data: {
         name: `Etsintäkuulutus ${player.user.lastName}`,
         tournamentId: player.tournament.id,
@@ -72,12 +77,8 @@ export default async function handler(
       }
     });
 
-    const players = await prisma.player.findMany({
-      include: {
-        user: true,
-        team: true,
-        targets: true
-      }
+    const players: UmpirePagePlayer[] = await prisma.player.findMany({
+      select: umpirePagePlayerSelect
     });
 
     res.json({ wantedRing, players });

@@ -90,6 +90,7 @@
     "info": {
       "aliasLabel": "Peitenimi:",
       "statusLabel": "Status:",
+      "teamLabel": "Joukkue:",
       "state": {
         "active": "Elossa",
         "dead": "Kuollut",

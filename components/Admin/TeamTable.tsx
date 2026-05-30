@@ -1,49 +1,91 @@
-import { Button, Grid } from "@mui/material";
+import { Box, Button, Grid } from "@mui/material";
 import { Tournament } from "@prisma/client";
 import Link from "next/link";
-import React, { useState } from "react";
-import { UmpirePageTeam } from "../../types/umpirepage";
+import React, { Dispatch, SetStateAction, useState } from "react";
+import {
+  RingWithAssignments,
+  UmpirePagePlayer,
+  UmpirePageTeam,
+  UmpirePageUser
+} from "../../types/umpirepage";
+import WantedModal from "./WantedModal";
 
-const PlayerRow = ({ player: p, tournament, setRings }) => {
-  const [player, setPlayer] = useState(p);
+const states = {
+  ACTIVE: "Elossa",
+  DEAD: "Kuollut",
+  DETECTIVE: "Etsivä",
+  EXTRA: "Extra"
+};
+
+const PlayerRow = ({
+  player,
+  players,
+  setPlayers,
+  tournament,
+  setRings,
+  setTeams,
+  teams,
+  setOpenModal,
+  setWantedPlayerId
+}: {
+  player: UmpirePagePlayer;
+  players: UmpirePagePlayer[];
+  setPlayers: Dispatch<SetStateAction<UmpirePagePlayer[]>>;
+  tournament: Tournament;
+  setRings: Dispatch<SetStateAction<RingWithAssignments[]>>;
+  setTeams: Dispatch<SetStateAction<UmpirePageTeam[]>>;
+  teams: UmpirePageTeam[];
+  setOpenModal: Dispatch<SetStateAction<boolean>>;
+  setWantedPlayerId: Dispatch<SetStateAction<string>>;
+}) => {
   const [isStateButtonLoading, setIsStateButtonLoading] = useState("");
-  const [isWantedLoading, setIsWantedLoading] = useState(false);
 
   const handlePlayerStatusChange = async (playerState: string, id: string) => {
     setIsStateButtonLoading(playerState);
-    const data = { state: playerState };
+    const searchedPlayer = players.find((player) => player.id === id);
     try {
-      const res = await fetch(`/api/player/${id}/state`, {
-        method: "PATCH",
-        body: JSON.stringify(data)
-      });
-      const updatedPlayer = await res.json();
-      setPlayer(updatedPlayer);
-      setIsStateButtonLoading("");
-    } catch (error) {
-      console.log(error);
-      setIsStateButtonLoading("");
+      if (
+        playerState !== "DEAD" ||
+        window.confirm(
+          `Haluatko varmasti merkitä pelaajan ${searchedPlayer.user.firstName} ${searchedPlayer.user.lastName} kuolleeksi? Pelaajan tappaminen poistaa toimeksiannot, joissa pelaaja on kohde tai metsästäjä.`
+        )
+      ) {
+        const data = { state: playerState, teamGame: tournament.teamGame };
+        const res = await fetch(`/api/player/${id}/state`, {
+          method: "PATCH",
+          body: JSON.stringify(data)
+        });
+        const {
+          updatedPlayerList,
+          rings
+        }: {
+          updatedPlayerList: UmpirePagePlayer[];
+          rings: RingWithAssignments[];
+        } = await res.json();
+        setPlayers(updatedPlayerList);
+        setTeams(
+          teams.map((team) =>
+            team.id === player.team.id
+              ? {
+                  ...team,
+                  players: updatedPlayerList.filter(
+                    (player) => player.team.id === team.id
+                  )
+                }
+              : team
+          )
+        );
+        setRings(rings);
+      }
+    } catch (e) {
+      console.log(e);
     }
-  };
-
-  const handleMakeWanted = async (id: string) => {
-    setIsWantedLoading(true);
-    try {
-      const res = await fetch(`/api/player/${id}/wanted`, {
-        method: "POST"
-      });
-      const createdRing = await res.json();
-      setRings((prevRings) => prevRings.concat(createdRing));
-      setIsWantedLoading(false);
-    } catch (error) {
-      console.log(error);
-      setIsWantedLoading(false);
-    }
+    setIsStateButtonLoading("");
   };
 
   return (
-    <tr key={player.id}>
-      <td style={{ width: "40%" }}>
+    <Grid container key={player.id} sx={{ mb: 1 }}>
+      <Grid size={{ xs: 12, md: 4 }}>
         <Link
           href={`/tournaments/${tournament.id}/users/${player.user.id}`}
           passHref
@@ -52,71 +94,113 @@ const PlayerRow = ({ player: p, tournament, setRings }) => {
             {player.user.firstName} {player.user.lastName} ({player.alias})
           </p>
         </Link>
-      </td>
-      <td style={{ width: "15%" }}>{player.state}</td>
+      </Grid>
+      <Grid
+        size={{ xs: 3, md: 2 }}
+        sx={{
+          display: "flex",
+          alignItems: "center"
+        }}
+      >
+        {states[player.state]}
+      </Grid>
       {player.state == "ACTIVE" && (
-        <td>
+        <Grid
+          size={{ xs: 3, md: 2 }}
+          sx={{
+            display: "flex",
+            alignItems: "center"
+          }}
+        >
           <Button
             onClick={() => handlePlayerStatusChange("DEAD", player.id)}
-            style={{ margin: 0 }}
             loading={isStateButtonLoading == "DEAD"}
+            className="loadingButton"
           >
             Tapa
           </Button>
-        </td>
+        </Grid>
       )}
       {player.state == "ACTIVE" && (
-        <td>
+        <Grid
+          size={{ xs: 5, md: 2 }}
+          sx={{
+            display: "flex",
+            alignItems: "center"
+          }}
+        >
           <Button
-            onClick={() => handleMakeWanted(player.id)}
-            style={{ margin: 0 }}
-            loading={isWantedLoading}
+            onClick={() => {
+              setOpenModal(true), setWantedPlayerId(player.id);
+            }}
+            loading={false}
+            className="loadingButton"
           >
             Etsintäkuuluta
           </Button>
-        </td>
+        </Grid>
       )}
       {player.state == "DEAD" && (
-        <td>
+        <Grid
+          size={{ xs: 4, md: 2 }}
+          sx={{
+            display: "flex",
+            alignItems: "center"
+          }}
+        >
           <Button
             onClick={() => handlePlayerStatusChange("DETECTIVE", player.id)}
-            style={{ margin: 0 }}
             loading={isStateButtonLoading == "DETECTIVE"}
+            className="loadingButton"
           >
             Etsiväksi
           </Button>
-        </td>
+        </Grid>
       )}
       {player.state != "ACTIVE" && (
-        <td>
+        <Grid
+          size={{ xs: 3, md: 2 }}
+          sx={{
+            display: "flex",
+            alignItems: "center"
+          }}
+        >
           <Button
             onClick={() => handlePlayerStatusChange("ACTIVE", player.id)}
-            style={{ margin: 0 }}
             loading={isStateButtonLoading == "ACTIVE"}
+            className="loadingButton"
           >
             Herätä henkiin
           </Button>
-        </td>
+        </Grid>
       )}
-    </tr>
+    </Grid>
   );
 };
 
 const TeamTable = ({
+  players,
+  setPlayers,
   tournament,
-  teams,
+  setRings,
   users,
-  setRings
+  teams,
+  setTeams
 }: {
+  players: UmpirePagePlayer[];
+  setPlayers: Dispatch<SetStateAction<UmpirePagePlayer[]>>;
   tournament: Tournament;
+  setRings: Dispatch<SetStateAction<RingWithAssignments[]>>;
+  users: UmpirePageUser[];
   teams: UmpirePageTeam[];
-  users: any[];
-  setRings: any;
+  setTeams: Dispatch<SetStateAction<UmpirePageTeam[]>>;
 }) => {
-  if (!teams) return;
+  const [openModal, setOpenModal] = useState(false);
+  const [wantedPlayerId, setWantedPlayerId] = useState("");
+
   if (teams.length === 0) return <p>Ei pelaajia</p>;
 
-  const sortedTeams = teams.sort((a, b) => a.name.localeCompare(b.name));
+  const sortedTeams = [...teams].sort((a, b) => a.name.localeCompare(b.name));
 
   const unfinishedRegistrations = users
     .filter((user) => !user.player && !user.umpire)
@@ -139,25 +223,37 @@ const TeamTable = ({
         )}
         <h2>Joukkueet</h2>
         {sortedTeams.map((team) => (
-          <div key={team.id}>
+          <Box key={team.id} sx={{ borderBottom: "1px solid", my: 2, pb: 2 }}>
             <h3>{team.name} </h3>
-            <div style={{ overflowX: "auto" }}>
-              <table width="100%">
-                <tbody>
-                  {team.players.map((player) => (
-                    <PlayerRow
-                      key={player.id}
-                      player={player}
-                      tournament={tournament}
-                      setRings={setRings}
-                    />
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          </div>
+
+            {[...team.players]
+              .sort((a, b) => a.user.lastName.localeCompare(b.user.lastName))
+              .map((player) => (
+                <PlayerRow
+                  setOpenModal={setOpenModal}
+                  setWantedPlayerId={setWantedPlayerId}
+                  key={player.id}
+                  player={player}
+                  tournament={tournament}
+                  setRings={setRings}
+                  players={players}
+                  setPlayers={setPlayers}
+                  setTeams={setTeams}
+                  teams={teams}
+                />
+              ))}
+          </Box>
         ))}
       </Grid>
+      <WantedModal
+        players={players}
+        wantedPlayerId={wantedPlayerId}
+        open={openModal}
+        setRings={setRings}
+        setPlayers={setPlayers}
+        setOpenModal={setOpenModal}
+        tournament={tournament}
+      />
     </Grid>
   );
 };

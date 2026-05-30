@@ -1,8 +1,9 @@
 import { Box, Modal, Snackbar, Button, Alert } from "@mui/material";
 import { Formik, Form, Field } from "formik";
 import { getPlayerFullNameById } from "../utils";
-import { useState } from "react";
-import { UmpirePagePlayer } from "../../types/umpirepage";
+import { Dispatch, SetStateAction, useState } from "react";
+import { RingWithAssignments, UmpirePagePlayer } from "../../types/umpirepage";
+import { Tournament } from "@prisma/client";
 
 const style = {
   position: "absolute" as "absolute",
@@ -30,10 +31,10 @@ const WantedModal = ({
   players: UmpirePagePlayer[];
   wantedPlayerId: string;
   open: boolean;
-  setRings: any;
-  setPlayers: any;
-  setOpenModal: any;
-  tournament;
+  setRings: Dispatch<SetStateAction<RingWithAssignments[]>>;
+  setPlayers?: Dispatch<SetStateAction<UmpirePagePlayer[]>>;
+  setOpenModal: Dispatch<SetStateAction<boolean>>;
+  tournament: Tournament;
 }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [showSuccessText, setShowSuccessText] = useState(false);

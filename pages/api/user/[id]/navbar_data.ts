@@ -13,8 +13,9 @@ export default async function handler(
   res: NextApiResponse
 ) {
   const userId = req.query.id as string;
+  if (!userId) return res.status(400).end();
   if (!isCurrentUserAuthorized(userId, req, res)) {
-    res.status(403).end();
+    return res.status(403).end();
   }
 
   const isTournamentRunning = (startTime: Date, endTime: Date) => {
@@ -24,7 +25,9 @@ export default async function handler(
 
   let user = await prisma.user.findUnique({
     where: { id: userId },
-    include: {
+    select: {
+      umpire: true,
+      tournament: true,
       player: {
         select: {
           targets: {
@@ -36,7 +39,13 @@ export default async function handler(
                     select: {
                       id: true,
                       firstName: true,
-                      lastName: true
+                      lastName: true,
+                      team: {
+                        select: {
+                          id: true,
+                          name: true
+                        }
+                      }
                     }
                   }
                 }
@@ -44,9 +53,7 @@ export default async function handler(
             }
           }
         }
-      },
-      umpire: true,
-      tournament: true
+      }
     }
   });
 

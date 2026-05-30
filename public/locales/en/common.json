@@ -90,6 +90,7 @@
     "info": {
       "aliasLabel": "Alias:",
       "statusLabel": "Status:",
+      "teamLabel": "Team:",
       "state": {
         "active": "Alive",
         "dead": "Dead",

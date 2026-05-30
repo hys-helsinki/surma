@@ -24,18 +24,14 @@ interface Player {
 
 interface Umpire {
   id: string;
-  mainUmpire: boolean;
   responsibility?: string;
+  mainUmpire?: boolean;
 }
 
 interface Team {
   id: string;
   name: string;
   colorCode?: string;
-}
-
-interface PlayerWithUser extends Player {
-  user: User;
 }
 
 interface UmpireWithUser extends Umpire {
@@ -57,7 +53,7 @@ export interface UmpirePageUser extends User {
 }
 
 export interface UmpirePageTeam extends Team {
-  players: PlayerWithUser[];
+  players: UmpirePagePlayer[];
   colorCode?: string;
 }
 

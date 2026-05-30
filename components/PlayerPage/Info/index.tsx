@@ -4,6 +4,7 @@ import ImageUploadForm from "../../Common/ImageUploadForm";
 import ImageComponent from "./ImageComponent";
 import { UserContext } from "../../UserProvider";
 import { Box } from "@mui/material";
+import { FeatureFlag } from "../../../lib/constants";
 
 const Info = ({
   imageUrl,
@@ -43,17 +44,32 @@ const Info = ({
         <h1>
           {user.firstName} {user.lastName}
         </h1>
-
-        {showAlias && (
-          <h3 style={{ marginTop: "5px", marginBottom: "5px" }}>
-            {t("playerPage.info.aliasLabel")} {user.player.alias}
-          </h3>
-        )}
-        {showStatus && (
-          <h3 style={{ marginTop: "5px", marginBottom: "10px" }}>
-            {t("playerPage.info.statusLabel")} {states[user.player.state]}
-          </h3>
-        )}
+        <div>
+          {showAlias && (
+            <h3
+              style={{ marginTop: "5px", marginBottom: "5px" }}
+              className="alias"
+            >
+              {t("playerPage.info.aliasLabel")} {user.player.alias}
+            </h3>
+          )}
+          {FeatureFlag.SHOW_TEAM_NAME && user.player.team && (
+            <h3
+              style={{ marginTop: "5px", marginBottom: "5px" }}
+              className="team-name"
+            >
+              {t("playerPage.info.teamLabel")} {user.player.team.name}
+            </h3>
+          )}
+          {showStatus && (
+            <h3
+              style={{ marginTop: "5px", marginBottom: "10px" }}
+              className="status"
+            >
+              {t("playerPage.info.statusLabel")} {states[user.player.state]}
+            </h3>
+          )}
+        </div>
       </Box>
       {imageUrl ? (
         <>
