@@ -22,13 +22,22 @@ export async function getServerSideProps(context) {
       select: {
         id: true,
         umpire: true,
-        tournamentId: true
+        tournamentId: true,
+        role: true
       }
     });
+    if (user.role === "ADMIN") {
+      return {
+        redirect: {
+          destination: `/admin/create-tournament`,
+          permanent: false
+        }
+      };
+    }
     if (user.umpire) {
       return {
         redirect: {
-          destination: `/admin/${user.tournamentId}`,
+          destination: `/tournaments/${user.tournamentId}/umpire-page`,
           permanent: false
         }
       };
