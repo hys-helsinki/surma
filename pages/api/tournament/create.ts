@@ -3,23 +3,16 @@ import type { NextApiRequest, NextApiResponse } from "next";
 import { getServerSession } from "next-auth";
 import { authConfig } from "../auth/[...nextauth]";
 
-type Tournament = {
-  name: string;
-  startTime: Date;
-  endTime: Date;
-  registrationStartTime: Date;
-  registrationEndTime: Date;
-};
-
 const isCurrentUserAuthorized = async (req, res) => {
   const session = await getServerSession(req, res, authConfig);
 
   const currentUser = await prisma.user.findUnique({
     where: {
-      id: session.user.id
+      id: session.user.id,
+      role: "ADMIN"
     }
   });
-  return false; // TODO tarvitsee turnauksen luontiin kykenevän oman käyttäjäluokan
+  return !!currentUser;
 };
 
 export default async function create(
@@ -28,14 +21,37 @@ export default async function create(
 ) {
   if (!(await isCurrentUserAuthorized(req, res))) {
     console.log("Unauthorized tournament creation attempt!");
-    res.status(403).end();
+    return res.status(403).end();
   }
   if (req.method === "POST") {
-    const tournament: Tournament = JSON.parse(req.body);
+    const { tournament, umpires } = JSON.parse(req.body);
 
-    const result = await prisma.tournament.create({
+    const createdTournament = await prisma.tournament.create({
       data: tournament
     });
-    res.status(201).end();
+
+    const umpireUsers = await Promise.all(
+      umpires.map((u) =>
+        prisma.umpire.create({
+          data: {
+            responsibility: u.responsibility,
+            mainUmpire: u.isMainUmpire,
+            tournament: { connect: { id: createdTournament.id } },
+            user: {
+              create: {
+                tournament: { connect: { id: createdTournament.id } },
+                firstName: u.firstName,
+                lastName: u.lastName,
+                email: u.email,
+                phone: u.phone,
+                role: "USER"
+              }
+            }
+          }
+        })
+      )
+    );
+
+    return res.status(201).json({ createdTournament, umpireUsers });
   }
 }
