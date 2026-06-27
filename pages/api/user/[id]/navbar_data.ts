@@ -26,6 +26,7 @@ export default async function handler(
   let user = await prisma.user.findUnique({
     where: { id: userId },
     select: {
+      role: true,
       umpire: true,
       tournament: true,
       player: {
@@ -56,6 +57,8 @@ export default async function handler(
       }
     }
   });
+
+  if (user.role === "ADMIN") return res.json(user);
 
   const targets =
     isTournamentRunning(

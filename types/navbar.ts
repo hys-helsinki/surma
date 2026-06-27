@@ -1,4 +1,4 @@
-import { Player, Tournament, Umpire } from "@prisma/client";
+import { Player, Tournament, Umpire, UserRole } from "@prisma/client";
 import { User } from "next-auth";
 
 interface Team {
@@ -17,6 +17,7 @@ interface PlayerWithTargets extends Player {
   targets: Target[];
 }
 export interface NavBarUser extends User {
+  role: UserRole;
   player: PlayerWithTargets;
   tournament: Tournament;
   umpire: Umpire;

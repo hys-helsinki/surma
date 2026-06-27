@@ -40,12 +40,14 @@ const MobileView = ({
   userId,
   targets,
   currentUserIsUmpire,
+  currentUserIsAdmin,
   isTeamGame
 }: {
   tournamentId: string;
   userId: string;
   targets: Target[];
   currentUserIsUmpire: boolean;
+  currentUserIsAdmin: boolean;
   isTeamGame: boolean;
 }) => {
   const { t } = useTranslation("common");
@@ -139,7 +141,7 @@ const MobileView = ({
                 </Collapse>
               </>
             )}
-            {userId && (
+            {userId && !currentUserIsAdmin && (
               <ListItemButton
                 component="a"
                 href={`/tournaments/${tournamentId}/users/${userId}`}
@@ -207,7 +209,8 @@ const DesktopView = ({
   userId,
   targets,
   currentUserIsUmpire,
-  isTeamGame
+  isTeamGame,
+  currentUserIsAdmin
 }) => {
   const { t } = useTranslation("common");
   const { data } = useSession();
@@ -259,7 +262,6 @@ const DesktopView = ({
             display: "flex",
             justifyContent: "center",
             alignItems: "center",
-            // flexGrow: 1,
             fontFamily: "monospace",
             fontWeight: 700,
             letterSpacing: ".4rem",
@@ -303,7 +305,7 @@ const DesktopView = ({
             </MenuItem>
           ))}
         </Menu>
-        {userId && (
+        {userId && !currentUserIsAdmin && (
           <Button
             sx={{ minWidth: 100, my: 2, color: "white", display: "block" }}
           >
@@ -391,9 +393,12 @@ const NavigationBar = () => {
 
   const tournamentId = data ? data.user.tournamentId : "";
   const userId = data ? data.user.id : "";
-  const targets = user ? user.player.targets : [];
-  const currentUserIsUmpire = user ? Boolean(user.umpire) : false;
-  const isTeamGame = user ? user.tournament.teamGame : false;
+  const currentUserIsAdmin = user ? user.role === "ADMIN" : false;
+  const currentUserIsUmpire =
+    user && !currentUserIsAdmin ? Boolean(user.umpire) : false;
+  const targets = user && !currentUserIsAdmin ? user.player.targets : [];
+  const isTeamGame =
+    user && !currentUserIsAdmin ? user.tournament.teamGame : false;
 
   return (
     <AppBar position="static">
@@ -404,6 +409,7 @@ const NavigationBar = () => {
             userId={userId}
             targets={targets}
             currentUserIsUmpire={currentUserIsUmpire}
+            currentUserIsAdmin={currentUserIsAdmin}
             isTeamGame={isTeamGame}
           />
         ) : (
@@ -412,6 +418,7 @@ const NavigationBar = () => {
             userId={userId}
             targets={targets}
             currentUserIsUmpire={currentUserIsUmpire}
+            currentUserIsAdmin={currentUserIsAdmin}
             isTeamGame={isTeamGame}
           />
         )}
