@@ -1,0 +1,337 @@
+import { useRouter } from "next/router";
+import Container from "@mui/material/Container";
+import { serverSideTranslations } from "next-i18next/serverSideTranslations";
+import { GetServerSideProps } from "next";
+import TextInput from "../../components/Common/TextInput";
+import { Box, Grid, Button, FormControlLabel, styled } from "@mui/material";
+import { Formik, Form, FieldArray, useField } from "formik";
+import * as Yup from "yup";
+import { useState } from "react";
+import Switch, { SwitchProps } from "@mui/material/Switch";
+import Datetime from "react-datetime";
+import "moment/locale/fi";
+import "react-datetime/css/react-datetime.css";
+import { AuthenticationRequired } from "../../components/AuthenticationRequired";
+import prisma from "../../lib/prisma";
+import { getServerSession } from "next-auth";
+import { authConfig } from "../api/auth/[...nextauth]";
+
+const isCurrentUserAuthorized = async (context) => {
+  const session = await getServerSession(context.req, context.res, authConfig);
+
+  const user = await prisma.user.findFirst({
+    where: {
+      id: session.user.id,
+      role: "ADMIN"
+    }
+  });
+  return !!user;
+};
+
+export const getServerSideProps: GetServerSideProps = async ({
+  params,
+  ...context
+}) => {
+  if (!(await isCurrentUserAuthorized(context))) {
+    console.log("Unauthorized tournament creation view!");
+    return { redirect: { destination: "/", permanent: false } };
+  }
+  return {
+    props: {
+      ...(await serverSideTranslations(context.locale, ["common"]))
+    }
+  };
+};
+
+const DateTimePicker = ({ label, name }) => {
+  const [field, meta, helpers] = useField(name);
+
+  const handleChange = (date) => {
+    helpers.setValue(date);
+  };
+
+  return (
+    <Box my={1}>
+      {label && <label>{label}</label>}
+      {meta.error ? (
+        <div className="registration-error">{meta.error}</div>
+      ) : null}
+      <Datetime
+        {...field}
+        inputProps={{ name: name }}
+        value={field.value}
+        onChange={handleChange}
+      />
+    </Box>
+  );
+};
+
+const StyledSwitch = styled((props: SwitchProps) => (
+  <Switch focusVisibleClassName=".Mui-focusVisible" disableRipple {...props} />
+))(({ theme }) => ({
+  "& .MuiSwitch-switchBase": {
+    "&.Mui-checked": {
+      "& + .MuiSwitch-track": {
+        backgroundColor: "#eb3131",
+        opacity: 1,
+        border: 0,
+        ...theme.applyStyles("dark", {
+          backgroundColor: "#ca2e2e"
+        })
+      }
+    },
+    "&.Mui-focusVisible .MuiSwitch-thumb": {
+      color: "#cf4533",
+      border: "6px solid #fff"
+    }
+  },
+  "& .MuiSwitch-track": {
+    backgroundColor: "#E9E9EA",
+    opacity: 1
+  }
+}));
+
+const FormikSwitch = ({ label, ...props }) => {
+  const [field, , helpers] = useField(props.name);
+
+  return (
+    <FormControlLabel
+      control={
+        <StyledSwitch
+          {...props}
+          checked={Boolean(field.value)}
+          onChange={(_, checked) => helpers.setValue(checked)}
+          onBlur={field.onBlur}
+        />
+      }
+      label={label}
+    />
+  );
+};
+
+export default function CreateTournament() {
+  const router = useRouter();
+  const [isLoading, setIsLoading] = useState(false);
+  const [tournamentCreationOk, setTournamentCreationOk] = useState(false);
+
+  const handleSubmit = async (values) => {
+    console.log(values);
+    const tournament = {
+      name: values.tournamentName,
+      startTime: values.startTime,
+      endTime: values.endTime,
+      registrationEndTime: values.registrationEndTime,
+      registrationStartTime: values.registrationStartTime
+    };
+    const umpires = values.users;
+
+    const data = { tournament, umpires };
+    const response = await fetch("/api/tournament/create", {
+      method: "POST",
+      body: JSON.stringify(data)
+    });
+    const responseObject = await response.json();
+    console.log(responseObject);
+
+    setTournamentCreationOk(true);
+  };
+
+  const initialValues = {
+    tournamentName: "",
+    startTime: "",
+    endTime: "",
+    registrationStartTime: "",
+    registrationEndTime: "",
+    users: [
+      {
+        firstName: "",
+        lastName: "",
+        email: "",
+        phone: "",
+        responsibility: "",
+        isMainUmpire: false
+      }
+    ]
+  };
+  return (
+    <AuthenticationRequired>
+      <Container maxWidth="md">
+        {tournamentCreationOk ? (
+          <div>
+            <h1>Turnauksen luominen onnistui!</h1>
+          </div>
+        ) : (
+          <>
+            <h1>Turnauksen luominen</h1>
+            <Formik
+              initialValues={initialValues}
+              validationSchema={Yup.object({
+                tournamentName: Yup.string().required("Pakollinen"),
+                startTime: Yup.date()
+                  .typeError("Tarkista päivämäärän formaatti")
+                  .required("Pakollinen"),
+                endTime: Yup.date()
+                  .typeError("Tarkista päivämäärän formaatti")
+                  .required("Pakollinen"),
+                registrationStartTime: Yup.date()
+                  .typeError("Tarkista päivämäärän formaatti")
+                  .required("Pakollinen"),
+                registrationEndTime: Yup.date()
+                  .typeError("Tarkista päivämäärän formaatti")
+                  .required("Pakollinen"),
+                users: Yup.array()
+                  .of(
+                    Yup.object().shape({
+                      firstName: Yup.string().required("Pakollinen"),
+                      lastName: Yup.string().required("Pakollinen"),
+                      email: Yup.string().required("Pakollinen"),
+                      phone: Yup.string().required("Pakollinen"),
+                      responsibility: Yup.string(),
+                      isMainUmpire: Yup.boolean()
+                    })
+                  )
+                  .test(
+                    "has-main-umpire",
+                    "Valitse vähintään yksi päätuomari",
+                    (users) =>
+                      Boolean(users?.some((user) => user?.isMainUmpire))
+                  )
+              })}
+              onSubmit={(values) => handleSubmit(values)}
+            >
+              {({ values, errors, submitCount }) => (
+                <Form
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter") {
+                      e.preventDefault();
+                    }
+                  }}
+                >
+                  <h2>1. Perustiedot</h2>
+                  <TextInput
+                    label="Turnauksen nimi"
+                    name="tournamentName"
+                    type="text"
+                  />
+                  <DateTimePicker label="Turnaus alkaa" name="startTime" />
+                  <DateTimePicker label="Turnaus päättyy" name="endTime" />
+                  <h2>2. Ilmoittautuminen</h2>
+                  <DateTimePicker
+                    label="Ilmoittautuminen alkaa"
+                    name="registrationStartTime"
+                  />
+                  <DateTimePicker
+                    label="Ilmoittautuminen päättyy"
+                    name="registrationEndTime"
+                  />
+                  <h2>3. Tuomaristo</h2>
+                  {submitCount > 0 && errors.users && (
+                    <div className="registration-error">
+                      {typeof errors.users === "string"
+                        ? errors.users
+                        : "Valitse vähintään yksi päätuomari"}
+                    </div>
+                  )}
+                  <FieldArray name="users">
+                    {({ remove, push }) => (
+                      <div>
+                        {values.users.length > 0 &&
+                          values.users.map((user, index) => (
+                            <Box sx={{ my: 3 }} key={index}>
+                              <Box
+                                sx={{
+                                  display: "flex",
+                                  gap: "1rem",
+                                  alignItems: "center",
+                                  justifyContent: "left"
+                                }}
+                              >
+                                <h3>Tuomari {index + 1}</h3>
+
+                                {index !== 0 && (
+                                  <button
+                                    type="button"
+                                    className="secondary"
+                                    onClick={() => remove(index)}
+                                  >
+                                    Poista tuomari
+                                  </button>
+                                )}
+                              </Box>
+                              <Grid
+                                container
+                                spacing={{ xs: 0, md: 2 }}
+                                className="firstAndLastName"
+                              >
+                                <Grid size={{ xs: 12, md: 6 }}>
+                                  <TextInput
+                                    label="Etunimi"
+                                    name={`users[${index}].firstName`}
+                                    type="text"
+                                  />
+                                </Grid>
+                                <Grid size={{ xs: 12, md: 6 }}>
+                                  <TextInput
+                                    label="Sukunimi"
+                                    name={`users[${index}].lastName`}
+                                    type="text"
+                                  />
+                                </Grid>
+                              </Grid>
+                              <TextInput
+                                label="Sähköpostiosoite"
+                                name={`users[${index}].email`}
+                                type="email"
+                              />
+                              <TextInput
+                                label="Puhelinnumero"
+                                name={`users[${index}].phone`}
+                                type="text"
+                              />
+                              <TextInput
+                                label="Vastuualue"
+                                name={`users[${index}].responsibility`}
+                                type="text"
+                              />
+                              <FormikSwitch
+                                color="default"
+                                name={`users[${index}].isMainUmpire`}
+                                label="Päätuomari?"
+                              />
+                            </Box>
+                          ))}
+
+                        <button
+                          onClick={() =>
+                            push({
+                              firstName: "",
+                              lastName: "",
+                              email: "",
+                              phone: "",
+                              responsibility: "",
+                              isMainUmpire: false
+                            })
+                          }
+                        >
+                          Lisää tuomari
+                        </button>
+                      </div>
+                    )}
+                  </FieldArray>
+                  {submitCount > 0 && errors && (
+                    <p className="registration-error">
+                      Täytä kaikki pakolliset kentät!
+                    </p>
+                  )}
+                  <Button loading={isLoading} type="submit">
+                    Luo turnaus
+                  </Button>
+                </Form>
+              )}
+            </Formik>
+          </>
+        )}
+      </Container>
+    </AuthenticationRequired>
+  );
+}
