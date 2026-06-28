@@ -3,7 +3,15 @@ import Container from "@mui/material/Container";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import { GetServerSideProps } from "next";
 import TextInput from "../../components/Common/TextInput";
-import { Box, Grid, Button, FormControlLabel, styled } from "@mui/material";
+import {
+  Box,
+  Grid,
+  Button,
+  FormControlLabel,
+  styled,
+  Alert,
+  Snackbar
+} from "@mui/material";
 import { Formik, Form, FieldArray, useField } from "formik";
 import * as Yup from "yup";
 import { useState } from "react";
@@ -110,12 +118,13 @@ const FormikSwitch = ({ label, ...props }) => {
 };
 
 export default function CreateTournament() {
-  const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
+  const [showError, setShowError] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
   const [tournamentCreationOk, setTournamentCreationOk] = useState(false);
 
   const handleSubmit = async (values) => {
-    console.log(values);
+    setIsLoading(true);
     const tournament = {
       name: values.tournamentName,
       startTime: values.startTime,
@@ -125,23 +134,38 @@ export default function CreateTournament() {
     };
     const umpires = values.users;
 
-    const data = { tournament, umpires };
-    const response = await fetch("/api/tournament/create", {
-      method: "POST",
-      body: JSON.stringify(data)
-    });
-    const responseObject = await response.json();
-    console.log(responseObject);
-
-    setTournamentCreationOk(true);
+    try {
+      const response = await fetch("/api/tournament/create", {
+        method: "POST",
+        body: JSON.stringify({ tournament, umpires })
+      });
+      const responseObject = await response.json();
+      if (response.status === 201) {
+        setTournamentCreationOk(true);
+      } else if (response.status === 409) {
+        setErrorMessage(
+          "Jokin annetuista sähköposteista on jo olemassa. Kokeile toista osoitetta"
+        );
+        setShowError(true);
+      } else {
+        setErrorMessage(
+          "Turnauksen luominen epäonnistui. Kokeile myöhemmin uudestaan"
+        );
+        setShowError(true);
+      }
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const initialValues = {
     tournamentName: "",
-    startTime: "",
-    endTime: "",
-    registrationStartTime: "",
-    registrationEndTime: "",
+    startTime: new Date(),
+    endTime: new Date(),
+    registrationStartTime: new Date(),
+    registrationEndTime: new Date(),
     users: [
       {
         firstName: "",
@@ -153,6 +177,7 @@ export default function CreateTournament() {
       }
     ]
   };
+
   return (
     <AuthenticationRequired>
       <Container maxWidth="md">
@@ -318,11 +343,6 @@ export default function CreateTournament() {
                       </div>
                     )}
                   </FieldArray>
-                  {submitCount > 0 && errors && (
-                    <p className="registration-error">
-                      Täytä kaikki pakolliset kentät!
-                    </p>
-                  )}
                   <Button loading={isLoading} type="submit">
                     Luo turnaus
                   </Button>
@@ -332,6 +352,16 @@ export default function CreateTournament() {
           </>
         )}
       </Container>
+      <Snackbar open={showError} onClose={() => setShowError(false)}>
+        <Alert
+          severity="error"
+          variant="filled"
+          sx={{ width: "100%" }}
+          onClose={() => setShowError(false)}
+        >
+          {errorMessage}
+        </Alert>
+      </Snackbar>
     </AuthenticationRequired>
   );
 }
