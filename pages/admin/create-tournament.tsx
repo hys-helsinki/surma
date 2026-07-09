@@ -130,7 +130,8 @@ export default function CreateTournament() {
       startTime: values.startTime,
       endTime: values.endTime,
       registrationEndTime: values.registrationEndTime,
-      registrationStartTime: values.registrationStartTime
+      registrationStartTime: values.registrationStartTime,
+      teamGame: values.teamGame
     };
     const umpires = values.users;
 
@@ -164,6 +165,7 @@ export default function CreateTournament() {
     tournamentName: "",
     startTime: new Date(),
     endTime: new Date(),
+    teamGame: false,
     registrationStartTime: new Date(),
     registrationEndTime: new Date(),
     users: [
@@ -240,6 +242,11 @@ export default function CreateTournament() {
                   />
                   <DateTimePicker label="Turnaus alkaa" name="startTime" />
                   <DateTimePicker label="Turnaus päättyy" name="endTime" />
+                  <FormikSwitch
+                    color="default"
+                    name="teamGame"
+                    label="Joukkueturnaus?"
+                  />
                   <h2>2. Ilmoittautuminen</h2>
                   <DateTimePicker
                     label="Ilmoittautuminen alkaa"
