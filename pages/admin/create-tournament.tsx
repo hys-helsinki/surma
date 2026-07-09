@@ -23,9 +23,12 @@ import { AuthenticationRequired } from "../../components/AuthenticationRequired"
 import prisma from "../../lib/prisma";
 import { getServerSession } from "next-auth";
 import { authConfig } from "../api/auth/[...nextauth]";
+import { Tournament } from "@prisma/client";
 
 const isCurrentUserAuthorized = async (context) => {
   const session = await getServerSession(context.req, context.res, authConfig);
+
+  if (!session) return false;
 
   const user = await prisma.user.findFirst({
     where: {
@@ -193,7 +196,7 @@ export default function CreateTournament() {
         email: "",
         phone: "",
         responsibility: "",
-        isMainUmpire: false
+        mainUmpire: false
       }
     ]
   };
@@ -245,6 +248,8 @@ export default function CreateTournament() {
             <h1>Turnauksen luominen</h1>
             <Formik
               initialValues={initialValues}
+              validateOnChange={true}
+              validateOnBlur={true}
               validationSchema={Yup.object({
                 tournamentName: Yup.string().required("Pakollinen"),
                 startTime: Yup.date()
@@ -267,14 +272,13 @@ export default function CreateTournament() {
                       email: Yup.string().required("Pakollinen"),
                       phone: Yup.string().required("Pakollinen"),
                       responsibility: Yup.string(),
-                      isMainUmpire: Yup.boolean()
+                      mainUmpire: Yup.boolean()
                     })
                   )
                   .test(
                     "has-main-umpire",
                     "Valitse vähintään yksi päätuomari",
-                    (users) =>
-                      Boolean(users?.some((user) => user?.isMainUmpire))
+                    (users) => Boolean(users?.some((user) => user?.mainUmpire))
                   )
               })}
               onSubmit={(values) => handleSubmit(values)}
@@ -310,11 +314,12 @@ export default function CreateTournament() {
                     name="registrationEndTime"
                   />
                   <h2>3. Tuomaristo</h2>
-                  {submitCount > 0 && errors.users && (
-                    <div className="registration-error">
-                      {typeof errors.users === "string"
-                        ? errors.users
-                        : "Valitse vähintään yksi päätuomari"}
+                  {submitCount > 0 && typeof errors.users === "string" && (
+                    <div
+                      className="registration-error"
+                      style={{ paddingLeft: "0" }}
+                    >
+                      Valitse vähintään yksi päätuomari
                     </div>
                   )}
                   <FieldArray name="users">
@@ -380,13 +385,14 @@ export default function CreateTournament() {
                               />
                               <FormikSwitch
                                 color="default"
-                                name={`users[${index}].isMainUmpire`}
+                                name={`users[${index}].mainUmpire`}
                                 label="Päätuomari?"
                               />
                             </Box>
                           ))}
 
                         <button
+                          type="button"
                           onClick={() =>
                             push({
                               firstName: "",
@@ -394,7 +400,7 @@ export default function CreateTournament() {
                               email: "",
                               phone: "",
                               responsibility: "",
-                              isMainUmpire: false
+                              mainUmpire: false
                             })
                           }
                         >

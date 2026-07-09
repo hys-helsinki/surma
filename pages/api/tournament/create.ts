@@ -39,7 +39,7 @@ export default async function create(
               tx.umpire.create({
                 data: {
                   responsibility: u.responsibility,
-                  mainUmpire: u.isMainUmpire,
+                  mainUmpire: u.mainUmpire,
                   tournament: { connect: { id: createdTournament.id } },
                   user: {
                     create: {
@@ -51,6 +51,9 @@ export default async function create(
                       role: "USER"
                     }
                   }
+                },
+                include: {
+                  user: true
                 }
               })
             )
