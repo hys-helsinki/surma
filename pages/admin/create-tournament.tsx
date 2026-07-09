@@ -122,6 +122,21 @@ export default function CreateTournament() {
   const [showError, setShowError] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
   const [tournamentCreationOk, setTournamentCreationOk] = useState(false);
+  const [tournament, setTournament] = useState<Tournament | null>();
+  const [umpires, setUmpires] = useState([]);
+
+  const modifyDate = (dateString) => {
+    const date = new Date(dateString);
+    const formattedDate = `${date.toLocaleString("fi-FI", {
+      hour: "2-digit",
+      minute: "2-digit",
+      year: "numeric",
+      day: "numeric",
+      month: "numeric",
+      timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone
+    })}`;
+    return formattedDate;
+  };
 
   const handleSubmit = async (values) => {
     setIsLoading(true);
@@ -142,6 +157,9 @@ export default function CreateTournament() {
       });
       const responseObject = await response.json();
       if (response.status === 201) {
+        const { createdTournament, umpireUsers } = responseObject;
+        setTournament(createdTournament);
+        setUmpires(umpireUsers);
         setTournamentCreationOk(true);
       } else if (response.status === 409) {
         setErrorMessage(
@@ -186,6 +204,41 @@ export default function CreateTournament() {
         {tournamentCreationOk ? (
           <div>
             <h1>Turnauksen luominen onnistui!</h1>
+            <p>
+              Tuomarit voivat nyt kirjautua Surmaan lomakkeeseen syötetyillä
+              sähköposteilla. Alla vielä vahvistuksena luodun turnauksen ja
+              tuomareiden tiedot.
+            </p>
+            <p>Voit nyt kirjautua ulos sovelluksesta.</p>
+            <h3>Turnaus</h3>
+            <ul>
+              <li>Nimi: {tournament.name}</li>
+              <li>Alkaa: {modifyDate(tournament.startTime.toString())}</li>
+              <li>Päättyy: {modifyDate(tournament.endTime.toString())}</li>
+              <li>
+                Ilmo alkaa:{" "}
+                {modifyDate(tournament.registrationStartTime.toString())}
+              </li>
+              <li>
+                Ilmo päättyy:{" "}
+                {modifyDate(tournament.registrationEndTime.toString())}
+              </li>
+              <li>Joukkueturnaus: {tournament.teamGame ? "Kyllä" : "Ei"}</li>
+            </ul>
+            <h3>Tuomarit</h3>
+            {umpires.map((umpire) => (
+              <div key={umpire.user.email}>
+                <p>
+                  {umpire.user.firstName} {umpire.user.lastName}
+                </p>
+                <ul>
+                  <li>Sähköposti: {umpire.user.email}</li>
+                  <li>Puhelinnumero: {umpire.user.phone}</li>
+                  <li>Vastuualue: {umpire.responsibility}</li>
+                  <li>Päätuomari: {umpire.mainUmpire ? "Kyllä" : "Ei"}</li>
+                </ul>
+              </div>
+            ))}
           </div>
         ) : (
           <>
