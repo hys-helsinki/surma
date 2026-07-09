@@ -1,7 +1,7 @@
 import Image from "next/image";
 import logo from "/public/images/surma_logo.svg";
 import Link from "next/link";
-import { useSession, signIn } from "next-auth/react";
+import { useSession, signIn, signOut } from "next-auth/react";
 import { useEffect, useState } from "react";
 import { useTranslation } from "next-i18next";
 import { useRouter } from "next/router";
@@ -185,8 +185,7 @@ const MobileView = ({
             marginRight: 0
           }}
         />
-
-        {!data && (
+        {!data ? (
           <Button
             onClick={() => signIn()}
             sx={{
@@ -197,6 +196,18 @@ const MobileView = ({
             }}
           >
             {t("navigation.signIn")}
+          </Button>
+        ) : (
+          <Button
+            onClick={() => signOut({ callbackUrl: "/" })}
+            sx={{
+              color: "black",
+              backgroundColor: "white",
+              p: 0,
+              width: "30%"
+            }}
+          >
+            {t("navigation.signOut")}
           </Button>
         )}
       </Box>
@@ -361,7 +372,7 @@ const DesktopView = ({
           ))}
         </Menu>
       </Box>
-      {!data && (
+      {!data ? (
         <Button
           onClick={() => signIn()}
           sx={{
@@ -371,6 +382,17 @@ const DesktopView = ({
           }}
         >
           {t("navigation.signIn")}
+        </Button>
+      ) : (
+        <Button
+          onClick={() => signOut({ callbackUrl: "/" })}
+          sx={{
+            color: "black",
+            backgroundColor: "white",
+            p: 1
+          }}
+        >
+          {t("navigation.signOut")}
         </Button>
       )}
     </Toolbar>
