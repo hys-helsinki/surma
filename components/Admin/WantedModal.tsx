@@ -1,9 +1,10 @@
-import { Box, Modal, Snackbar, Button, Alert } from "@mui/material";
+import { Box, Modal, Snackbar, Alert } from "@mui/material";
 import { Formik, Form, Field } from "formik";
 import { getPlayerFullNameById } from "../utils";
 import { Dispatch, SetStateAction, useState } from "react";
 import { RingWithAssignments, UmpirePagePlayer } from "../../types/umpirepage";
 import { Tournament } from "@prisma/client";
+import SurmaButton from "../Common/SurmaButton";
 
 const style = {
   position: "absolute" as "absolute",
@@ -104,9 +105,9 @@ const WantedModal = ({
                   {detectivePlayers.length === 0 && <i>Ei etsiviä :(</i>}
                   {detectivePlayers.length > 0 && (
                     <Box>
-                      <button type="button" onClick={handleSelectAll}>
+                      <SurmaButton type="button" onClick={handleSelectAll}>
                         {allSelected ? "Tyhjennä" : "Valitse kaikki"}
-                      </button>
+                      </SurmaButton>
                     </Box>
                   )}
                   {detectivePlayers.map((player) => (
@@ -132,7 +133,7 @@ const WantedModal = ({
                     </Box>
                   ))}
 
-                  <Button
+                  <SurmaButton
                     type="submit"
                     loading={isLoading}
                     disabled={
@@ -141,8 +142,10 @@ const WantedModal = ({
                     }
                   >
                     Etsintäkuuluta
-                  </Button>
-                  <button onClick={() => setOpenModal(false)}>Peruuta</button>
+                  </SurmaButton>
+                  <SurmaButton onClick={() => setOpenModal(false)}>
+                    Peruuta
+                  </SurmaButton>
                 </Form>
               );
             }}

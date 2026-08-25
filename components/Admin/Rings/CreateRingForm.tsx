@@ -1,8 +1,9 @@
-import { Autocomplete, Box, Button } from "@mui/material";
+import { Autocomplete, Box } from "@mui/material";
 import { Field, FieldArray, Form, Formik } from "formik";
 import { useState } from "react";
 import StyledTextField from "./StyledTextField";
 import { RingComponentProps } from "../../../types/umpirepage";
+import SurmaButton from "../../Common/SurmaButton";
 
 const CreateRingForm = ({
   players,
@@ -60,9 +61,9 @@ const CreateRingForm = ({
 
   return (
     <>
-      <button onClick={() => setShowForm(!showForm)}>
+      <SurmaButton onClick={() => setShowForm(!showForm)}>
         {!showForm ? "Luo uusi rinki" : "Peruuta"}
-      </button>
+      </SurmaButton>
       {showForm && (
         <Box width={{ xs: "100%", md: "80%" }}>
           <Formik
@@ -138,7 +139,7 @@ const CreateRingForm = ({
                         </Box>
                       ))}
 
-                      <button
+                      <SurmaButton
                         type="button"
                         className="secondary"
                         onClick={() =>
@@ -151,13 +152,13 @@ const CreateRingForm = ({
                         }
                       >
                         + Lisää
-                      </button>
+                      </SurmaButton>
                     </Box>
                   )}
                 </FieldArray>
-                <Button type="submit" loading={loading}>
+                <SurmaButton type="submit" loading={loading}>
                   Tallenna rinki
-                </Button>
+                </SurmaButton>
               </Form>
             )}
           </Formik>

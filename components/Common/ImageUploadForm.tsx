@@ -2,6 +2,7 @@ import { Alert, Box, Snackbar } from "@mui/material";
 import { Dispatch, SetStateAction, useState } from "react";
 import { useTranslation } from "next-i18next";
 import { CldUploadWidget } from "next-cloudinary";
+import SurmaButton from "./SurmaButton";
 
 const ImageUploadForm = ({
   setImageUrl,
@@ -48,15 +49,13 @@ const ImageUploadForm = ({
       >
         {({ open }) => {
           return (
-            <button
-              // type="button"
+            <SurmaButton
               onClick={() => {
-                // event.preventDefault();
                 open();
               }}
             >
               {uploadLabel}
-            </button>
+            </SurmaButton>
           );
         }}
       </CldUploadWidget>

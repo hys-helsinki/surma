@@ -5,7 +5,7 @@ import Markdown from "../Common/Markdown";
 import { Tournament } from "@prisma/client";
 import { useTranslation } from "next-i18next";
 import { UserContext } from "../UserProvider";
-import { Button } from "@mui/material";
+import SurmaButton from "../Common/SurmaButton";
 
 export const Calendar = ({
   tournament,
@@ -78,11 +78,11 @@ export const Calendar = ({
   return (
     <div className="calendar">
       {showEditButton && (
-        <button onClick={() => setIsUpdated(!isUpdated)}>
+        <SurmaButton onClick={() => setIsUpdated(!isUpdated)}>
           {isUpdated
             ? t("playerPage.calendar.editButton")
             : t("playerPage.calendar.cancelButton")}
-        </button>
+        </SurmaButton>
       )}
 
       {isUpdated ? (
@@ -106,14 +106,14 @@ export const Calendar = ({
             }}
           >
             {weekNumber > 0 && (
-              <button onClick={() => setSlideNumber(weekNumber - 1)}>
+              <SurmaButton onClick={() => setSlideNumber(weekNumber - 1)}>
                 {t("playerPage.calendar.previousButton")}
-              </button>
+              </SurmaButton>
             )}
             {weekNumber < weeks.length - 1 && (
-              <button onClick={() => setSlideNumber(weekNumber + 1)}>
+              <SurmaButton onClick={() => setSlideNumber(weekNumber + 1)}>
                 {t("playerPage.calendar.nextButton")}
-              </button>
+              </SurmaButton>
             )}
           </div>
         </div>
@@ -127,18 +127,18 @@ export const Calendar = ({
         >
           <Form>
             <Markdown>{t("playerPage.calendar.markdown")}</Markdown>
-            <Button loading={isLoading} type="submit">
+            <SurmaButton loading={isLoading} type="submit">
               {t("playerPage.calendar.saveButton")}
-            </Button>
+            </SurmaButton>
             {dates.map((date: string, index) => (
               <div key={index}>
                 <label>{date}</label>
                 <Field name={`calendar${index}`} as="textarea" />
               </div>
             ))}
-            <Button loading={isLoading} type="submit">
+            <SurmaButton loading={isLoading} type="submit">
               {t("playerPage.calendar.saveButton")}
-            </Button>
+            </SurmaButton>
           </Form>
         </Formik>
       )}

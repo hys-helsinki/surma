@@ -3,6 +3,7 @@ import { useState } from "react";
 import styles from "../styles/Home.module.css";
 import { useRouter } from "next/router";
 import { useTranslation } from "next-i18next";
+import SurmaButton from "./Common/SurmaButton";
 
 const style = {
   position: "absolute" as "absolute",
@@ -48,12 +49,12 @@ export default function GdprModal({ text }) {
             </ul>
           </div>
           <div className={styles.center}>
-            <button onClick={handleClose} style={{ marginBottom: "50px" }}>
+            <SurmaButton onClick={handleClose} style={{ marginBottom: "50px" }}>
               {t("gdprModal.closeButton")}
-            </button>
-            <button onClick={() => router.push({ pathname: `/privacy` })}>
+            </SurmaButton>
+            <SurmaButton onClick={() => router.push({ pathname: `/privacy` })}>
               {t("gdprModal.privacyPolicyButton")}
-            </button>
+            </SurmaButton>
           </div>
         </Box>
       </Modal>

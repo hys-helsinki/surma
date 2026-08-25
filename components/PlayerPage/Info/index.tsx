@@ -5,6 +5,7 @@ import ImageComponent from "./ImageComponent";
 import { UserContext } from "../../UserProvider";
 import { Box } from "@mui/material";
 import { FeatureFlag } from "../../../lib/constants";
+import SurmaButton from "../../Common/SurmaButton";
 
 const Info = ({
   imageUrl,
@@ -83,11 +84,11 @@ const Info = ({
               gap: "10px"
             }}
           >
-            <button onClick={() => setShowPicture(!showPicture)}>
+            <SurmaButton onClick={() => setShowPicture(!showPicture)}>
               {showPicture
                 ? t("imageUpload.hidePicture")
                 : t("imageUpload.showPicture")}
-            </button>
+            </SurmaButton>
             {showImageForm && (
               <ImageUploadForm
                 setImageUrl={setImageUrl}
