@@ -5,7 +5,6 @@ import { useSession, signIn } from "next-auth/react";
 import { useEffect, useState } from "react";
 import { useTranslation } from "next-i18next";
 import { useRouter } from "next/router";
-import OpenInNewIcon from "@mui/icons-material/OpenInNew";
 import MenuIcon from "@mui/icons-material/Menu";
 import ExpandLess from "@mui/icons-material/ExpandLess";
 import ExpandMore from "@mui/icons-material/ExpandMore";
@@ -29,6 +28,7 @@ import {
 } from "@mui/material";
 import { FeatureFlag } from "../lib/constants";
 import { NavBarUser, Target } from "../types/navbar";
+import SurmaButton from "./Common/SurmaButton";
 
 const LANGUAGE_LABELS: Record<string, string> = {
   fi: "Suomi",
@@ -185,7 +185,7 @@ const MobileView = ({
         />
 
         {!data && (
-          <Button
+          <SurmaButton
             onClick={() => signIn()}
             sx={{
               color: "black",
@@ -195,7 +195,7 @@ const MobileView = ({
             }}
           >
             {t("navigation.signIn")}
-          </Button>
+          </SurmaButton>
         )}
       </Box>
     </Toolbar>
@@ -360,7 +360,7 @@ const DesktopView = ({
         </Menu>
       </Box>
       {!data && (
-        <Button
+        <SurmaButton
           onClick={() => signIn()}
           sx={{
             color: "black",
@@ -369,7 +369,7 @@ const DesktopView = ({
           }}
         >
           {t("navigation.signIn")}
-        </Button>
+        </SurmaButton>
       )}
     </Toolbar>
   );
