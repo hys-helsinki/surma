@@ -67,14 +67,14 @@ export default async function create(
     } catch (e) {
       if (e instanceof Prisma.PrismaClientKnownRequestError) {
         if (e.code === "P2002") {
-          res.status(409).json({ message: "Email already exists" });
+          return res.status(409).json({ message: "Email already exists" });
         } else {
           console.log(e);
-          res.status(500).json({ message: e.message });
+          return res.status(500).json({ message: e.message });
         }
       } else {
         console.log(e);
-        res
+        return res
           .status(500)
           .json({ message: e instanceof Error ? e.message : "Unknown error" });
       }

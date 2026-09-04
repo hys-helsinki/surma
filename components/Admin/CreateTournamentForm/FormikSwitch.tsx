@@ -27,7 +27,7 @@ const StyledSwitch = styled((props: SwitchProps) => (
   }
 }));
 
-const FormikSwitch = ({ label, ...props }) => {
+const FormikSwitch = ({ label, ...props }: SwitchProps & { label: string }) => {
   const [field, , helpers] = useField(props.name);
 
   return (

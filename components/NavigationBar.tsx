@@ -150,7 +150,10 @@ const MobileView = ({
               </ListItemButton>
             )}
             {currentUserIsUmpire && (
-              <ListItemButton component="a" href={`/admin/${tournamentId}`}>
+              <ListItemButton
+                component="a"
+                href={`/tournaments/${tournamentId}/umpire-page`}
+              >
                 {t("navigation.admin")}
               </ListItemButton>
             )}
@@ -329,7 +332,9 @@ const DesktopView = ({
           <Button
             sx={{ minWidth: 100, my: 2, color: "white", display: "block" }}
           >
-            <Link href={`/admin/${tournamentId}`}>{t("navigation.admin")}</Link>
+            <Link href={`/tournaments/${tournamentId}/umpire-page`}>
+              {t("navigation.admin")}
+            </Link>
           </Button>
         )}
         <Button sx={{ minWidth: 100, my: 2, color: "white" }}>

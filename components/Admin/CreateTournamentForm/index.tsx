@@ -16,7 +16,7 @@ const CreateTournamentForm = () => {
   const [showError, setShowError] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
   const [tournamentCreationOk, setTournamentCreationOk] = useState(false);
-  const [tournament, setTournament] = useState<Tournament | null>();
+  const [tournament, setTournament] = useState<Tournament | null>(null);
   const [umpires, setUmpires] = useState([]);
 
   const handleSubmit = async (values) => {
@@ -33,6 +33,7 @@ const CreateTournamentForm = () => {
 
     try {
       const response = await fetch("/api/tournament/create", {
+        headers: { "Content-Type": "application/json" },
         method: "POST",
         body: JSON.stringify({ tournament, umpires })
       });
@@ -55,6 +56,10 @@ const CreateTournamentForm = () => {
       }
     } catch (error) {
       console.log(error);
+      setErrorMessage(
+        "Turnauksen luominen epäonnistui. Kokeile myöhemmin uudestaan"
+      );
+      setShowError(true);
     } finally {
       setIsLoading(false);
     }
@@ -62,11 +67,11 @@ const CreateTournamentForm = () => {
 
   const initialValues = {
     tournamentName: "",
-    startTime: new Date(),
-    endTime: new Date(),
+    startTime: new Date(new Date().setHours(0, 0, 0, 0)),
+    endTime: new Date(new Date().setHours(23, 59, 0, 0)),
     teamGame: false,
-    registrationStartTime: new Date(),
-    registrationEndTime: new Date(),
+    registrationStartTime: new Date(new Date().setHours(0, 0, 0, 0)),
+    registrationEndTime: new Date(new Date().setHours(23, 59, 0, 0)),
     users: [
       {
         firstName: "",
@@ -109,7 +114,7 @@ const CreateTournamentForm = () => {
                   Yup.object().shape({
                     firstName: Yup.string().required("Pakollinen"),
                     lastName: Yup.string().required("Pakollinen"),
-                    email: Yup.string().required("Pakollinen"),
+                    email: Yup.string().email().required("Pakollinen"),
                     phone: Yup.string().required("Pakollinen"),
                     responsibility: Yup.string(),
                     mainUmpire: Yup.boolean()
@@ -121,7 +126,7 @@ const CreateTournamentForm = () => {
                   (users) => Boolean(users?.some((user) => user?.mainUmpire))
                 )
             })}
-            onSubmit={(values) => handleSubmit(values)}
+            onSubmit={handleSubmit}
           >
             {({ values, errors, submitCount }) => (
               <Form
