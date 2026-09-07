@@ -84,6 +84,8 @@ const CreateTournamentForm = () => {
     ]
   };
 
+  const currentTime = new Date();
+
   return (
     <Container maxWidth="md">
       {tournamentCreationOk ? (
@@ -99,16 +101,38 @@ const CreateTournamentForm = () => {
               tournamentName: Yup.string().required("Pakollinen"),
               startTime: Yup.date()
                 .typeError("Tarkista päivämäärän formaatti")
-                .required("Pakollinen"),
+                .required("Pakollinen")
+                .min(currentTime, "Turnaus ei voi alkaa menneisyydessä"),
               endTime: Yup.date()
                 .typeError("Tarkista päivämäärän formaatti")
-                .required("Pakollinen"),
+                .required("Pakollinen")
+                .min(currentTime, "Turnaus ei voi päättyä menneisyydessä")
+                .test(
+                  "after-start-time",
+                  "Turnaus ei voi päättyä ennen alkamista",
+                  function (endTime) {
+                    const { startTime } = this.parent;
+                    return endTime > startTime;
+                  }
+                ),
               registrationStartTime: Yup.date()
                 .typeError("Tarkista päivämäärän formaatti")
                 .required("Pakollinen"),
               registrationEndTime: Yup.date()
                 .typeError("Tarkista päivämäärän formaatti")
-                .required("Pakollinen"),
+                .required("Pakollinen")
+                .min(
+                  currentTime,
+                  "Ilmoittautuminen ei voi päättyä menneisyydessä"
+                )
+                .test(
+                  "after-registration-start-time",
+                  "Turnauksen ilmoittautuminen ei voi päättyä ennen alkamista",
+                  function (registrationEndTime) {
+                    const { registrationStartTime } = this.parent;
+                    return registrationEndTime > registrationStartTime;
+                  }
+                ),
               users: Yup.array()
                 .of(
                   Yup.object().shape({
