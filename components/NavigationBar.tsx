@@ -28,6 +28,7 @@ import {
 } from "@mui/material";
 import { FeatureFlag } from "../lib/constants";
 import { NavBarUser, Target } from "../types/navbar";
+import { OpenInNew } from "@mui/icons-material";
 import SurmaButton from "./Common/SurmaButton";
 
 const LANGUAGE_LABELS: Record<string, string> = {
@@ -162,7 +163,7 @@ const MobileView = ({
               href="https://salamurhaajat.net/mika-salamurhapeli/turnaussaannot"
             >
               {t("navigation.tournamentRules")}
-              <OpenInNewIcon />
+              <OpenInNew />
             </ListItemButton>
             <Divider />
             {router.locales.map((locale) => (
@@ -341,7 +342,7 @@ const DesktopView = ({
           <Link href="https://salamurhaajat.net/mika-salamurhapeli/turnaussaannot">
             {t("navigation.tournamentRules")}
           </Link>
-          <OpenInNewIcon />
+          <OpenInNew />
         </Button>
       </Box>
       <Box
