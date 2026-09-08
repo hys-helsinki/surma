@@ -10,6 +10,7 @@ import FormikSwitch from "./FormikSwitch";
 import DateTimePicker from "../../Common/DateTimePicker";
 import TextInput from "../../Common/TextInput";
 import ConfirmationMessage from "./ConfirmationMessage";
+import SurmaButton from "../../Common/SurmaButton";
 
 const CreateTournamentForm = () => {
   const [isLoading, setIsLoading] = useState(false);
@@ -207,13 +208,13 @@ const CreateTournamentForm = () => {
                               <h3>Tuomari {index + 1}</h3>
 
                               {index !== 0 && (
-                                <button
+                                <SurmaButton
                                   type="button"
                                   className="secondary"
                                   onClick={() => remove(index)}
                                 >
                                   Poista tuomari
-                                </button>
+                                </SurmaButton>
                               )}
                             </Box>
                             <Grid
@@ -259,7 +260,7 @@ const CreateTournamentForm = () => {
                           </Box>
                         ))}
 
-                      <button
+                      <SurmaButton
                         type="button"
                         onClick={() =>
                           push({
@@ -273,13 +274,13 @@ const CreateTournamentForm = () => {
                         }
                       >
                         Lisää tuomari
-                      </button>
+                      </SurmaButton>
                     </div>
                   )}
                 </FieldArray>
-                <Button loading={isLoading} type="submit">
+                <SurmaButton loading={isLoading} type="submit">
                   Luo turnaus
-                </Button>
+                </SurmaButton>
               </Form>
             )}
           </Formik>
