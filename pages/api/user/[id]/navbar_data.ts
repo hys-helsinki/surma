@@ -5,6 +5,9 @@ import { authConfig } from "../../auth/[...nextauth]";
 
 const isCurrentUserAuthorized = async (userId, req, res) => {
   const session = await getServerSession(req, res, authConfig);
+
+  if (!session) return false;
+
   return session.user.id == userId;
 };
 
@@ -14,7 +17,7 @@ export default async function handler(
 ) {
   const userId = req.query.id as string;
   if (!userId) return res.status(400).end();
-  if (!isCurrentUserAuthorized(userId, req, res)) {
+  if (!(await isCurrentUserAuthorized(userId, req, res))) {
     return res.status(403).end();
   }
 
@@ -26,6 +29,7 @@ export default async function handler(
   let user = await prisma.user.findUnique({
     where: { id: userId },
     select: {
+      role: true,
       umpire: true,
       tournament: true,
       player: {
@@ -57,13 +61,17 @@ export default async function handler(
     }
   });
 
-  const targets =
-    isTournamentRunning(
-      new Date(user.tournament.startTime),
-      new Date(user.tournament.endTime)
-    ) && user.player
-      ? user.player.targets.map((target) => target.target.user)
-      : [];
+  if (!user) return res.status(404).end();
+
+  if (user.role === "ADMIN" || !user.player || !user.tournament)
+    return res.json(user);
+
+  const targets = isTournamentRunning(
+    new Date(user.tournament.startTime),
+    new Date(user.tournament.endTime)
+  )
+    ? user.player.targets.map((target) => target.target.user)
+    : [];
 
   const uniqueTargets = targets.filter(
     (value, index, array) => index === array.findIndex((t) => t.id === value.id)
@@ -74,5 +82,5 @@ export default async function handler(
     player: { ...user.player, targets: uniqueTargets }
   };
 
-  res.json(responseData);
+  return res.json(responseData);
 }

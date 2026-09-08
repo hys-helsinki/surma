@@ -1,6 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -11,25 +8,25 @@ datasource db {
 }
 
 model User {
-  id            String     @id @default(uuid())
-  createdAt     DateTime   @default(now()) @db.Timestamptz(3)
-  modifiedAt    DateTime   @default(now()) @db.Timestamptz(3)
-  tournament    Tournament @relation(fields: [tournamentId], references: [id], onDelete: Cascade)
-  tournamentId  String
+  id            String      @id @default(uuid())
+  createdAt     DateTime    @default(now()) @db.Timestamptz(3)
+  modifiedAt    DateTime    @default(now()) @db.Timestamptz(3)
+  tournamentId  String?
   firstName     String
   lastName      String
   phone         String?
-  email         String     @unique
-  player        Player?
-  umpire        Umpire?
-  team          Team?      @relation(fields: [teamId], references: [id])
-  teamId        String?
-  // for next-auth
+  email         String      @unique
   name          String?
   image         String?
-  emailVerified DateTime?  @db.Timestamptz(3)
+  emailVerified DateTime?   @db.Timestamptz(3)
+  teamId        String?
+  role          UserRole    @default(USER)
   accounts      Account[]
+  player        Player?
   sessions      Session[]
+  umpire        Umpire?
+  team          Team?       @relation(fields: [teamId], references: [id])
+  tournament    Tournament? @relation(fields: [tournamentId], references: [id], onDelete: Cascade)
 }
 
 model Player {
@@ -38,41 +35,27 @@ model Player {
   modifiedAt          DateTime     @default(now()) @db.Timestamptz(3)
   lastVisit           DateTime?    @db.Timestamptz(3)
   userId              String       @unique
-  user                User         @relation(fields: [userId], references: [id], onDelete: Cascade)
-  tournament          Tournament   @relation(fields: [tournamentId], references: [id], onDelete: Cascade)
   tournamentId        String
-  umpire              Umpire?      @relation(fields: [umpireId], references: [id])
   umpireId            String?
-  team                Team?        @relation(fields: [teamId], references: [id])
-  teamId              String?
   alias               String
   address             String
   learningInstitution String?
   eyeColor            String?
   hair                String?
   height              String?
-  safetyNotes         String?
   other               String?
   calendar            Json?
-  title               PlayerTitle?
   state               PlayerState  @default(ACTIVE)
+  title               PlayerTitle?
   confirmed           Boolean      @default(false)
-  targets             Assignment[] @relation(name: "PlayerHasTarget")
-  hunters             Assignment[] @relation(name: "PlayerIsHunted")
-}
-
-enum PlayerState {
-  ACTIVE
-  DEAD
-  DETECTIVE
-  EXTRA
-}
-
-enum PlayerTitle {
-  KK
-  MM
-  LL
-  TT
+  safetyNotes         String?
+  teamId              String?
+  targets             Assignment[] @relation("PlayerHasTarget")
+  hunters             Assignment[] @relation("PlayerIsHunted")
+  team                Team?        @relation(fields: [teamId], references: [id])
+  tournament          Tournament   @relation(fields: [tournamentId], references: [id], onDelete: Cascade)
+  umpire              Umpire?      @relation(fields: [umpireId], references: [id])
+  user                User         @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 model Team {
@@ -81,11 +64,11 @@ model Team {
   modifiedAt   DateTime         @default(now())
   name         String
   tournamentId String
-  tournament   Tournament       @relation(fields: [tournamentId], references: [id], onDelete: Cascade)
   players      Player[]
+  tournament   Tournament       @relation(fields: [tournamentId], references: [id], onDelete: Cascade)
+  targets      TeamAssignment[] @relation("TeamHasTarget")
+  hunters      TeamAssignment[] @relation("TeamIsHunted")
   users        User[]
-  targets      TeamAssignment[] @relation(name: "TeamHasTarget")
-  hunters      TeamAssignment[] @relation(name: "TeamIsHunted")
 }
 
 model Umpire {
@@ -93,12 +76,12 @@ model Umpire {
   createdAt      DateTime   @default(now())
   modifiedAt     DateTime   @default(now())
   userId         String     @unique
-  user           User       @relation(fields: [userId], references: [id], onDelete: Cascade)
-  tournament     Tournament @relation(fields: [tournamentId], references: [id], onDelete: Cascade)
   tournamentId   String
-  players        Player[]
   responsibility String?
   mainUmpire     Boolean    @default(false)
+  players        Player[]
+  tournament     Tournament @relation(fields: [tournamentId], references: [id], onDelete: Cascade)
+  user           User       @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 model Tournament {
@@ -111,25 +94,25 @@ model Tournament {
   registrationStartTime DateTime             @db.Timestamptz(3)
   registrationEndTime   DateTime             @db.Timestamptz(3)
   teamGame              Boolean              @default(false)
-  players               Player[]
-  umpires               Umpire[]
   rings                 AssignmentRing[]
-  users                 User[]
-  teamAssignmentRings   TeamAssignmentRing[]
+  players               Player[]
   teams                 Team[]
+  teamAssignmentRings   TeamAssignmentRing[]
+  umpires               Umpire[]
+  users                 User[]
 }
 
 model Assignment {
   id                   String         @id @default(uuid())
   createdAt            DateTime       @default(now()) @db.Timestamptz(3)
   modifiedAt           DateTime       @default(now()) @db.Timestamptz(3)
-  ring                 AssignmentRing @relation(fields: [ringId], references: [id], onDelete: Cascade)
   ringId               String
-  hunter               Player         @relation(name: "PlayerHasTarget", fields: [hunterId], references: [id], onDelete: Cascade)
   hunterId             String
-  target               Player         @relation(name: "PlayerIsHunted", fields: [targetId], references: [id], onDelete: Cascade)
   targetId             String
   teamAssignmentRingId String?
+  hunter               Player         @relation("PlayerHasTarget", fields: [hunterId], references: [id], onDelete: Cascade)
+  ring                 AssignmentRing @relation(fields: [ringId], references: [id], onDelete: Cascade)
+  target               Player         @relation("PlayerIsHunted", fields: [targetId], references: [id], onDelete: Cascade)
 }
 
 model AssignmentRing {
@@ -137,21 +120,21 @@ model AssignmentRing {
   createdAt    DateTime     @default(now()) @db.Timestamptz(3)
   modifiedAt   DateTime     @default(now()) @db.Timestamptz(3)
   name         String?
-  tournament   Tournament   @relation(fields: [tournamentId], references: [id], onDelete: Cascade)
   tournamentId String
   assignments  Assignment[]
+  tournament   Tournament   @relation(fields: [tournamentId], references: [id], onDelete: Cascade)
 }
 
 model TeamAssignment {
   id                   String              @id @default(uuid())
   createdAt            DateTime            @default(now()) @db.Timestamptz(3)
   modifiedAt           DateTime            @default(now()) @db.Timestamptz(3)
-  huntingTeam          Team                @relation(name: "TeamHasTarget", fields: [huntingTeamId], references: [id], onDelete: Cascade)
-  huntingTeamId        String
-  targetTeam           Team                @relation(name: "TeamIsHunted", fields: [targetTeamId], references: [id], onDelete: Cascade)
-  targetTeamId         String
-  teamAssignmentRing   TeamAssignmentRing? @relation(fields: [teamAssignmentRingId], references: [id], onDelete: Cascade)
   teamAssignmentRingId String?
+  huntingTeamId        String
+  targetTeamId         String
+  huntingTeam          Team                @relation("TeamHasTarget", fields: [huntingTeamId], references: [id], onDelete: Cascade)
+  targetTeam           Team                @relation("TeamIsHunted", fields: [targetTeamId], references: [id], onDelete: Cascade)
+  teamAssignmentRing   TeamAssignmentRing? @relation(fields: [teamAssignmentRingId], references: [id], onDelete: Cascade)
 }
 
 model TeamAssignmentRing {
@@ -159,12 +142,10 @@ model TeamAssignmentRing {
   createdAt    DateTime         @default(now()) @db.Timestamptz(3)
   modifiedAt   DateTime         @default(now()) @db.Timestamptz(3)
   name         String?
-  tournament   Tournament       @relation(fields: [tournamentId], references: [id], onDelete: Cascade)
   tournamentId String
   assignments  TeamAssignment[]
+  tournament   Tournament       @relation(fields: [tournamentId], references: [id], onDelete: Cascade)
 }
-
-// next-auth models
 
 model Account {
   id                String  @id @default(cuid())
@@ -172,15 +153,14 @@ model Account {
   type              String
   provider          String
   providerAccountId String
-  refresh_token     String? @db.Text
-  access_token      String? @db.Text
+  refresh_token     String?
+  access_token      String?
   expires_at        Int?
   token_type        String?
   scope             String?
-  id_token          String? @db.Text
+  id_token          String?
   session_state     String?
-
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([provider, providerAccountId])
 }
@@ -199,4 +179,23 @@ model VerificationToken {
   expires    DateTime
 
   @@unique([identifier, token])
+}
+
+enum PlayerState {
+  ACTIVE
+  DEAD
+  DETECTIVE
+  EXTRA
+}
+
+enum PlayerTitle {
+  KK
+  MM
+  LL
+  TT
+}
+
+enum UserRole {
+  ADMIN
+  USER
 }

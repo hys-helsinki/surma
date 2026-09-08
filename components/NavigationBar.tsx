@@ -1,7 +1,7 @@
 import Image from "next/image";
 import logo from "/public/images/surma_logo.svg";
 import Link from "next/link";
-import { useSession, signIn } from "next-auth/react";
+import { useSession, signIn, signOut } from "next-auth/react";
 import { useEffect, useState } from "react";
 import { useTranslation } from "next-i18next";
 import { useRouter } from "next/router";
@@ -40,12 +40,14 @@ const MobileView = ({
   userId,
   targets,
   currentUserIsUmpire,
+  currentUserIsAdmin,
   isTeamGame
 }: {
   tournamentId: string;
   userId: string;
   targets: Target[];
   currentUserIsUmpire: boolean;
+  currentUserIsAdmin: boolean;
   isTeamGame: boolean;
 }) => {
   const { t } = useTranslation("common");
@@ -139,7 +141,7 @@ const MobileView = ({
                 </Collapse>
               </>
             )}
-            {userId && (
+            {userId && !currentUserIsAdmin && (
               <ListItemButton
                 component="a"
                 href={`/tournaments/${tournamentId}/users/${userId}`}
@@ -148,7 +150,10 @@ const MobileView = ({
               </ListItemButton>
             )}
             {currentUserIsUmpire && (
-              <ListItemButton component="a" href={`/admin/${tournamentId}`}>
+              <ListItemButton
+                component="a"
+                href={`/tournaments/${tournamentId}/umpire-page`}
+              >
                 {t("navigation.admin")}
               </ListItemButton>
             )}
@@ -183,8 +188,7 @@ const MobileView = ({
             marginRight: 0
           }}
         />
-
-        {!data && (
+        {!data ? (
           <SurmaButton
             onClick={() => signIn()}
             sx={{
@@ -195,6 +199,18 @@ const MobileView = ({
             }}
           >
             {t("navigation.signIn")}
+          </SurmaButton>
+        ) : (
+          <SurmaButton
+            onClick={() => signOut({ callbackUrl: "/" })}
+            sx={{
+              color: "black",
+              backgroundColor: "white",
+              p: 0,
+              width: "30%"
+            }}
+          >
+            {t("navigation.signOut")}
           </SurmaButton>
         )}
       </Box>
@@ -207,7 +223,8 @@ const DesktopView = ({
   userId,
   targets,
   currentUserIsUmpire,
-  isTeamGame
+  isTeamGame,
+  currentUserIsAdmin
 }) => {
   const { t } = useTranslation("common");
   const { data } = useSession();
@@ -259,7 +276,6 @@ const DesktopView = ({
             display: "flex",
             justifyContent: "center",
             alignItems: "center",
-            // flexGrow: 1,
             fontFamily: "monospace",
             fontWeight: 700,
             letterSpacing: ".4rem",
@@ -303,7 +319,7 @@ const DesktopView = ({
             </MenuItem>
           ))}
         </Menu>
-        {userId && (
+        {userId && !currentUserIsAdmin && (
           <Button
             sx={{ minWidth: 100, my: 2, color: "white", display: "block" }}
           >
@@ -316,7 +332,9 @@ const DesktopView = ({
           <Button
             sx={{ minWidth: 100, my: 2, color: "white", display: "block" }}
           >
-            <Link href={`/admin/${tournamentId}`}>{t("navigation.admin")}</Link>
+            <Link href={`/tournaments/${tournamentId}/umpire-page`}>
+              {t("navigation.admin")}
+            </Link>
           </Button>
         )}
         <Button sx={{ minWidth: 100, my: 2, color: "white" }}>
@@ -359,7 +377,7 @@ const DesktopView = ({
           ))}
         </Menu>
       </Box>
-      {!data && (
+      {!data ? (
         <SurmaButton
           onClick={() => signIn()}
           sx={{
@@ -370,6 +388,17 @@ const DesktopView = ({
         >
           {t("navigation.signIn")}
         </SurmaButton>
+      ) : (
+        <SurmaButton
+          onClick={() => signOut({ callbackUrl: "/" })}
+          sx={{
+            color: "black",
+            backgroundColor: "white",
+            p: 1
+          }}
+        >
+          {t("navigation.signOut")}
+        </SurmaButton>
       )}
     </Toolbar>
   );
@@ -377,7 +406,7 @@ const DesktopView = ({
 
 const NavigationBar = () => {
   const { data } = useSession();
-  const [user, setUser] = useState<NavBarUser>(null);
+  const [user, setUser] = useState<NavBarUser | null>(null);
   const theme = useTheme();
   const isMobileView = useMediaQuery(theme.breakpoints.down("md"));
 
@@ -385,15 +414,24 @@ const NavigationBar = () => {
     if (data) {
       fetch(`/api/user/${data.user.id}/navbar_data`)
         .then((response) => response.json())
-        .then((json) => setUser(json));
+        .then((json) => setUser(json))
+        .catch((error) => {
+          console.log("Fetching data failed:", error);
+        });
     }
   }, [data]);
 
   const tournamentId = data ? data.user.tournamentId : "";
   const userId = data ? data.user.id : "";
-  const targets = user ? user.player.targets : [];
-  const currentUserIsUmpire = user ? Boolean(user.umpire) : false;
-  const isTeamGame = user ? user.tournament.teamGame : false;
+  const currentUserIsAdmin = user ? user.role === "ADMIN" : false;
+  const currentUserIsUmpire =
+    user && !currentUserIsAdmin ? Boolean(user.umpire) : false;
+  const targets =
+    user && !currentUserIsAdmin && !currentUserIsUmpire
+      ? user.player.targets
+      : [];
+  const isTeamGame =
+    user && !currentUserIsAdmin ? user.tournament.teamGame : false;
 
   return (
     <AppBar position="static">
@@ -404,6 +442,7 @@ const NavigationBar = () => {
             userId={userId}
             targets={targets}
             currentUserIsUmpire={currentUserIsUmpire}
+            currentUserIsAdmin={currentUserIsAdmin}
             isTeamGame={isTeamGame}
           />
         ) : (
@@ -412,6 +451,7 @@ const NavigationBar = () => {
             userId={userId}
             targets={targets}
             currentUserIsUmpire={currentUserIsUmpire}
+            currentUserIsAdmin={currentUserIsAdmin}
             isTeamGame={isTeamGame}
           />
         )}

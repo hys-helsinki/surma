@@ -7,7 +7,8 @@
     "myPage": "Oma sivu",
     "admin": "Ylläpito",
     "tournamentRules": "Turnaussäännöt",
-    "signIn": "Kirjaudu sisään"
+    "signIn": "Kirjaudu sisään",
+    "signOut": "Kirjaudu ulos"
   },
   "landingPage": {
     "title": "Avoimet salamurhaturnaukset",
