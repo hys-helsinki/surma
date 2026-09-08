@@ -48,15 +48,14 @@ export const getPlayerFullNameById = (playerId, players) => {
   return `${searchedPlayer.user.firstName} ${searchedPlayer.user.lastName}`;
 };
 
-export const modifyDate = (dateString) => {
-  const date = new Date(dateString);
-  const formattedDate = `${date.toLocaleTimeString("fi-FI", {
+export const modifyDate = (dateInput: string | Date) => {
+  const date = typeof dateInput === "string" ? new Date(dateInput) : dateInput;
+  return date.toLocaleString("fi-FI", {
     hour: "2-digit",
     minute: "2-digit",
     year: "numeric",
     day: "numeric",
     month: "numeric",
     timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone
-  })}`;
-  return formattedDate;
+  });
 };

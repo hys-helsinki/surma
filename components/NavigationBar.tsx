@@ -406,7 +406,7 @@ const DesktopView = ({
 
 const NavigationBar = () => {
   const { data } = useSession();
-  const [user, setUser] = useState<NavBarUser>(null);
+  const [user, setUser] = useState<NavBarUser | null>(null);
   const theme = useTheme();
   const isMobileView = useMediaQuery(theme.breakpoints.down("md"));
 
@@ -414,7 +414,10 @@ const NavigationBar = () => {
     if (data) {
       fetch(`/api/user/${data.user.id}/navbar_data`)
         .then((response) => response.json())
-        .then((json) => setUser(json));
+        .then((json) => setUser(json))
+        .catch((error) => {
+          console.log("Fetching data failed:", error);
+        });
     }
   }, [data]);
 
@@ -423,7 +426,10 @@ const NavigationBar = () => {
   const currentUserIsAdmin = user ? user.role === "ADMIN" : false;
   const currentUserIsUmpire =
     user && !currentUserIsAdmin ? Boolean(user.umpire) : false;
-  const targets = user && !currentUserIsAdmin ? user.player.targets : [];
+  const targets =
+    user && !currentUserIsAdmin && !currentUserIsUmpire
+      ? user.player.targets
+      : [];
   const isTeamGame =
     user && !currentUserIsAdmin ? user.tournament.teamGame : false;
 

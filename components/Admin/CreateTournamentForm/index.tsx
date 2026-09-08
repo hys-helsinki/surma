@@ -33,7 +33,6 @@ const CreateTournamentForm = () => {
 
     try {
       const response = await fetch("/api/tournament/create", {
-        headers: { "Content-Type": "application/json" },
         method: "POST",
         body: JSON.stringify({ tournament, umpires })
       });

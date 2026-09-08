@@ -18,7 +18,7 @@ interface PlayerWithTargets extends Player {
 }
 export interface NavBarUser extends User {
   role: UserRole;
-  player: PlayerWithTargets;
-  tournament: Tournament;
-  umpire: Umpire;
+  player?: PlayerWithTargets;
+  tournament?: Tournament;
+  umpire?: Umpire;
 }

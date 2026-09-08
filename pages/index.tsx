@@ -26,6 +26,12 @@ export async function getServerSideProps(context) {
         role: true
       }
     });
+
+    if (!user) {
+      return {
+        redirect: { destination: "/", permanent: false }
+      };
+    }
     if (user.role === "ADMIN") {
       return {
         redirect: {

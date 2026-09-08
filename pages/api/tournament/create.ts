@@ -7,7 +7,9 @@ import { Prisma } from "@prisma/client";
 const isCurrentUserAuthorized = async (req, res) => {
   const session = await getServerSession(req, res, authConfig);
 
-  const currentUser = await prisma.user.findUnique({
+  if (!session) return false;
+
+  const currentUser = await prisma.user.findFirst({
     where: {
       id: session.user.id,
       role: "ADMIN"
@@ -46,7 +48,7 @@ export default async function create(
                       tournament: { connect: { id: createdTournament.id } },
                       firstName: u.firstName,
                       lastName: u.lastName,
-                      email: u.email,
+                      email: u.email.toLowerCase(),
                       phone: u.phone,
                       role: "USER"
                     }
