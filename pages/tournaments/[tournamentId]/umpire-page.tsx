@@ -2,24 +2,24 @@ import { Box, Tabs, Tab } from "@mui/material";
 import { GetServerSideProps } from "next";
 import { getServerSession } from "next-auth";
 import { useState } from "react";
-import { AuthenticationRequired } from "../../components/AuthenticationRequired";
-import prisma from "../../lib/prisma";
-import { authConfig } from "../api/auth/[...nextauth]";
-import PlayerTable from "../../components/Admin/PlayerTable";
-import TeamTable from "../../components/Admin/TeamTable";
-import UmpireSelect from "../../components/Admin/UmpireSelect";
-import Settings from "../../components/UmpirePage/Settings";
-import LoadingSpinner from "../../components/Common/LoadingSpinner";
-import { useRouterLoading } from "../../lib/hooks";
-import Rings from "../../components/Admin/Rings/Rings";
+import { AuthenticationRequired } from "../../../components/AuthenticationRequired";
+import prisma from "../../../lib/prisma";
+import { authConfig } from "../../api/auth/[...nextauth]";
+import PlayerTable from "../../../components/Admin/PlayerTable";
+import TeamTable from "../../../components/Admin/TeamTable";
+import UmpireSelect from "../../../components/Admin/UmpireSelect";
+import Settings from "../../../components/UmpirePage/Settings";
+import LoadingSpinner from "../../../components/Common/LoadingSpinner";
+import { useRouterLoading } from "../../../lib/hooks";
+import Rings from "../../../components/Admin/Rings/Rings";
 import {
   RingWithAssignments,
   UmpirePagePlayer,
   UmpirePageUser,
   TeamRingWithAssignments,
   UmpirePageTeam
-} from "../../types/umpirepage";
-import { umpirePagePlayerSelect } from "../../lib/prisma-selects";
+} from "../../../types/umpirepage";
+import { umpirePagePlayerSelect } from "../../../lib/prisma-selects";
 import { Tournament } from "@prisma/client";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 
@@ -60,19 +60,19 @@ export const getServerSideProps: GetServerSideProps = async ({
   params,
   ...context
 }) => {
-  if (!(await isCurrentUserAuthorized(params.id, context))) {
+  if (!(await isCurrentUserAuthorized(params.tournamentId, context))) {
     console.log("Unauthorized admin tournament view!");
     return { redirect: { destination: "/personal", permanent: false } };
   }
   let tournament = await prisma.tournament.findUnique({
     where: {
-      id: params.id as string
+      id: params.tournamentId as string
     }
   });
 
   let users = await prisma.user.findMany({
     where: {
-      tournamentId: params.id as string
+      tournamentId: params.tournamentId as string
     },
     select: {
       id: true,
@@ -101,14 +101,14 @@ export const getServerSideProps: GetServerSideProps = async ({
 
   let players = await prisma.player.findMany({
     where: {
-      tournamentId: params.id as string
+      tournamentId: params.tournamentId as string
     },
     select: umpirePagePlayerSelect
   });
 
   let playerRings = await prisma.assignmentRing.findMany({
     where: {
-      tournamentId: params.id as string
+      tournamentId: params.tournamentId as string
     },
     include: {
       assignments: true
@@ -117,7 +117,7 @@ export const getServerSideProps: GetServerSideProps = async ({
 
   let teamRings = await prisma.teamAssignmentRing.findMany({
     where: {
-      tournamentId: params.id as string
+      tournamentId: params.tournamentId as string
     },
     include: {
       assignments: true
@@ -126,7 +126,7 @@ export const getServerSideProps: GetServerSideProps = async ({
 
   let teams = await prisma.team.findMany({
     where: {
-      tournamentId: params.id as string
+      tournamentId: params.tournamentId as string
     },
     select: {
       id: true,

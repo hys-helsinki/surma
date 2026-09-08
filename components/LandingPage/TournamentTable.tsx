@@ -2,21 +2,11 @@ import Link from "next/link";
 import { NoSsr } from "@mui/material";
 import { Box, Grid } from "@mui/material";
 import { useTranslation } from "next-i18next";
+import { modifyDate } from "../utils";
 
 const TournamentTable = ({ tournaments }) => {
   const { t } = useTranslation("common");
-  const modifyDate = (dateString) => {
-    const date = new Date(dateString);
-    const formattedDate = `${date.toLocaleTimeString("fi-FI", {
-      hour: "2-digit",
-      minute: "2-digit",
-      year: "numeric",
-      day: "numeric",
-      month: "numeric",
-      timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone
-    })}`;
-    return formattedDate;
-  };
+
   const registration = (tournament) => {
     const now = new Date().getTime();
     const isRegistrationOpen =

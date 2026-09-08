@@ -10,7 +10,8 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "test": "npx playwright test"
+    "test": "npx playwright test",
+    "create-admin": "ts-node --transpile-only --compiler-options '{\"module\":\"CommonJS\"}' prisma/create-admin.ts"
   },
   "dependencies": {
     "@aws-sdk/client-sesv2": "^3.1009.0",
