@@ -5,7 +5,6 @@ import { useSession, signIn, signOut } from "next-auth/react";
 import { useEffect, useState } from "react";
 import { useTranslation } from "next-i18next";
 import { useRouter } from "next/router";
-import OpenInNewIcon from "@mui/icons-material/OpenInNew";
 import MenuIcon from "@mui/icons-material/Menu";
 import ExpandLess from "@mui/icons-material/ExpandLess";
 import ExpandMore from "@mui/icons-material/ExpandMore";
@@ -29,6 +28,8 @@ import {
 } from "@mui/material";
 import { FeatureFlag } from "../lib/constants";
 import { NavBarUser, Target } from "../types/navbar";
+import { OpenInNew } from "@mui/icons-material";
+import SurmaButton from "./Common/SurmaButton";
 
 const LANGUAGE_LABELS: Record<string, string> = {
   fi: "Suomi",
@@ -162,7 +163,7 @@ const MobileView = ({
               href="https://salamurhaajat.net/mika-salamurhapeli/turnaussaannot"
             >
               {t("navigation.tournamentRules")}
-              <OpenInNewIcon />
+              <OpenInNew />
             </ListItemButton>
             <Divider />
             {router.locales.map((locale) => (
@@ -189,7 +190,7 @@ const MobileView = ({
           }}
         />
         {!data ? (
-          <Button
+          <SurmaButton
             onClick={() => signIn()}
             sx={{
               color: "black",
@@ -199,9 +200,9 @@ const MobileView = ({
             }}
           >
             {t("navigation.signIn")}
-          </Button>
+          </SurmaButton>
         ) : (
-          <Button
+          <SurmaButton
             onClick={() => signOut({ callbackUrl: "/" })}
             sx={{
               color: "black",
@@ -211,7 +212,7 @@ const MobileView = ({
             }}
           >
             {t("navigation.signOut")}
-          </Button>
+          </SurmaButton>
         )}
       </Box>
     </Toolbar>
@@ -341,7 +342,7 @@ const DesktopView = ({
           <Link href="https://salamurhaajat.net/mika-salamurhapeli/turnaussaannot">
             {t("navigation.tournamentRules")}
           </Link>
-          <OpenInNewIcon />
+          <OpenInNew />
         </Button>
       </Box>
       <Box
@@ -378,7 +379,7 @@ const DesktopView = ({
         </Menu>
       </Box>
       {!data ? (
-        <Button
+        <SurmaButton
           onClick={() => signIn()}
           sx={{
             color: "black",
@@ -387,9 +388,9 @@ const DesktopView = ({
           }}
         >
           {t("navigation.signIn")}
-        </Button>
+        </SurmaButton>
       ) : (
-        <Button
+        <SurmaButton
           onClick={() => signOut({ callbackUrl: "/" })}
           sx={{
             color: "black",
@@ -398,7 +399,7 @@ const DesktopView = ({
           }}
         >
           {t("navigation.signOut")}
-        </Button>
+        </SurmaButton>
       )}
     </Toolbar>
   );

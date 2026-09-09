@@ -67,37 +67,12 @@ textarea {
   color: #a50000;
 }
 
-button,
-.MuiLoadingButton-root {
-  background-color: white;
-  color: black;
-  padding: 14px 20px;
-  margin: 20px 0;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  font-weight: bold;
-}
-
 .delete-tournament {
   background-color: #a50000;
   color: white;
 }
 
-button[type="submit"] {
-  width: 100%;
-  background-color: white;
-  color: black;
-  padding: 14px 20px;
-  margin: 20px 0;
-  border: none;
-  border-radius: 4px;
-  font-weight: bold;
-  cursor: pointer;
-}
-
-button:hover,
-button.playerTableStateButton:hover {
+button:hover {
   background-color: #a50000;
   color: white;
 }
@@ -121,15 +96,6 @@ a.MuiListItemButton-root {
 
 .rdtPicker {
   color: black;
-}
-
-button.loadingButton {
-  background-color: white;
-  color: black;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  font-weight: bold;
 }
 
 input,

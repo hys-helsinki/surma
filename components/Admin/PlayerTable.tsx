@@ -1,4 +1,4 @@
-import { Grid, Button, Box } from "@mui/material";
+import { Grid, Box } from "@mui/material";
 import { Tournament } from "@prisma/client";
 import Link from "next/link";
 import { Dispatch, SetStateAction, useState } from "react";
@@ -8,6 +8,7 @@ import {
   UmpirePagePlayer,
   UmpirePageUser
 } from "../../types/umpirepage";
+import SurmaButton from "../Common/SurmaButton";
 
 const PlayerRow = ({
   player,
@@ -58,7 +59,7 @@ const PlayerRow = ({
 
   return (
     <Grid container key={player.id} sx={{ mb: 1 }}>
-      <Grid size={{ xs: 12, md: 4 }}>
+      <Grid size={{ xs: 12, md: 4, xl: 2 }}>
         <Link
           href={`/tournaments/${tournament.id}/users/${player.user.id}`}
           passHref
@@ -70,53 +71,53 @@ const PlayerRow = ({
       </Grid>
       {player.state == "ACTIVE" && (
         <Grid
-          size={{ xs: 3, md: 2 }}
+          size={{ xs: 3, md: 1, xl: 1 }}
           sx={{
             display: "flex",
             alignItems: "center"
           }}
         >
-          <Button
+          <SurmaButton
             onClick={() => handlePlayerStatusChange("DEAD", player.id)}
             loading={isStateButtonLoading == "DEAD"}
-            className="loadingButton"
+            sx={{ margin: "0" }}
           >
             Tapa
-          </Button>
+          </SurmaButton>
         </Grid>
       )}
       {player.state == "ACTIVE" && (
         <Grid
-          size={{ xs: 5, md: 2 }}
+          size={{ xs: 5, md: 1, xl: 1 }}
           sx={{
             display: "flex",
             alignItems: "center"
           }}
         >
-          <Button
+          <SurmaButton
             onClick={() => setOpenModal(true)}
             loading={false}
-            className="loadingButton"
+            sx={{ margin: "0" }}
           >
             Etsintäkuuluta
-          </Button>
+          </SurmaButton>
         </Grid>
       )}
       {player.state == "DEAD" && (
         <Grid
-          size={{ xs: 4, md: 2 }}
+          size={{ xs: 4, md: 1, xl: 1 }}
           sx={{
             display: "flex",
             alignItems: "center"
           }}
         >
-          <Button
+          <SurmaButton
             onClick={() => handlePlayerStatusChange("DETECTIVE", player.id)}
             loading={isStateButtonLoading == "DETECTIVE"}
-            className="loadingButton"
+            sx={{ margin: "0" }}
           >
             Etsiväksi
-          </Button>
+          </SurmaButton>
         </Grid>
       )}
       {player.state != "ACTIVE" && (
@@ -127,13 +128,13 @@ const PlayerRow = ({
             alignItems: "center"
           }}
         >
-          <Button
+          <SurmaButton
             onClick={() => handlePlayerStatusChange("ACTIVE", player.id)}
             loading={isStateButtonLoading == "ACTIVE"}
-            className="loadingButton"
+            sx={{ margin: "0" }}
           >
             Herätä henkiin
-          </Button>
+          </SurmaButton>
         </Grid>
       )}
       <WantedModal

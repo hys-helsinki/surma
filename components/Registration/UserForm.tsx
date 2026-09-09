@@ -1,4 +1,4 @@
-import { Alert, Box, Container, Grid, Snackbar, Button } from "@mui/material";
+import { Alert, Box, Container, Grid, Snackbar } from "@mui/material";
 import { Form, Formik } from "formik";
 import * as Yup from "yup";
 import TextInput from "../Common/TextInput";
@@ -7,6 +7,7 @@ import { signIn } from "next-auth/react";
 import { Tournament } from "@prisma/client";
 import GdprModal from "../GdprModal";
 import { useTranslation } from "next-i18next";
+import SurmaButton from "../Common/SurmaButton";
 
 const UserForm = ({ tournament }: { tournament: Tournament }) => {
   const { t } = useTranslation("common");
@@ -121,9 +122,9 @@ const UserForm = ({ tournament }: { tournament: Tournament }) => {
               name="phone"
               type="text"
             />
-            <Button loading={isLoading} type="submit">
+            <SurmaButton loading={isLoading} type="submit">
               {t("registration.userForm.submitButton")}
-            </Button>
+            </SurmaButton>
           </Form>
         </Formik>
         <Snackbar open={showError} onClose={() => setShowError(false)}>
