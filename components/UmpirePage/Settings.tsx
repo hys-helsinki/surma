@@ -168,9 +168,8 @@ const DeleteButton = ({ tournament }: { tournament: Tournament }) => {
           <SurmaButton
             onClick={() => deleteTournamentResources()}
             loading={loading}
-            className="delete-tournament"
             disabled={!isTournamentFinished()}
-            sx={{ backgroundColor: "#a50000", color: "white" }}
+            sx={{ backgroundColor: "#f55050" }}
           >
             Poista kaikki turnausdata
           </SurmaButton>
