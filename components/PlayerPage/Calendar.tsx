@@ -29,6 +29,9 @@ export const Calendar = ({
   const [weeks, setWeeks] = useState([]);
   const [isUpdated, setIsUpdated] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
+  const [expandedDates, setExpandedDates] = useState<Set<string>>(new Set());
+
+  const storageKey = `calendar-expanded-${user.id}`;
 
   const dates: string[] = getTournamentDates(
     new Date(tournament.startTime),
@@ -55,6 +58,26 @@ export const Calendar = ({
   useEffect(() => {
     updateWeeks(calendar);
   }, []);
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const stored = localStorage.getItem(storageKey);
+      if (stored) {
+        setExpandedDates(new Set(JSON.parse(stored)));
+      } else {
+        setExpandedDates(new Set(dates));
+      }
+    }
+  }, [user.id]);
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      localStorage.setItem(
+        storageKey,
+        JSON.stringify(Array.from(expandedDates))
+      );
+    }
+  }, [expandedDates, storageKey]);
 
   if (weeks.length === 0) return null;
 
@@ -113,7 +136,16 @@ export const Calendar = ({
                 key={entry.date}
                 disableGutters
                 square
-                defaultExpanded={true}
+                expanded={expandedDates.has(entry.date)}
+                onChange={(_event, isExpanded) => {
+                  const newExpanded = new Set(expandedDates);
+                  if (isExpanded) {
+                    newExpanded.add(entry.date);
+                  } else {
+                    newExpanded.delete(entry.date);
+                  }
+                  setExpandedDates(newExpanded);
+                }}
                 sx={{
                   borderRadius: "12px",
                   overflow: "hidden",
