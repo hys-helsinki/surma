@@ -6,6 +6,8 @@ import { Tournament } from "@prisma/client";
 import { useTranslation } from "next-i18next";
 import { UserContext } from "../UserProvider";
 import SurmaButton from "../Common/SurmaButton";
+import { Accordion, AccordionSummary, AccordionDetails } from "@mui/material";
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 
 export interface CalendarElement {
   date: string;
@@ -105,26 +107,59 @@ export const Calendar = ({
 
       {isUpdated ? (
         <div>
-          <ul>
-            {weeks[weekNumber].map((entry: CalendarElement) => (
-              <li
+          {weeks[weekNumber].map((entry) => {
+            return (
+              <Accordion
                 key={entry.date}
-                style={{ paddingBottom: "20px", whiteSpace: "pre-line" }}
+                disableGutters
+                square
+                defaultExpanded={true}
+                sx={{
+                  borderRadius: "12px",
+                  overflow: "hidden",
+                  mb: 1.5,
+                  border: "1px solid rgba(34, 23, 23, 0.15)",
+                  boxShadow: "0 4px 14px rgba(34, 23, 23, 0.08)"
+                }}
               >
-                <p>
+                <AccordionSummary
+                  expandIcon={<ExpandMoreIcon sx={{ color: "white" }} />}
+                  sx={{
+                    backgroundColor: "rgb(34, 23, 23)",
+                    color: "white",
+                    minHeight: "52px",
+                    "& .MuiAccordionSummary-content": {
+                      fontFamily: "monospace",
+                      fontSize: "large"
+                    },
+                    "& .MuiAccordionSummary-expandIconWrapper": {
+                      color: "white"
+                    }
+                  }}
+                >
                   {`${new Date(entry.date).getDate()}.${
                     new Date(entry.date).getMonth() + 1
                   }.${new Date(entry.date).getFullYear()}`}
-                </p>
-                <Markdown>{entry.content}</Markdown>
-              </li>
-            ))}
-          </ul>
+                </AccordionSummary>
+                <AccordionDetails
+                  sx={{
+                    backgroundColor: "rgb(34, 23, 23)",
+                    color: "white",
+                    borderTop: "2px solid white",
+                    px: 2.5,
+                    py: 2
+                  }}
+                >
+                  <Markdown>{entry.content}</Markdown>
+                </AccordionDetails>
+              </Accordion>
+            );
+          })}
+
           <div
             style={{
               display: "flex",
-              gap: "20px",
-              margin: "0"
+              gap: "20px"
             }}
           >
             {weekNumber > 0 && (
