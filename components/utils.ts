@@ -1,15 +1,15 @@
+import { CalendarElement } from "./PlayerPage/Calendar";
+
 export const getTournamentDates = (start: Date, end: Date) => {
-  const dates = [];
+  const dates: string[] = [];
   for (const date = start; date <= end; date.setDate(date.getDate() + 1)) {
-    dates.push(
-      `${date.getDate()}.${date.getMonth() + 1}.${date.getFullYear()}`
-    );
+    dates.push(date.toString());
   }
   return dates;
 };
 
-export const splitCalendar = (calendar: string[][]) => {
-  const weeks: string[][][] = [];
+export const splitCalendar = (calendar: CalendarElement[]) => {
+  const weeks: CalendarElement[][] = [];
   const chunkSize = 7;
 
   for (let i = 0; i < calendar.length; i += chunkSize) {
@@ -20,25 +20,20 @@ export const splitCalendar = (calendar: string[][]) => {
   return weeks;
 };
 
-export const getCurrentWeek = (dates: string[]) => {
-  const currentDate = new Date();
-
-  const currentDateString = `${currentDate.getDate()}.${
-    currentDate.getMonth() + 1
-  }.${currentDate.getFullYear()}`;
+export const getCurrentWeek = (weeks: CalendarElement[][]) => {
+  const currentDate = new Date().toString();
 
   const weekLength = 7;
-  let currentWeek = 0;
+  let currentWeekNumber = 0;
 
-  for (let i = 0; i < dates.length; i += weekLength) {
-    const chunk = dates.slice(i, i + weekLength);
-    if (chunk.includes(currentDateString)) {
+  for (let i = 0; i < weeks.length; i += 1) {
+    if (weeks[i].map((entry) => entry.date).includes(currentDate)) {
       break;
     }
-    currentWeek += 1;
+    currentWeekNumber += 1;
   }
 
-  return currentWeek;
+  return currentWeekNumber;
 };
 
 export const getPlayerFullNameById = (playerId, players) => {

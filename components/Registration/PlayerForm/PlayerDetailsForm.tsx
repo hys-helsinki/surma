@@ -39,8 +39,8 @@ const PlayerDetailsForm = ({
 }) => {
   const { t } = useTranslation("common");
 
-  const calendarInitials = dates.map((_, index) => ({
-    [`calendar${index}`]: ""
+  const calendarInitials = dates.map((date) => ({
+    [`calendar-${date}`]: ""
   }));
   const initialFields = {
     alias: "",
@@ -139,12 +139,16 @@ const PlayerDetailsForm = ({
         <Box sx={{ mb: 2 }}>
           <Markdown>{t("playerForm.calendarMarkdown")}</Markdown>
         </Box>
-        {dates.map((date: string, index) => (
-          <div key={index}>
-            <label htmlFor={`calendar${index}`}>{date}</label>
+        {dates.map((date: string) => (
+          <div key={date}>
+            <label htmlFor={`calendar-${date}`}>
+              {`${new Date(date).getDate()}.${
+                new Date(date).getMonth() + 1
+              }.${new Date(date).getFullYear()}`}
+            </label>
             <Field
-              name={`calendar${index}`}
-              id={`calendar${index}`}
+              name={`calendar-${date}`}
+              id={`calendar-${date}`}
               as="textarea"
             />
           </div>

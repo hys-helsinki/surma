@@ -7,6 +7,11 @@ import { useTranslation } from "next-i18next";
 import { UserContext } from "../UserProvider";
 import SurmaButton from "../Common/SurmaButton";
 
+export interface CalendarElement {
+  date: string;
+  content: string;
+}
+
 export const Calendar = ({
   tournament,
   showEditButton,
@@ -23,35 +28,40 @@ export const Calendar = ({
   const [isUpdated, setIsUpdated] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
 
-  const calendar = user.player.calendar as any;
-
-  useEffect(() => {
-    if (calendar) {
-      const weeks = splitCalendar(calendar);
-      setWeeks(weeks);
-      const currentWeek = getCurrentWeek(dates);
-      if (currentWeek <= weeks.length - 1) {
-        setSlideNumber(currentWeek);
-      }
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [calendar]);
-
-  if (!calendar) return null;
-
   const dates: string[] = getTournamentDates(
     new Date(tournament.startTime),
     new Date(tournament.endTime)
   );
 
+  const calendar: CalendarElement[] = dates.map(
+    (date) =>
+      (user.player.calendar as any)?.find((entry) => entry.date === date) ?? {
+        date,
+        content: ""
+      }
+  );
+
+  const updateWeeks = (calendar: CalendarElement[]) => {
+    const weeks = splitCalendar(calendar);
+    setWeeks(weeks);
+    const currentWeek = getCurrentWeek(weeks);
+    if (currentWeek <= weeks.length - 1) {
+      setSlideNumber(currentWeek);
+    }
+  };
+
+  useEffect(() => {
+    updateWeeks(calendar);
+  }, []);
+
   if (weeks.length === 0) return null;
 
   const handleCalendarSubmit = async (values) => {
     setIsLoading(true);
-    const updatedCalendar: string[][] = dates.map((date, index) => [
+    const updatedCalendar = dates.map((date) => ({
       date,
-      values[`calendar${index}`]
-    ]);
+      content: values[`calendar-${date}`]
+    }));
 
     const data = {
       calendar: updatedCalendar
@@ -62,18 +72,26 @@ export const Calendar = ({
         method: "PUT",
         body: JSON.stringify(data)
       });
+      if (!res.ok) {
+        throw new Error("Updating data failed");
+      }
       const updatedUser = await res.json();
-      setUser(updatedUser);
       setIsUpdated(true);
-      setIsLoading(false);
+      setUser(updatedUser);
+      updateWeeks(updatedUser.player.calendar);
     } catch (error) {
       console.log(error);
     }
+    setIsLoading(false);
   };
 
-  const calendarInitials = calendar.map((date, index) => ({
-    [`calendar${index}`]: date[1]
-  }));
+  const calendarInitials = dates.reduce((calendarObject, date) => {
+    const currentCalendarObject = calendar.find((entry) => entry.date === date);
+    calendarObject.push({
+      [`calendar-${date}`]: currentCalendarObject?.content ?? ""
+    });
+    return calendarObject;
+  }, [] as Array<Record<string, string>>);
 
   return (
     <div className="calendar">
@@ -88,13 +106,17 @@ export const Calendar = ({
       {isUpdated ? (
         <div>
           <ul>
-            {weeks[weekNumber].map((calendarElement: string[], index) => (
+            {weeks[weekNumber].map((entry: CalendarElement) => (
               <li
-                key={index}
+                key={entry.date}
                 style={{ paddingBottom: "20px", whiteSpace: "pre-line" }}
               >
-                <p>{calendarElement[0]}</p>
-                <Markdown>{calendarElement[1]}</Markdown>
+                <p>
+                  {`${new Date(entry.date).getDate()}.${
+                    new Date(entry.date).getMonth() + 1
+                  }.${new Date(entry.date).getFullYear()}`}
+                </p>
+                <Markdown>{entry.content}</Markdown>
               </li>
             ))}
           </ul>
@@ -130,12 +152,19 @@ export const Calendar = ({
             <SurmaButton loading={isLoading} type="submit">
               {t("playerPage.calendar.saveButton")}
             </SurmaButton>
-            {dates.map((date: string, index) => (
-              <div key={index}>
-                <label>{date}</label>
-                <Field name={`calendar${index}`} as="textarea" />
-              </div>
-            ))}
+            {weeks.flat().map((entry, index) => {
+              return (
+                <div key={index}>
+                  <label>{`${new Date(entry.date).getDate()}.${
+                    new Date(entry.date).getMonth() + 1
+                  }.${new Date(entry.date).getFullYear()}`}</label>
+                  <Field
+                    name={`calendar-${new Date(entry.date).toString()}`}
+                    as="textarea"
+                  />
+                </div>
+              );
+            })}
             <SurmaButton loading={isLoading} type="submit">
               {t("playerPage.calendar.saveButton")}
             </SurmaButton>
