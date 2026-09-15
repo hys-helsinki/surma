@@ -49,12 +49,12 @@ export const UpdateForm = ({
       enableReinitialize={true}
       initialValues={{
         address: player.address,
-        learningInstitution: player.learningInstitution,
-        eyeColor: player.eyeColor,
-        hair: player.hair,
-        height: player.height,
-        other: player.other,
-        safetyNotes: player.safetyNotes
+        learningInstitution: player.learningInstitution ?? "",
+        eyeColor: player.eyeColor ?? "",
+        hair: player.hair ?? "",
+        height: player.height ?? "",
+        other: player.other ?? "",
+        safetyNotes: player.safetyNotes ?? ""
       }}
       onSubmit={(values) => {
         handleSubmit(values);
