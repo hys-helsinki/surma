@@ -12,7 +12,7 @@ const StyledButton = styled(Button)<ButtonProps>(() => ({
   marginTop: "1rem",
   marginBottom: "1rem",
   padding: "10px",
-  "&:hover": {
+  "&:hover:not(.Mui-disabled)": {
     backgroundColor: red[900],
     color: "white"
   }

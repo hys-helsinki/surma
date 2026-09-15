@@ -140,6 +140,7 @@ const WantedModal = ({
                       detectivePlayers.length === 0 ||
                       values.selectedPlayers.length === 0
                     }
+                    fullWidth
                   >
                     Etsintäkuuluta
                   </SurmaButton>
