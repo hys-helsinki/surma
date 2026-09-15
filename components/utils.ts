@@ -16,14 +16,12 @@ export const splitCalendar = (calendar: CalendarElement[]) => {
     const chunk = calendar.slice(i, i + chunkSize);
     weeks.push(chunk);
   }
-
   return weeks;
 };
 
 export const getCurrentWeek = (weeks: CalendarElement[][]) => {
   const currentDate = new Date().toString();
 
-  const weekLength = 7;
   let currentWeekNumber = 0;
 
   for (let i = 0; i < weeks.length; i += 1) {

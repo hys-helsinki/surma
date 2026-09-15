@@ -23,13 +23,14 @@ export const Calendar = ({
   showEditButton: boolean;
   setUser: Dispatch<any>;
 }): JSX.Element => {
-  const { t } = useTranslation("common");
+  const { t, i18n } = useTranslation("common");
   const user = useContext(UserContext);
   const [weekNumber, setSlideNumber] = useState(0);
   const [weeks, setWeeks] = useState([]);
   const [isUpdated, setIsUpdated] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
   const [expandedDates, setExpandedDates] = useState<Set<string>>(new Set());
+  const locale = i18n.language || "fi";
 
   const storageKey = `calendar-expanded-${user.id}`;
 
@@ -57,7 +58,7 @@ export const Calendar = ({
 
   useEffect(() => {
     updateWeeks(calendar);
-  }, []);
+  }, [user.player.calendar, tournament]);
 
   useEffect(() => {
     if (typeof window !== "undefined") {
@@ -169,9 +170,7 @@ export const Calendar = ({
                     }
                   }}
                 >
-                  {`${new Date(entry.date).getDate()}.${
-                    new Date(entry.date).getMonth() + 1
-                  }.${new Date(entry.date).getFullYear()}`}
+                  {new Date(entry.date).toLocaleDateString(locale)}
                 </AccordionSummary>
                 <AccordionDetails
                   sx={{
@@ -222,13 +221,10 @@ export const Calendar = ({
             {weeks.flat().map((entry, index) => {
               return (
                 <div key={index}>
-                  <label>{`${new Date(entry.date).getDate()}.${
-                    new Date(entry.date).getMonth() + 1
-                  }.${new Date(entry.date).getFullYear()}`}</label>
-                  <Field
-                    name={`calendar-${new Date(entry.date).toString()}`}
-                    as="textarea"
-                  />
+                  <label>
+                    {new Date(entry.date).toLocaleDateString(locale)}
+                  </label>
+                  <Field name={`calendar-${entry.date}`} as="textarea" />
                 </div>
               );
             })}
