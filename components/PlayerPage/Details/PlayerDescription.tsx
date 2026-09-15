@@ -5,6 +5,7 @@ import { useTranslation } from "next-i18next";
 import { UserContext } from "../../UserProvider";
 import { useSession } from "next-auth/react";
 import Markdown from "../../Common/Markdown";
+import SurmaButton from "../../Common/SurmaButton";
 
 const PlayerDescription = ({ setUser }: { setUser: Dispatch<any> }) => {
   const { t } = useTranslation("common");
@@ -20,11 +21,11 @@ const PlayerDescription = ({ setUser }: { setUser: Dispatch<any> }) => {
           <u>{t("playerPage.details.description.title")}</u>
         </h2>
         {user.id == session.user.id && (
-          <button onClick={() => setIsUpdating(!isUpdating)}>
+          <SurmaButton onClick={() => setIsUpdating(!isUpdating)}>
             {!isUpdating
               ? t("playerPage.details.description.editButton")
               : t("playerPage.details.description.cancelButton")}
-          </button>
+          </SurmaButton>
         )}
         {!isUpdating ? (
           <Box>

@@ -3,7 +3,7 @@ import TextInput from "../../Common/TextInput";
 import { Dispatch, JSX, SetStateAction, useContext, useState } from "react";
 import { useTranslation } from "next-i18next";
 import { UserContext, UserWithPlayer } from "../../UserProvider";
-import { Button } from "@mui/material";
+import SurmaButton from "../../Common/SurmaButton";
 
 type FormData = {
   address: string;
@@ -101,9 +101,9 @@ export const UpdateForm = ({
           type="text"
           textArea
         />
-        <Button loading={isLoading} type="submit">
+        <SurmaButton loading={isLoading} type="submit">
           {t("playerPage.details.updateForm.saveButton")}
-        </Button>
+        </SurmaButton>
       </Form>
     </Formik>
   );

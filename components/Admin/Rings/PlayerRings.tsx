@@ -3,7 +3,7 @@ import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 import KeyboardArrowUpRoundedIcon from "@mui/icons-material/KeyboardArrowUpRounded";
 import KeyboardArrowDownRoundedIcon from "@mui/icons-material/KeyboardArrowDownRounded";
 import IconButton from "@mui/material/IconButton";
-import { Box, Button, Card, Autocomplete } from "@mui/material";
+import { Box, Card, Autocomplete } from "@mui/material";
 import { Assignment } from "@prisma/client";
 import CreateRingForm from "./CreateRingForm";
 import { FieldArray, Form, Formik } from "formik";
@@ -14,6 +14,7 @@ import {
   RingComponentProps,
   RingWithAssignments
 } from "../../../types/umpirepage";
+import SurmaButton from "../../Common/SurmaButton";
 
 const AssignmentCard = ({
   assignment,
@@ -82,7 +83,7 @@ const AssignmentCard = ({
         <strong>Kohde: </strong>
         {getPlayerFullNameById(assignment.targetId, players)}
       </p>
-      <Button
+      <SurmaButton
         onClick={() => deleteAssignment(assignment.id)}
         loading={isDeletingAssignment}
         sx={{ margin: "10px" }}
@@ -90,7 +91,7 @@ const AssignmentCard = ({
         className="loadingButton"
       >
         Poista toimeksianto
-      </Button>
+      </SurmaButton>
     </Card>
   );
 };
@@ -176,7 +177,7 @@ const Ring = ({
         width: { xs: "100%", md: "80%" }
       }}
     >
-      <Button
+      <SurmaButton
         onClick={() => setShowRing(!showRing)}
         startIcon={
           showRing ? (
@@ -185,14 +186,9 @@ const Ring = ({
             <KeyboardArrowDownRoundedIcon />
           )
         }
-        sx={{
-          fontFamily: "inherit",
-          fontSize: "inherit",
-          color: "inherit"
-        }}
       >
         {ring.name}
-      </Button>
+      </SurmaButton>
       <IconButton onClick={() => deleteRing(ring.id)}>
         <DeleteOutlineIcon
           htmlColor="#FFFFFF"
@@ -295,7 +291,7 @@ const Ring = ({
                         </Box>
                       ))}
 
-                      <button
+                      <SurmaButton
                         type="button"
                         className="secondary"
                         onClick={() =>
@@ -306,14 +302,14 @@ const Ring = ({
                         }
                       >
                         + Lisää
-                      </button>
+                      </SurmaButton>
                     </Box>
                   )}
                 </FieldArray>
                 <Box>
-                  <Button type="submit" loading={isCreatingAssignment}>
+                  <SurmaButton type="submit" loading={isCreatingAssignment}>
                     Tallenna toimeksiannot
-                  </Button>
+                  </SurmaButton>
                 </Box>
               </Form>
             )}

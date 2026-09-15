@@ -1,10 +1,11 @@
-import { Box, Button } from "@mui/material";
+import { Box } from "@mui/material";
 import { JSX, useContext, useState } from "react";
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import { useTranslation } from "next-i18next";
 import { Umpire, User } from "@prisma/client";
 import { UserContext } from "../../UserProvider";
+import SurmaButton from "../../Common/SurmaButton";
 interface UmpireWithUser extends Umpire {
   user: User;
 }
@@ -42,16 +43,16 @@ const Umpires = ({ umpires }: { umpires: UmpireWithUser[] }): JSX.Element => {
           <h3 style={{ display: "inline" }}>
             {t("playerPage.details.umpires.tournamentUmpiresTitle")}
           </h3>
-          <Button
+          <SurmaButton
             onClick={() => setShowOtherUmpires(!showOtherUmpires)}
-            sx={{ color: "white" }}
+            sx={{ color: "white", backgroundColor: "inherit", margin: "0" }}
           >
             {showOtherUmpires ? (
               <KeyboardArrowUpIcon />
             ) : (
               <KeyboardArrowDownIcon />
             )}
-          </Button>
+          </SurmaButton>
           {showOtherUmpires ? (
             <ul>
               {otherUmpires.map((umpire) => (

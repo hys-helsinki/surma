@@ -1,8 +1,9 @@
-import { Alert, Box, Button, Grid, Snackbar } from "@mui/material";
+import { Alert, Box, Grid, Snackbar } from "@mui/material";
 import { Field, Form, Formik } from "formik";
 import { Dispatch, SetStateAction, useState } from "react";
 import { UmpirePagePlayer, UmpirePageUser } from "../../types/umpirepage";
 import { Tournament } from "@prisma/client";
+import SurmaButton from "../Common/SurmaButton";
 
 const UmpireSelect = ({
   umpires,
@@ -87,9 +88,9 @@ const UmpireSelect = ({
               </div>
             ))}
             <Box width={{ xs: "100%", md: "60%" }}>
-              <Button type="submit" loading={isLoading}>
+              <SurmaButton type="submit" loading={isLoading}>
                 Tallenna tuomarit
-              </Button>
+              </SurmaButton>
             </Box>
             <Snackbar
               open={showSuccessText}

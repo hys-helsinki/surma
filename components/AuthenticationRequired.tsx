@@ -2,6 +2,7 @@ import { signIn, useSession } from "next-auth/react";
 import LoadingSpinner from "./Common/LoadingSpinner";
 import { JSX } from "react";
 import { useTranslation } from "next-i18next";
+import SurmaButton from "./Common/SurmaButton";
 
 export const AuthenticationRequired = (props): JSX.Element => {
   const { data: session, status } = useSession();
@@ -15,9 +16,9 @@ export const AuthenticationRequired = (props): JSX.Element => {
       <>
         {t("authenticationRequired.loginPrompt")}
         <br />
-        <button onClick={() => signIn()}>
+        <SurmaButton onClick={() => signIn()}>
           {t("authenticationRequired.notLoggedInMessage")}
-        </button>
+        </SurmaButton>
       </>
     );
   }

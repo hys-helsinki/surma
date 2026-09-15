@@ -1,4 +1,4 @@
-import { Tournament, Umpire, User } from "@prisma/client";
+import { Tournament } from "@prisma/client";
 import { useState } from "react";
 import Datetime from "react-datetime";
 import "moment/locale/fi";
@@ -9,9 +9,10 @@ import { useField } from "formik";
 import moment from "moment";
 import * as Yup from "yup";
 import { useRouter } from "next/router";
-import { Tooltip, Button } from "@mui/material";
+import { Tooltip } from "@mui/material";
 import { useSession } from "next-auth/react";
 import { UmpirePageUser } from "../../types/umpirepage";
+import SurmaButton from "../Common/SurmaButton";
 
 const DateTimePicker = ({ label, name }) => {
   const [field, meta, helpers] = useField(name);
@@ -97,9 +98,9 @@ const TournamentEditForm = ({ tournament }: { tournament: Tournament }) => {
             label="Ilmoittautuminen päättyy"
             name="registrationEndTime"
           />
-          <Button loading={isLoading} type="submit">
+          <SurmaButton loading={isLoading} type="submit">
             Tallenna muutokset
-          </Button>
+          </SurmaButton>
         </Form>
       </Formik>
     </Box>
@@ -164,15 +165,14 @@ const DeleteButton = ({ tournament }: { tournament: Tournament }) => {
         }
       >
         <span>
-          <Button
+          <SurmaButton
             onClick={() => deleteTournamentResources()}
             loading={loading}
-            className="delete-tournament"
             disabled={!isTournamentFinished()}
-            sx={{ backgroundColor: "#a50000", color: "white" }}
+            sx={{ backgroundColor: "#f55050" }}
           >
             Poista kaikki turnausdata
-          </Button>
+          </SurmaButton>
         </span>
       </Tooltip>
     </Box>

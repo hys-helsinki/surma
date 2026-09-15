@@ -1,4 +1,4 @@
-import { Box, Button } from "@mui/material";
+import { Box } from "@mui/material";
 import { Field, Form, Formik } from "formik";
 import * as Yup from "yup";
 import Link from "next/link";
@@ -7,6 +7,7 @@ import TextInput from "../../Common/TextInput";
 import { PlayerTitle } from "../../../lib/constants";
 import Markdown from "../../Common/Markdown";
 import GdprModal from "../../GdprModal";
+import SurmaButton from "../../Common/SurmaButton";
 
 const BottomText = () => {
   const { t } = useTranslation("common");
@@ -150,9 +151,9 @@ const PlayerDetailsForm = ({
         ))}
 
         <BottomText />
-        <Button loading={isLoading} type="submit">
+        <SurmaButton loading={isLoading} type="submit">
           {t("playerForm.registerButton")}
-        </Button>
+        </SurmaButton>
       </Form>
     </Formik>
   );

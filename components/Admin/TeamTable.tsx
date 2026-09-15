@@ -1,4 +1,4 @@
-import { Box, Button, Grid } from "@mui/material";
+import { Box, Grid } from "@mui/material";
 import { Tournament } from "@prisma/client";
 import Link from "next/link";
 import React, { Dispatch, SetStateAction, useState } from "react";
@@ -9,6 +9,7 @@ import {
   UmpirePageUser
 } from "../../types/umpirepage";
 import WantedModal from "./WantedModal";
+import SurmaButton from "../Common/SurmaButton";
 
 const states = {
   ACTIVE: "Elossa",
@@ -112,13 +113,13 @@ const PlayerRow = ({
             alignItems: "center"
           }}
         >
-          <Button
+          <SurmaButton
             onClick={() => handlePlayerStatusChange("DEAD", player.id)}
             loading={isStateButtonLoading == "DEAD"}
             className="loadingButton"
           >
             Tapa
-          </Button>
+          </SurmaButton>
         </Grid>
       )}
       {player.state == "ACTIVE" && (
@@ -129,7 +130,7 @@ const PlayerRow = ({
             alignItems: "center"
           }}
         >
-          <Button
+          <SurmaButton
             onClick={() => {
               setOpenModal(true), setWantedPlayerId(player.id);
             }}
@@ -137,7 +138,7 @@ const PlayerRow = ({
             className="loadingButton"
           >
             Etsintäkuuluta
-          </Button>
+          </SurmaButton>
         </Grid>
       )}
       {player.state == "DEAD" && (
@@ -148,13 +149,13 @@ const PlayerRow = ({
             alignItems: "center"
           }}
         >
-          <Button
+          <SurmaButton
             onClick={() => handlePlayerStatusChange("DETECTIVE", player.id)}
             loading={isStateButtonLoading == "DETECTIVE"}
             className="loadingButton"
           >
             Etsiväksi
-          </Button>
+          </SurmaButton>
         </Grid>
       )}
       {player.state != "ACTIVE" && (
@@ -165,13 +166,13 @@ const PlayerRow = ({
             alignItems: "center"
           }}
         >
-          <Button
+          <SurmaButton
             onClick={() => handlePlayerStatusChange("ACTIVE", player.id)}
             loading={isStateButtonLoading == "ACTIVE"}
             className="loadingButton"
           >
             Herätä henkiin
-          </Button>
+          </SurmaButton>
         </Grid>
       )}
     </Grid>

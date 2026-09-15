@@ -1,4 +1,4 @@
-import { Alert, Box, Container, Grid, Snackbar, Button } from "@mui/material";
+import { Alert, Box, Container, Grid, Snackbar } from "@mui/material";
 import { FieldArray, Form, Formik } from "formik";
 import * as Yup from "yup";
 import TextInput from "../Common/TextInput";
@@ -6,6 +6,7 @@ import { Tournament } from "@prisma/client";
 import { useState } from "react";
 import GdprModal from "../GdprModal";
 import { TEAM_MAX_PLAYERS } from "../../lib/constants";
+import SurmaButton from "../Common/SurmaButton";
 
 const TeamForm = ({ tournament }: { tournament: Tournament }) => {
   const [isLoading, setIsLoading] = useState(false);
@@ -178,18 +179,18 @@ const TeamForm = ({ tournament }: { tournament: Tournament }) => {
                                 type="text"
                               />
                               {index !== 0 && (
-                                <button
+                                <SurmaButton
                                   type="button"
                                   className="secondary"
                                   onClick={() => remove(index)}
                                 >
                                   Poista pelaaja
-                                </button>
+                                </SurmaButton>
                               )}
                             </Box>
                           ))}
                         {values.users.length < TEAM_MAX_PLAYERS && (
-                          <button
+                          <SurmaButton
                             type="button"
                             className="secondary"
                             onClick={() =>
@@ -202,14 +203,14 @@ const TeamForm = ({ tournament }: { tournament: Tournament }) => {
                             }
                           >
                             Lisää pelaaja
-                          </button>
+                          </SurmaButton>
                         )}
                       </div>
                     )}
                   </FieldArray>
-                  <Button loading={isLoading} type="submit">
+                  <SurmaButton loading={isLoading} type="submit">
                     Ilmoittaudu
-                  </Button>
+                  </SurmaButton>
                 </Form>
               )}
             </Formik>
