@@ -10,9 +10,6 @@ body {
 
 .app-shell {
   min-height: 100vh;
-}
-
-.app-shell {
   display: flex;
   flex-direction: column;
 }

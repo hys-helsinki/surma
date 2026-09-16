@@ -1,12 +1,12 @@
 {
   "common": {
-    "appName": "Surma"
+    "appName": "Surma",
+    "organizationName": "Helsinki University's Society of Human Hunters"
   },
   "navigation": {
     "targets": "Targets",
     "myPage": "My page",
     "admin": "Admin",
-    "tournamentRules": "Tournament rules",
     "signIn": "Sign in",
     "signOut": "Sign out"
   },
@@ -165,5 +165,9 @@
     "noPicture": "No picture :(",
     "cancelButton": "Cancel",
     "uploadError": "Failed to upload image to the server"
+  },
+  "footer": {
+    "privacyPolicy": "Privacy policy",
+    "tournamentRules": "Tournament rules"
   }
 }

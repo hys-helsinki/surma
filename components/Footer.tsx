@@ -1,8 +1,18 @@
-import { OpenInNew } from "@mui/icons-material";
 import GitHubIcon from "@mui/icons-material/GitHub";
 import { Box, Link, Stack } from "@mui/material";
+import { useTranslation } from "next-i18next";
+
+const linkStyle = {
+  color: "white",
+  fontSize: "0.75rem",
+  "&:hover": {
+    textDecoration: "underline",
+    opacity: 1
+  }
+};
 
 export default function Footer() {
+  const { t } = useTranslation("common");
   return (
     <Box
       component="footer"
@@ -12,7 +22,8 @@ export default function Footer() {
         px: 2,
         backgroundColor: "#424242",
         borderTop: "1px solid rgba(255, 255, 255, 0.12)",
-        color: "white"
+        color: "white",
+        flexShrink: 0
       }}
     >
       <Stack
@@ -27,42 +38,21 @@ export default function Footer() {
           target="_blank"
           rel="noreferrer"
           aria-label="GitHub"
-          sx={{
-            display: "inline-flex",
-            alignItems: "center",
-            color: "white",
-            opacity: 0.9,
-            "&:hover": { opacity: 1 }
-          }}
+          sx={linkStyle}
         >
           <GitHubIcon fontSize="small" />
         </Link>
 
         <Link
           href="https://salamurhaajat.net/mika-salamurhapeli/turnaussaannot"
-          sx={{
-            color: "white",
-            fontSize: "0.75rem",
-            "&:hover": {
-              textDecoration: "underline",
-              opacity: 1
-            }
-          }}
+          target="_blank"
+          rel="noreferrer"
+          sx={linkStyle}
         >
-          Turnaussäännöt
+          {t("footer.tournamentRules")}
         </Link>
-        <Link
-          href="/privacy"
-          sx={{
-            color: "white",
-            fontSize: "0.75rem",
-            "&:hover": {
-              textDecoration: "underline",
-              opacity: 1
-            }
-          }}
-        >
-          Tietosuojaseloste
+        <Link href="/privacy" sx={linkStyle}>
+          {t("footer.privacyPolicy")}
         </Link>
         <Box
           sx={{
@@ -70,7 +60,7 @@ export default function Footer() {
             fontSize: "0.75rem"
           }}
         >
-          © {new Date().getFullYear()} Helsingin yliopiston salamurhaajat
+          © {new Date().getFullYear()} {t("common.organizationName")}
         </Box>
       </Stack>
     </Box>

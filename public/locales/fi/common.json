@@ -1,12 +1,12 @@
 {
   "common": {
-    "appName": "Surma"
+    "appName": "Surma",
+    "organizationName": "Helsingin yliopiston salamurhaajat"
   },
   "navigation": {
     "targets": "Kohteet",
     "myPage": "Oma sivu",
     "admin": "Ylläpito",
-    "tournamentRules": "Turnaussäännöt",
     "signIn": "Kirjaudu sisään",
     "signOut": "Kirjaudu ulos"
   },
@@ -165,5 +165,9 @@
     "noPicture": "Ei kuvaa :(",
     "cancelButton": "Peruuta",
     "uploadError": "Kuvan lataaminen palvelimelle epäonnistui"
+  },
+  "footer": {
+    "privacyPolicy": "Tietosuojaseloste",
+    "tournamentRules": "Turnaussäännöt"
   }
 }
