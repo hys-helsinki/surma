@@ -414,7 +414,7 @@ const NavigationBar = () => {
   const currentUserIsUmpire =
     user && !currentUserIsAdmin ? Boolean(user.umpire) : false;
   const targets =
-    user && !currentUserIsAdmin && !currentUserIsUmpire
+    user && user.player && !currentUserIsAdmin && !currentUserIsUmpire
       ? user.player.targets
       : [];
   const isTeamGame =
