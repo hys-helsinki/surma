@@ -42,10 +42,10 @@ export default function PlayerForm({
   const handleSubmit = async (values) => {
     setIsLoading(true);
 
-    const calendar = dates.map((date, index) => [
+    const calendar = dates.map((date) => ({
       date,
-      values[`calendar${index}`]
-    ]);
+      content: values[`calendar-${date}`]
+    }));
 
     const {
       address,

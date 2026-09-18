@@ -28,7 +28,6 @@ import {
 } from "@mui/material";
 import { FeatureFlag } from "../lib/constants";
 import { NavBarUser, Target } from "../types/navbar";
-import { OpenInNew } from "@mui/icons-material";
 import SurmaButton from "./Common/SurmaButton";
 
 const LANGUAGE_LABELS: Record<string, string> = {
@@ -158,13 +157,6 @@ const MobileView = ({
                 {t("navigation.admin")}
               </ListItemButton>
             )}
-            <ListItemButton
-              component="a"
-              href="https://salamurhaajat.net/mika-salamurhapeli/turnaussaannot"
-            >
-              {t("navigation.tournamentRules")}
-              <OpenInNew />
-            </ListItemButton>
             <Divider />
             {router.locales.map((locale) => (
               <ListItemButton
@@ -338,12 +330,6 @@ const DesktopView = ({
             </Link>
           </Button>
         )}
-        <Button sx={{ minWidth: 100, my: 2, color: "white" }}>
-          <Link href="https://salamurhaajat.net/mika-salamurhapeli/turnaussaannot">
-            {t("navigation.tournamentRules")}
-          </Link>
-          <OpenInNew />
-        </Button>
       </Box>
       <Box
         sx={{

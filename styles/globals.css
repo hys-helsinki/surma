@@ -5,6 +5,17 @@ body {
   margin: 0;
   font-family: monospace;
   font-size: large;
+  min-height: 100vh;
+}
+
+.app-shell {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.app-content {
+  flex: 1;
 }
 
 * {
