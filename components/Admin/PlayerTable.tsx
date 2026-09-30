@@ -9,6 +9,8 @@ import {
   UmpirePageUser
 } from "../../types/umpirepage";
 import SurmaButton from "../Common/SurmaButton";
+import { useSession } from "next-auth/react";
+import StarIcon from "@mui/icons-material/Star";
 
 const PlayerRow = ({
   player,
@@ -58,7 +60,7 @@ const PlayerRow = ({
   };
 
   return (
-    <Grid container key={player.id} sx={{ mb: 1 }}>
+    <Grid container key={player.id}>
       <Grid size={{ xs: 12, md: 4, xl: 2 }}>
         <Link
           href={`/tournaments/${tournament.id}/users/${player.user.id}`}
@@ -165,17 +167,35 @@ const PlayerTable = ({
 }) => {
   const [isButtonLoading, setIsButtonLoading] = useState(false);
   const [users, setUsers] = useState(userList);
+  const { data } = useSession();
+
   if (users.length === 0) return <p>Ei pelaajia</p>;
 
   const sortedPlayers = players.sort((a, b) =>
     a.user.firstName.localeCompare(b.user.firstName)
   );
 
-  const activePlayers = sortedPlayers.filter(
+  const myPlayers = sortedPlayers.filter(
+    (player) => player.umpire && player.umpire.user.id === data.user.id
+  );
+
+  const otherPlayers = sortedPlayers.filter(
+    (player) => !myPlayers.map((p) => p.id).includes(player.id)
+  );
+
+  const myActivePlayers = myPlayers.filter(
     (player) => player.state === "ACTIVE"
   );
-  const deadPlayers = sortedPlayers.filter((player) => player.state === "DEAD");
-  const detectivePlayers = sortedPlayers.filter(
+  const myDeadPlayers = myPlayers.filter((player) => player.state === "DEAD");
+  const myDetectivePlayers = myPlayers.filter(
+    (player) => player.state === "DETECTIVE"
+  );
+
+  const activePlayers = otherPlayers.filter(
+    (player) => player.state === "ACTIVE"
+  );
+  const deadPlayers = otherPlayers.filter((player) => player.state === "DEAD");
+  const detectivePlayers = otherPlayers.filter(
     (player) => player.state === "DETECTIVE"
   );
 
@@ -210,12 +230,25 @@ const PlayerTable = ({
     setIsButtonLoading(false);
   };
 
-  return (
-    <Box>
-      {unfinishedRegistrations.length > 0 && (
-        <div style={{ marginBottom: "30px" }}>
-          <h2>Keskeneräiset ilmoittautumiset</h2>
+  const playerGroupSx = {
+    borderBottom: "1px solid rgba(255, 255, 255, 0.25)",
+    py: 2,
+    "&:last-child": { borderBottom: "0" }
+  };
 
+  return (
+    <Box sx={{ display: "flex", flexDirection: "column", gap: 3 }}>
+      {unfinishedRegistrations.length > 0 && (
+        <Box
+          sx={{
+            border: "1px solid rgba(255, 255, 255, 0.25)",
+            borderRadius: 1,
+            backgroundColor: "rgba(0, 0, 0, 0.15)",
+            px: { xs: 2, md: 3 },
+            pb: 2
+          }}
+        >
+          <h2>Keskeneräiset ilmoittautumiset</h2>
           {unfinishedRegistrations.map((user) => (
             <Grid container sx={{ display: "flex", alignItems: "center" }}>
               <Grid key={user.id} size={{ xs: 6, md: 2, lg: 2, xl: 1 }}>
@@ -234,47 +267,116 @@ const PlayerTable = ({
               </Grid>
             </Grid>
           ))}
-        </div>
+        </Box>
       )}
-      <h2>Pelaajat</h2>
-      <Box sx={{ borderBottom: "1px solid", my: 2, pb: 2 }}>
-        <b>Elossa ({activePlayers.length})</b>
-        {activePlayers.map((player) => (
-          <PlayerRow
-            key={player.id}
-            player={player}
-            tournament={tournament}
-            setRings={setRings}
-            players={players}
-            setPlayers={setPlayers}
-          />
-        ))}
-      </Box>
-      <Box sx={{ borderBottom: "1px solid", my: 2, pb: 2 }}>
-        <b>Kuolleet ({deadPlayers.length})</b>
-        {deadPlayers.map((player) => (
-          <PlayerRow
-            key={player.id}
-            player={player}
-            tournament={tournament}
-            setRings={setRings}
-            players={players}
-            setPlayers={setPlayers}
-          />
-        ))}
-      </Box>
-      <Box sx={{ borderBottom: "1px solid", my: 2, pb: 2 }}>
-        <b>Etsivät ({detectivePlayers.length})</b>
-        {detectivePlayers.map((player) => (
-          <PlayerRow
-            key={player.id}
-            player={player}
-            tournament={tournament}
-            setRings={setRings}
-            players={players}
-            setPlayers={setPlayers}
-          />
-        ))}
+      {myPlayers.length > 0 && (
+        <Box
+          sx={{
+            border: "1px solid rgba(255, 255, 255, 0.45)",
+            borderRadius: 1,
+            backgroundColor: "rgba(255, 255, 255, 0.05)",
+            px: { xs: 2, md: 3 }
+          }}
+        >
+          <h2 style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
+            Omat pelaajani <StarIcon />
+          </h2>
+          <Box sx={playerGroupSx}>
+            <b>Elossa ({myActivePlayers.length})</b>
+            {myActivePlayers.map((player) => (
+              <PlayerRow
+                key={player.id}
+                player={player}
+                tournament={tournament}
+                setRings={setRings}
+                players={players}
+                setPlayers={setPlayers}
+              />
+            ))}
+          </Box>
+          <Box sx={playerGroupSx}>
+            <b>Kuolleet ({myDeadPlayers.length})</b>
+            {myDeadPlayers.map((player) => (
+              <PlayerRow
+                key={player.id}
+                player={player}
+                tournament={tournament}
+                setRings={setRings}
+                players={players}
+                setPlayers={setPlayers}
+              />
+            ))}
+          </Box>
+          <Box sx={playerGroupSx}>
+            <b>Etsivät ({myDetectivePlayers.length})</b>
+            {myDetectivePlayers.map((player) => (
+              <PlayerRow
+                key={player.id}
+                player={player}
+                tournament={tournament}
+                setRings={setRings}
+                players={players}
+                setPlayers={setPlayers}
+              />
+            ))}
+          </Box>
+        </Box>
+      )}
+
+      <Box
+        sx={{
+          border:
+            myPlayers.length > 0
+              ? "1px solid rgba(255, 255, 255, 0.25)"
+              : "1px solid rgba(255, 255, 255, 0.45)",
+          borderRadius: 1,
+          backgroundColor:
+            myPlayers.length > 0
+              ? "rgba(0, 0, 0, 0.15)"
+              : "rgba(255, 255, 255, 0.05)",
+          px: { xs: 2, md: 3 }
+        }}
+      >
+        <h2>{myPlayers.length > 0 ? "Muut pelaajat" : "Pelaajat"}</h2>
+        <Box sx={playerGroupSx}>
+          <b>Elossa ({activePlayers.length})</b>
+          {activePlayers.map((player) => (
+            <PlayerRow
+              key={player.id}
+              player={player}
+              tournament={tournament}
+              setRings={setRings}
+              players={players}
+              setPlayers={setPlayers}
+            />
+          ))}
+        </Box>
+        <Box sx={playerGroupSx}>
+          <b>Kuolleet ({deadPlayers.length})</b>
+          {deadPlayers.map((player) => (
+            <PlayerRow
+              key={player.id}
+              player={player}
+              tournament={tournament}
+              setRings={setRings}
+              players={players}
+              setPlayers={setPlayers}
+            />
+          ))}
+        </Box>
+        <Box sx={playerGroupSx}>
+          <b>Etsivät ({detectivePlayers.length})</b>
+          {detectivePlayers.map((player) => (
+            <PlayerRow
+              key={player.id}
+              player={player}
+              tournament={tournament}
+              setRings={setRings}
+              players={players}
+              setPlayers={setPlayers}
+            />
+          ))}
+        </Box>
       </Box>
     </Box>
   );
