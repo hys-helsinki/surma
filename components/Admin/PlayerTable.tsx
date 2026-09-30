@@ -1,4 +1,4 @@
-import { Grid, Box } from "@mui/material";
+import { Grid, Box, Alert, Snackbar } from "@mui/material";
 import { Tournament, User } from "@prisma/client";
 import Link from "next/link";
 import { Dispatch, SetStateAction, useState } from "react";
@@ -167,7 +167,11 @@ const PlayerTable = ({
 }) => {
   const [isButtonLoading, setIsButtonLoading] = useState(false);
   const [users, setUsers] = useState(userList);
+  const [showError, setShowError] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
   const { data } = useSession();
+
+  if (!data) return null;
 
   if (users.length === 0) return <p>Ei pelaajia</p>;
 
@@ -206,6 +210,10 @@ const PlayerTable = ({
   const deleteUser = async (id: string) => {
     setIsButtonLoading(true);
     const searchedUser = users.find((user) => user.id === id);
+    if (!searchedUser) {
+      setIsButtonLoading(false);
+      return;
+    }
     try {
       if (
         window.confirm(
@@ -217,17 +225,30 @@ const PlayerTable = ({
           method: "DELETE",
           body: JSON.stringify(data)
         });
+        if (!res.ok) {
+          const errorData = await res.json().catch(() => ({}));
+          const error = errorData.error || "Pelaajan poistaminen epäonnistui";
+          setErrorMessage(error);
+          setShowError(true);
+          setIsButtonLoading(false);
+          return;
+        }
         const {
           deletedUser
         }: {
           deletedUser: User;
         } = await res.json();
         setUsers(users.filter((u) => u.id !== deletedUser.id));
+        setIsButtonLoading(false);
+      } else {
+        setIsButtonLoading(false);
       }
     } catch (e) {
       console.log(e);
+      setErrorMessage("Pelaajan poistaminen epäonnistui");
+      setShowError(true);
+      setIsButtonLoading(false);
     }
-    setIsButtonLoading(false);
   };
 
   const playerGroupSx = {
@@ -378,6 +399,20 @@ const PlayerTable = ({
           ))}
         </Box>
       </Box>
+      <Snackbar
+        open={showError}
+        onClose={() => setShowError(false)}
+        autoHideDuration={4000}
+      >
+        <Alert
+          severity="error"
+          variant="filled"
+          sx={{ width: "100%" }}
+          onClose={() => setShowError(false)}
+        >
+          {errorMessage}
+        </Alert>
+      </Snackbar>
     </Box>
   );
 };
