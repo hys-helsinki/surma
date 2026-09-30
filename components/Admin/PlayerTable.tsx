@@ -1,5 +1,5 @@
 import { Grid, Box } from "@mui/material";
-import { Tournament } from "@prisma/client";
+import { Tournament, User } from "@prisma/client";
 import Link from "next/link";
 import { Dispatch, SetStateAction, useState } from "react";
 import WantedModal from "./WantedModal";
@@ -155,7 +155,7 @@ const PlayerTable = ({
   setPlayers,
   tournament,
   setRings,
-  users
+  users: userList
 }: {
   players: UmpirePagePlayer[];
   setPlayers: Dispatch<SetStateAction<UmpirePagePlayer[]>>;
@@ -163,6 +163,8 @@ const PlayerTable = ({
   setRings: Dispatch<SetStateAction<RingWithAssignments[]>>;
   users: UmpirePageUser[];
 }) => {
+  const [isButtonLoading, setIsButtonLoading] = useState(false);
+  const [users, setUsers] = useState(userList);
   if (users.length === 0) return <p>Ei pelaajia</p>;
 
   const sortedPlayers = players.sort((a, b) =>
@@ -181,17 +183,56 @@ const PlayerTable = ({
     .filter((user) => !user.player && !user.umpire)
     .sort((a, b) => a.firstName.localeCompare(b.firstName));
 
+  const deleteUser = async (id: string) => {
+    setIsButtonLoading(true);
+    const searchedUser = users.find((user) => user.id === id);
+    try {
+      if (
+        window.confirm(
+          `Haluatko varmasti poistaa pelaajan ${searchedUser.firstName} ${searchedUser.lastName}?`
+        )
+      ) {
+        const data = { tournamentId: tournament.id };
+        const res = await fetch(`/api/user/${id}`, {
+          method: "DELETE",
+          body: JSON.stringify(data)
+        });
+        const {
+          deletedUser
+        }: {
+          deletedUser: User;
+        } = await res.json();
+        setUsers(users.filter((u) => u.id !== deletedUser.id));
+      }
+    } catch (e) {
+      console.log(e);
+    }
+    setIsButtonLoading(false);
+  };
+
   return (
     <Box>
       {unfinishedRegistrations.length > 0 && (
         <div style={{ marginBottom: "30px" }}>
           <h2>Keskeneräiset ilmoittautumiset</h2>
+
           {unfinishedRegistrations.map((user) => (
-            <div key={user.id}>
-              <Link href={`/tournaments/${tournament.id}/users/${user.id}`}>
-                {user.firstName} {user.lastName}
-              </Link>
-            </div>
+            <Grid container sx={{ display: "flex", alignItems: "center" }}>
+              <Grid key={user.id} size={{ xs: 6, md: 2, lg: 2, xl: 1 }}>
+                <Link href={`/tournaments/${tournament.id}/users/${user.id}`}>
+                  {user.firstName} {user.lastName}
+                </Link>
+              </Grid>
+              <Grid size={{ xs: 6, md: 2, lg: 2, xl: 1 }}>
+                <SurmaButton
+                  onClick={() => deleteUser(user.id)}
+                  loading={isButtonLoading}
+                  sx={{ margin: 0.5 }}
+                >
+                  Poista pelaaja
+                </SurmaButton>
+              </Grid>
+            </Grid>
           ))}
         </div>
       )}
