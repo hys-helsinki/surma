@@ -165,7 +165,7 @@ const PlayerTable = ({
   setRings: Dispatch<SetStateAction<RingWithAssignments[]>>;
   users: UmpirePageUser[];
 }) => {
-  const [isButtonLoading, setIsButtonLoading] = useState(false);
+  const [loadingUserId, setLoadingUserId] = useState<string | null>(null);
   const [users, setUsers] = useState(userList);
   const [showError, setShowError] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
@@ -208,10 +208,10 @@ const PlayerTable = ({
     .sort((a, b) => a.firstName.localeCompare(b.firstName));
 
   const deleteUser = async (id: string) => {
-    setIsButtonLoading(true);
+    setLoadingUserId(id);
     const searchedUser = users.find((user) => user.id === id);
     if (!searchedUser) {
-      setIsButtonLoading(false);
+      setLoadingUserId(null);
       return;
     }
     try {
@@ -230,7 +230,7 @@ const PlayerTable = ({
           const error = errorData.error || "Pelaajan poistaminen epäonnistui";
           setErrorMessage(error);
           setShowError(true);
-          setIsButtonLoading(false);
+          setLoadingUserId(null);
           return;
         }
         const {
@@ -239,15 +239,15 @@ const PlayerTable = ({
           deletedUser: User;
         } = await res.json();
         setUsers(users.filter((u) => u.id !== deletedUser.id));
-        setIsButtonLoading(false);
+        setLoadingUserId(null);
       } else {
-        setIsButtonLoading(false);
+        setLoadingUserId(null);
       }
     } catch (e) {
       console.log(e);
       setErrorMessage("Pelaajan poistaminen epäonnistui");
       setShowError(true);
-      setIsButtonLoading(false);
+      setLoadingUserId(null);
     }
   };
 
@@ -280,7 +280,7 @@ const PlayerTable = ({
               <Grid size={{ xs: 6, md: 2, lg: 2, xl: 1 }}>
                 <SurmaButton
                   onClick={() => deleteUser(user.id)}
-                  loading={isButtonLoading}
+                  loading={loadingUserId === user.id}
                   sx={{ margin: 0.5 }}
                 >
                   Poista pelaaja
