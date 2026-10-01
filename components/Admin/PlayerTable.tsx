@@ -1,5 +1,5 @@
-import { Grid, Box } from "@mui/material";
-import { Tournament } from "@prisma/client";
+import { Grid, Box, Alert, Snackbar } from "@mui/material";
+import { Tournament, User } from "@prisma/client";
 import Link from "next/link";
 import { Dispatch, SetStateAction, useState } from "react";
 import WantedModal from "./WantedModal";
@@ -9,6 +9,8 @@ import {
   UmpirePageUser
 } from "../../types/umpirepage";
 import SurmaButton from "../Common/SurmaButton";
+import { useSession } from "next-auth/react";
+import StarIcon from "@mui/icons-material/Star";
 
 const PlayerRow = ({
   player,
@@ -58,7 +60,7 @@ const PlayerRow = ({
   };
 
   return (
-    <Grid container key={player.id} sx={{ mb: 1 }}>
+    <Grid container key={player.id}>
       <Grid size={{ xs: 12, md: 4, xl: 2 }}>
         <Link
           href={`/tournaments/${tournament.id}/users/${player.user.id}`}
@@ -155,25 +157,50 @@ const PlayerTable = ({
   setPlayers,
   tournament,
   setRings,
-  users
+  users,
+  setUsers
 }: {
   players: UmpirePagePlayer[];
   setPlayers: Dispatch<SetStateAction<UmpirePagePlayer[]>>;
   tournament: Tournament;
   setRings: Dispatch<SetStateAction<RingWithAssignments[]>>;
   users: UmpirePageUser[];
+  setUsers: Dispatch<SetStateAction<UmpirePageUser[]>>;
 }) => {
+  const [loadingUserId, setLoadingUserId] = useState<string | null>(null);
+  const [showError, setShowError] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
+  const { data } = useSession();
+
+  if (!data) return null;
+
   if (users.length === 0) return <p>Ei pelaajia</p>;
 
   const sortedPlayers = players.sort((a, b) =>
     a.user.firstName.localeCompare(b.user.firstName)
   );
 
-  const activePlayers = sortedPlayers.filter(
+  const myPlayers = sortedPlayers.filter(
+    (player) => player.umpire && player.umpire.user.id === data.user.id
+  );
+
+  const otherPlayers = sortedPlayers.filter(
+    (player) => !myPlayers.map((p) => p.id).includes(player.id)
+  );
+
+  const myActivePlayers = myPlayers.filter(
     (player) => player.state === "ACTIVE"
   );
-  const deadPlayers = sortedPlayers.filter((player) => player.state === "DEAD");
-  const detectivePlayers = sortedPlayers.filter(
+  const myDeadPlayers = myPlayers.filter((player) => player.state === "DEAD");
+  const myDetectivePlayers = myPlayers.filter(
+    (player) => player.state === "DETECTIVE"
+  );
+
+  const activePlayers = otherPlayers.filter(
+    (player) => player.state === "ACTIVE"
+  );
+  const deadPlayers = otherPlayers.filter((player) => player.state === "DEAD");
+  const detectivePlayers = otherPlayers.filter(
     (player) => player.state === "DETECTIVE"
   );
 
@@ -181,60 +208,218 @@ const PlayerTable = ({
     .filter((user) => !user.player && !user.umpire)
     .sort((a, b) => a.firstName.localeCompare(b.firstName));
 
+  const deleteUser = async (id: string) => {
+    setLoadingUserId(id);
+    const searchedUser = users.find((user) => user.id === id);
+    if (!searchedUser) {
+      setLoadingUserId(null);
+      return;
+    }
+    try {
+      if (
+        window.confirm(
+          `Haluatko varmasti poistaa pelaajan ${searchedUser.firstName} ${searchedUser.lastName}?`
+        )
+      ) {
+        const data = { tournamentId: tournament.id };
+        const res = await fetch(`/api/user/${id}`, {
+          method: "DELETE",
+          body: JSON.stringify(data)
+        });
+        if (!res.ok) {
+          const errorData = await res.json().catch(() => ({}));
+          const error = errorData.error || "Pelaajan poistaminen epäonnistui";
+          setErrorMessage(error);
+          setShowError(true);
+          setLoadingUserId(null);
+          return;
+        }
+        const {
+          deletedUser
+        }: {
+          deletedUser: User;
+        } = await res.json();
+        setUsers((currentUsers) =>
+          currentUsers.filter((u) => u.id !== deletedUser.id)
+        );
+        setLoadingUserId(null);
+      } else {
+        setLoadingUserId(null);
+      }
+    } catch (e) {
+      console.log(e);
+      setErrorMessage("Pelaajan poistaminen epäonnistui");
+      setShowError(true);
+      setLoadingUserId(null);
+    }
+  };
+
+  const playerGroupSx = {
+    borderBottom: "1px solid rgba(255, 255, 255, 0.25)",
+    py: 2,
+    "&:last-child": { borderBottom: "0" }
+  };
+
   return (
-    <Box>
+    <Box sx={{ display: "flex", flexDirection: "column", gap: 3 }}>
       {unfinishedRegistrations.length > 0 && (
-        <div style={{ marginBottom: "30px" }}>
+        <Box
+          sx={{
+            border: "1px solid rgba(255, 255, 255, 0.25)",
+            borderRadius: 1,
+            backgroundColor: "rgba(0, 0, 0, 0.15)",
+            px: { xs: 2, md: 3 },
+            pb: 2
+          }}
+        >
           <h2>Keskeneräiset ilmoittautumiset</h2>
           {unfinishedRegistrations.map((user) => (
-            <div key={user.id}>
-              <Link href={`/tournaments/${tournament.id}/users/${user.id}`}>
-                {user.firstName} {user.lastName}
-              </Link>
-            </div>
+            <Grid
+              container
+              key={user.id}
+              sx={{ display: "flex", alignItems: "center" }}
+            >
+              <Grid size={{ xs: 6, md: 2, lg: 2, xl: 1 }}>
+                <Link href={`/tournaments/${tournament.id}/users/${user.id}`}>
+                  {user.firstName} {user.lastName}
+                </Link>
+              </Grid>
+              <Grid size={{ xs: 6, md: 2, lg: 2, xl: 1 }}>
+                <SurmaButton
+                  onClick={() => deleteUser(user.id)}
+                  loading={loadingUserId === user.id}
+                  sx={{ margin: 0.5 }}
+                >
+                  Poista pelaaja
+                </SurmaButton>
+              </Grid>
+            </Grid>
           ))}
-        </div>
+        </Box>
       )}
-      <h2>Pelaajat</h2>
-      <Box sx={{ borderBottom: "1px solid", my: 2, pb: 2 }}>
-        <b>Elossa ({activePlayers.length})</b>
-        {activePlayers.map((player) => (
-          <PlayerRow
-            key={player.id}
-            player={player}
-            tournament={tournament}
-            setRings={setRings}
-            players={players}
-            setPlayers={setPlayers}
-          />
-        ))}
+      {myPlayers.length > 0 && (
+        <Box
+          sx={{
+            border: "1px solid rgba(255, 255, 255, 0.45)",
+            borderRadius: 1,
+            backgroundColor: "rgba(255, 255, 255, 0.05)",
+            px: { xs: 2, md: 3 }
+          }}
+        >
+          <h2 style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
+            Omat pelaajani <StarIcon />
+          </h2>
+          <Box sx={playerGroupSx}>
+            <b>Elossa ({myActivePlayers.length})</b>
+            {myActivePlayers.map((player) => (
+              <PlayerRow
+                key={player.id}
+                player={player}
+                tournament={tournament}
+                setRings={setRings}
+                players={players}
+                setPlayers={setPlayers}
+              />
+            ))}
+          </Box>
+          <Box sx={playerGroupSx}>
+            <b>Kuolleet ({myDeadPlayers.length})</b>
+            {myDeadPlayers.map((player) => (
+              <PlayerRow
+                key={player.id}
+                player={player}
+                tournament={tournament}
+                setRings={setRings}
+                players={players}
+                setPlayers={setPlayers}
+              />
+            ))}
+          </Box>
+          <Box sx={playerGroupSx}>
+            <b>Etsivät ({myDetectivePlayers.length})</b>
+            {myDetectivePlayers.map((player) => (
+              <PlayerRow
+                key={player.id}
+                player={player}
+                tournament={tournament}
+                setRings={setRings}
+                players={players}
+                setPlayers={setPlayers}
+              />
+            ))}
+          </Box>
+        </Box>
+      )}
+
+      <Box
+        sx={{
+          border:
+            myPlayers.length > 0
+              ? "1px solid rgba(255, 255, 255, 0.25)"
+              : "1px solid rgba(255, 255, 255, 0.45)",
+          borderRadius: 1,
+          backgroundColor:
+            myPlayers.length > 0
+              ? "rgba(0, 0, 0, 0.15)"
+              : "rgba(255, 255, 255, 0.05)",
+          px: { xs: 2, md: 3 }
+        }}
+      >
+        <h2>{myPlayers.length > 0 ? "Muut pelaajat" : "Pelaajat"}</h2>
+        <Box sx={playerGroupSx}>
+          <b>Elossa ({activePlayers.length})</b>
+          {activePlayers.map((player) => (
+            <PlayerRow
+              key={player.id}
+              player={player}
+              tournament={tournament}
+              setRings={setRings}
+              players={players}
+              setPlayers={setPlayers}
+            />
+          ))}
+        </Box>
+        <Box sx={playerGroupSx}>
+          <b>Kuolleet ({deadPlayers.length})</b>
+          {deadPlayers.map((player) => (
+            <PlayerRow
+              key={player.id}
+              player={player}
+              tournament={tournament}
+              setRings={setRings}
+              players={players}
+              setPlayers={setPlayers}
+            />
+          ))}
+        </Box>
+        <Box sx={playerGroupSx}>
+          <b>Etsivät ({detectivePlayers.length})</b>
+          {detectivePlayers.map((player) => (
+            <PlayerRow
+              key={player.id}
+              player={player}
+              tournament={tournament}
+              setRings={setRings}
+              players={players}
+              setPlayers={setPlayers}
+            />
+          ))}
+        </Box>
       </Box>
-      <Box sx={{ borderBottom: "1px solid", my: 2, pb: 2 }}>
-        <b>Kuolleet ({deadPlayers.length})</b>
-        {deadPlayers.map((player) => (
-          <PlayerRow
-            key={player.id}
-            player={player}
-            tournament={tournament}
-            setRings={setRings}
-            players={players}
-            setPlayers={setPlayers}
-          />
-        ))}
-      </Box>
-      <Box sx={{ borderBottom: "1px solid", my: 2, pb: 2 }}>
-        <b>Etsivät ({detectivePlayers.length})</b>
-        {detectivePlayers.map((player) => (
-          <PlayerRow
-            key={player.id}
-            player={player}
-            tournament={tournament}
-            setRings={setRings}
-            players={players}
-            setPlayers={setPlayers}
-          />
-        ))}
-      </Box>
+      <Snackbar
+        open={showError}
+        onClose={() => setShowError(false)}
+        autoHideDuration={4000}
+      >
+        <Alert
+          severity="error"
+          variant="filled"
+          sx={{ width: "100%" }}
+          onClose={() => setShowError(false)}
+        >
+          {errorMessage}
+        </Alert>
+      </Snackbar>
     </Box>
   );
 };

@@ -160,7 +160,7 @@ export const getServerSideProps: GetServerSideProps = async ({
 
 export default function UmpirePage({
   tournament,
-  users,
+  users: userList,
   players: playerList,
   playerRings: playerRingList,
   teamRings: teamRingList,
@@ -179,6 +179,7 @@ export default function UmpirePage({
     useState<TeamRingWithAssignments[]>(teamRingList);
   const [players, setPlayers] = useState<UmpirePagePlayer[]>(playerList);
   const [teams, setTeams] = useState<UmpirePageTeam[]>(teamList);
+  const [users, setUsers] = useState<UmpirePageUser[]>(userList);
   const [value, setValue] = useState(0);
 
   const isLoading = useRouterLoading();
@@ -231,6 +232,7 @@ export default function UmpirePage({
               tournament={tournament}
               setRings={setRings}
               users={users}
+              setUsers={setUsers}
             />
           )}
         </TabPanel>
