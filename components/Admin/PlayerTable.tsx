@@ -157,16 +157,17 @@ const PlayerTable = ({
   setPlayers,
   tournament,
   setRings,
-  users: userList
+  users,
+  setUsers
 }: {
   players: UmpirePagePlayer[];
   setPlayers: Dispatch<SetStateAction<UmpirePagePlayer[]>>;
   tournament: Tournament;
   setRings: Dispatch<SetStateAction<RingWithAssignments[]>>;
   users: UmpirePageUser[];
+  setUsers: Dispatch<SetStateAction<UmpirePageUser[]>>;
 }) => {
   const [loadingUserId, setLoadingUserId] = useState<string | null>(null);
-  const [users, setUsers] = useState(userList);
   const [showError, setShowError] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
   const { data } = useSession();
@@ -238,7 +239,9 @@ const PlayerTable = ({
         }: {
           deletedUser: User;
         } = await res.json();
-        setUsers(users.filter((u) => u.id !== deletedUser.id));
+        setUsers((currentUsers) =>
+          currentUsers.filter((u) => u.id !== deletedUser.id)
+        );
         setLoadingUserId(null);
       } else {
         setLoadingUserId(null);
@@ -271,8 +274,12 @@ const PlayerTable = ({
         >
           <h2>Keskeneräiset ilmoittautumiset</h2>
           {unfinishedRegistrations.map((user) => (
-            <Grid container sx={{ display: "flex", alignItems: "center" }}>
-              <Grid key={user.id} size={{ xs: 6, md: 2, lg: 2, xl: 1 }}>
+            <Grid
+              container
+              key={user.id}
+              sx={{ display: "flex", alignItems: "center" }}
+            >
+              <Grid size={{ xs: 6, md: 2, lg: 2, xl: 1 }}>
                 <Link href={`/tournaments/${tournament.id}/users/${user.id}`}>
                   {user.firstName} {user.lastName}
                 </Link>

@@ -10,6 +10,8 @@ const isCurrentUserAuthorized = async (
 ) => {
   const session = await getServerSession(req, res, authConfig);
 
+  if (!session) return false;
+
   const umpire = await prisma.umpire.findFirst({
     where: {
       userId: session.user.id,
@@ -49,7 +51,8 @@ export default async function handler(
 
       if (player || umpire) {
         return res.status(409).json({
-          error: "User has active tournament registrations and cannot be deleted"
+          error:
+            "User has active tournament registrations and cannot be deleted"
         });
       }
 
