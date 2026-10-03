@@ -1,4 +1,4 @@
-import { Dispatch, JSX, useContext, useEffect, useState } from "react";
+import { Dispatch, JSX, useContext, useEffect, useMemo, useState } from "react";
 import { getCurrentWeek, getTournamentDates, splitCalendar } from "../utils";
 import { Formik, Form, Field } from "formik";
 import Markdown from "../Common/Markdown";
@@ -6,7 +6,12 @@ import { Tournament } from "@prisma/client";
 import { useTranslation } from "next-i18next";
 import { UserContext } from "../UserProvider";
 import SurmaButton from "../Common/SurmaButton";
-import { Accordion, AccordionSummary, AccordionDetails } from "@mui/material";
+import {
+  Accordion,
+  AccordionSummary,
+  AccordionDetails,
+  Alert
+} from "@mui/material";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 
 export interface CalendarElement {
@@ -30,18 +35,24 @@ export const Calendar = ({
   const [isUpdated, setIsUpdated] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
   const [expandedDates, setExpandedDates] = useState<Set<string>>(new Set());
+  const [error, setError] = useState<string | null>(null);
   const locale = i18n.language || "fi";
 
-  const storageKey = `calendar-expanded-${user.id}`;
+  const storageKey = useMemo(() => `calendar-expanded-${user.id}`, [user.id]);
 
   const dates: string[] = getTournamentDates(
     new Date(tournament.startTime),
     new Date(tournament.endTime)
   );
 
+  const userCalendar = (user.player.calendar ??
+    []) as unknown as CalendarElement[];
+
   const calendar: CalendarElement[] = dates.map(
     (date) =>
-      (user.player.calendar as any)?.find((entry) => entry.date === date) ?? {
+      userCalendar.find(
+        (entry) => new Date(entry.date).toDateString() === date
+      ) ?? {
         date,
         content: ""
       }
@@ -78,12 +89,13 @@ export const Calendar = ({
         JSON.stringify(Array.from(expandedDates))
       );
     }
-  }, [expandedDates, storageKey]);
+  }, [expandedDates, storageKey, user.id]);
 
   if (weeks.length === 0) return null;
 
   const handleCalendarSubmit = async (values) => {
     setIsLoading(true);
+    setError(null);
     const updatedCalendar = dates.map((date) => ({
       date,
       content: values[`calendar-${date}`]
@@ -99,25 +111,27 @@ export const Calendar = ({
         body: JSON.stringify(data)
       });
       if (!res.ok) {
-        throw new Error("Updating data failed");
+        throw new Error(t("playerPage.calendar.updateError"));
       }
       const updatedUser = await res.json();
       setIsUpdated(true);
       setUser(updatedUser);
       updateWeeks(updatedUser.player.calendar);
     } catch (error) {
-      console.log(error);
+      setError(
+        (error as Error).message || t("playerPage.calendar.updateError")
+      );
     }
     setIsLoading(false);
   };
 
   const calendarInitials = dates.reduce((calendarObject, date) => {
-    const currentCalendarObject = calendar.find((entry) => entry.date === date);
-    calendarObject.push({
-      [`calendar-${date}`]: currentCalendarObject?.content ?? ""
-    });
+    const currentCalendarObject = calendar.find(
+      (entry) => new Date(entry.date).toDateString() === date
+    );
+    calendarObject[`calendar-${date}`] = currentCalendarObject?.content ?? "";
     return calendarObject;
-  }, [] as Array<Record<string, string>>);
+  }, {} as Record<string, string>);
 
   return (
     <div className="calendar">
@@ -127,6 +141,11 @@ export const Calendar = ({
             ? t("playerPage.calendar.editButton")
             : t("playerPage.calendar.cancelButton")}
         </SurmaButton>
+      )}
+      {error && (
+        <Alert severity="error" onClose={() => setError(null)} sx={{ mb: 2 }}>
+          {error}
+        </Alert>
       )}
 
       {isUpdated ? (
@@ -208,7 +227,7 @@ export const Calendar = ({
       ) : (
         <Formik
           enableReinitialize={true}
-          initialValues={Object.assign({}, ...calendarInitials)}
+          initialValues={calendarInitials}
           onSubmit={async (values) => {
             await handleCalendarSubmit(values);
           }}
@@ -224,7 +243,10 @@ export const Calendar = ({
                   <label>
                     {new Date(entry.date).toLocaleDateString(locale)}
                   </label>
-                  <Field name={`calendar-${entry.date}`} as="textarea" />
+                  <Field
+                    name={`calendar-${new Date(entry.date).toDateString()}`}
+                    as="textarea"
+                  />
                 </div>
               );
             })}

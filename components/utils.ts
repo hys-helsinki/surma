@@ -2,8 +2,10 @@ import { CalendarElement } from "./PlayerPage/Calendar";
 
 export const getTournamentDates = (start: Date, end: Date) => {
   const dates: string[] = [];
-  for (const date = start; date <= end; date.setDate(date.getDate() + 1)) {
-    dates.push(date.toString());
+  const date = new Date(start);
+  while (date <= end) {
+    dates.push(date.toDateString());
+    date.setDate(date.getDate() + 1);
   }
   return dates;
 };
@@ -20,12 +22,16 @@ export const splitCalendar = (calendar: CalendarElement[]) => {
 };
 
 export const getCurrentWeek = (weeks: CalendarElement[][]) => {
-  const currentDate = new Date().toString();
+  const currentDate = new Date().toDateString();
 
   let currentWeekNumber = 0;
 
   for (let i = 0; i < weeks.length; i += 1) {
-    if (weeks[i].map((entry) => entry.date).includes(currentDate)) {
+    if (
+      weeks[i]
+        .map((entry) => new Date(entry.date).toDateString())
+        .includes(currentDate)
+    ) {
       break;
     }
     currentWeekNumber += 1;
