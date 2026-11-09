@@ -1,10 +1,13 @@
 import { defineConfig, devices } from '@playwright/test';
+import dotenv from 'dotenv';
 
 /**
- * Read environment variables from file.
- * https://github.com/motdotla/dotenv
+ * Load the test environment. `override: true` makes .env.test win over any
+ * variables already set in the shell, so tests and the web server below can
+ * never accidentally point at the dev or production database. Next.js does
+ * not override variables that are already set, so the server uses these too.
  */
-// require('dotenv').config();
+dotenv.config({ path: '.env.test', override: true });
 
 /**
  * See https://playwright.dev/docs/test-configuration.
@@ -60,8 +63,11 @@ export default defineConfig({
 
   /* Run your local dev server before starting the tests */
   webServer: {
-    command: 'npm run start',
+    command: process.env.CI ? 'npm run build && npm run start' : 'npm run dev',
     url: 'http://127.0.0.1:3000',
-    reuseExistingServer: !process.env.CI,
+    // Never reuse an already running server: it would be connected to the dev
+    // database, not the test database.
+    reuseExistingServer: false,
+    timeout: 180_000,
   },
 });

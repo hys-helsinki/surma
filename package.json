@@ -46,6 +46,7 @@
     "@playwright/test": "^1.41.2",
     "@types/node": "^18.0.5",
     "@types/react": "^19.2.4",
+    "dotenv-cli": "^11.1.0",
     "eslint": "^9.0.0",
     "eslint-config-next": "^16.1.6",
     "prettier": "2.7.1",
