@@ -10,3 +10,8 @@ services:
       - "5433:5432" # 5433 so it can't clash with any other local Postgres
     tmpfs:
       - /var/lib/postgresql/data # in-memory: wiped every time the container restarts
+    healthcheck: # lets `docker compose up --wait` return only once Postgres accepts connections
+      test: ["CMD-SHELL", "pg_isready -U surma -d surma_test"]
+      interval: 2s
+      timeout: 5s
+      retries: 15

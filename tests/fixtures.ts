@@ -1,13 +1,13 @@
 import { test as base, expect, type Page } from "@playwright/test";
 import type { Prisma, Tournament, User } from "@prisma/client";
 import { prisma } from "./helpers/db";
+import { loginAs as loginContextAs } from "./helpers/auth";
 import {
+  createTournament as createTournamentRow,
   createUser as createUserRow,
-  loginAs as loginContextAs,
   makeUmpire,
   type CreateUserOptions
-} from "./helpers/auth";
-import { createTournament as createTournamentRow } from "./helpers/factories";
+} from "./helpers/factories";
 
 type Fixtures = {
   /** Test database client. */
@@ -34,9 +34,25 @@ type Fixtures = {
   adminPage: Page;
   /** `page` logged in as `umpireSetup.umpire`. */
   umpirePage: Page;
+
+  /** Runs automatically: blocks browser requests to external services. */
+  blockExternalServices: void;
 };
 
 export const test = base.extend<Fixtures>({
+  blockExternalServices: [
+    async ({ context }, use) => {
+      // Upload widget, image CDN and API all live under *.cloudinary.com.
+      // Tests that need images can override this with a more specific
+      // context.route()/page.route() that fulfills with a fake response.
+      await context.route(/^https:\/\/([^/]+\.)?cloudinary\.com\//, (route) =>
+        route.abort("blockedbyclient")
+      );
+      await use();
+    },
+    { auto: true }
+  ],
+
   prisma: async ({}, use) => {
     await use(prisma);
   },
