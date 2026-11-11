@@ -9,6 +9,14 @@ export default async function sendEmail(
   payload: string,
   htmlPayload?: string
 ) {
+  // E2E tests: never send real email, just log it.
+  if (process.env.E2E_DISABLE_EMAIL === "1") {
+    console.log(
+      `[E2E_DISABLE_EMAIL] Not sending email\nFrom: ${from}\nTo: ${to}\nSubject: ${subject}\n\n${payload}`
+    );
+    return;
+  }
+
   const sesClient = new SESv2Client({
     region: "eu-north-1",
     credentials: defaultProvider()

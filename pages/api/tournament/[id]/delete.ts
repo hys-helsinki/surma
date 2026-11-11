@@ -2,7 +2,7 @@ import prisma from "../../../../lib/prisma";
 import type { NextApiRequest, NextApiResponse } from "next";
 import { getServerSession } from "next-auth";
 import { authConfig } from "../../auth/[...nextauth]";
-import { v2 as cloudinary } from "cloudinary";
+import { deleteTournamentImages } from "../../../../lib/cloudinary";
 
 const isCurrentUserAuthorized = async (tournamentId, req, res) => {
   const session = await getServerSession(req, res, authConfig);
@@ -40,12 +40,7 @@ export default async function handler(
 
     if (currentTime > new Date(tournament.endTime).getTime()) {
       try {
-        await cloudinary.api.delete_resources_by_prefix(
-          `hys_surma/${tournamentId}/`,
-          function (result) {
-            console.log(result);
-          }
-        );
+        await deleteTournamentImages(tournamentId);
         const tournament = await prisma.tournament.findUnique({
           where: {
             id: tournamentId
