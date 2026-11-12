@@ -108,6 +108,7 @@ export const getServerSideProps: GetServerSideProps = async ({
   });
 
   const umpires = await prisma.umpire.findMany({
+    where: { tournamentId: params.tournamentId as string },
     select: {
       id: true,
       responsibility: true,
