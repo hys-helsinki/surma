@@ -10,6 +10,7 @@ import { umpirePagePlayerSelect } from "../../../../lib/prisma-selects";
 
 const isCurrentUserAuthorized = async (playerId, req, res) => {
   const session = await getServerSession(req, res, authConfig);
+  if (!session) return false;
 
   const updatedPlayer = await prisma.player.findFirst({
     where: {
@@ -19,6 +20,7 @@ const isCurrentUserAuthorized = async (playerId, req, res) => {
       tournament: true
     }
   });
+  if (!updatedPlayer) return false;
 
   const umpire = await prisma.umpire.findFirst({
     where: {
@@ -33,8 +35,8 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
-  if (!isCurrentUserAuthorized(req.query.id, req, res)) {
-    res.status(403).end();
+  if (!(await isCurrentUserAuthorized(req.query.id, req, res))) {
+    return res.status(403).end();
   }
   if (req.method === "POST") {
     const playerId = req.query.id as string;

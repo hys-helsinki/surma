@@ -6,29 +6,31 @@ import _ from "lodash";
 
 const isCurrentUserAuthorized = async (userId, req, res) => {
   const session = await getServerSession(req, res, authConfig);
+  if (!session) return false;
 
-  const currentUser = await prisma.user.findFirst({
+  const updatedUser = await prisma.user.findFirst({
     where: {
       id: userId
     }
   });
-  if (!currentUser) return false;
+  if (!updatedUser) return false;
+  if (updatedUser.id === session.user.id) return true;
 
-  const umpire = await prisma.umpire.findUnique({
+  const umpire = await prisma.umpire.findFirst({
     where: {
       userId: session.user.id,
-      tournamentId: currentUser.tournamentId
+      tournamentId: updatedUser.tournamentId
     }
   });
-  return currentUser.id === session.user.id || umpire;
+  return umpire != null;
 };
 
 export default async function update(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
-  if (!isCurrentUserAuthorized(req.query.id, req, res)) {
-    res.status(403).end();
+  if (!(await isCurrentUserAuthorized(req.query.id, req, res))) {
+    return res.status(403).end();
   }
   if (req.method === "PUT") {
     const userId = req.query.id as string;

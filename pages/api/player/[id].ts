@@ -3,30 +3,33 @@ import type { NextApiRequest, NextApiResponse } from "next";
 import { getServerSession } from "next-auth";
 import { authConfig } from "../auth/[...nextauth]";
 
-const isCurrentUserAuthorized = async (playerId, req, res) => {
+// Note: despite the route name, the id is the player's *user* id (see the
+// update below).
+const isCurrentUserAuthorized = async (userId, req, res) => {
   const session = await getServerSession(req, res, authConfig);
+  if (!session) return false;
 
-  const currentPlayer = await prisma.player.findFirst({
+  const updatedPlayer = await prisma.player.findUnique({
+    where: { userId }
+  });
+  if (!updatedPlayer) return false;
+  if (updatedPlayer.userId === session.user.id) return true;
+
+  const umpire = await prisma.umpire.findFirst({
     where: {
-      id: playerId,
-      userId: session.user.id
+      userId: session.user.id,
+      tournamentId: updatedPlayer.tournamentId
     }
   });
-  // TODO add tournamentId to where clause
-  const umpire = await prisma.umpire.findUnique({
-    where: {
-      userId: session.user.id
-    }
-  });
-  return currentPlayer || umpire;
+  return umpire != null;
 };
 
 export default async function update(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
-  if (!isCurrentUserAuthorized(req.query.id, req, res)) {
-    res.status(403).end();
+  if (!(await isCurrentUserAuthorized(req.query.id, req, res))) {
+    return res.status(403).end();
   }
   if (req.method === "PATCH") {
     const playerId = req.query.id as string;
