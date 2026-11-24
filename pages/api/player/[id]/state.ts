@@ -156,10 +156,16 @@ export default async function handler(
       data: { state }
     });
 
+    const { tournamentId } = await prisma.player.findUniqueOrThrow({
+      where: { id: playerId },
+      select: { tournamentId: true }
+    });
     const updatedPlayerList: UmpirePagePlayer[] = await prisma.player.findMany({
+      where: { tournamentId },
       select: umpirePagePlayerSelect
     });
     const rings: RingWithAssignments[] = await prisma.assignmentRing.findMany({
+      where: { tournamentId },
       include: { assignments: true }
     });
     res.json({ updatedPlayerList, rings });

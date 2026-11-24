@@ -1,5 +1,5 @@
 import { test, expect } from "./fixtures";
-import { createPlayer, makeUmpire } from "./helpers/factories";
+import { createPlayer, createRing, makeUmpire } from "./helpers/factories";
 
 /*
  * These endpoints used to call their async authorization check without
@@ -259,5 +259,97 @@ test.describe("POST /api/sign-cloudinary-params", () => {
     const { tournament, player } = playerSetup;
     const res = await sign(page, tournament.id, player.userId);
     expect(res.status()).toBe(403);
+  });
+});
+
+test.describe("ring endpoints", () => {
+  test("non-umpire cannot create a ring", async ({
+    playerPage,
+    playerSetup,
+    prisma
+  }) => {
+    const { tournament, player } = playerSetup;
+    const other = await createPlayer(tournament.id);
+    const res = await playerPage.request.post("/api/tournament/rings", {
+      data: JSON.stringify({
+        name: "Kaapattu rinki",
+        tournamentId: tournament.id,
+        assignments: [{ hunterId: player.id, targetId: other.id }]
+      })
+    });
+    expect(res.status()).toBe(403);
+    expect(
+      await prisma.assignmentRing.count({
+        where: { tournamentId: tournament.id }
+      })
+    ).toBe(0);
+  });
+
+  test("non-umpire cannot delete a ring or an assignment", async ({
+    playerPage,
+    playerSetup,
+    prisma
+  }) => {
+    const { tournament, player } = playerSetup;
+    const other = await createPlayer(tournament.id);
+    const ring = await createRing(tournament.id, [player, other]);
+
+    const ringRes = await playerPage.request.delete("/api/tournament/rings", {
+      data: JSON.stringify({ ringId: ring.id, tournamentId: tournament.id })
+    });
+    expect(ringRes.status()).toBe(403);
+
+    const assignment = await prisma.assignment.findFirstOrThrow({
+      where: { ringId: ring.id }
+    });
+    const assignmentRes = await playerPage.request.delete(
+      "/api/tournament/assignments",
+      { data: assignment.id }
+    );
+    expect(assignmentRes.status()).toBe(403);
+
+    expect(await prisma.assignment.count({ where: { ringId: ring.id } })).toBe(
+      2
+    );
+  });
+
+  test("umpire of another tournament cannot delete a ring", async ({
+    umpirePage,
+    umpireSetup,
+    playerSetup,
+    prisma
+  }) => {
+    const { tournament, player } = playerSetup;
+    const other = await createPlayer(tournament.id);
+    const ring = await createRing(tournament.id, [player, other]);
+
+    // Claiming their own tournament's id doesn't make the foreign ring theirs.
+    const res = await umpirePage.request.delete("/api/tournament/rings", {
+      data: JSON.stringify({
+        ringId: ring.id,
+        tournamentId: umpireSetup.tournament.id
+      })
+    });
+    expect([403, 404]).toContain(res.status());
+    expect(
+      await prisma.assignmentRing.findUnique({ where: { id: ring.id } })
+    ).not.toBeNull();
+  });
+
+  test("player lists in API responses only include the tournament's own players", async ({
+    umpirePage,
+    umpireSetup,
+    playerSetup
+  }) => {
+    const { tournament } = umpireSetup;
+    const mine = await createPlayer(tournament.id);
+    const res = await umpirePage.request.patch(`/api/player/${mine.id}/state`, {
+      data: JSON.stringify({ state: "DETECTIVE", teamGame: false })
+    });
+    expect(res.status()).toBe(200);
+    const { updatedPlayerList } = await res.json();
+    const ids = updatedPlayerList.map((p: { id: string }) => p.id);
+    expect(ids).toContain(mine.id);
+    expect(ids).not.toContain(playerSetup.player.id);
   });
 });

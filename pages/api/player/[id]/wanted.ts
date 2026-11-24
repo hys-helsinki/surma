@@ -51,7 +51,8 @@ export default async function handler(
 
     const detectives = await prisma.player.findMany({
       where: {
-        state: "DETECTIVE"
+        state: "DETECTIVE",
+        tournamentId: player.tournamentId
       }
     });
 
@@ -80,6 +81,7 @@ export default async function handler(
     });
 
     const players: UmpirePagePlayer[] = await prisma.player.findMany({
+      where: { tournamentId: player.tournamentId },
       select: umpirePagePlayerSelect
     });
 

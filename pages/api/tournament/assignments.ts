@@ -50,8 +50,12 @@ export default async function handler(
     const assignmentId = req.body;
     if (!(await isDeleteAuthorized(assignmentId, req, res))) {
       console.log("Unauthorized assigment delete attempt!");
-      res.status(403).end();
+      return res.status(403).end();
     }
+    const { ring: deletedFromRing } = await prisma.assignment.findUnique({
+      where: { id: assignmentId },
+      include: { ring: true }
+    });
     const deletedAssignment = await prisma.assignment.delete({
       where: {
         id: assignmentId
@@ -68,6 +72,7 @@ export default async function handler(
     });
 
     const updatedPlayers = await prisma.player.findMany({
+      where: { tournamentId: deletedFromRing.tournamentId },
       include: {
         user: true,
         targets: true,
@@ -82,11 +87,16 @@ export default async function handler(
       return res.status(403).end();
     }
 
+    const targetRing = await prisma.assignmentRing.findUnique({
+      where: { id: newAssignments[0].ringId }
+    });
+
     const savedAssignments = await prisma.assignment.createManyAndReturn({
       data: newAssignments
     });
 
     const updatedPlayers: UmpirePagePlayer[] = await prisma.player.findMany({
+      where: { tournamentId: targetRing.tournamentId },
       select: umpirePagePlayerSelect
     });
 

@@ -27,8 +27,13 @@ export default async function handler(
   const data = JSON.parse(req.body);
   if (!(await isCurrentUserAuthorized(data.tournamentId, req, res))) {
     console.log("Unauthorized ring delete attempt!");
-    res.status(403).end();
+    return res.status(403).end();
   }
+
+  const ringToDelete = await prisma.teamAssignmentRing.findFirst({
+    where: { id: data.ringId, tournamentId: data.tournamentId }
+  });
+  if (!ringToDelete) return res.status(404).end();
 
   await prisma.teamAssignment.deleteMany({
     where: {
@@ -58,12 +63,14 @@ export default async function handler(
   });
 
   const updatedPlayers: UmpirePagePlayer[] = await prisma.player.findMany({
+    where: { tournamentId: data.tournamentId },
     select: umpirePagePlayerSelect
   });
 
   const playerRings: RingWithAssignments[] =
     await prisma.assignmentRing.findMany({
       where: {
+        tournamentId: data.tournamentId,
         assignments: {
           some: {}
         }

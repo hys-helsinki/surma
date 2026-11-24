@@ -21,7 +21,7 @@ export default async function rings(req: NextApiRequest, res: NextApiResponse) {
     // TODO make a dynamic route to supply tournament id as path parameter and move this before method check
     if (!(await isCurrentUserAuthorized(data.tournamentId, req, res))) {
       console.log("Unauthorized ring creation attempt!");
-      res.status(403).end();
+      return res.status(403).end();
     }
 
     const createdRing = await prisma.assignmentRing.create({
@@ -40,6 +40,7 @@ export default async function rings(req: NextApiRequest, res: NextApiResponse) {
     });
 
     const updatedPlayers = await prisma.player.findMany({
+      where: { tournamentId: data.tournamentId },
       include: {
         user: true,
         targets: true,
@@ -51,8 +52,13 @@ export default async function rings(req: NextApiRequest, res: NextApiResponse) {
     const data = JSON.parse(req.body);
     if (!(await isCurrentUserAuthorized(data.tournamentId, req, res))) {
       console.log("Unauthorized ring delete attempt!");
-      res.status(403).end();
+      return res.status(403).end();
     }
+
+    const ringToDelete = await prisma.assignmentRing.findFirst({
+      where: { id: data.ringId, tournamentId: data.tournamentId }
+    });
+    if (!ringToDelete) return res.status(404).end();
 
     const deletedRing = await prisma.assignmentRing.delete({
       where: {
@@ -60,6 +66,7 @@ export default async function rings(req: NextApiRequest, res: NextApiResponse) {
       }
     });
     const updatedPlayers = await prisma.player.findMany({
+      where: { tournamentId: data.tournamentId },
       include: {
         user: true,
         targets: true,
