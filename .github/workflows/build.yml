@@ -54,7 +54,9 @@ jobs:
 
   e2e-tests:
     # Not in the Alpine container above: Playwright browsers need glibc.
-    runs-on: ubuntu-latest
+    # Pinned: Playwright's --with-deps only supports specific Ubuntu releases,
+    # and ubuntu-latest may move to one it doesn't support yet.
+    runs-on: ubuntu-24.04
     timeout-minutes: 30
     services:
       postgres:
