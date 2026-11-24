@@ -30,7 +30,7 @@ export default async function handler(
     // TODO make a dynamic route to supply tournament id as path parameter and move this before method check
     if (!(await isCurrentUserAuthorized(data.tournamentId, req, res))) {
       console.log("Unauthorized ring creation attempt!");
-      res.status(403).end();
+      return res.status(403).end();
     }
 
     const createdRing: TeamRingWithAssignments =
@@ -50,6 +50,7 @@ export default async function handler(
       });
 
     const teams = await prisma.team.findMany({
+      where: { tournamentId: data.tournamentId },
       include: {
         players: true
       }
@@ -90,12 +91,14 @@ export default async function handler(
     });
 
     const updatedPlayers: UmpirePagePlayer[] = await prisma.player.findMany({
+      where: { tournamentId: data.tournamentId },
       select: umpirePagePlayerSelect
     });
 
     const playerRings: RingWithAssignments[] =
       await prisma.assignmentRing.findMany({
         where: {
+          tournamentId: data.tournamentId,
           assignments: {
             some: {}
           }

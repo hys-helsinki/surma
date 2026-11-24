@@ -112,6 +112,7 @@ const updateSoloGameRings = async (killedPlayerId: string) => {
 
 const isCurrentUserAuthorized = async (playerId, req, res) => {
   const session = await getServerSession(req, res, authConfig);
+  if (!session) return false;
 
   const updatedPlayer = await prisma.player.findFirst({
     where: {
@@ -121,6 +122,7 @@ const isCurrentUserAuthorized = async (playerId, req, res) => {
       tournamentId: true
     }
   });
+  if (!updatedPlayer) return false;
   const umpire = await prisma.umpire.findFirst({
     where: {
       userId: session.user.id,
@@ -134,8 +136,8 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
-  if (!isCurrentUserAuthorized(req.query.id, req, res)) {
-    res.status(403).end();
+  if (!(await isCurrentUserAuthorized(req.query.id, req, res))) {
+    return res.status(403).end();
   }
   if (req.method === "PATCH") {
     const playerId = req.query.id as string;
@@ -154,10 +156,16 @@ export default async function handler(
       data: { state }
     });
 
+    const { tournamentId } = await prisma.player.findUniqueOrThrow({
+      where: { id: playerId },
+      select: { tournamentId: true }
+    });
     const updatedPlayerList: UmpirePagePlayer[] = await prisma.player.findMany({
+      where: { tournamentId },
       select: umpirePagePlayerSelect
     });
     const rings: RingWithAssignments[] = await prisma.assignmentRing.findMany({
+      where: { tournamentId },
       include: { assignments: true }
     });
     res.json({ updatedPlayerList, rings });

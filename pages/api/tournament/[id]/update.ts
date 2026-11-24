@@ -5,12 +5,14 @@ import { authConfig } from "../../auth/[...nextauth]";
 
 const isCurrentUserAuthorized = async (tournamentId, req, res) => {
   const session = await getServerSession(req, res, authConfig);
+  if (!session) return false;
 
   const tournament = await prisma.tournament.findFirst({
     where: {
       id: tournamentId
     }
   });
+  if (!tournament) return false;
   const umpire = await prisma.umpire.findFirst({
     where: {
       userId: session.user.id,
@@ -25,8 +27,8 @@ export default async function handler(
   res: NextApiResponse
 ) {
   const tournamentId = req.query.id as string;
-  if (!isCurrentUserAuthorized(tournamentId, req, res)) {
-    res.status(403).end();
+  if (!(await isCurrentUserAuthorized(tournamentId, req, res))) {
+    return res.status(403).end();
   }
   if (req.method === "PUT") {
     const updatedTournamentData = JSON.parse(req.body);

@@ -44,6 +44,9 @@ export default async function handler(
     console.log("Unauthorized assignment create attempt!");
     return res.status(403).end();
   }
+  const { tournamentId } = await prisma.teamAssignmentRing.findUniqueOrThrow({
+    where: { id: newTeamAssignments[0].teamAssignmentRingId }
+  });
   const savedTeamAssignments = await prisma.teamAssignment.createManyAndReturn({
     data: newTeamAssignments
   });
@@ -55,6 +58,7 @@ export default async function handler(
   });
 
   const teams = await prisma.team.findMany({
+    where: { tournamentId },
     include: {
       players: true
     }
@@ -88,12 +92,14 @@ export default async function handler(
   });
 
   const updatedPlayers: UmpirePagePlayer[] = await prisma.player.findMany({
+    where: { tournamentId },
     select: umpirePagePlayerSelect
   });
 
   const playerRings: RingWithAssignments[] =
     await prisma.assignmentRing.findMany({
       where: {
+        tournamentId,
         assignments: {
           some: {}
         }

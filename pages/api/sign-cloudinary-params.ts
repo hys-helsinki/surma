@@ -4,26 +4,36 @@ import { getServerSession } from "next-auth";
 import { v2 as cloudinary } from "cloudinary";
 import { authConfig } from "./auth/[...nextauth]";
 
-const isCurrentUserAuthorized = async (playerId, req, res) => {
+/**
+ * Users may only sign uploads of their own picture, i.e. the exact path
+ * ImageUploadForm uses: hys_surma/<tournamentId>/<userId>. Otherwise anyone
+ * could overwrite other players' pictures. (The user may not have a Player
+ * row yet: the picture can be uploaded on the registration form.)
+ */
+const isCurrentUserAuthorized = async (paramsToSign, req, res) => {
   const session = await getServerSession(req, res, authConfig);
+  if (!session || !paramsToSign) return false;
 
-  const currentPlayer = await prisma.player.findFirst({
-    where: {
-      id: playerId,
-      userId: session.user.id
-    }
+  const currentUser = await prisma.user.findUnique({
+    where: { id: session.user.id },
+    select: { id: true, tournamentId: true }
   });
-  return currentPlayer;
+  if (!currentUser?.tournamentId) return false;
+
+  return (
+    paramsToSign.public_id === currentUser.id &&
+    paramsToSign.folder === `hys_surma/${currentUser.tournamentId}`
+  );
 };
 
 export default async function upload(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
-  if (!isCurrentUserAuthorized(req.query.id, req, res)) {
-    res.status(403).end();
+  const { paramsToSign } = req.body ?? {};
+  if (!(await isCurrentUserAuthorized(paramsToSign, req, res))) {
+    return res.status(403).end();
   }
-  const { paramsToSign } = req.body;
 
   try {
     const signature = cloudinary.utils.api_sign_request(

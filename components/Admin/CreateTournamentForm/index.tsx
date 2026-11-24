@@ -152,7 +152,7 @@ const CreateTournamentForm = () => {
             })}
             onSubmit={handleSubmit}
           >
-            {({ values, errors, submitCount }) => (
+            {({ values, submitCount }) => (
               <Form
                 onKeyDown={(e) => {
                   if (e.key === "Enter") {
@@ -183,14 +183,15 @@ const CreateTournamentForm = () => {
                   name="registrationEndTime"
                 />
                 <h2>3. Tuomaristo</h2>
-                {submitCount > 0 && typeof errors.users === "string" && (
-                  <div
-                    className="registration-error"
-                    style={{ paddingLeft: "0" }}
-                  >
-                    Valitse vähintään yksi päätuomari
-                  </div>
-                )}
+                {submitCount > 0 &&
+                  !values.users.some((user) => user.mainUmpire) && (
+                    <div
+                      className="registration-error"
+                      style={{ paddingLeft: "0" }}
+                    >
+                      Valitse vähintään yksi päätuomari
+                    </div>
+                  )}
                 <FieldArray name="users">
                   {({ remove, push }) => (
                     <div>

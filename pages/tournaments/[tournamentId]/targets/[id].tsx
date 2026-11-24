@@ -12,7 +12,7 @@ import { UserProvider } from "../../../../components/UserProvider";
 import LoadingSpinner from "../../../../components/Common/LoadingSpinner";
 import { useRouterLoading } from "../../../../lib/hooks";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
-import { v2 as cloudinary } from "cloudinary";
+import { getUserImageUrl } from "../../../../lib/cloudinary";
 
 const isTournamentRunning = (startTime: Date, endTime: Date) => {
   const currentTime = new Date().getTime();
@@ -128,6 +128,7 @@ export const getServerSideProps: GetServerSideProps = async ({
   });
 
   const umpires = await prisma.umpire.findMany({
+    where: { tournamentId: tournament.id },
     select: {
       id: true,
       responsibility: true,
@@ -142,17 +143,7 @@ export const getServerSideProps: GetServerSideProps = async ({
     }
   });
 
-  let imageUrl = "";
-  try {
-    const result = await cloudinary.api.resource(
-      `hys_surma/${user.tournamentId}/${user.id}` as string
-    );
-    imageUrl = result.secure_url;
-  } catch (error) {
-    if (error.error.http_code !== 404) {
-      console.error(error);
-    }
-  }
+  const imageUrl = await getUserImageUrl(user.tournamentId, user.id);
 
   tournament = JSON.parse(JSON.stringify(tournament));
   user = JSON.parse(JSON.stringify(user));
